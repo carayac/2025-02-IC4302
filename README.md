@@ -1,4 +1,4 @@
-# 2025-02-2024089174-IC4302
+# 2025-02-IC4302
 
 Repositorio privado para el curso **IC4302**.
 
