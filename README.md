@@ -10,7 +10,7 @@ Repositorio privado para el curso **IC4302**.
 | 2023332718  | Priscilla Romero Barquero         | priscilla-romero        |
 | 2024145198  | Helena María Vargas Quirós        | helena-vargas           |
 | 2024174489  | Daniel Arce Campos                | daniel-arce             |
-| 2021052665  | Christopher Jiménez               | christopher-jimenez     |
+| 2021052665  | Christopher Jiménez Gutiérrez     | christopher-jimenez     |
 
 ### Branch adicional
 - **proyecto-opcional** → Rama para el desarrollo del proyecto opcional.
