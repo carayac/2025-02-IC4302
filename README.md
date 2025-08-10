@@ -18,4 +18,4 @@ Repositorio privado para el curso **IC4302**.
 ## Profesor
 
 **Ing. Gerardo Nereo Campos Araya**  
-Email: nereo08@gmail.com / gecampos@itcr.ac.cr  
+ 
