@@ -4,6 +4,7 @@
 
 
 ![alt text](Diagrama1.jpg)
+
 1. **Hardware**  
    Aquí se encuentran los transistores, tarjetas, y el movimiento de datos mediante pulsos.
 

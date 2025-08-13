@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&iquest;Como surge Docker&quest;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="como-surge-docker">¿Como surge Docker?</h1>
+<hr>
+<h2 id="definición-de-computador">Definición de computador</h2>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\Diagrama1.jpg" alt="alt text"></p>
+<ol>
+<li>
+<p><strong>Hardware</strong><br>
+Aquí se encuentran los transistores, tarjetas, y el movimiento de datos mediante pulsos.</p>
+</li>
+<li>
+<p><strong>Assembler</strong><br>
+Permite comunicarse con el hardware (ejemplo: NASM), ejecuta instrucciones propias de la arquitectura (CPU) y otros componentes.</p>
+</li>
+<li>
+<p><strong>Device Driver</strong><br>
+Necesarios para interactuar con periféricos como una llave maya. Estos drivers son sencillos de instalar pues el SO ya tiene drivers para interactuar con ellos.</p>
+</li>
+<li>
+<p><strong>OS (Operating System)</strong><br>
+Establece interfaces para que los programas interactúen con el hardware. Gobierna todas las funciones del computador, usualmente visto como un sistema operativo monolítico.</p>
+</li>
+<li>
+<p><strong>App</strong><br>
+El programa se compila, genera lenguaje ensamblador, luego lenguaje máquina (1s y 0s) que el hardware interpreta.</p>
+</li>
+</ol>
+<div class="markdown-alert markdown-alert-caution"><p class="markdown-alert-title"><svg class="octicon octicon-stop mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Caution</p><p>La app no puede correr directamente sobre el hardware porque, si se corren dos aplicaciones simultáneamente, podrían acceder al direccionamiento de memoria, caché, disco, etc., que está usando la otra app.</p>
+</div>
+<ol start="6">
+<li>
+<p><strong>Lenguajes de Alto Nivel (LAN)</strong><br>
+Surgen por la complejidad de programar en lenguajes bajos. Tienen paradigmas más sencillos pero menor control sobre el computador y menor eficiencia.</p>
+</li>
+<li>
+<p><strong>Modules/Libraries/Packages</strong><br>
+Bloques de código en LAN que permiten reutilización. Son pesados porque incluyen funciones no siempre usadas.</p>
+</li>
+<li>
+<p><strong>Frameworks</strong><br>
+Liberan a los desarrolladores de escribir mucho código, abstraen funcionalidades complejas para hacerlas más fáciles de entender.</p>
+</li>
+</ol>
+<h3 id="sistema-operativo-monolítico">Sistema Operativo Monolítico</h3>
+<ul>
+<li>El SO es muy grande y monopoliza todos los componentes.</li>
+<li>Solo un programa puede ejecutarse por CPU a la vez.</li>
+<li>Tiene funcionalidad general, pero puede ser tedioso solicitar permisos para funciones.</li>
+<li>Consume mucha memoria.</li>
+</ul>
+<h4 id="system-calls">System Calls</h4>
+<p>Es la forma que permite interactuar con el SO. Son operaciones de bajo nivel que se le pide al SO que las ejecute por uno.</p>
+<hr>
+<h2 id="uso-de-más-de-un-so-en-un-hardware-físico">Uso de más de un SO en un hardware físico</h2>
+<p>Surge de la necesidad de utilizar distintos SO, ya que anteriormente estos tenian que ser desinstalados para instalar el SO que se necesita.</p>
+<h3 id="dual-boot">Dual Boot</h3>
+<p>Permite tener mas de un sistema en la misma maquina, pero no corren al mismo tiempo.</p>
+<h3 id="virtualizacion">Virtualizacion</h3>
+<p>Uno de ellos es VMWare que permite tener hardware virtual, el cual implementa el mismo hardware real. Con ello se puede utilizar mas un SO al mismo tiempo. Basado en el ciclo de fetch, comienza a ser scheduling.</p>
+<h4 id="scheduling">Scheduling</h4>
+<p>Encargado de manejar la ejecucion de las tareas de las aplicaciones, esto es consecutivo no es paralero. Con este proceso y utlizar VMWare se realiza un scheduling extra a nivel del hardware virtual, como desventaja representa bajo rendimiento.
+Es decir se tiene &quot;2 computadoras&quot;, y una ejecucion de una aplicacion corriendo en una VM suelen tener una penalidad de rendimiento.</p>
+<h4 id="file-descriptors--pipes--streams---inputoutput-streams">File Descriptors / Pipes / Streams -&gt; Input/Output Streams</h4>
+<p>Son los mecanismos de interaccion aceptados por los programas. Me permite mover o obtener datos, ademas de operaciones matematicas. Es decir mover informacion entre diferentes dispositivos.</p>
+<hr>
+<p>Surge el problema de necesitar un hardware dedicado por aplicacion solucionandolo con virtualizacion pero se hacia sumamente lenta.</p>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\Diagrama2.jpg" alt="alt text"></p>
+<h4 id="virtualizacion-a-nivel-de-hardware">Virtualizacion a nivel de hardware</h4>
+<p>Tecnologia incorporada en los procesadores la cual puede ser activada. Genera que se cree un SO pequeno conocido como  <strong>HyperVisor</strong></p>
+<h5 id="hypervisor">HyperVisor</h5>
+<p>Un SO que permite hacer virtualizacion, conocido como <strong>micro-kernel</strong></p>
+<h6 id="micro-kernel">Micro-Kernel</h6>
+<p>Este es distino al monolitico, pues se delega todas las funciones que antes eran del SO. Su funcionalidad es simple, realiza el scheduling de maquinas virtuales parecido a un timer, este cada cierto tiempo de dispara indicandole a los SO virtuales que estan sobre el hardware que se ejecuten.
+Tiene el tamano y codigo necesario para hacer el trabajo. Se hace mas rapido ejecutar mas de un SO en un mismo hardware.</p>
+<h5 id="sistema-monolitico-como-so-virtual">Sistema monolitico como SO virtual</h5>
+<p>Al ser monolitico aunque sea virtual, siempre va a tener la necesidad de cargar bibliotecas, apps entre otros necesarios para la ejecucion aunque no se utilice.</p>
+<h6 id="context-switch">Context Switch</h6>
+<p>Se da nivel operativo y utlizando el hypervisor, se da cambios de SO y al mismo momento se tiene que cambiar toda la memoria y mover informacion grande el context switch es pesado.
+Esto se encuentra en todos los momentos ya que sucede con cada cambio de SO para ejecutar sus tareas, entre mas pesado el SO mas caro el context switch. Y esto por que se tiene SO solo para ejecutar una sola.</p>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\Diagrama3.jpg" alt="alt text"></p>
+<hr>
+<h3 id="dockercontainerd">Docker/Containerd</h3>
+<p>Surge al no ver sostenible la virtualizacion.</p>
+<p>Son softwares de contenerizacion, se crea contenedores que contenga solo lo necesario, por ejemplo SQL SERVER solo si se necesita la app.</p>
+<h4 id="contenedor">Contenedor</h4>
+<p>Se organiza en capas.</p>
+<ol>
+<li>Software a correr (capa superior)</li>
+<li>Librerías o módulos necesarios (capa intermedia)</li>
+<li>Datos que se quieran correr (capa inferior)</li>
+</ol>
+<p>Con esto, el peso reduce bastante a diferencia de tener SO virtualizados, y al momento de hacer un context switch se hace unicamente de las cosas necesarias para ejecutar el contenedor.</p>
+<p>Es una version empaquetada de la aplicacion con las librerias faltantes para correr en lo comun que tiene el SO sobre el que se esta corriendo.</p>
+<h5 id="ventajas">Ventajas</h5>
+<ul>
+<li>Virtualización ligera o contenerización</li>
+<li>Solo se cambia el tamaño del contenedor, no todo el SO</li>
+</ul>
+<p>Para usar docker, se crea o utiliza imagenes que empaquetan toda la aplicacion y se ejecutan en un contenedor, tratando de ser lo mas rapido posibles, pues entre mas pequenos los contenedores, mas rapido el context switch y por ende la ejecucion es sumamente mas rapida.</p>
+<hr>
+<h3 id="kubernete">Kubernete</h3>
+<p>Proyecto de Google para orquestar contenedores Docker, solucionando problemas como la caída de contenedores.</p>
+<ul>
+<li>Orquesta grupos de servidores con Kubernetes instalado.</li>
+<li>Asigna contenedores al mejor servidor.</li>
+<li>Asegura que los contenedores estén siempre corriendo, puede mantener múltiples versiones.</li>
+</ul>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\Diagrama4.jpg" alt="alt text"></p>
+<p>Permite tener grupos de servidores en los que esta instalafo Kubernetes y en los que tiene contenedores creados. Kubernetes va a buscar el mejor servidor para correr el contenedor y si se cae se va a asegurar de que este corriendo, puede correr n versiones de contenedores asegurandose que siempre van a correr.</p>
+<h6 id="servicios-y-productos-que-corren-contenedores">Servicios y productos que corren contenedores</h6>
+<ul>
+<li>Serverless</li>
+<li>EKS</li>
+<li>AKS</li>
+<li>GKE</li>
+<li>Fargate</li>
+<li>CloudRun</li>
+<li>Lambda</li>
+<li>ECS</li>
+</ul>
+<h1 id="explicacion-del-proyecto-base">Explicacion del Proyecto Base</h1>
+<pre><code class="language-plaintext">PO
+├── README.md
+├── charts
+│   ├── application
+│   ├── bootstrap
+│   ├── databases
+│   ├── install.sh
+│   └── uninstall.sh
+├── docker
+│   ├── build.sh
+│   ├── downloader
+│   ├── spark-job
+│   └── web-spider
+├── images
+│   └── docker-desktop-k8s.png
+└── utils
+    ├── sample
+    └── sample.scala
+
+</code></pre>
+<h2 id="uso-de-docker">Uso de Docker</h2>
+<p>Se debe acceder a docker hub y crear una cuenta, en la cual se puede ver los contenedores e imagenes onlines</p>
+<h3 id="docker-hub">Docker hub</h3>
+<p>Respositorio de imagenes de la comunidad, se puede encontrar imagenes que se necesiten. O se pueden crear las imagenes. Hay varios repositorios, publicos y privados con manejo de permisos.</p>
+<p>Por defecto, las imagenes personales son publicas, asignadas con un TAG el cual indica la version de imagen.</p>
+<p>Al momento de instalar Docker Desktop es importante activar los kubernets, encontrado en la seccion de ajustes.</p>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\image.png" alt="alt text"></p>
+<h3 id="kubectl">Kubectl</h3>
+<p>Es una linea de comando para interactuar con kubernets</p>
+<h3 id="helm">Helm</h3>
+<p>Herramienta que permite instalar y orquestar aplicaciones.</p>
+<h3 id="lens">Lens</h3>
+<p>Muestra la instalacion de docker junto los kubernets. Brinda informacion del estado de la memoria y otros componentes y recursos asignados.</p>
+<h6 id="namespaces">Namespaces</h6>
+<p>Se encuentran los namespaces que hay por defectos los mas relevantes son:</p>
+<ul>
+<li>kube-node-lease</li>
+<li>kube-public</li>
+<li>kube-system</li>
+</ul>
+<h6 id="workloads---pods">Workloads - Pods</h6>
+<p>Aqui se podra ver los pods que monitorea kubernet, si alguno se cae, kubernet se encarga de levantarlo, se puede visualizar la informacion del mismo asi como la lista de contenedores que se estan corriendo.
+Los pods utilizan una imagen que se descarga, asi como limites de memoria, cpu entre otros.</p>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\Diagrama5.jpg" alt="alt text"></p>
+<p>En el mundo de kubernetes es un contenedor.
+Como se visualiza en el diagrama, es una coleccion de contenedores, el cual permite tener liveness, readiness and proobes permite monitorear que el pod este saludable, y si un pod se cae se puede volver a levantar.</p>
+<hr>
+<p>Dentro de la siguiente carpeta se encuentran imagenes de docker que se van a construir en el PO:</p>
+<pre><code class="language-plaintext">   ├── docker
+   │   ├── downloader
+</code></pre>
+<p>Por ejemplo, downloader es una imagen que permite descargar cosas.</p>
+<h4 id="agregar-una-imagen-de-docker-que-se-esta-creando">Agregar una imagen de Docker que se esta creando</h4>
+<p>Es importante recordar que docker tiene capas o layers enpaquetando lo mas pequeno posible.</p>
+<h5 id="downloader">Downloader</h5>
+<p>Se despierta cada vez que hay un mensaje nuevo y muestra que es lo que esta recibiendo.</p>
+<pre><code class="language-plaintext">   ├── downloader
+   │   │   ├── app
+   │   │   └── Dockerfile
+</code></pre>
+<p>Al trabajar con capas, se debe asignar una imagen base, en este caso es python 3.12.4, las imagenes slim son las que tienen menos biliotecas</p>
+<pre><code class="language-dockerfile"><span class="hljs-keyword">FROM</span> python:<span class="hljs-number">3.12</span>.<span class="hljs-number">4</span>-slim-bookworm
+</code></pre>
+<p>Representa otra capa en la imagen que es crear una carpeta.</p>
+<pre><code class="language-dockerfile"><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span>
+</code></pre>
+<p>Se agrega una capa extra que copia lo que esta dentro de la carpeta app en la imagen</p>
+<pre><code class="language-dockerfile"><span class="hljs-keyword">COPY</span><span class="language-bash"> app/. .</span>
+</code></pre>
+<p>Para correr el codigo, se debe actualizar la imagen de python basada en ubuntu, instalando lo necesario.</p>
+<pre><code class="language-dockerfile">
+<span class="hljs-keyword">RUN</span><span class="language-bash"> apt-get update -y</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> apt-get install -y libmariadb-dev <span class="hljs-comment">#Bibliotecas de desarrollo maria DB</span></span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> apt install build-essential -y <span class="hljs-comment">#Me permite compilar</span></span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> apt install wget -y</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> pip install --no-cache-dir -r requirements.txt</span>
+
+<span class="hljs-keyword">CMD</span><span class="language-bash"> [ <span class="hljs-string">&quot;python&quot;</span>, <span class="hljs-string">&quot;-u&quot;</span>, <span class="hljs-string">&quot;./app.py&quot;</span> ]</span>
+</code></pre>
+<p>Se estara utilizando <strong>pika y mariabd</strong> para interactuar con la cola de mensajes que es rabbitMQ.</p>
+<h5 id="web-spider">Web Spider</h5>
+<p>Crea mensajes que van a ser un archivo json.
+Utilza las imagenes bases iguales al Downloader</p>
+<h5 id="sparkjob">SparkJob</h5>
+<p>Esta imagen, utiliza una imagen base de java11, asi como correr Scala y Spark</p>
+<pre><code class="language-dockerfile"><span class="hljs-comment"># Imagen base de Apache Spark 3.5.1 con Scala 2.12 y Java 11 sobre Ubuntu</span>
+<span class="hljs-keyword">FROM</span> spark:<span class="hljs-number">3.5</span>.<span class="hljs-number">1</span>-scala2.<span class="hljs-number">12</span>-java11-ubuntu
+<span class="hljs-comment"># Referencia: https://stackoverflow.com/questions/27717379/spark-how-to-run-spark-file-from-spark-shell</span>
+
+<span class="hljs-comment"># Directorio de trabajo dentro del contenedor</span>
+<span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span>
+
+<span class="hljs-comment"># Copia una app Scala de la aplicación</span>
+<span class="hljs-keyword">COPY</span><span class="language-bash"> app/app.scala .</span>
+
+<span class="hljs-comment"># Copia un jar que representa una biblioteca necesaria</span>
+<span class="hljs-keyword">COPY</span><span class="language-bash"> app/elasticsearch-spark-30_2.12-8.14.3.jar /opt/spark/jars/</span>
+
+</code></pre>
+<p>Este contenedor corre un cronjob y por ende debe terminar en algun momento</p>
+<pre><code class="language-dockerfile">
+<span class="hljs-comment">#CMD [ &quot;tail&quot;, &quot;-f&quot;, &quot;/dev/null&quot; ]  # (opción para mantener el contenedor vivo sin hacer nada)</span>
+<span class="hljs-keyword">CMD</span><span class="language-bash"> [<span class="hljs-string">&quot;ls&quot;</span>, <span class="hljs-string">&quot;-l&quot;</span>, <span class="hljs-string">&quot;/tmp&quot;</span>]</span>
+</code></pre>
+<hr>
+<h2 id="como-subir-las-imagenes">Como subir las imagenes?</h2>
+<pre><code class="language-plaintext">   ├── docker
+   │   ├── build.sh
+</code></pre>
+<p>Es un script que corre en sistemas linux y mac pero se puede preparar para powershell.</p>
+<p>Para ejecutarlo se debe en el CMD:</p>
+<ol>
+<li>Dirigir a la carpeta docker</li>
+<li>Al tener una cuenta en docker hub, se ejcuta ./build.sh nombre_de_usuario
+3.Valida si esta auntenticado
+4.Y comienza a construir las imagenes, logueandose a docker construyendo imagen por imagen ademas de asignarles un tag, el nombre de usuario enviado en el comando se asigna al tag representado como $1 y por ultimo sube la imagen al docker hub.</li>
+</ol>
+<pre><code class="language-bash">docker build -t <span class="hljs-variable">$1</span>/downloader .
+</code></pre>
+<h2 id="charts">Charts</h2>
+<p>Se encarga de hacer ejecuciones de aplicaciones, es una herramienta para hacer deployments. Los siguientes archivos son helmcharts.</p>
+<pre><code class="language-plaintext">├── charts
+│   ├── application
+│   ├── bootstrap
+│   ├── databases
+</code></pre>
+<h3 id="estructura-de-un-helmchart">Estructura de un helmchart</h3>
+<p>1.Values -&gt; Vacio porque no se necesita nada del mismo
+2.Chart.yaml -&gt; Especifica metadatos y dependencias</p>
+<h5 id="dependencias">Dependencias</h5>
+<p>Software que se desea instalar</p>
+<h6 id="eck-operator">eck-operator</h6>
+<p>Es una dependencia para correr elastic-search</p>
+<pre><code class="language-md">bootstrap
+├── .helmignore
+├── Chart.lock
+├── Chart.yaml
+├── values.yaml
+├── charts
+│   └── eck-operator-2.13.0.tgz
+└── templates
+</code></pre>
+<h5 id="instalacion-de-un-helmchart">Instalacion de un helmchart</h5>
+<p>Esta se hace en un cmd por medio de un comando</p>
+<p>Los siguientes scripts representan la forma de instalar y desinstalar los helmchart.</p>
+<pre><code class="language-md">charts
+├── install.sh
+├── uninstall.sh
+</code></pre>
+<p>Al desintalar, se borran las bases de datos, y demas.
+Cuando se vaya a desintalar, en Lens se debe ir al apartado <strong>Storage-Persistant Volume Claims</strong> y se borra los namespaces.</p>
+<h5 id="crendenciales-de-las-bases-de-datos">Crendenciales de las bases de datos</h5>
+<p>En lens, dentro del apartado Config-Secrets, se encuentra las contrasenas de las bases de datos para ser conectadas y utilizadas en el connection string.</p>
+<h5 id="correr-sevicios-en-lens">Correr sevicios en lens</h5>
+<p>En lens, dentro del apartado Network-Services, se ven las bases de datos basadas en http, al darle click a una base de datos se presiona forward.</p>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\image-1.png" alt="alt text"></p>
+<p>Muestra un login, solicitando el user y password para interactuar con la base de datos.</p>
+<h5 id="interactuando-con-pods-en-lens">Interactuando con Pods en lens</h5>
+<p>Al entrar en un pod creado, y se presiona el icon de shell se puede interactuar por ejemplo:</p>
+<ul>
+<li><strong>ls</strong> se pueden visualizar los archivos de la imagen</li>
+<li><strong>more nombre_archivo</strong> Se puede visualizar el codigo del mismo</li>
+</ul>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\image-3.png" alt="alt text"></p>
+<p>Al entrar al pod creado, y se presiona el icon de logs se puede ver los logs generados por el container que esta corriendo.</p>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\image-4.png" alt="alt text"></p>
+<h5 id="visualizando-colas-de-rabbitmq">Visualizando colas de rabbitMQ</h5>
+<p>Por medio de los channels se puede ver los pods conectados quienes estan creando jobs identificados por la IP.</p>
+<p><img src="file:///c:\Users\caray\Documents\TEC\S2-2025\BASES DE DATOS II\2025-02-IC4302\A1\image-5.png" alt="alt text"></p>
+<h2 id="pasar-passwords-y-users-automaticamente-por-medio-de-kubernet">Pasar passwords y users automaticamente por medio de Kubernet</h2>
+<p>Se crea dentro del contenedor una variable de entorno que represente el user o password de la base de datos que pertenezca.</p>
+<pre><code class="language-md">application
+└── templates
+<span class="hljs-code">    └── producer.yaml
+</span></code></pre>
+<p>Dentro del archivo se le puede indicar al POD, crear una variable de entorno ademas de donde obtener el valor.</p>
+<p>En el siguiente ejemplo, se pide el valor desde un secret llamado databases-rabbitmq de la key rabbitmq-password y ese valor se expone con el nombre RABBITMQ_PASS.</p>
+<pre><code class="language-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">RABBITMQ_PASS</span>
+  <span class="hljs-attr">valueFrom:</span>
+    <span class="hljs-attr">secretKeyRef:</span>
+      <span class="hljs-attr">name:</span> <span class="hljs-string">databases-rabbitmq</span>
+      <span class="hljs-attr">key:</span> <span class="hljs-string">rabbitmq-password</span>
+      <span class="hljs-attr">optional:</span> <span class="hljs-literal">false</span>
+</code></pre>
+<h2 id="scala">Scala</h2>
+<p>En la siguiente ruta, se encuentra informacion que puede ser util al momento de elaborar el proyectos
+En el archivo sample se encuentra informacion de ejemplo que debe ser procesado con scala y spark.</p>
+<pre><code class="language-md">utils
+├── sample
+└── sample.scala
+</code></pre>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
