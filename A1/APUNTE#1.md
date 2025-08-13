@@ -2,8 +2,8 @@
 ---
 ## Definición de computador
 
-DIAGRAMA 1
 
+![alt text](Diagrama1.jpg)
 1. **Hardware**  
    Aquí se encuentran los transistores, tarjetas, y el movimiento de datos mediante pulsos.
 
@@ -61,7 +61,7 @@ Son los mecanismos de interaccion aceptados por los programas. Me permite mover 
 ---
 Surge el problema de necesitar un hardware dedicado por aplicacion solucionandolo con virtualizacion pero se hacia sumamente lenta.
 
-DIAGRAMA
+![alt text](Diagrama2.jpg)
 
 #### Virtualizacion a nivel de hardware
 Tecnologia incorporada en los procesadores la cual puede ser activada. Genera que se cree un SO pequeno conocido como  **HyperVisor**
@@ -80,7 +80,7 @@ Al ser monolitico aunque sea virtual, siempre va a tener la necesidad de cargar 
 Se da nivel operativo y utlizando el hypervisor, se da cambios de SO y al mismo momento se tiene que cambiar toda la memoria y mover informacion grande el context switch es pesado. 
 Esto se encuentra en todos los momentos ya que sucede con cada cambio de SO para ejecutar sus tareas, entre mas pesado el SO mas caro el context switch. Y esto por que se tiene SO solo para ejecutar una sola.
 
-DIAGRAMA
+![alt text](Diagrama3.jpg)
 
 ---
 ### Docker/Containerd
@@ -98,7 +98,6 @@ Se organiza en capas.
 
 Con esto, el peso reduce bastante a diferencia de tener SO virtualizados, y al momento de hacer un context switch se hace unicamente de las cosas necesarias para ejecutar el contenedor. 
 
-DIAGRAMA
 
 Es una version empaquetada de la aplicacion con las librerias faltantes para correr en lo comun que tiene el SO sobre el que se esta corriendo.
 
@@ -116,7 +115,7 @@ Proyecto de Google para orquestar contenedores Docker, solucionando problemas co
 - Asigna contenedores al mejor servidor.
 - Asegura que los contenedores estén siempre corriendo, puede mantener múltiples versiones.
 
-DIAGRAMA
+![alt text](Diagrama4.jpg)
 
 Permite tener grupos de servidores en los que esta instalafo Kubernetes y en los que tiene contenedores creados. Kubernetes va a buscar el mejor servidor para correr el contenedor y si se cae se va a asegurar de que este corriendo, puede correr n versiones de contenedores asegurandose que siempre van a correr.
 
@@ -186,7 +185,7 @@ Se encuentran los namespaces que hay por defectos los mas relevantes son:
 Aqui se podra ver los pods que monitorea kubernet, si alguno se cae, kubernet se encarga de levantarlo, se puede visualizar la informacion del mismo asi como la lista de contenedores que se estan corriendo.
 Los pods utilizan una imagen que se descarga, asi como limites de memoria, cpu entre otros.
 
-DIAGRAMA
+![alt text](Diagrama5.jpg)
 
 En el mundo de kubernetes es un contenedor. 
 Como se visualiza en el diagrama, es una coleccion de contenedores, el cual permite tener liveness, readiness and proobes permite monitorear que el pod este saludable, y si un pod se cae se puede volver a levantar.
