@@ -5,6 +5,7 @@ import pika
 import requests
 import xml.etree.ElementTree as ET
 import uuid
+from datetime import datetime
 
 url_base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 
@@ -38,8 +39,8 @@ job = {
     "estado": "pending",
     "ids": lista_ids,
     "omitido": [],
-    "fecha_inicio": "la fecha actual",
-    "fecha_fin": "la fecha donde termina"
+    "fecha_inicio": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    "fecha_fin": None
 }
 
 #Aquí lo subiríamos a MariaDB
