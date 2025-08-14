@@ -13,4 +13,4 @@ mariadb:
 rabbitmq:
   enabled: true
   # Keep this line if you are using Mac OS
-  platform: linux/arm64
+  # platform: linux/arm64
