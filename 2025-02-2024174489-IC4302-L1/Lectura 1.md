@@ -28,27 +28,27 @@
 
 ### **Ventajas**
 
-**Simplicidad**: Flexibilidad total en el modelado de datos sin estructura impuesta
+- Flexibilidad total en el modelado de datos sin estructura impuesta
 
-**Alto rendimiento y velocidad**: No requiere búsquedas complejas, solo operaciones get/put/delete
+- No requiere búsquedas complejas, solo operaciones get/put/delete
 
-**Escalabilidad**: Maneja bien el tamaño y las operaciones son independientes
+- Maneja bien el tamaño y las operaciones son independientes
 
-**Capacidades de cache**: Mantiene datos frecuentemente usados en memoria
+- Mantiene datos frecuentemente usados en memoria
 
-**Experiencia de usuario personalizada**: Maneja grandes volúmenes de datos de comportamiento
+- Maneja grandes volúmenes de datos de comportamiento
 
-**Respuesta rápida de aplicaciones**: Recuperación inmediata de datos
+- Recuperación inmediata de datos
 
-**Portabilidad y rentabilidad**: Migración fácil entre sistemas
+- Migración fácil entre sistemas
 
 ### **Desventajas**
 
-**Recuperación limitada**: Solo se puede acceder a la información mediante la clave
+- Solo se puede acceder a la información mediante la clave
 
-**Falta de consistencia**: No mantiene consistencia en transacciones múltiples
+- No mantiene consistencia en transacciones múltiples
 
-**Gestión de claves compleja**: Crear millones de claves únicas se vuelve desafiante
+- Crear millones de claves únicas se vuelve complejo
 
 ---
 
@@ -70,25 +70,27 @@
 
 ### **Ventajas**
 
-- **Flexibilidad de esquema**: No es necesario definir la estructura de los datos por adelantado, permitiendo crecer y modificar el diseño fácilmente
+- No es necesario definir la estructura de los datos por adelantado, permitiendo crecer y modificar el diseño fácilmente
 
-- **Almacenamiento dinámico**: Permiten guardar grandes volúmenes de datos en formatos variados
+- Permiten guardar grandes volúmenes de datos en formatos variados
 
-- **Facilidad de desarrollo**: El modelado de datos es intuitivo y se adapta bien a objetos en código, evitando particiones complejas y Joins
+- El modelado de datos es intuitivo y se adapta bien a objetos en código, evitando particiones complejas y Joins
 
-- **Consultas potentes**: Ofrecen indexación flexible y consultas ad hoc sobre colecciones de documentos
-
-- **Escalabilidad y evolución**: Las aplicaciones pueden evolucionar sin necesidad de migraciones de esquema
+- Las aplicaciones pueden evolucionar sin necesidad de migraciones de esquema
 
 ### **Desventajas**
 
-- **Relaciones complejas**: Es difícil crear relaciones entre documentos, lo que puede complicar el diseño de datos relacionados
+- Es difícil crear relaciones entre documentos, lo que puede complicar el diseño de datos relacionados
 
-- **Referencias limitadas**: Las referencias entre documentos no funcionan tan bien como en bases relacionales y pueden ser frustrantes
+- Las referencias entre documentos no funcionan tan bien como en bases relacionales y pueden ser frustrantes
 
-- **Gestión de documentos**: Administrar múltiples documentos puede ser desafiante, especialmente en operaciones masivas
+- Administrar múltiples documentos puede ser complejo, especialmente en operaciones masivas
 
-- **Agregaciones imprecisas**: Las operaciones de agregación pueden no ser tan precisas o eficientes como en otros modelos
+- Las operaciones de agregación pueden no ser tan precisas o eficientes como en otros modelos
+
+ <br><br><br><br><br><br>
+
+---
 
 ## 3. Wide-Column Stores
 
@@ -136,6 +138,8 @@
 
 - No son adecuadas para aplicaciones OLTP, ya que requieren muchas lecturas y escrituras en numerosas columnas por cada elemento
 
+---
+
 ## 4. Graph Databases
 
 ### **Características Principales**
@@ -154,20 +158,20 @@
 
 ### **Ventajas**
 
-- **Alto rendimiento en datos relacionados**: Las consultas sobre datos conectados mantienen su velocidad incluso cuando el tamaño del grafo crece, a diferencia de las bases relacionales donde los Joins se vuelven más lentos
+- Las consultas sobre datos conectados mantienen su velocidad incluso cuando el tamaño del grafo crece, a diferencia de las bases relacionales donde los Joins se vuelven más lentos
 
-- **Flexibilidad y evolución**: Es fácil agregar nuevas relaciones y nodos sin afectar el funcionamiento de la aplicación, ideal para desarrollos ágiles y necesidades cambiantes
+- Es fácil agregar nuevas relaciones y nodos sin afectar el funcionamiento de la aplicación, ideal para desarrollos ágiles y necesidades cambiantes
 
-- **Integración sencilla**: Permiten integrar datos de distintas fuentes sin necesidad de modificar esquemas, facilitando la gestión de datos semánticos complejos
+- Permiten integrar datos de distintas fuentes sin necesidad de modificar esquemas, facilitando la gestión de datos  complejos
 
-- **Consultas eficientes**: El tiempo de ejecución de las consultas depende del tamaño del subgrafo visitado, no del tamaño total de la base de datos
+- El tiempo de ejecución de las consultas depende del tamaño del subgrafo visitado, no del tamaño total de la base de datos
 
 ### **Desventajas**
 
-- **Limitaciones en estructura y restricciones**: La definición de estructuras y restricciones puede ser limitada, lo que puede generar inconsistencias en los datos
+- La definición de estructuras y restricciones puede ser limitada, lo que puede generar inconsistencias en los datos
 
-- **Escalabilidad horizontal compleja**: Dividir un grafo para distribuirlo eficientemente entre varios nodos es difícil, y muchas bases de datos no soportan consultas declarativas ni optimización avanzada
+- Dividir un grafo para distribuirlo eficientemente entre varios nodos es difícil, y muchas bases de datos no soportan consultas declarativas ni optimización avanzada
 
-- **Consultas costosas en grafos grandes**: Algunas operaciones, como el análisis global o consultas sobre grafos dinámicos, pueden ser costosas y difíciles de optimizar
+- Algunas operaciones, como el análisis global o consultas sobre grafos dinámicos, pueden ser costosas y difíciles de optimizar
 
-- **Gestión de historial**: Almacenar y consultar el historial de cambios en grafos grandes puede ser complejo y requerir soluciones especializadas
+- Almacenar y consultar el historial de cambios en grafos grandes puede ser complejo y requerir soluciones especializadas
