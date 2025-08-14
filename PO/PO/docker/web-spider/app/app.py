@@ -2,7 +2,50 @@ import time
 import os
 import sys
 import pika
+import requests
+import xml.etree.ElementTree as ET
+import uuid
 
+url_base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+
+#Parametros en la url
+db = "pubmed"
+term = "science journal"
+retstart = 0
+retmax = 20
+
+#Datos a extraer
+count = 0
+lista_ids = []
+
+#Para la paginacion lo unico que hay que hacer es meterlo en un ciclo
+#Nueva url con parametros
+new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
+
+#Enviamos un request
+response = requests.get(new_url)
+data = response.text #datos en formato xml
+datosFormatted = ET.fromstring(data)
+
+#Guardamos los datos
+count = int(datosFormatted.find(".//Count").text)
+for elem in datosFormatted.findall(".//Id"):
+    lista_ids.append(elem.text)
+
+#Creamos un job
+job = {
+    "id": uuid.uuid4(), #libreria que genera id aleatorio y unico
+    "estado": "pending",
+    "ids": lista_ids,
+    "omitido": [],
+    "fecha_inicio": "la fecha actual",
+    "fecha_fin": "la fecha donde termina"
+}
+
+#Aquí lo subiríamos a MariaDB
+
+
+#Luego enviamos el id del job por RabbitMQ
 DATA=os.getenv('DATAFROMK8S')
 RABBIT_MQ=os.getenv('RABBITMQ')
 RABBIT_MQ_PASSWORD=os.getenv('RABBITMQ_PASS')
