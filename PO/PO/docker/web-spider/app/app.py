@@ -1,4 +1,5 @@
 import os
+import json
 import pika
 import requests
 import xml.etree.ElementTree as ET
@@ -21,17 +22,17 @@ retmax = JOB_SIZE
 count = 0
 lista_ids = []
 
-new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
 
+new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
 #Enviamos un request
 response = requests.get(new_url)
 data = response.text #datos en formato xml
 datosFormatted = ET.fromstring(data)
-
 #Guardamos Count
 count = int(datosFormatted.find(".//Count").text)
 
-#Paginacion
+
+#Paginación
 while retstart < count:
     #Nueva url con parametros
     new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
@@ -71,7 +72,12 @@ while retstart < count:
 
         insert_query = "INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
         try:
-            cursor.execute(insert_query, (str(job["id"]), job["estado"], job["lista_ids"], job["omitido"], job["fecha_inicio"], job["fecha_final"]))
+            cursor.execute(insert_query, (str(job["id"])
+                                          , job["estado"]
+                                          , json.dumps(job["lista_ids"]) #para recuperar usar json.loads
+                                          , json.dumps(job["omitido"])
+                                          , job["fecha_inicio"]
+                                          , job["fecha_final"]))
             conn.commit()
         except mariadb.Error as e:
             conn.rollback()
