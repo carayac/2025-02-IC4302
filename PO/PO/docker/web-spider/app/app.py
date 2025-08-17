@@ -59,11 +59,12 @@ while retstart < count:
     'database': os.getenv('MARIADB_DB')
     }
 
+    TABLE_NAME = os.getenv("MARIADB_TABLE")
     try:
         conn = mariadb.connect(**db_config)
         cursor = conn.cursor()
 
-        insert_query = "INSERT INTO users (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
+        insert_query = "INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
         try:
             cursor.execute(insert_query, (job["id"], job["estado"], job["lista_ids"], job["omitido"], job["fecha_inicio"], job["fecha_final"]))
             conn.commit()
