@@ -1,11 +1,11 @@
-import time
 import os
-import sys
 import pika
 import requests
 import xml.etree.ElementTree as ET
 import uuid
 from datetime import datetime
+import mariadb
+import sys
 
 url_base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 
@@ -38,13 +38,37 @@ while retstart < count:
     job = {
         "id": uuid.uuid4(), #libreria que genera id aleatorio y unico
         "estado": "pending",
-        "Lista_ids": lista_ids,
+        "lista_ids": lista_ids,
         "omitido": [],
         "fecha_inicio": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "fecha_fin": None
+        "fecha_final": None
     }
 
-    #Aquí lo subiríamos a MariaDB
+    #Aquí lo subimos a MariaDB
+    db_config = {
+    'host': os.getenv('MARIADB'),
+    'port': 3306,
+    'user': os.getenv('MARIADB_USER'),
+    'password': os.getenv('MARIADB_PASS'),
+    'database': os.getenv('MARIADB_DB')
+    }
+
+    try:
+        conn = mariadb.connect(**db_config)
+        cursor = conn.cursor()
+
+        insert_query = "INSERT INTO users (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
+        try:
+            cursor.execute(insert_query, (job["id"], job["estado"], job["lista_ids"], job["omitido"], job["fecha_inicio"], job["fecha_final"]))
+            conn.commit()
+        except mariadb.Error as e:
+            conn.rollback()
+
+    except mariadb.Error as e:
+        sys.exit(1)
+    finally:
+        cursor.close()
+        conn.close()
 
 
     #Luego enviamos el id del job por RabbitMQ
@@ -65,6 +89,6 @@ while retstart < count:
     channel.basic_publish(exchange='', routing_key=QUEUE_NAME, body=msg)
     print(DATA)
     connection.close()
+    ###########
 
-
-    retstart+20
+    retstart+=20
