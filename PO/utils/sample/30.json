@@ -1,0 +1,967 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [2025, 8, 2]
+      ],
+      "date-time": "2025-08-02T19:47:22Z",
+      "timestamp": 1754164042028,
+      "version": "3.41.2"
+    },
+    "reference-count": 84,
+    "publisher": "American Association for the Advancement of Science (AAAS)",
+    "content-domain": {
+      "domain": [
+        "www.science.org"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [
+      "Science"
+    ],
+    "abstract": "\u003Cjats:p\u003E\n            Malaria parasite fertilization occurs in the midgut of a female\n            \u003Cjats:italic toggle=\"yes\"\u003EAnopheles\u003C/jats:italic\u003E\n            mosquito. Blocking fertilization within the mosquito can prevent malaria transmission.\n            \u003Cjats:italic toggle=\"yes\"\u003EPlasmodium falciparum\u003C/jats:italic\u003E\n            Pfs230 and Pfs48/45 are critical for male fertility and transmission of the malaria parasite. They form a core fertilization complex, but it is unknown how they interact. We determined a cryo–electron microscopy structure of endogenous Pfs230-Pfs48/45 complex showing that Pfs48/45 interacts with Pfs230 domains 13 and 14. Transgenic parasite lines with these domains removed were defective in Pfs230 gamete localization and showed reduced oocyst formation. Nanobodies against domains 13 and 14 inhibited Pfs230-Pfs48/45 complex formation, reduced transmission and structural analyses revealed their epitopes. These Pfs230 domains were targets of naturally acquired immunity and immune sera from mRNA–lipid nanoparticle immunizations blocked parasite transmission.\n          \u003C/jats:p\u003E",
+    "DOI": "10.1126/science.ady0241",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [2025, 7, 31]
+      ],
+      "date-time": "2025-07-31T18:05:29Z",
+      "timestamp": 1753985129000
+    },
+    "update-policy": "https://doi.org/10.34133/aaas_crossmark",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Cryo-EM structure of endogenous\n            \u003Ci\u003EPlasmodium falciparum\u003C/i\u003E\n            Pfs230 and Pfs48/45 fertilization complex"
+    ],
+    "prefix": "10.1126",
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-2780-4389",
+        "authenticated-orcid": true,
+        "given": "Melanie H.",
+        "family": "Dietrich",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-2724-0165",
+        "authenticated-orcid": true,
+        "given": "Jill",
+        "family": "Chmielewski",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-9439-3487",
+        "authenticated-orcid": true,
+        "given": "Li-Jin",
+        "family": "Chan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-0606-4446",
+        "authenticated-orcid": true,
+        "given": "Li Lynn",
+        "family": "Tan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-2952-7987",
+        "authenticated-orcid": true,
+        "given": "Amy",
+        "family": "Adair",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2739-4727",
+        "authenticated-orcid": true,
+        "given": "Frankie M. T.",
+        "family": "Lyons",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "given": "Mikha",
+        "family": "Gabriela",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "given": "Sash",
+        "family": "Lopaticki",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Infectious Diseases, Doherty Institute, University of Melbourne, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "given": "Toby A",
+        "family": "Dite",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4171-3712",
+        "authenticated-orcid": true,
+        "given": "Laura F",
+        "family": "Dagley",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "given": "Lucia",
+        "family": "Pazzagli",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Seattle Children’s Research Institute, Seattle, WA, USA."
+          }
+        ]
+      },
+      {
+        "given": "Priya",
+        "family": "Gupta",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Seattle Children’s Research Institute, Seattle, WA, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9429-2662",
+        "authenticated-orcid": true,
+        "given": "Mohd",
+        "family": "Kamil",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Seattle Children’s Research Institute, Seattle, WA, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-5815-756X",
+        "authenticated-orcid": true,
+        "given": "Ashley M.",
+        "family": "Vaughan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Seattle Children’s Research Institute, Seattle, WA, USA."
+          },
+          {
+            "name": "Department of Pediatrics, University of Washington, Seattle, WA, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0007-8482-7150",
+        "authenticated-orcid": true,
+        "given": "Rattanaporn",
+        "family": "Rojrung",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Division of Malaria Research, Proteo-Science Center, Ehime University, Matsuyama, Japan."
+          }
+        ]
+      },
+      {
+        "given": "Anju",
+        "family": "Abraham",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-5057-5994",
+        "authenticated-orcid": true,
+        "given": "Ramin",
+        "family": "Mazhari",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4510-5602",
+        "authenticated-orcid": true,
+        "given": "Rhea J.",
+        "family": "Longley",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          },
+          {
+            "name": "Faculty of Tropical Medicine, Mahidol University, Bangkok, Thailand."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-0608-229X",
+        "authenticated-orcid": true,
+        "given": "Kathleen",
+        "family": "Zeglinski",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5142-7886",
+        "authenticated-orcid": true,
+        "given": "Quentin",
+        "family": "Gouil",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          },
+          {
+            "name": "Olivia Newton-John Cancer Research Institute, Heidelberg, Australia."
+          },
+          {
+            "name": "School of Cancer Medicine, La Trobe University, Bundoora, Australia."
+          }
+        ]
+      },
+      {
+        "given": "Ivo",
+        "family": "Mueller",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          },
+          {
+            "name": "School of Global Health, Shanghai Jiao Tong University, Shanghai, China."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-8887-7661",
+        "authenticated-orcid": true,
+        "given": "Stewart A.",
+        "family": "Fabb",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Monash Institute of Pharmaceutical Sciences, Monash University, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0003-9201-9170",
+        "authenticated-orcid": true,
+        "given": "Rekha",
+        "family": "Shandre-Mugan",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Monash Institute of Pharmaceutical Sciences, Monash University, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-0224-3308",
+        "authenticated-orcid": true,
+        "given": "Colin W.",
+        "family": "Pouton",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Monash Institute of Pharmaceutical Sciences, Monash University, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4146-965X",
+        "authenticated-orcid": true,
+        "given": "Alisa",
+        "family": "Glukhova",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          },
+          {
+            "name": "Department of Biochemistry and Pharmacology, The University of Melbourne, Melbourne, Australia."
+          },
+          {
+            "name": "Drug Discovery Biology, Monash Institute of Pharmaceutical Sciences, Monash University, Parkville, Australia."
+          },
+          {
+            "name": "ARC Centre for Cryo-electron Microscopy of Membrane Proteins, Monash Institute of Pharmaceutical Sciences, Monash University, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-3651-6087",
+        "authenticated-orcid": true,
+        "given": "Shabih",
+        "family": "Shakeel",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          },
+          {
+            "name": "Department of Biochemistry and Pharmacology, The University of Melbourne, Melbourne, Australia."
+          },
+          {
+            "name": "ARC Centre for Cryo-electron Microscopy of Membrane Proteins, Monash Institute of Pharmaceutical Sciences, Monash University, Parkville, Australia."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7950-8699",
+        "authenticated-orcid": true,
+        "given": "Wai-Hong",
+        "family": "Tham",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "The Walter and Eliza Hall Institute of Medical Research, Parkville, Australia."
+          },
+          {
+            "name": "Department of Medical Biology, The University of Melbourne, Melbourne, Australia."
+          },
+          {
+            "name": "Research School of Biology, The Australian National University, Canberra, Australia."
+          }
+        ]
+      }
+    ],
+    "member": "221",
+    "published-online": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "reference": [
+      {
+        "key": "e_1_3_2_2_2",
+        "unstructured": "World Malaria Report (World Health Organization 2024)."
+      },
+      {
+        "key": "e_1_3_2_3_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371/journal.ppat.1006336"
+      },
+      {
+        "key": "e_1_3_2_4_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1073/pnas.1204363109"
+      },
+      {
+        "key": "e_1_3_2_5_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.3389/fcimb.2022.945924"
+      },
+      {
+        "key": "e_1_3_2_6_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1111/j.1365-3024.1987.tb00511.x"
+      },
+      {
+        "key": "e_1_3_2_7_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/0166-6851(92)90013-A"
+      },
+      {
+        "key": "e_1_3_2_8_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/S0166-6851(99)00066-3"
+      },
+      {
+        "key": "e_1_3_2_9_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/0166-6851(93)90158-T"
+      },
+      {
+        "key": "e_1_3_2_10_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1084/jem.162.5.1460"
+      },
+      {
+        "key": "e_1_3_2_11_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371/journal.ppat.1000853"
+      },
+      {
+        "key": "e_1_3_2_12_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1084/jem.158.3.976"
+      },
+      {
+        "key": "e_1_3_2_13_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1111/j.1365-2958.2006.05284.x"
+      },
+      {
+        "key": "e_1_3_2_14_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1098/rspb.2014.3027"
+      },
+      {
+        "key": "e_1_3_2_15_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/S0092-8674(01)00199-4"
+      },
+      {
+        "key": "e_1_3_2_16_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1128/CVI.05104-11"
+      },
+      {
+        "key": "e_1_3_2_17_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.vaccine.2019.02.021"
+      },
+      {
+        "key": "e_1_3_2_18_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/0166-6851(95)02507-3"
+      },
+      {
+        "key": "e_1_3_2_19_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41541-021-00423-3"
+      },
+      {
+        "key": "e_1_3_2_20_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-021-21955-1"
+      },
+      {
+        "key": "e_1_3_2_21_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s42003-020-01123-9"
+      },
+      {
+        "key": "e_1_3_2_22_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.3389/fimmu.2024.1481829"
+      },
+      {
+        "key": "e_1_3_2_23_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1172/JCI146221"
+      },
+      {
+        "key": "e_1_3_2_24_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41541-023-00709-8"
+      },
+      {
+        "key": "e_1_3_2_25_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.3390/vaccines12050546"
+      },
+      {
+        "key": "e_1_3_2_26_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1042/BCJ20220554"
+      },
+      {
+        "key": "e_1_3_2_27_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.immuni.2023.01.013"
+      },
+      {
+        "key": "e_1_3_2_28_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.immuni.2023.01.012"
+      },
+      {
+        "key": "e_1_3_2_29_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-022-33379-6"
+      },
+      {
+        "key": "e_1_3_2_30_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1111/j.1365-3024.1990.tb00990.x"
+      },
+      {
+        "key": "e_1_3_2_31_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1074/jbc.M700948200"
+      },
+      {
+        "key": "e_1_3_2_32_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.immuni.2023.01.009"
+      },
+      {
+        "key": "e_1_3_2_33_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.vaccine.2023.04.042"
+      },
+      {
+        "key": "e_1_3_2_34_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1006/expr.2000.4586"
+      },
+      {
+        "key": "e_1_3_2_35_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/0166-6851(94)00054-Q"
+      },
+      {
+        "key": "e_1_3_2_36_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1073/pnas.0502378102"
+      },
+      {
+        "key": "e_1_3_2_37_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371/journal.pone.0139407"
+      },
+      {
+        "key": "e_1_3_2_38_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1074/jbc.M113.455667"
+      },
+      {
+        "key": "e_1_3_2_39_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1042/BCJ20200415"
+      },
+      {
+        "key": "e_1_3_2_40_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/femsmc/xtac005"
+      },
+      {
+        "key": "e_1_3_2_41_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-018-06742-9"
+      },
+      {
+        "key": "e_1_3_2_42_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-021-24954-4"
+      },
+      {
+        "key": "e_1_3_2_43_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1073/pnas.2101918118"
+      },
+      {
+        "key": "e_1_3_2_44_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371/journal.pone.0238010"
+      },
+      {
+        "key": "e_1_3_2_45_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.4049/jimmunol.139.12.4213"
+      },
+      {
+        "key": "e_1_3_2_46_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1074/jbc.M116.732305"
+      },
+      {
+        "key": "e_1_3_2_47_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41541-023-00784-x"
+      },
+      {
+        "key": "e_1_3_2_48_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1128/iai.63.2.467-471.1995"
+      },
+      {
+        "key": "e_1_3_2_49_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1006/expr.1995.1003"
+      },
+      {
+        "key": "e_1_3_2_50_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41541-023-00783-y"
+      },
+      {
+        "key": "e_1_3_2_51_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nbt.2925"
+      },
+      {
+        "key": "e_1_3_2_52_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1073/pnas.1216457110"
+      },
+      {
+        "key": "e_1_3_2_53_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nmeth.4169"
+      },
+      {
+        "key": "e_1_3_2_54_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-023-39031-1"
+      },
+      {
+        "key": "e_1_3_2_55_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41586-021-03819-2"
+      },
+      {
+        "key": "e_1_3_2_56_2",
+        "doi-asserted-by": "crossref",
+        "unstructured": "R. Evans M. O’Neill A. Pritzel N. Antropova A. Senior T. Green A. Žídek R. Bates S. Blackwell J. Yim O. Ronneberger S. Bodenstein M. Zielinski A. Bridgland A. Potapenko A. Cowie K. Tunyasuvunakool R. Jain E. Clancy P. Kohli J. Jumper D. Hassabis Protein complex prediction with AlphaFold-Multimer. bioRxiv doi: (2022).10.1101/2021.10.04.463034",
+        "DOI": "10.1101/2021.10.04.463034"
+      },
+      {
+        "key": "e_1_3_2_57_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1002/pro.3235"
+      },
+      {
+        "key": "e_1_3_2_58_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1107/S2052252519007619"
+      },
+      {
+        "key": "e_1_3_2_59_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1107/S2059798319011471"
+      },
+      {
+        "key": "e_1_3_2_60_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1107/S0907444910007493"
+      },
+      {
+        "key": "e_1_3_2_61_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1042/BCJ20210572"
+      },
+      {
+        "key": "e_1_3_2_62_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nbt.2377"
+      },
+      {
+        "key": "e_1_3_2_63_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.15252/msb.20198994"
+      },
+      {
+        "key": "e_1_3_2_64_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.jmb.2024.168656"
+      },
+      {
+        "key": "e_1_3_2_65_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nmeth.2019"
+      },
+      {
+        "key": "e_1_3_2_66_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nprot.2016.096"
+      },
+      {
+        "key": "e_1_3_2_67_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41592-020-01018-x"
+      },
+      {
+        "key": "e_1_3_2_68_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41592-022-01663-4"
+      },
+      {
+        "key": "e_1_3_2_69_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nprot.2014.039"
+      },
+      {
+        "key": "e_1_3_2_70_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/bioinformatics/btr507"
+      },
+      {
+        "key": "e_1_3_2_71_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/nar/gkt382"
+      },
+      {
+        "key": "e_1_3_2_72_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1101/pdb.top115"
+      },
+      {
+        "key": "e_1_3_2_73_2",
+        "first-page": "406",
+        "article-title": "The neighbor-joining method: A new method for reconstructing phylogenetic trees",
+        "volume": "4",
+        "author": "Saitou N.",
+        "year": "1987",
+        "unstructured": "N. Saitou, M. Nei, The neighbor-joining method: A new method for reconstructing phylogenetic trees. Mol. Biol. Evol. 4, 406–425 (1987). 3447015",
+        "journal-title": "Mol. Biol. Evol."
+      },
+      {
+        "key": "e_1_3_2_74_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/bioinformatics/btq706"
+      },
+      {
+        "key": "e_1_3_2_75_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/molbev/msy194"
+      },
+      {
+        "key": "e_1_3_2_76_2",
+        "unstructured": "R Core Team R: A language and environment for statistical computing R Foundation for Statistical Computing (2020); https://www.R-project.org/."
+      },
+      {
+        "key": "e_1_3_2_77_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/bioinformatics/btx469"
+      },
+      {
+        "key": "e_1_3_2_78_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1107/S0907444909047337"
+      },
+      {
+        "key": "e_1_3_2_79_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.32614/RJ-2014-023"
+      },
+      {
+        "key": "e_1_3_2_80_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1107/S2059798323003595"
+      },
+      {
+        "key": "e_1_3_2_81_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.jmb.2007.05.022"
+      },
+      {
+        "key": "e_1_3_2_82_2",
+        "first-page": "375",
+        "article-title": "A 2d patient with tropical malaria contracted in a natural way in the Netherlands",
+        "volume": "125",
+        "author": "Delemarre-van de Waal H. A.",
+        "year": "1981",
+        "unstructured": "H. A. Delemarre-van de Waal, F. C. de Waal, A 2d patient with tropical malaria contracted in a natural way in the Netherlands. Ned. Tijdschr. Geneeskd. 125, 375–377 (1981). 7012644",
+        "journal-title": "Ned. Tijdschr. Geneeskd."
+      },
+      {
+        "key": "e_1_3_2_83_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1371/journal.pmed.1001891"
+      },
+      {
+        "key": "e_1_3_2_84_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/nar/gkw1080"
+      },
+      {
+        "key": "e_1_3_2_85_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/nar/gkae1011"
+      }
+    ],
+    "container-title": [
+      "Science"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://www.science.org/doi/pdf/10.1126/science.ady0241",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [2025, 7, 31]
+      ],
+      "date-time": "2025-07-31T18:05:31Z",
+      "timestamp": 1753985131000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://www.science.org/doi/10.1126/science.ady0241"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "references-count": 84,
+    "alternative-id": [
+      "10.1126/science.ady0241"
+    ],
+    "URL": "https://doi.org/10.1126/science.ady0241",
+    "relation": {
+
+    },
+    "ISSN": [
+      "0036-8075",
+      "1095-9203"
+    ],
+    "issn-type": [
+      {
+        "type": "print",
+        "value": "0036-8075"
+      },
+      {
+        "type": "electronic",
+        "value": "1095-9203"
+      }
+    ],
+    "subject": [],
+    "published": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "assertion": [
+      {
+        "value": "2025-04-06",
+        "order": 0,
+        "name": "received",
+        "label": "Received",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      },
+      {
+        "value": "2025-07-15",
+        "order": 2,
+        "name": "accepted",
+        "label": "Accepted",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      },
+      {
+        "value": "2025-07-31",
+        "order": 3,
+        "name": "published",
+        "label": "Published",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      }
+    ],
+    "article-number": "eady0241"
+  }
+}

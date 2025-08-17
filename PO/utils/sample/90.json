@@ -1,0 +1,234 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [2025, 8, 2]
+      ],
+      "date-time": "2025-08-02T19:47:14Z",
+      "timestamp": 1754164034762,
+      "version": "3.41.2"
+    },
+    "reference-count": 15,
+    "publisher": "American Association for the Advancement of Science (AAAS)",
+    "issue": "6759",
+    "content-domain": {
+      "domain": [
+        "www.science.org"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [
+      "Science"
+    ],
+    "published-print": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "abstract": "\u003Cjats:p\u003EClinical trials show that strategies to elicit the production of broadly neutralizing antibodies have a promising start\u003C/jats:p\u003E",
+    "DOI": "10.1126/science.adz6436",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [2025, 7, 31]
+      ],
+      "date-time": "2025-07-31T18:03:25Z",
+      "timestamp": 1753985005000
+    },
+    "page": "455-457",
+    "update-policy": "https://doi.org/10.34133/aaas_crossmark",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Evolving rare B cell lineages for an effective HIV vaccine"
+    ],
+    "prefix": "10.1126",
+    "volume": "389",
+    "author": [
+      {
+        "given": "Sallie R.",
+        "family": "Permar",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Drukier Institute for Children’s Health, Department of Pediatrics, Weill Cornell Medicine, New York, NY, USA."
+          }
+        ]
+      },
+      {
+        "given": "Patrick C.",
+        "family": "Wilson",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Drukier Institute for Children’s Health, Department of Pediatrics, Weill Cornell Medicine, New York, NY, USA."
+          }
+        ]
+      }
+    ],
+    "member": "221",
+    "reference": [
+      {
+        "key": "e_1_3_2_2_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.adr8382"
+      },
+      {
+        "key": "e_1_3_2_3_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.adv5572"
+      },
+      {
+        "key": "e_1_3_2_4_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41577-022-00753-w"
+      },
+      {
+        "key": "e_1_3_2_5_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1146/annurev-immunol-041015-055515"
+      },
+      {
+        "key": "e_1_3_2_6_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.1192819"
+      },
+      {
+        "key": "e_1_3_2_7_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1056/NEJMoa2031738"
+      },
+      {
+        "key": "e_1_3_2_8_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nature01470"
+      },
+      {
+        "key": "e_1_3_2_9_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.aax4380"
+      },
+      {
+        "key": "e_1_3_2_10_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.add6502"
+      },
+      {
+        "key": "e_1_3_2_11_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.aay7199"
+      },
+      {
+        "key": "e_1_3_2_12_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.cell.2013.03.018"
+      },
+      {
+        "key": "e_1_3_2_13_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.7326/ANNALS-24-02701"
+      },
+      {
+        "key": "e_1_3_2_14_2",
+        "volume-title": "“The urgency of now: AIDS at a crossroads”",
+        "author": "Joint United Nations Programme on HIV/AIDS (UNAIDS)",
+        "year": "2024",
+        "unstructured": "Joint United Nations Programme on HIV/AIDS (UNAIDS), “The urgency of now: AIDS at a crossroads” (UNAIDS, 2024)."
+      },
+      {
+        "key": "e_1_3_2_15_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/infdis/jiab629"
+      },
+      {
+        "key": "e_1_3_2_16_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/sciimmunol.adm7097"
+      }
+    ],
+    "container-title": [
+      "Science"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://www.science.org/doi/pdf/10.1126/science.adz6436",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [2025, 7, 31]
+      ],
+      "date-time": "2025-07-31T18:04:03Z",
+      "timestamp": 1753985043000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://www.science.org/doi/10.1126/science.adz6436"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "references-count": 15,
+    "journal-issue": {
+      "issue": "6759",
+      "published-print": {
+        "date-parts": [
+          [2025, 7, 31]
+        ]
+      }
+    },
+    "alternative-id": [
+      "10.1126/science.adz6436"
+    ],
+    "URL": "https://doi.org/10.1126/science.adz6436",
+    "relation": {
+
+    },
+    "ISSN": [
+      "0036-8075",
+      "1095-9203"
+    ],
+    "issn-type": [
+      {
+        "type": "print",
+        "value": "0036-8075"
+      },
+      {
+        "type": "electronic",
+        "value": "1095-9203"
+      }
+    ],
+    "subject": [],
+    "published": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "assertion": [
+      {
+        "value": "2025-07-31",
+        "order": 3,
+        "name": "published",
+        "label": "Published",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      }
+    ]
+  }
+}
