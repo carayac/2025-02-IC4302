@@ -19,6 +19,13 @@ retmax = 20
 count = 0
 lista_ids = []
 
+new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
+#Enviamos un request
+response = requests.get(new_url)
+data = response.text #datos en formato xml
+datosFormatted = ET.fromstring(data)
+count = int(datosFormatted.find(".//Count").text)
+
 #Paginacion
 while retstart < count:
     #Nueva url con parametros
@@ -30,7 +37,6 @@ while retstart < count:
     datosFormatted = ET.fromstring(data)
 
     #Guardamos los datos
-    count = int(datosFormatted.find(".//Count").text)
     for elem in datosFormatted.findall(".//Id"):
         lista_ids.append(elem.text)
 
