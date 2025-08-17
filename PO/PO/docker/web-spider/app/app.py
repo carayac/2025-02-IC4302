@@ -8,12 +8,13 @@ import mariadb
 import sys
 
 url_base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-JOB_SIZE = int(os.getenv("JOB_SIZE", 20))
+
 
 #Parametros en la url
 db = "pubmed"
 term = "science journal"
 retstart = 0
+JOB_SIZE = int(os.getenv("JOB_SIZE"))
 retmax = JOB_SIZE
 
 #Datos a extraer
