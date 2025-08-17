@@ -20,7 +20,7 @@ count = 0
 lista_ids = []
 
 #Paginacion
-while retstart+20 <= count:
+while retstart < count:
     #Nueva url con parametros
     new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
 
@@ -53,7 +53,6 @@ while retstart+20 <= count:
     RABBIT_MQ_PASSWORD=os.getenv('RABBITMQ_PASS')
     QUEUE_NAME=os.getenv('RABBITMQ_QUEUE')
 
-
     hostname = os.getenv('HOSTNAME')
 
     credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
@@ -62,14 +61,9 @@ while retstart+20 <= count:
     channel = connection.channel()
     channel.queue_declare(queue=QUEUE_NAME)
 
-
-    localtime = time.localtime()
-    result = time.strftime("%I:%M:%S %p", localtime)
     msg = str(job["id"])
     channel.basic_publish(exchange='', routing_key=QUEUE_NAME, body=msg)
-    print(DATA+" - " +result)
-    time.sleep(1)
-        
+    print(DATA)
     connection.close()
 
 
