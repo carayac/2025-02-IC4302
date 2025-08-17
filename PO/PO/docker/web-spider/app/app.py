@@ -75,7 +75,7 @@ while retstart < count:
             cursor.execute(insert_query, (str(job["id"])
                                           , job["estado"]
                                           , json.dumps(job["lista_ids"]) #para recuperar usar json.loads
-                                          , json.dumps(job["omitido"])
+                                          , json.dumps(job["omitido"]) #para recuperar usar json.loads
                                           , job["fecha_inicio"]
                                           , job["fecha_final"]))
             conn.commit()
