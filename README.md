@@ -14,6 +14,10 @@ Repositorio privado para el curso **IC4302**.
 
 ### Branch adicional
 - **proyecto-opcional** → Rama para el desarrollo del proyecto opcional.
+###### Branch derivadas del pr0yecto opcional
+- **web-spider** → RRama para el desarrollo del componente web-spider.
+- **p0-sparkJob** → Rama para el desarrollo del componente sparkJob.
+- **po-downloader** → Rama para el desarrollo del componente downloader.
 
 ## Profesor
 
