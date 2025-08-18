@@ -18,6 +18,7 @@
 
 There is a script to build the docker images, to execute it in a bash shell execute:
 
+GIT BASH
 ```bash
 cd ./PO/docker
 ./build.sh nereo08

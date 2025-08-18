@@ -11,29 +11,33 @@ import org.elasticsearch.spark.sql._
 import org.elasticsearch.spark._ 
 
 sc.stop()
-spark.stop()
+spark.stop();
 
 // kubectl port-forward service/ic4302-es-http 9200:9200
-val conf = new SparkConf()
-conf.set("es.index.auto.create", "true")
-conf.set("es.nodes", "http://127.0.0.1:9200/")
-conf.set("es.net.http.auth.user", "elastic")
-conf.set("es.net.http.auth.pass", "9Pvk104exrZU0z9M32GcpQ86")
-conf.set("es.port", "9200")
-conf.set("es.nodes.wan.only", "true")
+val conf = new SparkConf();
+conf.set("es.index.auto.create", "true");
+conf.set("es.nodes", "http://127.0.0.1:9200/");
+conf.set("es.net.http.auth.user", "elastic");
+conf.set("es.net.http.auth.pass", "XML3s4c1pO0q79wKFS89N43Q");
+conf.set("es.port", "9200");
+conf.set("es.nodes.wan.only", "true");
 
 
-val sc = new SparkContext(conf)
+val sc = new SparkContext(conf);
 
-val spark = SparkSession.builder.config(sc.getConf).getOrCreate()
+val spark = SparkSession.builder.config(sc.getConf).getOrCreate();
 
-val sqlcontext = new org.apache.spark.sql.SQLContext(sc)
+val sqlcontext = new org.apache.spark.sql.SQLContext(sc);
 
-val options = Map("es.read.field.as.array.include" -> "data")
+val options = Map("es.read.field.as.array.include" -> "data");
 
 
 
-val data = spark.read.json("/Users/nereo/Documents/GitHub/tec/2025/02/DB2/PO/utils/sample/*.json")
+val data = spark.read.json("/Users/nereo/Documents/GitHub/tec/2025/02/DB2/PO/utils/sample/*.json");
+
+val data = spark.read.json("/Users/Innovation Computers/Desktop/2025-02-IC4302/PO/PO/utils/sample/*.json");
+
+
 data.printSchema()
 data.show
 data.createOrReplaceTempView("datatmp2")

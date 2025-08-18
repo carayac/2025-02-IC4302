@@ -1,5 +1,5 @@
 config:
-  docker_registry: nereo08
+  docker_registry: prosoli
   producer:
     replicas: 1
     name: web-spider
