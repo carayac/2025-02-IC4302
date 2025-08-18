@@ -1,9 +1,10 @@
 config:
-  docker_registry: carayacn
+  docker_registry: prosoli
   producer:
     replicas: 1
     name: web-spider
     image: web-spider
+# al chart, cree un deployment llamado web-spider con 1 pod ejecutando la imagen web-spider
   consumer:
     replicas: 1
     name: downloader
