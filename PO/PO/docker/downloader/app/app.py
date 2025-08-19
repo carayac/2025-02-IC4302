@@ -24,7 +24,7 @@ MARIADB_PASS = os.getenv('MARIADB_PASS')
 MARIADB_DB = os.getenv('MARIADB_DB')
 MARIADB_TABLE = os.getenv('MARIADB_TABLE')
 
-#Nos conectamos a MariaDB
+# Nos conectamos a MariaDB
 def connection_MariaDB():
     try:
         connection = mariadb.connect(
@@ -64,6 +64,32 @@ def update_job_status(job_id, status):
         connection.close()
 
 
+# Obtenemos los ids del job
+def get_job_ids(job_id):
+    connection = connection_MariaDB()
+    try:
+        cursor = connection.cursor()
+        query = f"SELECT lista_ids FROM {MARIADB_TABLE} WHERE id = ?"
+        cursor.execute(query, (job_id,))
+        result = cursor.fetchone()
+        
+        if result:
+            # Si el resultado viniera como string, averiguar como viene
+            lista_ids_str = result[0]
+            # Remover corchetes y comillas, luego split por comas
+            lista_ids_str = lista_ids_str.strip("[]'\"")
+            lista_ids = [id.strip().strip("'\"") for id in lista_ids_str.split(",") if id.strip()]
+            return lista_ids
+        else:
+            print(f"No se encontró job con ID: {job_id}")
+            return None
+            
+    except mariadb.Error as e:
+        print(f"Error obteniendo datos del job {job_id}: {e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
 
 def callback(ch, method, properties, body):
     try:
