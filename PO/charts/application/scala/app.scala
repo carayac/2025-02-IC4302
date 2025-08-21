@@ -46,6 +46,11 @@ df2.createOrReplaceTempView("dfFormateado")
 
 //----------------------------TRANSFOMACION 2 -------------------------------------------------------
 
+//Obtengo las columnas de autores a partir de messages
+spark.sql("""SELECT author, transform(author, a -> concat(a.family, ' , ', a.given)) AS autor_names, DOI FROM messages""").createOrReplaceTempView("autors")
+
+
+
 //----------------------------TRANSFOMACION 3 -------------------------------------------------------
 
 
@@ -59,10 +64,11 @@ spark.sql("""
 SELECT 
     A.*,
     B.created,
-    B.indexed
+    B.indexed,
+    C.autor_names
 FROM messagesFinal AS A
-LEFT JOIN dates AS B
-    ON A.DOI = B.DOI
+LEFT JOIN dates AS B ON A.DOI = B.DOI
+LEFT JOIN autors AS C ON A.DOI = C.DOI
 """).createOrReplaceTempView("messagesFinal")
 
 //SE REINTEGRA MESSAGES CON LOS DEMAS CAMPOS DEL JSON ORIGINAL GENERO UN NUEVO STRUCT PARA AGRUPAR TODOS LOS CAMPOS DE MESSAGES Y QUE SE VUELVA A ANIDAR EN MESSAGE COMO EL ORIGINAL
