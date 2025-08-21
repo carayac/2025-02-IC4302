@@ -56,36 +56,63 @@ while retstart < count:
     }
 
     #Aquí lo subimos a MariaDB
-    # db_config = {
-    # 'host': os.getenv('MARIADB'),
-    # 'port': 3306,
-    # 'user': os.getenv('MARIADB_USER'),
-    # 'password': os.getenv('MARIADB_PASS'),
-    # 'database': os.getenv('MARIADB_DB')
-    # }
+    conn = mariadb.connect(
+        host=os.getenv('MARIADB'),
+        user=os.getenv('MARIADB_USER'),
+        password=os.getenv('MARIADB_PASS')
+    )
+    cursor = conn.cursor()
 
-    # TABLE_NAME = os.getenv("MARIADB_TABLE")
-    # try:
-    #     conn = mariadb.connect(**db_config)
-    #     cursor = conn.cursor()
+    # Crear la base de datos si no existe
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {os.getenv('MARIADB_DB')}")
+    cursor.execute(f"USE {os.getenv('MARIADB_DB')}")
 
-    #     insert_query = "INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
-    #     try:
-    #         cursor.execute(insert_query, (str(job["id"])
-    #                                       , job["estado"]
-    #                                       , str(job["lista_ids"]) #hay que convertirlo a list
-    #                                       , str(job["omitido"]) #hay que convertirlo a list
-    #                                       , job["fecha_inicio"]
-    #                                       , job["fecha_final"]))
-    #         conn.commit()
-    #     except mariadb.Error as e:
-    #         conn.rollback()
+    # Crear la tabla si no existe
+    cursor.execute(f"""
+    CREATE TABLE IF NOT EXISTS {os.getenv('MARIADB_TABLE')} (
+        id VARCHAR(36) PRIMARY KEY,
+        estado VARCHAR(20),
+        lista_ids TEXT,
+        omitido TEXT,
+        fecha_inicio DATETIME,
+        fecha_final DATETIME
+    )
+    """)
+    conn.commit()
+    cursor.close()
+    conn.close()
 
-    # except mariadb.Error as e:
-    #     sys.exit(1)
-    # finally:
-    #     cursor.close()
-    #     conn.close()
+
+    db_config = {
+    'host': os.getenv('MARIADB'),
+    'port': 3306,
+    'user': os.getenv('MARIADB_USER'),
+    'password': os.getenv('MARIADB_PASS'),
+    'database': os.getenv('MARIADB_DB')
+    }
+
+    TABLE_NAME = os.getenv("MARIADB_TABLE")
+    try:
+        conn = mariadb.connect(**db_config)
+        cursor = conn.cursor()
+
+        insert_query = "INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
+        try:
+            cursor.execute(insert_query, (str(job["id"])
+                                          , job["estado"]
+                                          , str(job["lista_ids"]) #hay que convertirlo a list
+                                          , str(job["omitido"]) #hay que convertirlo a list
+                                          , job["fecha_inicio"]
+                                          , job["fecha_final"]))
+            conn.commit()
+        except mariadb.Error as e:
+            conn.rollback()
+
+    except mariadb.Error as e:
+        sys.exit(1)
+    finally:
+        cursor.close()
+        conn.close()
 
 
     #Luego enviamos el id del job por RabbitMQ
