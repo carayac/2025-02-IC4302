@@ -57,36 +57,36 @@ while retstart < count:
     }
 
     #Aquí lo subimos a MariaDB
-    # db_config = {
-    # 'host': os.getenv('MARIADB'),
-    # 'port': 3306,
-    # 'user': os.getenv('MARIADB_USER'),
-    # 'password': os.getenv('MARIADB_PASS'),
-    # 'database': os.getenv('MARIADB_DB')
-    # }
+    db_config = {
+    'host': os.getenv('MARIADB'),
+    'port': 3306,
+    'user': os.getenv('MARIADB_USER'),
+    'password': os.getenv('MARIADB_PASS'),
+    'database': os.getenv('MARIADB_DB')
+    }
 
-    # TABLE_NAME = os.getenv("MARIADB_TABLE")
-    # try:
-    #     conn = mariadb.connect(**db_config)
-    #     cursor = conn.cursor()
+    TABLE_NAME = os.getenv("MARIADB_TABLE")
+    try:
+        conn = mariadb.connect(**db_config)
+        cursor = conn.cursor()
 
-    #     insert_query = "INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
-    #     try:
-    #         cursor.execute(insert_query, (str(job["id"])
-    #                                       , job["estado"]
-    #                                       , str(job["lista_ids"]) #hay que convertirlo a list
-    #                                       , str(job["omitido"]) #hay que convertirlo a list
-    #                                       , job["fecha_inicio"]
-    #                                       , job["fecha_final"]))
-    #         conn.commit()
-    #     except mariadb.Error as e:
-    #         conn.rollback()
+        insert_query = "INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
+        try:
+            cursor.execute(insert_query, (str(job["id"])
+                                          , job["estado"]
+                                          , str(job["lista_ids"]) #hay que convertirlo a list
+                                          , str(job["omitido"]) #hay que convertirlo a list
+                                          , job["fecha_inicio"]
+                                          , job["fecha_final"]))
+            conn.commit()
+        except mariadb.Error as e:
+            conn.rollback()
 
-    # except mariadb.Error as e:
-    #     sys.exit(1)
-    # finally:
-    #     cursor.close()
-    #     conn.close()
+    except mariadb.Error as e:
+        sys.exit(1)
+    finally:
+        cursor.close()
+        conn.close()
 
 
     #Luego enviamos el id del job por RabbitMQ
