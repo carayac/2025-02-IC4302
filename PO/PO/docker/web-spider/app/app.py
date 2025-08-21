@@ -15,8 +15,7 @@ url_base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 db = "pubmed"
 term = "science journal"
 retstart = 0
-JOB_SIZE = int(os.getenv("JOB_SIZE"))
-retmax = JOB_SIZE
+retmax = 20
 
 #Datos a extraer
 count = 0
