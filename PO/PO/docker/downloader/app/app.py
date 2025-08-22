@@ -31,7 +31,7 @@ MARIADB_TABLE = os.getenv('MARIADB_TABLE')
 #Nos conectamos a MariaDB
 def connection_MariaDB():
     try:
-        # Hascemos al conexion con las variables
+        # Hacemos la conexion con las variables
         connection = mariadb.connect(
             host=MARIADB_HOST,
             port=3306,
@@ -144,7 +144,7 @@ def callback(ch, method, properties, body):
         job_id = body.decode('utf-8').strip()
         print(f" Job ID: {job_id}")
 
-        # Actualizamos el estado del job a "in-progress"
+        # Actualizamos el estado del job
         change = update_job_status(job_id, "in-progress")
         if change:
             print(f" Se actualizo el estado del job {job_id}")
