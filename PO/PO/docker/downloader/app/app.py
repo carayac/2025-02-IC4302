@@ -9,6 +9,7 @@ import mariadb
 import requests
 import xml.etree.ElementTree as ET
 import re
+import ast
 
 
 hostname = os.getenv('HOSTNAME')
@@ -30,6 +31,7 @@ MARIADB_TABLE = os.getenv('MARIADB_TABLE')
 #Nos conectamos a MariaDB
 def connection_MariaDB():
     try:
+        # Hascemos al conexion con las variables
         connection = mariadb.connect(
             host=MARIADB_HOST,
             port=3306,
@@ -42,9 +44,11 @@ def connection_MariaDB():
         print(f"Error conectando a MariaDB: {e}")
         return None
 
+# Actualizamos el estado del job
 def update_job_status(job_id, status):
     connection = connection_MariaDB()
     try:
+        #Ejecutamos el query para cambiar el estado
         cursor = connection.cursor()
         query = f"UPDATE {MARIADB_TABLE} SET estado = ? WHERE id = ?"
         cursor.execute(query, (status, job_id))
@@ -70,17 +74,15 @@ def update_job_status(job_id, status):
 def get_job_ids(job_id):
     connection = connection_MariaDB()
     try:
+        # Ejecutamos el query y obtenemos la fila con los resultados
         cursor = connection.cursor()
         query = f"SELECT lista_ids FROM {MARIADB_TABLE} WHERE id = ?"
         cursor.execute(query, (job_id,))
         result = cursor.fetchone()
-        
+
         if result:
-            # Si el resultado viniera como string, averiguar como viene
-            lista_ids_str = result[0]
-            # Remover corchetes y comillas, luego split por comas
-            lista_ids_str = lista_ids_str.strip("[]'\"")
-            lista_ids = [id.strip().strip("'\"") for id in lista_ids_str.split(",") if id.strip()]
+            # Obtenemos el string y lo convertimos a lista
+            lista_ids= ast.literal_eval(result[0])
             return lista_ids
         else:
             print(f"No se encontró job con ID: {job_id}")
@@ -101,9 +103,10 @@ def pubmed_API(ids_list):
 
     # URL de la API con los ids
     url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id={ids_string}"
-    
+
     try:
         response = requests.get(url)
+        # Verificamos si todo salió bien
         if response.status_code == 200:
             print("Respuesta exitosa de PubMed")
             return response.text
@@ -119,16 +122,16 @@ def pubmed_API(ids_list):
 def dois_pubmed(xml_response):
     dois = []
     try:
-        # Usamos regex para encontrar este patrón exacto del DOI
+        # Usamos regex para encontrar el patrón del DOI
         doi_pattern = r'<Item Name="DOI" Type="String">([^<]+)</Item>'
         found_dois = re.findall(doi_pattern, xml_response)
-        clean_dois = []
+        final_dois = []
         for doi in found_dois:
             # Quitamos espacios en blanco por si acaso
             cleaned_doi = doi.strip()
-            if cleaned_doi and cleaned_doi not in clean_dois:
-                clean_dois.append(cleaned_doi)
-        return clean_dois
+            if cleaned_doi and cleaned_doi not in final_dois:
+                final_dois.append(cleaned_doi)
+        return final_dois
         
     except Exception as e:
         print(f"Error extrayendo DOIs: {e}")
@@ -141,30 +144,29 @@ def callback(ch, method, properties, body):
         job_id = body.decode('utf-8').strip()
         print(f" Job ID: {job_id}")
 
-        # 1. Actualizamos el estado del job a "in-progress"
+        # Actualizamos el estado del job a "in-progress"
         change = update_job_status(job_id, "in-progress")
         if change:
             print(f" Se actualizo el estado del job {job_id}")
         
-        # 2. Obtenemos la lista de IDs de artículos del job
+        # Obtenemos la lista de IDs de artículos del job
         ids_list = get_job_ids(job_id)
         if ids_list:
             print(f" Se obtuvieron los IDs del job {job_id}")
             
-        # 3. Consultamos la API 
+        # Consultamos la API 
         pubmed_response = pubmed_API(ids_list)
         if pubmed_response:
-            print(f" Se obtuvo respuesta de PubMed para job {job_id}")
+            print(f" Se obtuvo respuesta de PubMed {pubmed_response}")
             
-        # 4. Extraemos DOIs de la respuesta de PubMed
+        # Extraemos DOIs de la respuesta de PubMed
         dois_list = dois_pubmed(pubmed_response)
         if dois_list:
-            print(f" Se encontraron DOIs en job {job_id}")
+            print(f" Se encontraron los siguientes DOIs  {dois_list}")
 
     except Exception as e:
         print(f" Error procesando mensaje: {e}")
         print(f" Body recibido: {body}")
-
 
 
 
