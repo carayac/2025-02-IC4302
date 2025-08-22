@@ -1,5 +1,4 @@
 import os
-import json
 import pika
 import requests
 import xml.etree.ElementTree as ET
@@ -96,7 +95,7 @@ while retstart < count:
         conn = mariadb.connect(**db_config)
         cursor = conn.cursor()
 
-        insert_query = "INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
+        insert_query = f"INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
         try:
             cursor.execute(insert_query, (str(job["id"])
                                           , job["estado"]
