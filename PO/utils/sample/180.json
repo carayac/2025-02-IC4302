@@ -1,0 +1,3030 @@
+{
+    "status": "ok",
+    "message-type": "work",
+    "message-version": "1.0.0",
+    "message": {
+        "indexed": {
+            "date-parts": [
+                [
+                    2025,
+                    8,
+                    21
+                ]
+            ],
+            "date-time": "2025-08-21T17:03:18Z",
+            "timestamp": 1755795798861,
+            "version": "3.37.3"
+        },
+        "reference-count": 254,
+        "publisher": "Springer Science and Business Media LLC",
+        "issue": "3",
+        "license": [
+            {
+                "start": {
+                    "date-parts": [
+                        [
+                            2022,
+                            8,
+                            12
+                        ]
+                    ],
+                    "date-time": "2022-08-12T00:00:00Z",
+                    "timestamp": 1660262400000
+                },
+                "content-version": "tdm",
+                "delay-in-days": 0,
+                "URL": "https:\/\/www.springernature.com\/gp\/researchers\/text-and-data-mining"
+            },
+            {
+                "start": {
+                    "date-parts": [
+                        [
+                            2022,
+                            8,
+                            12
+                        ]
+                    ],
+                    "date-time": "2022-08-12T00:00:00Z",
+                    "timestamp": 1660262400000
+                },
+                "content-version": "vor",
+                "delay-in-days": 0,
+                "URL": "https:\/\/www.springernature.com\/gp\/researchers\/text-and-data-mining"
+            }
+        ],
+        "content-domain": {
+            "domain": [
+                "link.springer.com"
+            ],
+            "crossmark-restriction": false
+        },
+        "short-container-title": [
+            "Nat Rev Immunol"
+        ],
+        "published-print": {
+            "date-parts": [
+                [
+                    2023,
+                    3
+                ]
+            ]
+        },
+        "DOI": "10.1038\/s41577-022-00753-w",
+        "type": "journal-article",
+        "created": {
+            "date-parts": [
+                [
+                    2022,
+                    8,
+                    12
+                ]
+            ],
+            "date-time": "2022-08-12T09:04:06Z",
+            "timestamp": 1660295046000
+        },
+        "page": "142-158",
+        "update-policy": "https:\/\/doi.org\/10.1007\/springer_crossmark_policy",
+        "source": "Crossref",
+        "is-referenced-by-count": 237,
+        "title": [
+            "Strategies for HIV-1 vaccines that induce broadly neutralizing antibodies"
+        ],
+        "prefix": "10.1038",
+        "volume": "23",
+        "author": [
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-7643-9023",
+                "authenticated-orcid": false,
+                "given": "Barton F.",
+                "family": "Haynes",
+                "sequence": "first",
+                "affiliation": []
+            },
+            {
+                "given": "Kevin",
+                "family": "Wiehe",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "Persephone",
+                "family": "Borrow",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "Kevin O.",
+                "family": "Saunders",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "Bette",
+                "family": "Korber",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "Kshitij",
+                "family": "Wagh",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "Andrew J.",
+                "family": "McMichael",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "Garnett",
+                "family": "Kelsoe",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "Beatrice H.",
+                "family": "Hahn",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "Frederick",
+                "family": "Alt",
+                "sequence": "additional",
+                "affiliation": []
+            },
+            {
+                "given": "George M.",
+                "family": "Shaw",
+                "sequence": "additional",
+                "affiliation": []
+            }
+        ],
+        "member": "297",
+        "published-online": {
+            "date-parts": [
+                [
+                    2022,
+                    8,
+                    12
+                ]
+            ]
+        },
+        "reference": [
+            {
+                "key": "753_CR1",
+                "doi-asserted-by": "publisher",
+                "first-page": "868",
+                "DOI": "10.1126\/science.6189183",
+                "volume": "220",
+                "author": "F Barr\u00e9-Sinoussi",
+                "year": "1983",
+                "unstructured": "Barr\u00e9-Sinoussi, F. et al. Isolation of a T-lymphotropic retrovirus from a patient at risk for acquired immune deficiency syndrome (AIDS). Science 220, 868\u2013871 (1983).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR2",
+                "doi-asserted-by": "publisher",
+                "first-page": "500",
+                "DOI": "10.1126\/science.6200936",
+                "volume": "224",
+                "author": "RC Gallo",
+                "year": "1984",
+                "unstructured": "Gallo, R. C. et al. Frequent detection and isolation of cytopathic retroviruses (HTLV-III) from patients with AIDS and at risk for AIDS. Science 224, 500\u2013503 (1984).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR3",
+                "doi-asserted-by": "publisher",
+                "first-page": "497",
+                "DOI": "10.1126\/science.6200935",
+                "volume": "224",
+                "author": "M Popovic",
+                "year": "1984",
+                "unstructured": "Popovic, M., Sarngadharan, M. G., Read, E. & Gallo, R. C. Detection, isolation, and continuous production of cytopathic retroviruses (HTLV-III) from patients with AIDS and pre-AIDS. Science 224, 497\u2013500 (1984).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR4",
+                "doi-asserted-by": "publisher",
+                "first-page": "506",
+                "DOI": "10.1126\/science.6324345",
+                "volume": "224",
+                "author": "MG Sarngadharan",
+                "year": "1984",
+                "unstructured": "Sarngadharan, M. G., Popovic, M., Bruch, L., Sch\u00fcpbach, J. & Gallo, R. C. Antibodies reactive with human T-lymphotropic retroviruses (HTLV-III) in the serum of patients with AIDS. Science 224, 506\u2013508 (1984).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR5",
+                "doi-asserted-by": "publisher",
+                "first-page": "1651",
+                "DOI": "10.1001\/jama.2020.17025",
+                "volume": "324",
+                "author": "MS Saag",
+                "year": "2020",
+                "unstructured": "Saag, M. S. et al. Antiretroviral drugs for treatment and prevention of HIV infection in adults: 2020 recommendations of the International Antiviral Society-USA panel. JAMA 324, 1651\u20131669 (2020).",
+                "journal-title": "JAMA"
+            },
+            {
+                "key": "753_CR6",
+                "unstructured": "UNAIDS. Fact sheet 2021. UNAIDS https:\/\/www.unaids.org\/sites\/default\/files\/media_asset\/UNAIDS_FactSheet_en.pdf (2021)."
+            },
+            {
+                "key": "753_CR7",
+                "doi-asserted-by": "publisher",
+                "first-page": "125",
+                "DOI": "10.1007\/978-981-13-0484-2_6",
+                "volume": "1075",
+                "author": "M Kumi Smith",
+                "year": "2018",
+                "unstructured": "Kumi Smith, M., Jewell, B. L., Hallett, T. B. & Cohen, M. S. Treatment of HIV for the prevention of transmission in discordant couples and at the population level. Adv. Exp. Med. Biol. 1075, 125\u2013162 (2018).",
+                "journal-title": "Adv. Exp. Med. Biol."
+            },
+            {
+                "key": "753_CR8",
+                "doi-asserted-by": "publisher",
+                "first-page": "347",
+                "DOI": "10.1146\/annurev-med-110918-034551",
+                "volume": "71",
+                "author": "MS Cohen",
+                "year": "2020",
+                "unstructured": "Cohen, M. S., Gamble, T. & McCauley, M. Prevention of HIV transmission and the HPTN 052 study. Annu. Rev. Med. 71, 347\u2013360 (2020).",
+                "journal-title": "Annu. Rev. Med."
+            },
+            {
+                "key": "753_CR9",
+                "doi-asserted-by": "publisher",
+                "first-page": "1093",
+                "DOI": "10.1016\/j.chom.2021.05.012",
+                "volume": "29",
+                "author": "W Fischer",
+                "year": "2021",
+                "unstructured": "Fischer, W. et al. HIV-1 and SARS-CoV-2: patterns in the evolution of two pandemic pathogens. Cell Host Microbe 29, 1093\u20131110 (2021).",
+                "journal-title": "Cell Host Microbe"
+            },
+            {
+                "key": "753_CR10",
+                "doi-asserted-by": "publisher",
+                "first-page": "230",
+                "DOI": "10.1111\/imr.12516",
+                "volume": "275",
+                "author": "B Korber",
+                "year": "2017",
+                "unstructured": "Korber, B., Hraber, P., Wagh, K. & Hahn, B. H. Polyvalent vaccine approaches to combat HIV-1 diversity. Immunol. Rev. 275, 230\u2013244 (2017).",
+                "journal-title": "Immunol. Rev."
+            },
+            {
+                "key": "753_CR11",
+                "doi-asserted-by": "publisher",
+                "first-page": "588",
+                "DOI": "10.1126\/science.1254990",
+                "volume": "344",
+                "author": "BF Haynes",
+                "year": "2014",
+                "unstructured": "Haynes, B. F. & Verkoczy, L. Host controls of HIV neutralizing antibodies. Science 344, 588\u2013589 (2014).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR12",
+                "doi-asserted-by": "publisher",
+                "first-page": "79",
+                "DOI": "10.1111\/imr.12508",
+                "volume": "275",
+                "author": "G Kelsoe",
+                "year": "2017",
+                "unstructured": "Kelsoe, G. & Haynes, B. F. Host controls of HIV broadly neutralizing antibody development. Immunol. Rev. 275, 79\u201388 (2017).",
+                "journal-title": "Immunol. Rev."
+            },
+            {
+                "key": "753_CR13",
+                "doi-asserted-by": "publisher",
+                "first-page": "55",
+                "DOI": "10.1016\/j.chom.2010.06.004",
+                "volume": "8",
+                "author": "F Kirchhoff",
+                "year": "2010",
+                "unstructured": "Kirchhoff, F. Immune evasion and counteraction of restriction factors by HIV-1 and other primate lentiviruses. Cell Host Microbe 8, 55\u201367 (2010).",
+                "journal-title": "Cell Host Microbe"
+            },
+            {
+                "key": "753_CR14",
+                "doi-asserted-by": "publisher",
+                "first-page": "1480",
+                "DOI": "10.1016\/j.bbagen.2019.05.012",
+                "volume": "1863",
+                "author": "Y Watanabe",
+                "year": "2019",
+                "unstructured": "Watanabe, Y., Bowden, T. A., Wilson, I. A. & Crispin, M. Exploitation of glycosylation in enveloped virus pathobiology. Biochim. Biophys. Acta Gen. Subj. 1863, 1480\u20131497 (2019).",
+                "journal-title": "Biochim. Biophys. Acta Gen. Subj."
+            },
+            {
+                "key": "753_CR15",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41467-018-07881-9",
+                "volume": "9",
+                "author": "JB Whitney",
+                "year": "2018",
+                "unstructured": "Whitney, J. B. et al. Prevention of SIVmac251 reservoir seeding in rhesus monkeys by early antiretroviral therapy. Nat. Commun. 9, 5429 (2018).",
+                "journal-title": "Nat. Commun."
+            },
+            {
+                "key": "753_CR16",
+                "doi-asserted-by": "publisher",
+                "first-page": "11",
+                "DOI": "10.1038\/nri2674",
+                "volume": "10",
+                "author": "AJ McMichael",
+                "year": "2010",
+                "unstructured": "McMichael, A. J., Borrow, P., Tomaras, G. D., Goonetilleke, N. & Haynes, B. F. The immune response during acute HIV-1 infection: clues for vaccine development. Nat. Rev. Immunol. 10, 11\u201323 (2010). This work presents a key review on the biology of acute HIV-1 infection.",
+                "journal-title": "Nat. Rev. Immunol."
+            },
+            {
+                "key": "753_CR17",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0136626",
+                "volume": "10",
+                "author": "Y Huang",
+                "year": "2015",
+                "unstructured": "Huang, Y. et al. Effect of rAd5-vector HIV-1 preventive vaccines on HIV-1 acquisition: a participant-level meta-analysis of randomized trials. PLoS ONE 10, e0136626 (2015).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR18",
+                "doi-asserted-by": "publisher",
+                "first-page": "1089",
+                "DOI": "10.1056\/NEJMoa2031499",
+                "volume": "384",
+                "author": "GE Gray",
+                "year": "2021",
+                "unstructured": "Gray, G. E. et al. Vaccine efficacy of ALVAC-HIV and bivalent subtype C gp120-MF59 in adults. N. Engl. J. Med. 384, 1089\u20131100 (2021).",
+                "journal-title": "N. Engl. J. Med."
+            },
+            {
+                "key": "753_CR19",
+                "unstructured": "Johnson & Johnson and Global Partners. Johnson & Johnson and Global Partners announce results from phase 2b Imbokodo HIV vaccine clinical trial in young women in sub-Saharan Africa; https:\/\/www.jnj.com\/johnson-johnson-and-global-partners-announce-results-from-phase-2b-imbokodo-hiv-vaccine-clinical-trial-in-young-women-in-sub-saharan-africa (2021)."
+            },
+            {
+                "key": "753_CR20",
+                "doi-asserted-by": "publisher",
+                "first-page": "2209",
+                "DOI": "10.1056\/NEJMoa0908492",
+                "volume": "361",
+                "author": "S Rerks-Ngarm",
+                "year": "2009",
+                "unstructured": "Rerks-Ngarm, S. et al. Vaccination with ALVAC and AIDSVAX to prevent HIV-1 infection in Thailand. N. Engl. J. Med. 361, 2209\u20132220 (2009).",
+                "journal-title": "N. Engl. J. Med."
+            },
+            {
+                "key": "753_CR21",
+                "doi-asserted-by": "publisher",
+                "first-page": "1275",
+                "DOI": "10.1056\/NEJMoa1113425",
+                "volume": "366",
+                "author": "BF Haynes",
+                "year": "2012",
+                "unstructured": "Haynes, B. F. et al. Immune-correlates analysis of an HIV-1 vaccine efficacy trial. N. Engl. J. Med. 366, 1275\u20131286 (2012).",
+                "journal-title": "N. Engl. J. Med."
+            },
+            {
+                "key": "753_CR22",
+                "doi-asserted-by": "publisher",
+                "first-page": "2250",
+                "DOI": "10.1016\/j.vaccine.2019.10.046",
+                "volume": "38",
+                "author": "SA Plotkin",
+                "year": "2020",
+                "unstructured": "Plotkin, S. A. Updates on immunologic correlates of vaccine-induced protection. Vaccine 38, 2250\u20132257 (2020). This paper explains the nature and significance of immune correlates of protection from vaccination.",
+                "journal-title": "Vaccine"
+            },
+            {
+                "key": "753_CR23",
+                "doi-asserted-by": "publisher",
+                "first-page": "77",
+                "DOI": "10.1038\/s41577-018-0103-6",
+                "volume": "19",
+                "author": "DR Burton",
+                "year": "2019",
+                "unstructured": "Burton, D. R. Advancing an HIV vaccine; advancing vaccinology. Nat. Rev. Immunol. 19, 77\u201378 (2019).",
+                "journal-title": "Nat. Rev. Immunol."
+            },
+            {
+                "key": "753_CR24",
+                "doi-asserted-by": "publisher",
+                "first-page": "396",
+                "DOI": "10.1016\/j.chom.2012.09.008",
+                "volume": "12",
+                "author": "DR Burton",
+                "year": "2012",
+                "unstructured": "Burton, D. R. et al. A blueprint for HIV vaccine discovery. Cell Host Microbe 12, 396\u2013407 (2012). This key paper outlines the structure-based and germline-targeting strategies for HIV-1 vaccine design.",
+                "journal-title": "Cell Host Microbe"
+            },
+            {
+                "key": "753_CR25",
+                "doi-asserted-by": "publisher",
+                "first-page": "423",
+                "DOI": "10.1038\/nbt.2197",
+                "volume": "30",
+                "author": "BF Haynes",
+                "year": "2012",
+                "unstructured": "Haynes, B. F., Kelsoe, G., Harrison, S. C. & Kepler, T. B. B-cell-lineage immunogen design in vaccine development with HIV-1 as a case study. Nat. Biotechnol. 30, 423\u2013433 (2012). This key paper outlines B cell lineage HIV-1 vaccine design and its relationship to germline-targeting strategies.",
+                "journal-title": "Nat. Biotechnol."
+            },
+            {
+                "key": "753_CR26",
+                "doi-asserted-by": "publisher",
+                "first-page": "292",
+                "DOI": "10.1016\/j.chom.2016.02.002",
+                "volume": "19",
+                "author": "BF Haynes",
+                "year": "2016",
+                "unstructured": "Haynes, B. F. et al. HIV\u2013host interactions: implications for vaccine design. Cell Host Microbe 19, 292\u2013303 (2016). This paper summarizes HIV\u2013host interactions and their effect on HIV vaccination responses.",
+                "journal-title": "Cell Host Microbe"
+            },
+            {
+                "key": "753_CR27",
+                "doi-asserted-by": "publisher",
+                "first-page": "4828",
+                "DOI": "10.1128\/JVI.00198-11",
+                "volume": "85",
+                "author": "ES Gray",
+                "year": "2011",
+                "unstructured": "Gray, E. S. et al. The neutralization breadth of HIV-1 develops incrementally over four years and is associated with CD4+ T cell decline and high viral load during acute infection. J. Virol. 85, 4828\u20134840 (2011).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR28",
+                "doi-asserted-by": "publisher",
+                "first-page": "163",
+                "DOI": "10.1097\/QAD.0000000000000106",
+                "volume": "28",
+                "author": "P Hraber",
+                "year": "2014",
+                "unstructured": "Hraber, P. et al. Prevalence of broadly neutralizing antibody responses during chronic HIV-1 infection. AIDS 28, 163\u2013169 (2014). This key paper that shows that ~50% of individuals infected with HIV-1 make some level of bnAbs, although only about 10-15% can make very high and broad serum bnAb levels.",
+                "journal-title": "AIDS"
+            },
+            {
+                "key": "753_CR29",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1001251",
+                "volume": "7",
+                "author": "I Mikell",
+                "year": "2011",
+                "unstructured": "Mikell, I. et al. Characteristics of the earliest cross-neutralizing antibody response to HIV-1. PLoS Pathog. 7, e1001251 (2011).",
+                "journal-title": "PLoS Pathog."
+            },
+            {
+                "key": "753_CR30",
+                "doi-asserted-by": "publisher",
+                "first-page": "7337",
+                "DOI": "10.1128\/JVI.00110-09",
+                "volume": "83",
+                "author": "MD Simek",
+                "year": "2009",
+                "unstructured": "Simek, M. D. et al. Human immunodeficiency virus type 1 elite neutralizers: individuals with broad and potent neutralizing activity identified by using a high-throughput neutralization assay together with an analytical selection algorithm. J. Virol. 83, 7337\u20137348 (2009).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR31",
+                "doi-asserted-by": "publisher",
+                "first-page": "11502",
+                "DOI": "10.1128\/JVI.05363-11",
+                "volume": "85",
+                "author": "GD Tomaras",
+                "year": "2011",
+                "unstructured": "Tomaras, G. D. et al. Polyclonal B cell responses to conserved neutralization epitopes in a subset of HIV-1-infected individuals. J. Virol. 85, 11502\u201311519 (2011).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR32",
+                "doi-asserted-by": "publisher",
+                "first-page": "481",
+                "DOI": "10.1016\/j.cell.2014.06.022",
+                "volume": "158",
+                "author": "F Gao",
+                "year": "2014",
+                "unstructured": "Gao, F. et al. Cooperation of B cell lineages in induction of HIV-1-broadly neutralizing antibodies. Cell 158, 481\u2013491 (2014).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR33",
+                "doi-asserted-by": "publisher",
+                "first-page": "469",
+                "DOI": "10.1038\/nature12053",
+                "volume": "496",
+                "author": "HX Liao",
+                "year": "2013",
+                "unstructured": "Liao, H. X. et al. Co-evolution of a broadly neutralizing HIV-1 antibody and founder virus. Nature 496, 469\u2013476 (2013). This first antibody\u2013virus co-evolution study demonstrates the role of the transmitted\/founder virus in initiating bnAb lineages and the role of sequential Envs in bnAb maturation.",
+                "journal-title": "Nature"
+            },
+            {
+                "key": "753_CR34",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/sciimmunol.aal2200",
+                "author": "LD Williams",
+                "year": "2017",
+                "unstructured": "Williams, L. D. et al. Potent and broad HIV-neutralizing antibodies in memory B cells and plasma. Sci. Immunol. https:\/\/doi.org\/10.1126\/sciimmunol.aal2200 (2017).",
+                "journal-title": "Sci. Immunol."
+            },
+            {
+                "key": "753_CR35",
+                "doi-asserted-by": "publisher",
+                "first-page": "4688",
+                "DOI": "10.1128\/JVI.07163-11",
+                "volume": "86",
+                "author": "M Bonsignori",
+                "year": "2012",
+                "unstructured": "Bonsignori, M. et al. Two distinct broadly neutralizing antibody specificities of different clonal lineages in a single HIV-1-infected donor: implications for vaccine design. J. Virol. 86, 4688\u20134692 (2012).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR36",
+                "doi-asserted-by": "publisher",
+                "first-page": "1783",
+                "DOI": "10.1016\/j.cell.2018.03.061",
+                "volume": "173",
+                "author": "MM Sajadi",
+                "year": "2018",
+                "unstructured": "Sajadi, M. M. Identification of near-pan-neutralizing antibodies against HIV-1 by deconvolution of plasma humoral responses. Cell 173, 1783\u20131795 (2018).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR37",
+                "doi-asserted-by": "publisher",
+                "first-page": "1895",
+                "DOI": "10.1097\/QAD.0000000000002976",
+                "volume": "35",
+                "author": "EW Nduati",
+                "year": "2021",
+                "unstructured": "Nduati, E. W. et al. Coordinated Fc-effector and neutralization functions in HIV-infected children define a window of opportunity for HIV vaccination. Aids 35, 1895\u20131905 (2021).",
+                "journal-title": "Aids"
+            },
+            {
+                "key": "753_CR38",
+                "doi-asserted-by": "publisher",
+                "first-page": "77",
+                "DOI": "10.1016\/j.cell.2016.05.055",
+                "volume": "166",
+                "author": "CA Simonich",
+                "year": "2016",
+                "unstructured": "Simonich, C. A. et al. HIV-1 neutralizing antibodies with limited hypermutation from an infant. Cell 166, 77\u201387 (2016).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR39",
+                "doi-asserted-by": "publisher",
+                "first-page": "aag0851",
+                "DOI": "10.1126\/sciimmunol.aag0851",
+                "volume": "1",
+                "author": "MA Moody",
+                "year": "2016",
+                "unstructured": "Moody, M. A. et al. Immune perturbations in HIV-1-infected individuals who make broadly neutralizing antibodies. Sci. Immunol. 1, aag0851 (2016).",
+                "journal-title": "Sci. Immunol."
+            },
+            {
+                "key": "753_CR40",
+                "doi-asserted-by": "publisher",
+                "first-page": "1906",
+                "DOI": "10.1126\/science.1111781",
+                "volume": "308",
+                "author": "BF Haynes",
+                "year": "2005",
+                "unstructured": "Haynes, B. F. et al. Cardiolipin polyspecific autoreactivity in two broadly neutralizing HIV-1 antibodies. Science 308, 1906\u20131908 (2005).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR41",
+                "doi-asserted-by": "publisher",
+                "first-page": "591",
+                "DOI": "10.1038\/nature09385",
+                "volume": "467",
+                "author": "H Mouquet",
+                "year": "2010",
+                "unstructured": "Mouquet, H. et al. Polyreactivity increases the apparent affinity of anti-HIV antibodies by heteroligation. Nature 467, 591\u2013595 (2010).",
+                "journal-title": "Nature"
+            },
+            {
+                "key": "753_CR42",
+                "doi-asserted-by": "publisher",
+                "first-page": "759",
+                "DOI": "10.1016\/j.chom.2018.04.018",
+                "volume": "23",
+                "author": "K Wiehe",
+                "year": "2018",
+                "unstructured": "Wiehe, K. et al. Functional relevance of improbable antibody mutations for HIV broadly neutralizing antibody development. Cell Host Microbe 23, 759\u2013765.e6 (2018). This study demonstrates the role of improbable bnAb mutations in limiting bnAb development and the strategy of mutation-guided immunogen development to overcome this roadblock.",
+                "journal-title": "Cell Host Microbe"
+            },
+            {
+                "key": "753_CR43",
+                "doi-asserted-by": "publisher",
+                "first-page": "204",
+                "DOI": "10.1016\/j.tim.2014.12.007",
+                "volume": "23",
+                "author": "PL Moore",
+                "year": "2015",
+                "unstructured": "Moore, P. L., Williamson, C. & Morris, L. Virological features associated with the development of broadly neutralizing antibodies to HIV-1. Trends Microbiol. 23, 204\u2013211 (2015).",
+                "journal-title": "Trends Microbiol."
+            },
+            {
+                "key": "753_CR44",
+                "doi-asserted-by": "publisher",
+                "first-page": "387",
+                "DOI": "10.1016\/j.cell.2018.08.064",
+                "volume": "175",
+                "author": "T Bradley",
+                "year": "2018",
+                "unstructured": "Bradley, T. et al. RAB11FIP5 expression and altered natural killer cell function are associated with induction of HIV broadly neutralizing antibody responses. Cell 175, 387\u2013399.e17 (2018).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR45",
+                "doi-asserted-by": "publisher",
+                "first-page": "758",
+                "DOI": "10.1016\/j.immuni.2013.08.031",
+                "volume": "39",
+                "author": "M Locci",
+                "year": "2013",
+                "unstructured": "Locci, M. et al. Human circulating PD-1+CXCR3\u2013CXCR5+ memory TFH cells are highly functional and correlate with broadly neutralizing HIV antibody responses. Immunity 39, 758\u2013769 (2013). This paper demonstrates the key role of TFH cells in bnAb development.",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR46",
+                "doi-asserted-by": "publisher",
+                "first-page": "199",
+                "DOI": "10.1038\/s41590-019-0581-0",
+                "volume": "21",
+                "author": "KM Roskin",
+                "year": "2020",
+                "unstructured": "Roskin, K. M. et al. Aberrant B cell repertoire selection associated with HIV neutralizing antibody breadth. Nat. Immunol. 21, 199\u2013209 (2020).",
+                "journal-title": "Nat. Immunol."
+            },
+            {
+                "key": "753_CR47",
+                "doi-asserted-by": "publisher",
+                "first-page": "1435",
+                "DOI": "10.1007\/s00018-011-0872-6",
+                "volume": "69",
+                "author": "H Mouquet",
+                "year": "2012",
+                "unstructured": "Mouquet, H. & Nussenzweig, M. C. Polyreactive antibodies in adaptive immune responses to viruses. Cell Mol. Life Sci. 69, 1435\u20131445 (2012).",
+                "journal-title": "Cell Mol. Life Sci."
+            },
+            {
+                "key": "753_CR48",
+                "doi-asserted-by": "publisher",
+                "first-page": "491",
+                "DOI": "10.1038\/ncprheum0895",
+                "volume": "4",
+                "author": "K Elkon",
+                "year": "2008",
+                "unstructured": "Elkon, K. & Casali, P. Nature and functions of autoantibodies. Nat. Clin. Pract. Rheumatol. 4, 491\u2013498 (2008).",
+                "journal-title": "Nat. Clin. Pract. Rheumatol."
+            },
+            {
+                "key": "753_CR49",
+                "doi-asserted-by": "publisher",
+                "first-page": "1374",
+                "DOI": "10.1126\/science.1086907",
+                "volume": "301",
+                "author": "H Wardemann",
+                "year": "2003",
+                "unstructured": "Wardemann, H. et al. Predominant autoantibody production by early human B cell precursors. Science 301, 1374\u20131377 (2003).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR50",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.aat0381",
+                "author": "C Havenar-Daughton",
+                "year": "2018",
+                "unstructured": "Havenar-Daughton, C. et al. The human naive B cell repertoire contains distinct subclasses for a germline-targeting HIV-1 vaccine immunogen. Sci. Transl. Med. https:\/\/doi.org\/10.1126\/scitranslmed.aat0381 (2018).",
+                "journal-title": "Sci. Transl. Med."
+            },
+            {
+                "key": "753_CR51",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.aax4380",
+                "author": "JM Steichen",
+                "year": "2019",
+                "unstructured": "Steichen, J. M. et al. A generalized HIV vaccine design strategy for priming of broadly neutralizing antibody responses. Science https:\/\/doi.org\/10.1126\/science.aax4380 (2019). This key paper demonstrates the success of germline targeting of a V3-glycan bnAb B cell lineage in bnAb UCA knock-in mice.",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR52",
+                "doi-asserted-by": "publisher",
+                "first-page": "4446",
+                "DOI": "10.1073\/pnas.1518405113",
+                "volume": "113",
+                "author": "JR Willis",
+                "year": "2016",
+                "unstructured": "Willis, J. R. et al. Long antibody HCDR3s from HIV-naive donors presented on a PG9 neutralizing antibody background mediate HIV neutralization. Proc. Natl Acad. Sci. USA 113, 4446\u20134451 (2016).",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR53",
+                "doi-asserted-by": "publisher",
+                "first-page": "2573",
+                "DOI": "10.1084\/jem.20161160",
+                "volume": "214",
+                "author": "M Medina-Ram\u00edrez",
+                "year": "2017",
+                "unstructured": "Medina-Ram\u00edrez, M. et al. Design and crystal structure of a native-like HIV-1 envelope trimer that engages multiple broadly neutralizing antibody precursors in vivo. J. Exp. Med. 214, 2573\u20132590 (2017).",
+                "journal-title": "J. Exp. Med."
+            },
+            {
+                "key": "753_CR54",
+                "doi-asserted-by": "publisher",
+                "first-page": "252",
+                "DOI": "10.1016\/S0952-7915(98)80162-3",
+                "volume": "10",
+                "author": "MK Slifka",
+                "year": "1998",
+                "unstructured": "Slifka, M. K. & Ahmed, R. Long-lived plasma cells: a mechanism for maintaining persistent antibody production. Curr. Opin. Immunol. 10, 252\u2013258 (1998).",
+                "journal-title": "Curr. Opin. Immunol."
+            },
+            {
+                "key": "753_CR55",
+                "doi-asserted-by": "publisher",
+                "first-page": "18044",
+                "DOI": "10.1073\/pnas.1113395108",
+                "volume": "108",
+                "author": "JF Scheid",
+                "year": "2011",
+                "unstructured": "Scheid, J. F. et al. Differential regulation of self-reactivity discriminates between IgG+ human circulating memory B cells and bone marrow plasma cells. Proc. Natl Acad. Sci. USA 108, 18044\u201318048 (2011).",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR56",
+                "doi-asserted-by": "publisher",
+                "first-page": "2708",
+                "DOI": "10.4049\/jimmunol.0901068",
+                "volume": "183",
+                "author": "M Bonsignori",
+                "year": "2009",
+                "unstructured": "Bonsignori, M. et al. HIV-1 envelope induces memory B cell responses that correlate with plasma antibody levels after envelope gp120 protein vaccination or HIV-1 infection. J. Immunol. 183, 2708\u20132717 (2009).",
+                "journal-title": "J. Immunol."
+            },
+            {
+                "key": "753_CR57",
+                "doi-asserted-by": "publisher",
+                "first-page": "233",
+                "DOI": "10.1084\/jem.188.2.233",
+                "volume": "188",
+                "author": "L Morris",
+                "year": "1998",
+                "unstructured": "Morris, L. et al. HIV-1 antigen-specific and -nonspecific B cell responses are sensitive to combination antiretroviral therapy. J. Exp. Med. 188, 233\u2013245 (1998).",
+                "journal-title": "J. Exp. Med."
+            },
+            {
+                "key": "753_CR58",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41541-020-00252-w",
+                "volume": "5",
+                "author": "M Blasi",
+                "year": "2020",
+                "unstructured": "Blasi, M. et al. Immunogenicity, safety, and efficacy of sequential immunizations with an SIV-based IDLV expressing CH505 Envs. NPJ Vaccines 5, 107 (2020).",
+                "journal-title": "NPJ Vaccines"
+            },
+            {
+                "key": "753_CR59",
+                "doi-asserted-by": "publisher",
+                "first-page": "1571",
+                "DOI": "10.1084\/jem.20171450",
+                "volume": "215",
+                "author": "N Pardi",
+                "year": "2018",
+                "unstructured": "Pardi, N. et al. Nucleoside-modified mRNA vaccines induce potent T follicular helper and germinal center B cell responses. J. Exp. Med. 215, 1571\u20131588 (2018). This paper demonstrates the ability of mRNA\/LNP vaccines to induce high levels of TFH cells.",
+                "journal-title": "J. Exp. Med."
+            },
+            {
+                "key": "753_CR60",
+                "doi-asserted-by": "publisher",
+                "first-page": "248",
+                "DOI": "10.1038\/nature21428",
+                "volume": "543",
+                "author": "N Pardi",
+                "year": "2017",
+                "unstructured": "Pardi, N. et al. Zika virus protection by a single low-dose nucleoside-modified mRNA vaccination. Nature 543, 248\u2013251 (2017).",
+                "journal-title": "Nature"
+            },
+            {
+                "key": "753_CR61",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41541-021-00307-6",
+                "volume": "6",
+                "author": "KO Saunders",
+                "year": "2021",
+                "unstructured": "Saunders, K. O. et al. Lipid nanoparticle encapsulated nucleoside-modified mRNA vaccines elicit polyfunctional HIV-1 antibodies comparable to proteins in nonhuman primates. NPJ Vaccines 6, 50 (2021).",
+                "journal-title": "NPJ Vaccines"
+            },
+            {
+                "key": "753_CR62",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/sciimmunol.abb1025",
+                "author": "SP Kasturi",
+                "year": "2020",
+                "unstructured": "Kasturi, S. P. et al. 3M-052, a synthetic TLR-7\/8 agonist, induces durable HIV-1 envelope-specific plasma cells and humoral immunity in nonhuman primates. Sci. Immunol. https:\/\/doi.org\/10.1126\/sciimmunol.abb1025 (2020).",
+                "journal-title": "Sci. Immunol."
+            },
+            {
+                "key": "753_CR63",
+                "doi-asserted-by": "publisher",
+                "first-page": "1281",
+                "DOI": "10.1016\/j.immuni.2020.11.009",
+                "volume": "53",
+                "author": "K Lederer",
+                "year": "2020",
+                "unstructured": "Lederer, K. et al. SARS-CoV-2 mRNA vaccines foster potent antigen-specific germinal center responses associated with neutralizing antibody generation. Immunity 53, 1281\u20131295.e5 (2020).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR64",
+                "doi-asserted-by": "publisher",
+                "first-page": "2877",
+                "DOI": "10.1016\/j.immuni.2021.11.001",
+                "volume": "54",
+                "author": "MG Alameh",
+                "year": "2021",
+                "unstructured": "Alameh, M. G. et al. Lipid nanoparticles enhance the efficacy of mRNA and protein subunit vaccines by inducing robust T follicular helper cell and humoral responses. Immunity 54, 2877\u20132892.e7 (2021).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR65",
+                "doi-asserted-by": "publisher",
+                "first-page": "449",
+                "DOI": "10.1016\/j.cell.2016.02.022",
+                "volume": "165",
+                "author": "M Bonsignori",
+                "year": "2016",
+                "unstructured": "Bonsignori, M. et al. Maturation pathway from germline to broad HIV-1 neutralizer of a CD4-mimic antibody. Cell 165, 449\u2013463 (2016).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR66",
+                "doi-asserted-by": "publisher",
+                "first-page": "8614",
+                "DOI": "10.1073\/pnas.1709203114",
+                "volume": "114",
+                "author": "JK Hwang",
+                "year": "2017",
+                "unstructured": "Hwang, J. K. et al. Sequence intrinsic somatic mutation mechanisms contribute to affinity maturation of VRC01-class HIV-1 broadly neutralizing antibodies. Proc. Natl Acad. Sci. USA 114, 8614\u20138619 (2017).",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR67",
+                "doi-asserted-by": "publisher",
+                "first-page": "1124",
+                "DOI": "10.1016\/j.cell.2015.10.042",
+                "volume": "163",
+                "author": "LS Yeap",
+                "year": "2015",
+                "unstructured": "Yeap, L. S. et al. Sequence-intrinsic mechanisms that target AID mutational outcomes on antibody genes. Cell 163, 1124\u20131137 (2015).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR68",
+                "doi-asserted-by": "publisher",
+                "first-page": "405",
+                "DOI": "10.1016\/0167-5699(93)90144-A",
+                "volume": "14",
+                "author": "AG Betz",
+                "year": "1993",
+                "unstructured": "Betz, A. G., Neuberger, M. S. & Milstein, C. Discriminating intrinsic and antigen-selected mutational hotspots in immunoglobulin V genes. Immunol. Today 14, 405\u2013411 (1993).",
+                "journal-title": "Immunol. Today"
+            },
+            {
+                "key": "753_CR69",
+                "doi-asserted-by": "publisher",
+                "first-page": "107",
+                "DOI": "10.1111\/j.1600-065X.1998.tb01434.x",
+                "volume": "162",
+                "author": "MS Neuberger",
+                "year": "1998",
+                "unstructured": "Neuberger, M. S. et al. Monitoring and interpreting the intrinsic features of somatic hypermutation. Immunol. Rev. 162, 107\u2013116 (1998).",
+                "journal-title": "Immunol. Rev."
+            },
+            {
+                "key": "753_CR70",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.aai7514",
+                "author": "M Bonsignori",
+                "year": "2017",
+                "unstructured": "Bonsignori, M. et al. Staged induction of HIV-1 glycan-dependent broadly neutralizing antibodies. Sci. Transl. Med. https:\/\/doi.org\/10.1126\/scitranslmed.aai7514 (2017).",
+                "journal-title": "Sci. Transl. Med."
+            },
+            {
+                "key": "753_CR71",
+                "doi-asserted-by": "publisher",
+                "first-page": "145",
+                "DOI": "10.1111\/imr.12509",
+                "volume": "275",
+                "author": "M Bonsignori",
+                "year": "2017",
+                "unstructured": "Bonsignori, M. et al. Antibody\u2013virus co-evolution in HIV infection: paths for HIV vaccine development. Immunol. Rev. 275, 145\u2013160 (2017).",
+                "journal-title": "Immunol. Rev."
+            },
+            {
+                "key": "753_CR72",
+                "doi-asserted-by": "publisher",
+                "first-page": "55",
+                "DOI": "10.1038\/nature13036",
+                "volume": "509",
+                "author": "NA Doria-Rose",
+                "year": "2014",
+                "unstructured": "Doria-Rose, N. A. et al. Developmental pathway for potent V1V2-directed HIV-neutralizing antibodies. Nature 509, 55\u201362 (2014).",
+                "journal-title": "Nature"
+            },
+            {
+                "key": "753_CR73",
+                "doi-asserted-by": "publisher",
+                "first-page": "1215",
+                "DOI": "10.1016\/j.immuni.2016.04.016",
+                "volume": "44",
+                "author": "DT MacLeod",
+                "year": "2016",
+                "unstructured": "MacLeod, D. T. et al. Early antibody lineage diversification and independent limb maturation lead to broad HIV-1 neutralization targeting the Env high-mannose patch. Immunity 44, 1215\u20131226 (2016).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR74",
+                "doi-asserted-by": "publisher",
+                "first-page": "11",
+                "DOI": "10.1111\/imr.12484",
+                "volume": "275",
+                "author": "LE McCoy",
+                "year": "2017",
+                "unstructured": "McCoy, L. E. & Burton, D. R. Identification and specificity of broadly neutralizing antibodies against HIV. Immunol. Rev. 275, 11\u201320 (2017). This work presents a key review of bnAb specificity and use.",
+                "journal-title": "Immunol. Rev."
+            },
+            {
+                "key": "753_CR75",
+                "doi-asserted-by": "publisher",
+                "first-page": "141",
+                "DOI": "10.1016\/j.immuni.2019.06.004",
+                "volume": "51",
+                "author": "J Umotoy",
+                "year": "2019",
+                "unstructured": "Umotoy, J. et al. Rapid and focused maturation of a VRC01-class HIV broadly neutralizing antibody lineage involves both binding and accommodation of the N276-glycan. Immunity 51, 141\u2013154.e6 (2019).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR76",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.aay7199",
+                "author": "KO Saunders",
+                "year": "2019",
+                "unstructured": "Saunders, K. O. et al. Targeted selection of HIV-specific antibody mutations by engineering B cell maturation. Science https:\/\/doi.org\/10.1126\/science.aay7199 (2019). This key paper demonstrates the success of germ-line targeting of a V3-glycan bnAb B cell lineage in bnAb UCA knock-in mice and a CD4 binding site bnAb lineage in outbred monkeys.",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR77",
+                "doi-asserted-by": "publisher",
+                "first-page": "1458",
+                "DOI": "10.1126\/science.aad9195",
+                "volume": "351",
+                "author": "JG Jardine",
+                "year": "2016",
+                "unstructured": "Jardine, J. G. et al. HIV-1 broadly neutralizing antibody precursor B cells revealed by germline-targeting immunogen. Science 351, 1458\u20131463 (2016). This work describes the VRC01 CD4 binding site bnAb germ line-targeting immunogen eOD8, binding to human bnAb precursor B cells.",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR78",
+                "doi-asserted-by": "publisher",
+                "first-page": "203",
+                "DOI": "10.1111\/imr.12483",
+                "volume": "275",
+                "author": "L Stamatatos",
+                "year": "2017",
+                "unstructured": "Stamatatos, L., Pancera, M. & McGuire, A. T. Germline-targeting immunogens. Immunol. Rev. 275, 203\u2013216 (2017).",
+                "journal-title": "Immunol. Rev."
+            },
+            {
+                "key": "753_CR79",
+                "doi-asserted-by": "publisher",
+                "first-page": "170",
+                "DOI": "10.3389\/fimmu.2014.00170",
+                "volume": "5",
+                "author": "TB Kepler",
+                "year": "2014",
+                "unstructured": "Kepler, T. B. et al. Reconstructing a B-cell clonal lineage. II. Mutation, selection, and affinity maturation. Front. Immunol. 5, 170 (2014).",
+                "journal-title": "Front. Immunol."
+            },
+            {
+                "key": "753_CR80",
+                "doi-asserted-by": "publisher",
+                "first-page": "7552",
+                "DOI": "10.1073\/pnas.0802203105",
+                "volume": "105",
+                "author": "BF Keele",
+                "year": "2008",
+                "unstructured": "Keele, B. F. et al. Identification and characterization of transmitted and early founder virus envelopes in primary HIV-1 infection. Proc. Natl Acad. Sci. USA 105, 7552\u20137557 (2008). This work is the first description of transmitted\/founder HIV-1 strains.",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR81",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.aaz2686",
+                "author": "BF Haynes",
+                "year": "2019",
+                "unstructured": "Haynes, B. F., Burton, D. R. & Mascola, J. R. Multiple roles for HIV broadly neutralizing antibodies. Sci. Transl. Med. https:\/\/doi.org\/10.1126\/scitranslmed.aaz2686 (2019).",
+                "journal-title": "Sci. Transl. Med."
+            },
+            {
+                "key": "753_CR82",
+                "doi-asserted-by": "publisher",
+                "first-page": "711",
+                "DOI": "10.1126\/science.1234150",
+                "volume": "340",
+                "author": "J Jardine",
+                "year": "2013",
+                "unstructured": "Jardine, J. et al. Rational HIV immunogen design to target specific germline B cell receptors. Science 340, 711\u2013716 (2013).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR83",
+                "doi-asserted-by": "publisher",
+                "first-page": "751",
+                "DOI": "10.1016\/S1074-7613(00)80580-4",
+                "volume": "8",
+                "author": "FD Batista",
+                "year": "1998",
+                "unstructured": "Batista, F. D. & Neuberger, M. S. Affinity dependence of the B cell response to antigen: a threshold, a ceiling, and the importance of off-rate. Immunity 8, 751\u2013759 (1998).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR84",
+                "doi-asserted-by": "publisher",
+                "first-page": "567",
+                "DOI": "10.1016\/j.cell.2019.06.030",
+                "volume": "178",
+                "author": "R Kong",
+                "year": "2019",
+                "unstructured": "Kong, R. et al. Antibody lineages with vaccine-induced antigen-binding hotspots develop broad HIV neutralization. Cell 178, 567\u2013584.e19 (2019).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR85",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1101\/cshperspect.a029397",
+                "author": "G Kelsoe",
+                "year": "2018",
+                "unstructured": "Kelsoe, G. & Haynes, B. F. What are the primary limitations in B-cell affinity maturation, and how much affinity maturation can we drive with vaccination? Breaking through immunit\u2019s glass ceiling. Cold Spring Harb. Perspect. Biol. https:\/\/doi.org\/10.1101\/cshperspect.a029397 (2018).",
+                "journal-title": "Cold Spring Harb. Perspect. Biol."
+            },
+            {
+                "key": "753_CR86",
+                "doi-asserted-by": "publisher",
+                "first-page": "304",
+                "DOI": "10.1016\/j.chom.2014.08.006",
+                "volume": "16",
+                "author": "TB Kepler",
+                "year": "2014",
+                "unstructured": "Kepler, T. B. et al. Immunoglobulin gene insertions and deletions in the affinity maturation of HIV-1 broadly reactive neutralizing antibodies. Cell Host Microbe 16, 304\u2013313 (2014).",
+                "journal-title": "Cell Host Microbe"
+            },
+            {
+                "key": "753_CR87",
+                "doi-asserted-by": "publisher",
+                "first-page": "336ra362",
+                "DOI": "10.1126\/scitranslmed.aaf0618",
+                "volume": "8",
+                "author": "R Zhang",
+                "year": "2016",
+                "unstructured": "Zhang, R. et al. Initiation of immune tolerance-controlled HIV gp41 neutralizing B cell lineages. Sci. Transl. Med. 8, 336ra362 (2016).",
+                "journal-title": "Sci. Transl. Med."
+            },
+            {
+                "key": "753_CR88",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41467-019-08415-7",
+                "volume": "10",
+                "author": "R Henderson",
+                "year": "2019",
+                "unstructured": "Henderson, R. et al. Selection of immunoglobulin elbow region mutations impacts interdomain conformational flexibility in HIV-1 broadly neutralizing antibodies. Nat. Commun. 10, 654 (2019).",
+                "journal-title": "Nat. Commun."
+            },
+            {
+                "key": "753_CR89",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.celrep.2022.111021",
+                "author": "MA Hossain",
+                "year": "2022",
+                "unstructured": "Hossain, M. A. et al. B cells discriminate HIV-1 Envelope protein affinities by sensing antigen binding association rates. Cell Rep. https:\/\/doi.org\/10.1016\/j.celrep.2022.111021 (2022).",
+                "journal-title": "Cell Rep."
+            },
+            {
+                "key": "753_CR90",
+                "doi-asserted-by": "publisher",
+                "first-page": "655",
+                "DOI": "10.1084\/jem.20122824",
+                "volume": "210",
+                "author": "AT McGuire",
+                "year": "2013",
+                "unstructured": "McGuire, A. T. et al. Engineering HIV envelope protein to activate germline B cell receptors of broadly neutralizing anti-CD4 binding site antibodies. J. Exp. Med. 210, 655\u2013663 (2013).",
+                "journal-title": "J. Exp. Med."
+            },
+            {
+                "key": "753_CR91",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1101\/cshperspect.a030262",
+                "author": "DR Burton",
+                "year": "2017",
+                "unstructured": "Burton, D. R. What are the most powerful immunogen design vaccine strategies? Reverse vaccinology 2.0 shows great promise. Cold Spring Harb. Perspect. Biol. https:\/\/doi.org\/10.1101\/cshperspect.a030262 (2017).",
+                "journal-title": "Cold Spring Harb. Perspect. Biol."
+            },
+            {
+                "key": "753_CR92",
+                "doi-asserted-by": "publisher",
+                "first-page": "2538",
+                "DOI": "10.4049\/jimmunol.1300971",
+                "volume": "191",
+                "author": "L Verkoczy",
+                "year": "2013",
+                "unstructured": "Verkoczy, L. et al. Induction of HIV-1 broad neutralizing antibodies in 2F5 knock-in mice: selection against membrane proximal external region-associated autoreactivity limits T-dependent responses. J. Immunol. 191, 2538\u20132550 (2013).",
+                "journal-title": "J. Immunol."
+            },
+            {
+                "key": "753_CR93",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41467-017-01336-3",
+                "volume": "8",
+                "author": "WB Williams",
+                "year": "2017",
+                "unstructured": "Williams, W. B. et al. Initiation of HIV neutralizing B cell lineages with sequential envelope immunizations. Nat. Commun. 8, 1732 (2017).",
+                "journal-title": "Nat. Commun."
+            },
+            {
+                "key": "753_CR94",
+                "doi-asserted-by": "publisher",
+                "first-page": "E2567",
+                "DOI": "10.1073\/pnas.1406974111",
+                "volume": "111",
+                "author": "Z Sabouri",
+                "year": "2014",
+                "unstructured": "Sabouri, Z. et al. Redemption of autoantibodies on anergic B cells by variable-region glycosylation and mutation away from self-reactivity. Proc. Natl Acad. Sci. USA 111, E2567\u2013E2575 (2014).",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR95",
+                "doi-asserted-by": "publisher",
+                "first-page": "1255",
+                "DOI": "10.1084\/jem.20151978",
+                "volume": "213",
+                "author": "JH Reed",
+                "year": "2016",
+                "unstructured": "Reed, J. H., Jackson, J., Christ, D. & Goodnow, C. C. Clonal redemption of autoantibodies by somatic hypermutation away from self-reactivity during human immunization. J. Exp. Med. 213, 1255\u20131265 (2016).",
+                "journal-title": "J. Exp. Med."
+            },
+            {
+                "key": "753_CR96",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0027824",
+                "volume": "6",
+                "author": "SM Dennison",
+                "year": "2011",
+                "unstructured": "Dennison, S. M. et al. Induction of antibodies in rhesus macaques that recognize a fusion-intermediate conformation of HIV-1 gp41. pLoS ONE 6, e27824 (2011).",
+                "journal-title": "pLoS ONE"
+            },
+            {
+                "key": "753_CR97",
+                "doi-asserted-by": "publisher",
+                "first-page": "543",
+                "DOI": "10.1038\/s41577-021-00589-w",
+                "volume": "21",
+                "author": "BF Haynes",
+                "year": "2021",
+                "unstructured": "Haynes, B. F. SARS-CoV-2 and HIV-1 \u2014 a tale of two vaccines. Nat. Rev. Immunol. 21, 543\u2013544 (2021).",
+                "journal-title": "Nat. Rev. Immunol."
+            },
+            {
+                "key": "753_CR98",
+                "doi-asserted-by": "publisher",
+                "first-page": "245",
+                "DOI": "10.1016\/j.immuni.2013.04.012",
+                "volume": "39",
+                "author": "T Zhou",
+                "year": "2013",
+                "unstructured": "Zhou, T. et al. Multidonor analysis reveals structural elements, genetic determinants, and maturation pathway for HIV-1 neutralization by VRC01-class antibodies. Immunity 39, 245\u2013258 (2013).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR99",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41541-021-00376-7",
+                "volume": "6",
+                "author": "JH Lee",
+                "year": "2021",
+                "unstructured": "Lee, J. H. et al. Vaccine genetics of IGHV1-2 VRC01-class broadly neutralizing antibody precursor naive human B cells. NPJ Vaccines 6, 113 (2021).",
+                "journal-title": "NPJ Vaccines"
+            },
+            {
+                "key": "753_CR100",
+                "doi-asserted-by": "publisher",
+                "first-page": "856",
+                "DOI": "10.1126\/science.1187659",
+                "volume": "329",
+                "author": "X Wu",
+                "year": "2010",
+                "unstructured": "Wu, X. et al. Rational design of envelope identifies broadly neutralizing human monoclonal antibodies to HIV-1. Science 329, 856\u2013861 (2010).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR101",
+                "doi-asserted-by": "publisher",
+                "first-page": "811",
+                "DOI": "10.1126\/science.1192819",
+                "volume": "329",
+                "author": "T Zhou",
+                "year": "2010",
+                "unstructured": "Zhou, T. et al. Structural basis for broad and potent neutralization of HIV-1 by antibody VRC01. Science 329, 811\u2013817 (2010).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR102",
+                "doi-asserted-by": "publisher",
+                "first-page": "906",
+                "DOI": "10.1038\/nsmb.3291",
+                "volume": "23",
+                "author": "HB Gristick",
+                "year": "2016",
+                "unstructured": "Gristick, H. B. et al. Natively glycosylated HIV-1 Env structure reveals new mode for antibody recognition of the CD4-binding site. Nat. Struct. Mol. Biol. 23, 906\u2013915 (2016).",
+                "journal-title": "Nat. Struct. Mol. Biol."
+            },
+            {
+                "key": "753_CR103",
+                "doi-asserted-by": "publisher",
+                "first-page": "1162",
+                "DOI": "10.1016\/j.immuni.2018.10.015",
+                "volume": "49",
+                "author": "M Bonsignori",
+                "year": "2018",
+                "unstructured": "Bonsignori, M. et al. Inference of the HIV-1 VRC01 antibody lineage unmutated common ancestor reveals alternative pathways to overcome a key glycan barrier. Immunity 49, 1162\u20131174.e8 (2018).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR104",
+                "doi-asserted-by": "publisher",
+                "first-page": "840",
+                "DOI": "10.1016\/j.immuni.2020.09.007",
+                "volume": "53",
+                "author": "YR Lin",
+                "year": "2020",
+                "unstructured": "Lin, Y. R. et al. HIV-1 VRC01 germline-targeting immunogens select distinct epitope-specific B cell receptors. Immunity 53, 840\u2013851.e6 (2020).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR105",
+                "doi-asserted-by": "publisher",
+                "first-page": "22920",
+                "DOI": "10.1073\/pnas.2004489117",
+                "volume": "117",
+                "author": "D Huang",
+                "year": "2020",
+                "unstructured": "Huang, D. et al. B cells expressing authentic naive human VRC01-class BCRs can be recruited to germinal centers and affinity mature in multiple independent mouse models. Proc. Natl Acad. Sci. USA 117, 22920\u201322931 (2020).",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR106",
+                "doi-asserted-by": "publisher",
+                "first-page": "1471",
+                "DOI": "10.1016\/j.cell.2016.07.029",
+                "volume": "166",
+                "author": "M Tian",
+                "year": "2016",
+                "unstructured": "Tian, M. et al. Induction of HIV neutralizing antibody lineages in mice with diverse precursor repertoires. Cell 166, 1471\u20131484.e18 (2016). This key early study demonstrates the ability of germ line-targeting immunogens to induce bnAb B cell lineages in VH-rearranging bnAb UCA knock-in mice.",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR107",
+                "doi-asserted-by": "publisher",
+                "first-page": "324",
+                "DOI": "10.1016\/j.immuni.2020.12.014",
+                "volume": "54",
+                "author": "X Chen",
+                "year": "2021",
+                "unstructured": "Chen, X. et al. Vaccination induces maturation in a mouse model of diverse unmutated VRC01-class precursors to HIV-neutralizing antibodies with >50% breadth. Immunity 54, 324\u2013339.e8 (2021).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR108",
+                "doi-asserted-by": "publisher",
+                "first-page": "1756",
+                "DOI": "10.1016\/j.celrep.2019.10.008",
+                "volume": "29",
+                "author": "C Havenar-Daughton",
+                "year": "2019",
+                "unstructured": "Havenar-Daughton, C. et al. Rapid germinal center and antibody responses in non-human primates after a single nanoparticle vaccine immunization. Cell Rep. 29, 1756\u20131766.e8 (2019).",
+                "journal-title": "Cell Rep."
+            },
+            {
+                "key": "753_CR109",
+                "unstructured": "IAVI. First-in-human clinical trial confirms novel HIV vaccine approach developed by IAVI and Scripps Research. IAVI https:\/\/www.iavi.org\/news-resources\/press-releases\/2021\/first-in-human-clinical-trial-confirms-novel-hiv-vaccine-approach-developed-by-iavi-and-scripps-research (2021). This work is the press release for a clinical trial of induction of HIV-1 CD4 binding site precursors in humans."
+            },
+            {
+                "key": "753_CR110",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/ncomms10618",
+                "volume": "7",
+                "author": "AT McGuire",
+                "year": "2016",
+                "unstructured": "McGuire, A. T. et al. Specifically modified Env immunogens activate B-cell precursors of broadly neutralizing HIV-1 antibodies in transgenic mice. Nat. Commun. 7, 10618 (2016).",
+                "journal-title": "Nat. Commun."
+            },
+            {
+                "key": "753_CR111",
+                "doi-asserted-by": "publisher",
+                "first-page": "1003",
+                "DOI": "10.1056\/NEJMoa2031738",
+                "volume": "384",
+                "author": "L Corey",
+                "year": "2021",
+                "unstructured": "Corey, L. et al. Two randomized trials of neutralizing antibodies to prevent HIV-1 acquisition. N. Engl. J. Med. 384, 1003\u20131014 (2021). This work is a key study of VRC01 antibody infusion in humans for antibody ability to protect from HIV-1 transmission.",
+                "journal-title": "N. Engl. J. Med."
+            },
+            {
+                "key": "753_CR112",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1515\/scid-2016-0001",
+                "author": "PB Gilbert",
+                "year": "2017",
+                "unstructured": "Gilbert, P. B. et al. Basis and statistical design of the passive HIV-1 antibody mediated prevention (AMP) test-of-concept efficacy trials. Stat. Commun. Infect. Dis. https:\/\/doi.org\/10.1515\/scid-2016-0001 (2017).",
+                "journal-title": "Stat. Commun. Infect. Dis."
+            },
+            {
+                "key": "753_CR113",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pcbi.1006952",
+                "volume": "15",
+                "author": "CA Magaret",
+                "year": "2019",
+                "unstructured": "Magaret, C. A. et al. Prediction of VRC01 neutralization sensitivity by HIV-1 gp160 sequence features. pLoS Comput. Biol. 15, e1006952 (2019).",
+                "journal-title": "pLoS Comput. Biol."
+            },
+            {
+                "key": "753_CR114",
+                "doi-asserted-by": "publisher",
+                "first-page": "2659",
+                "DOI": "10.1128\/JVI.03136-14",
+                "volume": "89",
+                "author": "R Kong",
+                "year": "2015",
+                "unstructured": "Kong, R. et al. Improving neutralization potency and breadth by combining broadly reactive HIV-1 antibodies targeting major neutralization epitopes. J. Virol. 89, 2659\u20132671 (2015).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR115",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1005520",
+                "volume": "12",
+                "author": "K Wagh",
+                "year": "2016",
+                "unstructured": "Wagh, K. et al. Optimal combinations of broadly neutralizing antibodies for prevention and treatment of HIV-1 clade C infection. PLoS Pathog. 12, e1005520 (2016).",
+                "journal-title": "PLoS Pathog."
+            },
+            {
+                "key": "753_CR116",
+                "doi-asserted-by": "publisher",
+                "first-page": "10047",
+                "DOI": "10.1128\/JVI.00984-13",
+                "volume": "87",
+                "author": "GY Chuang",
+                "year": "2013",
+                "unstructured": "Chuang, G. Y. et al. Residue-level prediction of HIV-1 antibody epitopes based on neutralization of diverse viral strains. J. Virol. 87, 10047\u201310058 (2013).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR117",
+                "doi-asserted-by": "publisher",
+                "first-page": "471",
+                "DOI": "10.1016\/j.cell.2020.01.010",
+                "volume": "180",
+                "author": "P Schommers",
+                "year": "2020",
+                "unstructured": "Schommers, P. et al. Restriction of HIV-1 escape by a highly broad and potent neutralizing antibody. Cell 180, 471\u2013489.e22 (2020).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR118",
+                "doi-asserted-by": "publisher",
+                "first-page": "1633",
+                "DOI": "10.1126\/science.1207227",
+                "volume": "333",
+                "author": "JF Scheid",
+                "year": "2011",
+                "unstructured": "Scheid, J. F. et al. Sequence and structural convergence of broad and potent HIV antibodies that mimic CD4 binding. Science 333, 1633\u20131637 (2011).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR119",
+                "doi-asserted-by": "publisher",
+                "first-page": "1280",
+                "DOI": "10.1016\/j.cell.2015.05.007",
+                "volume": "161",
+                "author": "T Zhou",
+                "year": "2015",
+                "unstructured": "Zhou, T. et al. Structural repertoire of HIV-1-neutralizing antibodies targeting the CD4 supersite in 14 donors. Cell 161, 1280\u20131292 (2015).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR120",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1008026",
+                "volume": "15",
+                "author": "CC LaBranche",
+                "year": "2019",
+                "unstructured": "LaBranche, C. C. et al. Neutralization-guided design of HIV-1 envelope trimers with high affinity for the unmutated common ancestor of CH235 lineage CD4bs broadly neutralizing antibodies. pLoS Pathog. 15, e1008026 (2019).",
+                "journal-title": "pLoS Pathog."
+            },
+            {
+                "key": "753_CR121",
+                "unstructured": "Saunders, K. O. et al. Protective HIV-1 neutralizing antibody titers and epitope specificities in vaccinated macaques Sci. Transl. Med. (in press)."
+            },
+            {
+                "key": "753_CR122",
+                "doi-asserted-by": "publisher",
+                "first-page": "11",
+                "DOI": "10.1016\/bs.ai.2019.08.002",
+                "volume": "143",
+                "author": "CN Daniels",
+                "year": "2019",
+                "unstructured": "Daniels, C. N. & Saunders, K. O. Antibody responses to the HIV-1 envelope high mannose patch. Adv. Immunol. 143, 11\u201373 (2019).",
+                "journal-title": "Adv. Immunol."
+            },
+            {
+                "key": "753_CR123",
+                "doi-asserted-by": "publisher",
+                "first-page": "1105",
+                "DOI": "10.1128\/JVI.02905-14",
+                "volume": "89",
+                "author": "KJ Doores",
+                "year": "2015",
+                "unstructured": "Doores, K. J. et al. Two classes of broadly neutralizing antibodies within a single lineage directed to the high-mannose patch of HIV envelope. J. Virol. 89, 1105\u20131118 (2015).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR124",
+                "doi-asserted-by": "publisher",
+                "first-page": "235",
+                "DOI": "10.1016\/bs.ai.2017.01.004",
+                "volume": "134",
+                "author": "L Verkoczy",
+                "year": "2017",
+                "unstructured": "Verkoczy, L. Humanized immunoglobulin mice: models for HIV vaccine testing and studying the broadly neutralizing antibody problem. Adv. Immunol. 134, 235\u2013352 (2017).",
+                "journal-title": "Adv. Immunol."
+            },
+            {
+                "key": "753_CR125",
+                "doi-asserted-by": "publisher",
+                "first-page": "879",
+                "DOI": "10.1172\/JCI13051",
+                "volume": "108",
+                "author": "E Meffre",
+                "year": "2001",
+                "unstructured": "Meffre, E. et al. Immunoglobulin heavy chain expression shapes the B cell receptor repertoire in human B cell development. J. Clin. Invest. 108, 879\u2013886 (2001).",
+                "journal-title": "J. Clin. Invest."
+            },
+            {
+                "key": "753_CR126",
+                "doi-asserted-by": "publisher",
+                "first-page": "483",
+                "DOI": "10.1016\/j.immuni.2016.08.016",
+                "volume": "45",
+                "author": "JM Steichen",
+                "year": "2016",
+                "unstructured": "Steichen, J. M. et al. HIV vaccine design to target germline precursors of glycan-dependent broadly neutralizing antibodies. Immunity 45, 483\u2013496 (2016).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR127",
+                "doi-asserted-by": "publisher",
+                "first-page": "110514",
+                "DOI": "10.1016\/j.celrep.2022.110514",
+                "volume": "38",
+                "author": "Z Mu",
+                "year": "2022",
+                "unstructured": "Mu, Z. et al. mRNA-encoded HIV-1 Env trimer ferritin nanoparticles induce monoclonal antibodies that neutralize heterologous HIV-1 isolates in mice. Cell Rep. 38, 110514 (2022). This study demonstrates the ability of mRNA\/LNPs encoding germ line-targeting immunogens to induce bnAb lineages in VH and VL UCA knock-in mice.",
+                "journal-title": "Cell Rep."
+            },
+            {
+                "key": "753_CR128",
+                "doi-asserted-by": "publisher",
+                "first-page": "1445",
+                "DOI": "10.1016\/j.cell.2016.07.030",
+                "volume": "166",
+                "author": "A Escolano",
+                "year": "2016",
+                "unstructured": "Escolano, A. et al. Sequential immunization elicits broadly neutralizing anti-HIV-1 antibodies in Ig knockin mice. Cell 166, 1445\u20131458.e12 (2016). This paper demonstrates bnAb maturation with sequential immunizations in V3-glycan bnAb UCA VH + VL knock-in mice.",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR129",
+                "doi-asserted-by": "publisher",
+                "first-page": "468",
+                "DOI": "10.1038\/s41586-019-1250-z",
+                "volume": "570",
+                "author": "A Escolano",
+                "year": "2019",
+                "unstructured": "Escolano, A. et al. Immunization expands B cells specific to HIV-1 V3 glycan in mice and macaques. Nature 570, 468\u2013473 (2019).",
+                "journal-title": "Nature"
+            },
+            {
+                "key": "753_CR130",
+                "doi-asserted-by": "publisher",
+                "first-page": "eabk1533",
+                "DOI": "10.1126\/scitranslmed.abk1533",
+                "volume": "13",
+                "author": "A Escolano",
+                "year": "2021",
+                "unstructured": "Escolano, A. et al. Sequential immunization of macaques elicits heterologous neutralizing antibodies targeting the V3-glycan patch of HIV-1 Env. Sci. Transl. Med. 13, eabk1533 (2021).",
+                "journal-title": "Sci. Transl. Med."
+            },
+            {
+                "key": "753_CR131",
+                "doi-asserted-by": "publisher",
+                "first-page": "959",
+                "DOI": "10.1016\/j.immuni.2015.10.014",
+                "volume": "43",
+                "author": "R Andrabi",
+                "year": "2015",
+                "unstructured": "Andrabi, R. et al. Identification of common features in prototype broadly neutralizing antibodies to HIV envelope V2 apex to facilitate vaccine design. Immunity 43, 959\u2013973 (2015).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR132",
+                "doi-asserted-by": "publisher",
+                "first-page": "9998",
+                "DOI": "10.1128\/JVI.05045-11",
+                "volume": "85",
+                "author": "M Bonsignori",
+                "year": "2011",
+                "unstructured": "Bonsignori, M. et al. Analysis of a clonal lineage of HIV-1 envelope V2\/V3 conformational epitope-specific broadly neutralizing antibodies and their inferred unmutated common ancestors. J. Virol. 85, 9998\u201310009 (2011).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR133",
+                "doi-asserted-by": "publisher",
+                "first-page": "81",
+                "DOI": "10.1038\/nsmb.3144",
+                "volume": "23",
+                "author": "J Gorman",
+                "year": "2016",
+                "unstructured": "Gorman, J. et al. Structures of HIV-1 Env V1V2 with broadly neutralizing antibodies reveal commonalities that enable vaccine design. Nat. Struct. Mol. Biol. 23, 81\u201390 (2016).",
+                "journal-title": "Nat. Struct. Mol. Biol."
+            },
+            {
+                "key": "753_CR134",
+                "doi-asserted-by": "publisher",
+                "first-page": "285",
+                "DOI": "10.1126\/science.1178746",
+                "volume": "326",
+                "author": "LM Walker",
+                "year": "2009",
+                "unstructured": "Walker, L. M. et al. Broad and potent neutralizing antibodies from an African donor reveal a new HIV-1 vaccine target. Science 326, 285\u2013289 (2009).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR135",
+                "doi-asserted-by": "publisher",
+                "first-page": "2426",
+                "DOI": "10.1016\/j.celrep.2019.04.082",
+                "volume": "27",
+                "author": "R Andrabi",
+                "year": "2019",
+                "unstructured": "Andrabi, R. et al. The chimpanzee SIV envelope trimer: structure and deployment as an HIV vaccine template. Cell Rep. 27, 2426\u20132441.e6 (2019).",
+                "journal-title": "Cell Rep."
+            },
+            {
+                "key": "753_CR136",
+                "doi-asserted-by": "publisher",
+                "first-page": "3681",
+                "DOI": "10.1016\/j.celrep.2017.12.028",
+                "volume": "21",
+                "author": "KO Saunders",
+                "year": "2017",
+                "unstructured": "Saunders, K. O. et al. Vaccine induction of heterologous tier 2 HIV-1 neutralizing antibodies in animal models. Cell Rep. 21, 3681\u20133690 (2017).",
+                "journal-title": "Cell Rep."
+            },
+            {
+                "key": "753_CR137",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1005369",
+                "volume": "12",
+                "author": "E Landais",
+                "year": "2016",
+                "unstructured": "Landais, E. et al. Broadly neutralizing antibody responses in a large longitudinal sub-Saharan HIV primary infection cohort. PLoS Pathog. 12, e1005369 (2016).",
+                "journal-title": "PLoS Pathog."
+            },
+            {
+                "key": "753_CR138",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.abd2638",
+                "author": "RS Roark",
+                "year": "2021",
+                "unstructured": "Roark, R. S. et al. Recapitulation of HIV-1 Env-antibody coevolution in macaques leading to neutralization breadth. Science https:\/\/doi.org\/10.1126\/science.abd2638 (2021).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR139",
+                "doi-asserted-by": "publisher",
+                "first-page": "406",
+                "DOI": "10.1038\/nature11544",
+                "volume": "491",
+                "author": "J Huang",
+                "year": "2012",
+                "unstructured": "Huang, J. et al. Broad and potent neutralization of HIV-1 by a gp41-specific human antibody. Nature 491, 406\u2013412 (2012).",
+                "journal-title": "Nature"
+            },
+            {
+                "key": "753_CR140",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41467-019-12973-1",
+                "volume": "10",
+                "author": "L Zhang",
+                "year": "2019",
+                "unstructured": "Zhang, L. et al. An MPER antibody neutralizes HIV-1 using germline features shared among donors. Nat. Commun. 10, 5389 (2019).",
+                "journal-title": "Nat. Commun."
+            },
+            {
+                "key": "753_CR141",
+                "doi-asserted-by": "publisher",
+                "first-page": "543",
+                "DOI": "10.1038\/nsmb0510-543",
+                "volume": "17",
+                "author": "BF Haynes",
+                "year": "2010",
+                "unstructured": "Haynes, B. F., Nicely, N. I. & Alam, S. M. HIV-1 autoreactive antibodies: are they good or bad for HIV-1 prevention? Nat. Struct. Mol. Biol. 17, 543\u2013545 (2010).",
+                "journal-title": "Nat. Struct. Mol. Biol."
+            },
+            {
+                "key": "753_CR142",
+                "doi-asserted-by": "publisher",
+                "first-page": "241",
+                "DOI": "10.1084\/jem.20121977",
+                "volume": "210",
+                "author": "G Yang",
+                "year": "2013",
+                "unstructured": "Yang, G. et al. Identification of autoantigens recognized by the 2F5 and 4E10 broadly neutralizing HIV-1 antibodies. J. Exp. Med. 210, 241\u2013256 (2013).",
+                "journal-title": "J. Exp. Med."
+            },
+            {
+                "key": "753_CR143",
+                "doi-asserted-by": "publisher",
+                "first-page": "3186",
+                "DOI": "10.4049\/jimmunol.1301285",
+                "volume": "191",
+                "author": "C Doyle-Cooper",
+                "year": "2013",
+                "unstructured": "Doyle-Cooper, C. et al. Immune tolerance negatively regulates B cells in knock-in mice expressing broadly neutralizing HIV antibody 4E10. J. Immunol. 191, 3186\u20133191 (2013).",
+                "journal-title": "J. Immunol."
+            },
+            {
+                "key": "753_CR144",
+                "doi-asserted-by": "publisher",
+                "first-page": "181",
+                "DOI": "10.1073\/pnas.0912914107",
+                "volume": "107",
+                "author": "L Verkoczy",
+                "year": "2010",
+                "unstructured": "Verkoczy, L. et al. Autoreactivity in an HIV-1 broadly reactive neutralizing antibody variable region heavy chain induces immunologic tolerance. Proc. Natl Acad. Sci. USA 107, 181\u2013186 (2010). This is the first paper using bnAb knock-in mice to demonstrate immune tolerance controls of MPER bnAb development.",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR145",
+                "doi-asserted-by": "publisher",
+                "first-page": "3268",
+                "DOI": "10.4049\/jimmunol.1900069",
+                "volume": "203",
+                "author": "J Finney",
+                "year": "2019",
+                "unstructured": "Finney, J. et al. Cross-reactivity to kynureninase tolerizes B cells that express the HIV-1 broadly neutralizing antibody 2F5. J. Immunol. 203, 3268\u20133281 (2019).",
+                "journal-title": "J. Immunol."
+            },
+            {
+                "key": "753_CR146",
+                "doi-asserted-by": "publisher",
+                "first-page": "1260",
+                "DOI": "10.4049\/jimmunol.1300770",
+                "volume": "191",
+                "author": "Y Chen",
+                "year": "2013",
+                "unstructured": "Chen, Y. et al. Common tolerance mechanisms, but distinct cross-reactivities associated with gp41 and lipids, limit production of HIV-1 broad neutralizing antibodies 2F5 and 4E10. J. Immunol. 191, 1260\u20131275 (2013).",
+                "journal-title": "J. Immunol."
+            },
+            {
+                "key": "753_CR147",
+                "doi-asserted-by": "publisher",
+                "first-page": "11016",
+                "DOI": "10.1128\/JVI.01340-07",
+                "volume": "81",
+                "author": "S Mehandru",
+                "year": "2007",
+                "unstructured": "Mehandru, S. et al. Adjunctive passive immunotherapy in human immunodeficiency virus type 1-infected individuals treated with antiviral therapy during acute and early infection. J. Virol. 81, 11016\u201311031 (2007).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR148",
+                "doi-asserted-by": "publisher",
+                "first-page": "828",
+                "DOI": "10.1126\/science.aae0474",
+                "volume": "352",
+                "author": "R Kong",
+                "year": "2016",
+                "unstructured": "Kong, R. et al. Fusion peptide of HIV-1 as a site of vulnerability to neutralizing antibody. Science 352, 828\u2013833 (2016).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR149",
+                "doi-asserted-by": "publisher",
+                "first-page": "857",
+                "DOI": "10.1038\/s41591-018-0042-6",
+                "volume": "24",
+                "author": "K Xu",
+                "year": "2018",
+                "unstructured": "Xu, K. et al. Epitope-based vaccine design yields fusion peptide-directed antibodies that neutralize diverse strains of HIV-1. Nat. Med. 24, 857\u2013867 (2018).",
+                "journal-title": "Nat. Med."
+            },
+            {
+                "key": "753_CR150",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41598-020-59711-y",
+                "volume": "10",
+                "author": "L Ou",
+                "year": "2020",
+                "unstructured": "Ou, L. et al. Preclinical development of a fusion peptide conjugate as an HIV vaccine immunogen. Sci. Rep. 10, 3032 (2020).",
+                "journal-title": "Sci. Rep."
+            },
+            {
+                "key": "753_CR151",
+                "doi-asserted-by": "publisher",
+                "first-page": "531",
+                "DOI": "10.1016\/j.chom.2020.01.027",
+                "volume": "27",
+                "author": "CH Shen",
+                "year": "2020",
+                "unstructured": "Shen, C. H. et al. VRC34-antibody lineage development reveals how a required rare mutation shapes the maturation of a broad HIV-neutralizing lineage. Cell Host Microbe 27, 531\u2013543.e6 (2020).",
+                "journal-title": "Cell Host Microbe"
+            },
+            {
+                "key": "753_CR152",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41541-021-00285-9",
+                "volume": "6",
+                "author": "PJM Brouwer",
+                "year": "2021",
+                "unstructured": "Brouwer, P. J. M. et al. Immunofocusing and enhancing autologous tier-2 HIV-1 neutralization by displaying Env trimers on two-component protein nanoparticles. NPJ Vaccines 6, 24 (2021).",
+                "journal-title": "NPJ Vaccines"
+            },
+            {
+                "key": "753_CR153",
+                "doi-asserted-by": "publisher",
+                "first-page": "468",
+                "DOI": "10.1016\/j.molmed.2003.09.001",
+                "volume": "9",
+                "author": "R Pantophlet",
+                "year": "2003",
+                "unstructured": "Pantophlet, R. & Burton, D. R. Immunofocusing: antigen engineering to promote the induction of HIV-neutralizing antibodies. Trends Mol. Med. 9, 468\u2013473 (2003).",
+                "journal-title": "Trends Mol. Med."
+            },
+            {
+                "key": "753_CR154",
+                "doi-asserted-by": "publisher",
+                "first-page": "1100",
+                "DOI": "10.1128\/jvi.70.2.1100-1108.1996",
+                "volume": "70",
+                "author": "A Trkola",
+                "year": "1996",
+                "unstructured": "Trkola, A. et al. Human monoclonal antibody 2G12 defines a distinctive neutralization epitope on the gp120 glycoprotein of human immunodeficiency virus type 1. J. Virol. 70, 1100\u20131108 (1996).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR155",
+                "doi-asserted-by": "publisher",
+                "first-page": "2065",
+                "DOI": "10.1126\/science.1083182",
+                "volume": "300",
+                "author": "DA Calarese",
+                "year": "2003",
+                "unstructured": "Calarese, D. A. et al. Antibody domain exchange is an immunological solution to carbohydrate cluster recognition. Science 300, 2065\u20132071 (2003).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR156",
+                "doi-asserted-by": "publisher",
+                "first-page": "2955",
+                "DOI": "10.1016\/j.cell.2021.04.042",
+                "volume": "184",
+                "author": "WB Williams",
+                "year": "2021",
+                "unstructured": "Williams, W. B. et al. Fab-dimerized glycan-reactive antibodies are a structural category of natural antibodies. Cell 184, 2955\u20132972.e25 (2021).",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR157",
+                "doi-asserted-by": "publisher",
+                "first-page": "267",
+                "DOI": "10.1146\/annurev.immunol.021908.132607",
+                "volume": "27",
+                "author": "JC Weill",
+                "year": "2009",
+                "unstructured": "Weill, J. C., Weller, S. & Reynaud, C. A. Human marginal zone B cells. Annu. Rev. Immunol. 27, 267\u2013285 (2009).",
+                "journal-title": "Annu. Rev. Immunol."
+            },
+            {
+                "key": "753_CR158",
+                "doi-asserted-by": "publisher",
+                "first-page": "872",
+                "DOI": "10.3389\/fimmu.2017.00872",
+                "volume": "8",
+                "author": "NE Holodick",
+                "year": "2017",
+                "unstructured": "Holodick, N. E., Rodr\u00edguez-Zhurbenko, N. & Hern\u00e1ndez, A. M. Defining natural antibodies. Front. Immunol. 8, 872 (2017).",
+                "journal-title": "Front. Immunol."
+            },
+            {
+                "key": "753_CR159",
+                "doi-asserted-by": "publisher",
+                "first-page": "206",
+                "DOI": "10.1016\/j.cell.2019.12.027",
+                "volume": "180",
+                "author": "KM Cirelli",
+                "year": "2020",
+                "unstructured": "Cirelli, K. M. et al. Slow delivery immunization enhances HIV neutralizing antibody and germinal center responses via modulation of immunodominance. Cell 180, 206 (2020). This key paper shows the role of timing of immunization on optimizing HIV Env neutralizing and germinal centre responses.",
+                "journal-title": "Cell"
+            },
+            {
+                "key": "753_CR160",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1084\/jem.20201254",
+                "author": "JH Lee",
+                "year": "2021",
+                "unstructured": "Lee, J. H. et al. Modulating the quantity of HIV Env-specific CD4 T cell help promotes rare B cell responses in germinal centers. J. Exp. Med. https:\/\/doi.org\/10.1084\/jem.20201254 (2021).",
+                "journal-title": "J. Exp. Med."
+            },
+            {
+                "key": "753_CR161",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1101\/2021.12.20.473537",
+                "author": "JH Lee",
+                "year": "2021",
+                "unstructured": "Lee, J. H. et al. Long-lasting germinal center responses to a priming immunization with continuous proliferation and somatic mutation. Preprint at bioRxiv https:\/\/doi.org\/10.1101\/2021.12.20.473537 (2021).",
+                "journal-title": "bioRxiv"
+            },
+            {
+                "key": "753_CR162",
+                "doi-asserted-by": "publisher",
+                "first-page": "E6639",
+                "DOI": "10.1073\/pnas.1606050113",
+                "volume": "113",
+                "author": "HH Tam",
+                "year": "2016",
+                "unstructured": "Tam, H. H. et al. Sustained antigen availability during germinal center initiation enhances antibody responses to vaccination. Proc. Natl Acad. Sci. USA 113, E6639\u2013E6648 (2016).",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR163",
+                "doi-asserted-by": "publisher",
+                "first-page": "471",
+                "DOI": "10.1038\/s41577-020-0274-9",
+                "volume": "20",
+                "author": "DR Collins",
+                "year": "2020",
+                "unstructured": "Collins, D. R., Gaiha, G. D. & Walker, B. D. CD8+ T cells in HIV control, cure and prevention. Nat. Rev. Immunol. 20, 471\u2013482 (2020).",
+                "journal-title": "Nat. Rev. Immunol."
+            },
+            {
+                "key": "753_CR164",
+                "doi-asserted-by": "publisher",
+                "first-page": "95",
+                "DOI": "10.1146\/annurev-med-042010-085643",
+                "volume": "63",
+                "author": "LJ Picker",
+                "year": "2012",
+                "unstructured": "Picker, L. J., Hansen, S. G. & Lifson, J. D. New paradigms for HIV\/AIDS vaccine development. Annu. Rev. Med. 63, 95\u2013111 (2012).",
+                "journal-title": "Annu. Rev. Med."
+            },
+            {
+                "key": "753_CR165",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/sciimmunol.abi5830",
+                "author": "BD Walker",
+                "year": "2021",
+                "unstructured": "Walker, B. D. CMV, MHC-E, and the quest for an unconventional AIDS vaccine. Sci. Immunol. https:\/\/doi.org\/10.1126\/sciimmunol.abi5830 (2021).",
+                "journal-title": "Sci. Immunol."
+            },
+            {
+                "key": "753_CR166",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/sciimmunol.abg1703",
+                "author": "H Yang",
+                "year": "2021",
+                "unstructured": "Yang, H. et al. HLA-E-restricted, Gag-specific CD8+ T cells can suppress HIV-1 infection, offering vaccine opportunities. Sci. Immunol. https:\/\/doi.org\/10.1126\/sciimmunol.abg1703 (2021).",
+                "journal-title": "Sci. Immunol."
+            },
+            {
+                "key": "753_CR167",
+                "doi-asserted-by": "publisher",
+                "first-page": "1253",
+                "DOI": "10.1084\/jem.20090365",
+                "volume": "206",
+                "author": "N Goonetilleke",
+                "year": "2009",
+                "unstructured": "Goonetilleke, N. et al. The first T cell response to transmitted\/founder virus contributes to the control of acute viremia in HIV-1 infection. J. Exp. Med. 206, 1253\u20131272 (2009).",
+                "journal-title": "J. Exp. Med."
+            },
+            {
+                "key": "753_CR168",
+                "doi-asserted-by": "publisher",
+                "first-page": "87",
+                "DOI": "10.1038\/nature07469",
+                "volume": "457",
+                "author": "J Liu",
+                "year": "2009",
+                "unstructured": "Liu, J. et al. Immune control of an SIV challenge by a T-cell-based vaccine in rhesus monkeys. Nature 457, 87\u201391 (2009).",
+                "journal-title": "Nature"
+            },
+            {
+                "key": "753_CR169",
+                "doi-asserted-by": "publisher",
+                "first-page": "1881",
+                "DOI": "10.1016\/S0140-6736(08)61591-3",
+                "volume": "372",
+                "author": "SP Buchbinder",
+                "year": "2008",
+                "unstructured": "Buchbinder, S. P. et al. Efficacy assessment of a cell-mediated immunity HIV-1 vaccine (the Step Study): a double-blind, randomised, placebo-controlled, test-of-concept trial. Lancet 372, 1881\u20131893 (2008).",
+                "journal-title": "Lancet"
+            },
+            {
+                "key": "753_CR170",
+                "doi-asserted-by": "publisher",
+                "first-page": "507",
+                "DOI": "10.1016\/S1473-3099(11)70098-6",
+                "volume": "11",
+                "author": "GE Gray",
+                "year": "2011",
+                "unstructured": "Gray, G. E. et al. Safety and efficacy of the HVTN 503\/Phambili study of a clade-B-based HIV-1 vaccine in South Africa: a double-blind, randomised, placebo-controlled test-of-concept phase 2b study. Lancet Infect. Dis. 11, 507\u2013515 (2011).",
+                "journal-title": "Lancet Infect. Dis."
+            },
+            {
+                "key": "753_CR171",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.abe9233",
+                "author": "MC Verweij",
+                "year": "2021",
+                "unstructured": "Verweij, M. C. et al. Modulation of MHC-E transport by viral decoy ligands is required for RhCMV\/SIV vaccine efficacy. Science https:\/\/doi.org\/10.1126\/science.abe9233 (2021).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR172",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/sciimmunol.abg5413",
+                "author": "D Malouli",
+                "year": "2021",
+                "unstructured": "Malouli, D. et al. Cytomegaloviral determinants of CD8+ T cell programming and RhCMV\/SIV vaccine efficacy. Sci. Immunol. https:\/\/doi.org\/10.1126\/sciimmunol.abg5413 (2021).",
+                "journal-title": "Sci. Immunol."
+            },
+            {
+                "key": "753_CR173",
+                "doi-asserted-by": "publisher",
+                "first-page": "932",
+                "DOI": "10.1038\/s41591-020-0858-8",
+                "volume": "26",
+                "author": "PS Arunachalam",
+                "year": "2020",
+                "unstructured": "Arunachalam, P. S. et al. T cell-inducing vaccine durably prevents mucosal SHIV infection even with lower neutralizing antibody titers. Nat. Med. 26, 932\u2013940 (2020).",
+                "journal-title": "Nat. Med."
+            },
+            {
+                "key": "753_CR174",
+                "doi-asserted-by": "publisher",
+                "first-page": "148",
+                "DOI": "10.1016\/j.omtm.2019.06.003",
+                "volume": "14",
+                "author": "EG Wee",
+                "year": "2019",
+                "unstructured": "Wee, E. G. et al. Parallel induction of CH505 B cell ontogeny-guided neutralizing antibodies and tHIVconsvX conserved mosaic-specific T cells against HIV-1. Mol. Ther. Methods Clin. Dev. 14, 148\u2013160 (2019).",
+                "journal-title": "Mol. Ther. Methods Clin. Dev."
+            },
+            {
+                "key": "753_CR175",
+                "doi-asserted-by": "publisher",
+                "first-page": "347",
+                "DOI": "10.4161\/mabs.2.3.11779",
+                "volume": "2",
+                "author": "DS Dimitrov",
+                "year": "2010",
+                "unstructured": "Dimitrov, D. S. Therapeutic antibodies, vaccines and antibodyomes. mAbs 2, 347\u2013356 (2010).",
+                "journal-title": "mAbs"
+            },
+            {
+                "key": "753_CR176",
+                "unstructured": "Chen, W. et al. in AIDS Vaccine 2008 Vol. 24 11\u201312 Abstract 0A03-03 (AIDS Research and Human Retroviruses, 2008)."
+            },
+            {
+                "key": "753_CR177",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1005742",
+                "volume": "12",
+                "author": "C Rademeyer",
+                "year": "2016",
+                "unstructured": "Rademeyer, C. et al. Features of recently transmitted HIV-1 clade C viruses that impact antibody recognition: implications for active and passive immunization. PLoS Pathog. 12, e1005742 (2016).",
+                "journal-title": "PLoS Pathog."
+            },
+            {
+                "key": "753_CR178",
+                "doi-asserted-by": "publisher",
+                "first-page": "12623",
+                "DOI": "10.1128\/JVI.01705-14",
+                "volume": "88",
+                "author": "P Hraber",
+                "year": "2014",
+                "unstructured": "Hraber, P. et al. Impact of clade, geography, and age of the epidemic on HIV-1 neutralization by antibodies. J. Virol. 88, 12623\u201312643 (2014).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR179",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.3390\/v13102078",
+                "author": "JM Coffin",
+                "year": "2021",
+                "unstructured": "Coffin, J. M. & Hughes, S. H. Clonal expansion of infected CD4+ T cells in people living with HIV. Viruses https:\/\/doi.org\/10.3390\/v13102078 (2021).",
+                "journal-title": "Viruses"
+            },
+            {
+                "key": "753_CR180",
+                "doi-asserted-by": "publisher",
+                "first-page": "aaf6517",
+                "DOI": "10.1126\/science.aaf6517",
+                "volume": "353",
+                "author": "DM Margolis",
+                "year": "2016",
+                "unstructured": "Margolis, D. M., Garcia, J. V., Hazuda, D. J. & Haynes, B. F. Latency reversal and viral clearance to cure HIV-1. Science 353, aaf6517 (2016).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR181",
+                "doi-asserted-by": "publisher",
+                "first-page": "1943",
+                "DOI": "10.1056\/NEJMra1011874",
+                "volume": "364",
+                "author": "MS Cohen",
+                "year": "2011",
+                "unstructured": "Cohen, M. S., Shaw, G. M., McMichael, A. J. & Haynes, B. F. Acute HIV-1 infection. N. Engl. J. Med. 364, 1943\u20131954 (2011).",
+                "journal-title": "N. Engl. J. Med."
+            },
+            {
+                "key": "753_CR182",
+                "doi-asserted-by": "publisher",
+                "first-page": "403",
+                "DOI": "10.1056\/NEJMoa2035389",
+                "volume": "384",
+                "author": "LR Baden",
+                "year": "2021",
+                "unstructured": "Baden, L. R. et al. Efficacy and safety of the mRNA-1273 SARS-CoV-2 vaccine. N. Engl. J. Med. 384, 403\u2013416 (2021).",
+                "journal-title": "N. Engl. J. Med."
+            },
+            {
+                "key": "753_CR183",
+                "doi-asserted-by": "publisher",
+                "first-page": "2603",
+                "DOI": "10.1056\/NEJMoa2034577",
+                "volume": "383",
+                "author": "FP Polack",
+                "year": "2020",
+                "unstructured": "Polack, F. P. et al. Safety and efficacy of the BNT162b2 mRNA COVID-19 vaccine. N. Engl. J. Med. 383, 2603\u20132615 (2020).",
+                "journal-title": "N. Engl. J. Med."
+            },
+            {
+                "key": "753_CR184",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.3390\/vaccines9010065",
+                "author": "MD Buschmann",
+                "year": "2021",
+                "unstructured": "Buschmann, M. D. et al. Nanomaterial delivery systems for mRNA vaccines. Vaccines https:\/\/doi.org\/10.3390\/vaccines9010065 (2021).",
+                "journal-title": "Vaccines"
+            },
+            {
+                "key": "753_CR185",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41573-021-00283-5",
+                "author": "N Chaudhary",
+                "year": "2021",
+                "unstructured": "Chaudhary, N., Weissman, D. & Whitehead, K. A. mRNA vaccines for infectious diseases: principles, delivery and clinical translation. Nat. Rev. Drug Discov. https:\/\/doi.org\/10.1038\/s41573-021-00283-5 (2021).",
+                "journal-title": "Nat. Rev. Drug Discov."
+            },
+            {
+                "key": "753_CR186",
+                "doi-asserted-by": "publisher",
+                "first-page": "13",
+                "DOI": "10.1007\/978-1-0716-0872-2_2",
+                "volume": "2197",
+                "author": "I Tomb\u00e1cz",
+                "year": "2021",
+                "unstructured": "Tomb\u00e1cz, I., Weissman, D. & Pardi, N. Vaccination with messenger RNA: a promising alternative to DNA vaccination. Methods Mol. Biol. 2197, 13\u201331 (2021).",
+                "journal-title": "Methods Mol. Biol."
+            },
+            {
+                "key": "753_CR187",
+                "doi-asserted-by": "publisher",
+                "first-page": "38",
+                "DOI": "10.1016\/j.trsl.2021.11.009",
+                "volume": "242",
+                "author": "J Whitley",
+                "year": "2022",
+                "unstructured": "Whitley, J. et al. Development of mRNA manufacturing for vaccines and therapeutics: mRNA platform requirements and development of a scalable production process to support early phase clinical trials. Transl. Res. 242, 38\u201355 (2022).",
+                "journal-title": "Transl. Res."
+            },
+            {
+                "key": "753_CR188",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.3390\/vaccines9020134",
+                "author": "Z Mu",
+                "year": "2021",
+                "unstructured": "Mu, Z., Haynes, B. F. & Cain, D. W. HIV mRNA vaccines \u2014 progress and future paths. Vaccines https:\/\/doi.org\/10.3390\/vaccines9020134 (2021).",
+                "journal-title": "Vaccines"
+            },
+            {
+                "key": "753_CR189",
+                "doi-asserted-by": "publisher",
+                "first-page": "345",
+                "DOI": "10.1016\/j.jconrel.2015.08.007",
+                "volume": "217",
+                "author": "N Pardi",
+                "year": "2015",
+                "unstructured": "Pardi, N. et al. Expression kinetics of nucleoside-modified mRNA delivered in lipid nanoparticles to mice by various routes. J. Control. Release 217, 345\u2013351 (2015).",
+                "journal-title": "J. Control. Release"
+            },
+            {
+                "key": "753_CR190",
+                "doi-asserted-by": "publisher",
+                "first-page": "654",
+                "DOI": "10.1086\/428404",
+                "volume": "191",
+                "author": "NM Flynn",
+                "year": "2005",
+                "unstructured": "Flynn, N. M. et al. Placebo-controlled phase 3 trial of a recombinant glycoprotein 120 vaccine to prevent HIV-1 infection. J. Infect. Dis. 191, 654\u2013665 (2005).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR191",
+                "doi-asserted-by": "publisher",
+                "first-page": "595",
+                "DOI": "10.1086\/654816",
+                "volume": "202",
+                "author": "P Gilbert",
+                "year": "2010",
+                "unstructured": "Gilbert, P. et al. Magnitude and breadth of a nonprotective neutralizing antibody response in an efficacy trial of a candidate HIV-1 gp120 vaccine. J. Infect. Dis. 202, 595\u2013605 (2010).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR192",
+                "doi-asserted-by": "publisher",
+                "first-page": "666",
+                "DOI": "10.1086\/428405",
+                "volume": "191",
+                "author": "PB Gilbert",
+                "year": "2005",
+                "unstructured": "Gilbert, P. B. et al. Correlation between immunologic responses to a recombinant glycoprotein 120 vaccine and incidence of HIV-1 infection in a phase 3 HIV-1 preventive vaccine trial. J. Infect. Dis. 191, 666\u2013677 (2005).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR193",
+                "doi-asserted-by": "publisher",
+                "first-page": "431",
+                "DOI": "10.1093\/infdis\/jis367",
+                "volume": "206",
+                "author": "DC Montefiori",
+                "year": "2012",
+                "unstructured": "Montefiori, D. C. et al. Magnitude and breadth of the neutralizing antibody response in the RV144 and Vax003 HIV-1 vaccine efficacy trials. J. Infect. Dis. 206, 431\u2013441 (2012).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR194",
+                "doi-asserted-by": "publisher",
+                "first-page": "1661",
+                "DOI": "10.1086\/508748",
+                "volume": "194",
+                "author": "P Pitisuttithum",
+                "year": "2006",
+                "unstructured": "Pitisuttithum, P. et al. Randomized, double-blind, placebo-controlled efficacy trial of a bivalent recombinant glycoprotein 120 HIV-1 vaccine among injection drug users in Bangkok, Thailand. J. Infect. Dis. 194, 1661\u20131671 (2006).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR195",
+                "doi-asserted-by": "publisher",
+                "first-page": "ofu056",
+                "DOI": "10.1093\/ofid\/ofu056",
+                "volume": "1",
+                "author": "S Sterrett",
+                "year": "2014",
+                "unstructured": "Sterrett, S. et al. Low multiplicity of HIV-1 infection and no vaccine enhancement in VAX003 injection drug users. Open Forum Infect. Dis. 1, ofu056 (2014).",
+                "journal-title": "Open Forum Infect. Dis."
+            },
+            {
+                "key": "753_CR196",
+                "doi-asserted-by": "publisher",
+                "first-page": "1620",
+                "DOI": "10.1093\/infdis\/jiz368",
+                "volume": "220",
+                "author": "S Boppana",
+                "year": "2019",
+                "unstructured": "Boppana, S. et al. HLA-I associated adaptation dampens CD8 T-cell responses in HIV Ad5-vectored vaccine recipients. J. Infect. Dis. 220, 1620\u20131628 (2019).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR197",
+                "doi-asserted-by": "publisher",
+                "first-page": "5814",
+                "DOI": "10.1016\/j.vaccine.2020.06.043",
+                "volume": "38",
+                "author": "ME Curlin",
+                "year": "2020",
+                "unstructured": "Curlin, M. E. et al. Long-term mucosal T cell activation and homing phenotypes in recipients of an Ad5-vectored HIV vaccine. Vaccine 38, 5814\u20135821 (2020).",
+                "journal-title": "Vaccine"
+            },
+            {
+                "key": "753_CR198",
+                "doi-asserted-by": "publisher",
+                "first-page": "258",
+                "DOI": "10.1093\/infdis\/jis342",
+                "volume": "206",
+                "author": "A Duerr",
+                "year": "2012",
+                "unstructured": "Duerr, A. et al. Extended follow-up confirms early vaccine-enhanced risk of HIV acquisition and demonstrates waning effect over time among participants in a randomized trial of recombinant adenovirus HIV vaccine (Step Study). J. Infect. Dis. 206, 258\u2013266 (2012).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR199",
+                "doi-asserted-by": "publisher",
+                "first-page": "765",
+                "DOI": "10.1093\/infdis\/jiq114",
+                "volume": "203",
+                "author": "DW Fitzgerald",
+                "year": "2011",
+                "unstructured": "Fitzgerald, D. W. et al. An Ad5-vectored HIV-1 vaccine elicits cell-mediated immunity but does not affect disease progression in HIV-1-infected male subjects: results from a randomized placebo-controlled trial (the Step Study). J. Infect. Dis. 203, 765\u2013772 (2011).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR200",
+                "doi-asserted-by": "publisher",
+                "first-page": "366",
+                "DOI": "10.1038\/nm.2316",
+                "volume": "17",
+                "author": "M Rolland",
+                "year": "2011",
+                "unstructured": "Rolland, M. et al. Genetic impact of vaccination on breakthrough HIV-1 sequences from the STEP trial. Nat. Med. 17, 366\u2013371 (2011).",
+                "journal-title": "Nat. Med."
+            },
+            {
+                "key": "753_CR201",
+                "doi-asserted-by": "publisher",
+                "first-page": "1231",
+                "DOI": "10.1093\/infdis\/jit322",
+                "volume": "208",
+                "author": "H Janes",
+                "year": "2013",
+                "unstructured": "Janes, H. et al. Vaccine-induced gag-specific T cells are associated with reduced viremia after HIV-1 infection. J. Infect. Dis. 208, 1231\u20131239 (2013).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR202",
+                "doi-asserted-by": "publisher",
+                "first-page": "388",
+                "DOI": "10.1016\/S1473-3099(14)70020-9",
+                "volume": "14",
+                "author": "GE Gray",
+                "year": "2014",
+                "unstructured": "Gray, G. E. et al. Recombinant adenovirus type 5 HIV gag\/pol\/nef vaccine in South Africa: unblinded, long-term follow-up of the phase 2b HVTN 503\/Phambili study. Lancet Infect. Dis. 14, 388\u2013396 (2014).",
+                "journal-title": "Lancet Infect. Dis."
+            },
+            {
+                "key": "753_CR203",
+                "doi-asserted-by": "publisher",
+                "first-page": "5792",
+                "DOI": "10.1016\/j.vaccine.2016.09.054",
+                "volume": "34",
+                "author": "T Hertz",
+                "year": "2016",
+                "unstructured": "Hertz, T. et al. A study of vaccine-induced immune pressure on breakthrough infections in the Phambili phase 2b HIV-1 vaccine efficacy trial. Vaccine 34, 5792\u20135801 (2016).",
+                "journal-title": "Vaccine"
+            },
+            {
+                "key": "753_CR204",
+                "doi-asserted-by": "publisher",
+                "first-page": "379",
+                "DOI": "10.1093\/infdis\/jiw093",
+                "volume": "214",
+                "author": "EM Leitman",
+                "year": "2016",
+                "unstructured": "Leitman, E. M. et al. Lower viral loads and slower CD4+ T-cell count decline in MRKAd5 HIV-1 vaccinees expressing disease-susceptible HLA-B*58:02. J. Infect. Dis. 214, 379\u2013389 (2016).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR205",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0137666",
+                "volume": "10",
+                "author": "Z Moodie",
+                "year": "2015",
+                "unstructured": "Moodie, Z. et al. Continued follow-up of Phambili phase 2b randomized HIV-1 vaccine trial participants supports increased HIV-1 acquisition among vaccinated men. PLoS ONE 10, e0137666 (2015).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR206",
+                "doi-asserted-by": "publisher",
+                "first-page": "531",
+                "DOI": "10.1016\/S1473-3099(12)70088-9",
+                "volume": "12",
+                "author": "ML Robb",
+                "year": "2012",
+                "unstructured": "Robb, M. L. et al. Risk behaviour and time as covariates for efficacy of the HIV vaccine regimen ALVAC-HIV (vCP1521) and AIDSVAX B\/E: a post-hoc analysis of the Thai phase 3 efficacy trial RV 144. Lancet Infect. Dis. 12, 531\u2013537 (2012).",
+                "journal-title": "Lancet Infect. Dis."
+            },
+            {
+                "key": "753_CR207",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0196397",
+                "volume": "13",
+                "author": "S Akapirat",
+                "year": "2018",
+                "unstructured": "Akapirat, S. et al. Characterization of HIV-1 gp120 antibody specificities induced in anogenital secretions of RV144 vaccine recipients after late boost immunizations. PLoS ONE 13, e0196397 (2018).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR208",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0075665",
+                "volume": "8",
+                "author": "R Gottardo",
+                "year": "2013",
+                "unstructured": "Gottardo, R. et al. Plasma IgG to linear epitopes in the V2 and V3 regions of HIV-1 gp120 correlate with a reduced risk of infection in the RV144 vaccine efficacy trial. PLoS ONE 8, e75665 (2013).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR209",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.aax1880",
+                "author": "GE Gray",
+                "year": "2019",
+                "unstructured": "Gray, G. E. et al. Immune correlates of the Thai RV144 HIV vaccine regimen in South Africa. Sci. Transl. Med. https:\/\/doi.org\/10.1126\/scitranslmed.aax1880 (2019).",
+                "journal-title": "Sci. Transl. Med."
+            },
+            {
+                "key": "753_CR210",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0111334",
+                "volume": "9",
+                "author": "K Dommaraju",
+                "year": "2014",
+                "unstructured": "Dommaraju, K. et al. CD8 and CD4 epitope predictions in RV144: no strong evidence of a T-cell driven sieve effect in HIV-1 breakthrough sequences from trial participants. PLoS ONE 9, e111334 (2014).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR211",
+                "doi-asserted-by": "publisher",
+                "first-page": "8242",
+                "DOI": "10.1128\/JVI.01164-14",
+                "volume": "88",
+                "author": "AJ Gartland",
+                "year": "2014",
+                "unstructured": "Gartland, A. J. et al. Analysis of HLA A*02 association with vaccine efficacy in the RV144 HIV-1 vaccine trial. J. Virol. 88, 8242\u20138255 (2014).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR212",
+                "doi-asserted-by": "publisher",
+                "first-page": "1184",
+                "DOI": "10.1016\/j.vaccine.2016.09.053",
+                "volume": "35",
+                "author": "Y Huang",
+                "year": "2017",
+                "unstructured": "Huang, Y. et al. Predictors of durable immune responses six months after the last vaccination in preventive HIV vaccine trials. Vaccine 35, 1184\u20131193 (2017).",
+                "journal-title": "Vaccine"
+            },
+            {
+                "key": "753_CR213",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0027837",
+                "volume": "6",
+                "author": "P Pitisuttithum",
+                "year": "2011",
+                "unstructured": "Pitisuttithum, P. et al. Safety and reactogenicity of canarypox ALVAC-HIV (vCP1521) and HIV-1 gp120 AIDSVAX B\/E vaccination in an efficacy trial in Thailand. PLoS ONE 6, e27837 (2011).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR214",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0226803",
+                "volume": "15",
+                "author": "LP Zhao",
+                "year": "2020",
+                "unstructured": "Zhao, L. P. et al. Landscapes of binding antibody and T-cell responses to pox-protein HIV vaccines in Thais and South Africans. PLoS ONE 15, e0226803 (2020).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR215",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0087572",
+                "volume": "9",
+                "author": "S Zolla-Pazner",
+                "year": "2014",
+                "unstructured": "Zolla-Pazner, S. et al. Vaccine-induced IgG antibodies to V1V2 regions of multiple HIV-1 subtypes correlate with decreased risk of HIV-1 infection. PLoS ONE 9, e87572 (2014).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR216",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pone.0185959",
+                "volume": "12",
+                "author": "AC deCamp",
+                "year": "2017",
+                "unstructured": "deCamp, A. C. et al. Sieve analysis of breakthrough HIV-1 sequences in HVTN 505 identifies vaccine pressure targeting the CD4 binding site of Env-gp120. PLoS ONE 12, e0185959 (2017).",
+                "journal-title": "PLoS ONE"
+            },
+            {
+                "key": "753_CR217",
+                "doi-asserted-by": "publisher",
+                "first-page": "1280",
+                "DOI": "10.1093\/infdis\/jiy008",
+                "volume": "217",
+                "author": "Y Fong",
+                "year": "2018",
+                "unstructured": "Fong, Y. et al. Modification of the association between T-cell immune responses and human immunodeficiency virus type 1 infection risk by vaccine-induced antibody responses in the HVTN 505 trial. J. Infect. Dis. 217, 1280\u20131288 (2018).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR218",
+                "doi-asserted-by": "publisher",
+                "first-page": "2083",
+                "DOI": "10.1056\/NEJMoa1310566",
+                "volume": "369",
+                "author": "SM Hammer",
+                "year": "2013",
+                "unstructured": "Hammer, S. M. et al. Efficacy trial of a DNA\/rAd5 HIV-1 preventive vaccine. N. Engl. J. Med. 369, 2083\u20132092 (2013).",
+                "journal-title": "N. Engl. J. Med."
+            },
+            {
+                "key": "753_CR219",
+                "doi-asserted-by": "publisher",
+                "first-page": "1376",
+                "DOI": "10.1093\/infdis\/jix086",
+                "volume": "215",
+                "author": "HE Janes",
+                "year": "2017",
+                "unstructured": "Janes, H. E. et al. Higher T-cell responses induced by DNA\/rAd5 HIV-1 preventive vaccine are associated with lower HIV-1 infection risk in an efficacy trial. J. Infect. Dis. 215, 1376\u20131385 (2017).",
+                "journal-title": "J. Infect. Dis."
+            },
+            {
+                "key": "753_CR220",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1128\/jvi.02041-18",
+                "author": "SS Li",
+                "year": "2019",
+                "unstructured": "Li, S. S. et al. Fc\u03b3 receptor polymorphisms modulated the vaccine effect on HIV-1 risk in the HVTN 505 HIV vaccine trial. J. Virol. https:\/\/doi.org\/10.1128\/jvi.02041-18 (2019).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR221",
+                "doi-asserted-by": "publisher",
+                "first-page": "4838",
+                "DOI": "10.1172\/JCI126391",
+                "volume": "129",
+                "author": "SD Neidich",
+                "year": "2019",
+                "unstructured": "Neidich, S. D. et al. Antibody Fc effector functions and IgG3 associate with decreased HIV-1 risk. J. Clin. Invest. 129, 4838\u20134849 (2019).",
+                "journal-title": "J. Clin. Invest."
+            },
+            {
+                "key": "753_CR222",
+                "doi-asserted-by": "publisher",
+                "first-page": "aab1253",
+                "DOI": "10.1126\/science.aab1253",
+                "volume": "349",
+                "author": "WB Williams",
+                "year": "2015",
+                "unstructured": "Williams, W. B. et al. HIV-1 VACCINES. Diversion of HIV-1 vaccine-induced immunity by gp41-microbiota cross-reactive antibodies. Science 349, aab1253 (2015).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR223",
+                "doi-asserted-by": "publisher",
+                "first-page": "671",
+                "DOI": "10.1097\/QAI.0000000000002639",
+                "volume": "87",
+                "author": "S Edupuganti",
+                "year": "2021",
+                "unstructured": "Edupuganti, S. et al. Feasibility and successful enrollment in a proof-of-concept HIV prevention trial of VRC01, a broadly neutralizing HIV-1 monoclonal antibody. J. Acquir. Immune Defic. Syndr. 87, 671\u2013679 (2021).",
+                "journal-title": "J. Acquir. Immune Defic. Syndr."
+            },
+            {
+                "key": "753_CR224",
+                "doi-asserted-by": "publisher",
+                "first-page": "680",
+                "DOI": "10.1097\/QAI.0000000000002649",
+                "volume": "87",
+                "author": "NM Mgodi",
+                "year": "2021",
+                "unstructured": "Mgodi, N. M. et al. A phase 2b study to evaluate the safety and efficacy of VRC01 broadly neutralizing monoclonal antibody in reducing acquisition of HIV-1 infection in women in sub-Saharan Africa: baseline findings. J. Acquir. Immune Defic. Syndr. 87, 680\u2013687 (2021).",
+                "journal-title": "J. Acquir. Immune Defic. Syndr."
+            },
+            {
+                "key": "753_CR225",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1186\/s12889-020-09785-0",
+                "volume": "20",
+                "author": "F Laher",
+                "year": "2020",
+                "unstructured": "Laher, F. et al. Willingness to use HIV prevention methods among vaccine efficacy trial participants in Soweto, South Africa: discretion is important. BMC Public. Health 20, 1669 (2020).",
+                "journal-title": "BMC Public. Health"
+            },
+            {
+                "key": "753_CR226",
+                "doi-asserted-by": "publisher",
+                "first-page": "232",
+                "DOI": "10.1016\/S0140-6736(18)31364-3",
+                "volume": "392",
+                "author": "DH Barouch",
+                "year": "2018",
+                "unstructured": "Barouch, D. H. et al. Evaluation of a mosaic HIV-1 vaccine in a multicentre, randomised, double-blind, placebo-controlled, phase 1\/2a clinical trial (APPROACH) and in rhesus monkeys (NHP 13-19). Lancet 392, 232\u2013243 (2018).",
+                "journal-title": "Lancet"
+            },
+            {
+                "key": "753_CR227",
+                "unstructured": "Haynes, B. F., Wiehe, K., Acharya, P. & Saunders, K. O. in Vaccines 8th edn, Ch. 31 (eds Plotkin, S. A. et al.) (Elsevier, in press)."
+            },
+            {
+                "key": "753_CR228",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.aao2602",
+                "author": "CT Mayer",
+                "year": "2017",
+                "unstructured": "Mayer, C. T. et al. The microanatomic segregation of selection by apoptosis in the germinal center. Science https:\/\/doi.org\/10.1126\/science.aao2602 (2017).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR229",
+                "doi-asserted-by": "publisher",
+                "first-page": "W213",
+                "DOI": "10.1093\/nar\/gkv404",
+                "volume": "43",
+                "author": "H Yoon",
+                "year": "2015",
+                "unstructured": "Yoon, H. et al. CATNAP: a tool to compile, analyze and tally neutralizing antibody panels. Nucleic Acids Res. 43, W213\u2013W219 (2015).",
+                "journal-title": "Nucleic Acids Res."
+            },
+            {
+                "key": "753_CR230",
+                "doi-asserted-by": "publisher",
+                "first-page": "455",
+                "DOI": "10.1038\/nature13808",
+                "volume": "514",
+                "author": "M Pancera",
+                "year": "2014",
+                "unstructured": "Pancera, M. et al. Structure and immune recognition of trimeric pre-fusion HIV-1 Env. Nature 514, 455\u2013461 (2014).",
+                "journal-title": "Nature"
+            },
+            {
+                "key": "753_CR231",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1128\/JVI.00071-21",
+                "author": "H Li",
+                "year": "2021",
+                "unstructured": "Li, H. et al. New SHIVs and improved design strategy for modeling HIV-1 transmission, immunopathogenesis, prevention and cure. J. Virol. https:\/\/doi.org\/10.1128\/JVI.00071-21 (2021).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR232",
+                "first-page": "E3413",
+                "volume": "113",
+                "author": "H Li",
+                "year": "2016",
+                "unstructured": "Li, H. et al. Envelope residue 375 substitutions in simian-human immunodeficiency viruses enhance CD4 binding and replication in rhesus macaques. Proc. Natl Acad. Sci. USA 113, E3413\u2013E3422 (2016). This work is a key study on development of the SHIV model for study of ontogeny of bnAbs in rhesus macaques.",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR233",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1003639",
+                "volume": "9",
+                "author": "KA Finton",
+                "year": "2013",
+                "unstructured": "Finton, K. A. et al. Autoreactivity and exceptional CDR plasticity (but not unusual polyspecificity) hinder elicitation of the anti-HIV antibody 4E10. PLoS Pathog. 9, e1003639 (2013).",
+                "journal-title": "PLoS Pathog."
+            },
+            {
+                "key": "753_CR234",
+                "doi-asserted-by": "publisher",
+                "first-page": "3179",
+                "DOI": "10.4049\/jimmunol.1301283",
+                "volume": "191",
+                "author": "T Ota",
+                "year": "2013",
+                "unstructured": "Ota, T. et al. B cells from knock-in mice expressing broadly neutralizing HIV antibody b12 carry an innocuous B cell receptor responsive to HIV vaccine candidates. J. Immunol. 191, 3179\u20133185 (2013).",
+                "journal-title": "J. Immunol."
+            },
+            {
+                "key": "753_CR235",
+                "doi-asserted-by": "publisher",
+                "first-page": "89",
+                "DOI": "10.1111\/imr.12505",
+                "volume": "275",
+                "author": "L Verkoczy",
+                "year": "2017",
+                "unstructured": "Verkoczy, L., Alt, F. W. & Tian, M. Human Ig knockin mice to study the development and regulation of HIV-1 broadly neutralizing antibodies. Immunol. Rev. 275, 89\u2013107 (2017).",
+                "journal-title": "Immunol. Rev."
+            },
+            {
+                "key": "753_CR236",
+                "doi-asserted-by": "publisher",
+                "first-page": "133",
+                "DOI": "10.1016\/j.immuni.2017.11.023",
+                "volume": "48",
+                "author": "RK Abbott",
+                "year": "2018",
+                "unstructured": "Abbott, R. K. et al. Precursor frequency and affinity determine B cell competitive fitness in germinal centers, tested with germline-targeting HIV vaccine immunogens. Immunity 48, 133\u2013146.e6 (2018).",
+                "journal-title": "Immunity"
+            },
+            {
+                "key": "753_CR237",
+                "doi-asserted-by": "publisher",
+                "first-page": "7929",
+                "DOI": "10.1073\/pnas.1921996117",
+                "volume": "117",
+                "author": "M Tian",
+                "year": "2020",
+                "unstructured": "Tian, M. et al. Conditional antibody expression to avoid central B cell deletion in humanized HIV-1 vaccine mouse models. Proc. Natl Acad. Sci. USA 117, 7929\u20137940 (2020).",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR238",
+                "doi-asserted-by": "publisher",
+                "first-page": "1477",
+                "DOI": "10.1126\/science.1245625",
+                "volume": "342",
+                "author": "JP Julien",
+                "year": "2013",
+                "unstructured": "Julien, J. P. et al. Crystal structure of a soluble cleaved HIV-1 envelope trimer. Science 342, 1477\u20131483 (2013).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR239",
+                "doi-asserted-by": "publisher",
+                "first-page": "1484",
+                "DOI": "10.1126\/science.1245627",
+                "volume": "342",
+                "author": "D Lyumkis",
+                "year": "2013",
+                "unstructured": "Lyumkis, D. et al. Cryo-EM structure of a fully glycosylated soluble cleaved HIV-1 envelope trimer. Science 342, 1484\u20131490 (2013).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR240",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1003618",
+                "volume": "9",
+                "author": "RW Sanders",
+                "year": "2013",
+                "unstructured": "Sanders, R. W. et al. A next-generation cleaved, soluble HIV-1 Env trimer, BG505 SOSIP.664 gp140, expresses multiple epitopes for broadly neutralizing but not non-neutralizing antibodies. pLoS Pathog. 9, e1003618 (2013).",
+                "journal-title": "pLoS Pathog."
+            },
+            {
+                "key": "753_CR241",
+                "doi-asserted-by": "publisher",
+                "first-page": "327",
+                "DOI": "10.1016\/j.chom.2021.02.002",
+                "volume": "29",
+                "author": "RW Sanders",
+                "year": "2021",
+                "unstructured": "Sanders, R. W. & Moore, J. P. Virus vaccines: proteins prefer prolines. Cell Host Microbe 29, 327\u2013333 (2021).",
+                "journal-title": "Cell Host Microbe"
+            },
+            {
+                "key": "753_CR242",
+                "doi-asserted-by": "publisher",
+                "first-page": "17624",
+                "DOI": "10.1073\/pnas.1415789111",
+                "volume": "111",
+                "author": "D Sok",
+                "year": "2014",
+                "unstructured": "Sok, D. et al. Recombinant HIV envelope trimer selects for quaternary-dependent antibodies targeting the trimer apex. Proc. Natl Acad. Sci. USA 111, 17624\u201317629 (2014).",
+                "journal-title": "Proc. Natl Acad. Sci. USA"
+            },
+            {
+                "key": "753_CR243",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41541-020-00223-1",
+                "volume": "5",
+                "author": "JT Martin",
+                "year": "2020",
+                "unstructured": "Martin, J. T. et al. Targeting HIV Env immunogens to B cell follicles in nonhuman primates through immune complex or protein nanoparticle formulations. NPJ Vaccines 5, 72 (2020).",
+                "journal-title": "NPJ Vaccines"
+            },
+            {
+                "key": "753_CR244",
+                "doi-asserted-by": "publisher",
+                "first-page": "649",
+                "DOI": "10.1126\/science.aat9120",
+                "volume": "363",
+                "author": "T Tokatlian",
+                "year": "2019",
+                "unstructured": "Tokatlian, T. et al. Innate immune recognition of glycans targets HIV nanoparticle immunogens to germinal centers. Science 363, 649\u2013654 (2019).",
+                "journal-title": "Science"
+            },
+            {
+                "key": "753_CR245",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41467-017-01549-6",
+                "volume": "8",
+                "author": "DW Kulp",
+                "year": "2017",
+                "unstructured": "Kulp, D. W. et al. Structure-based design of native-like HIV-1 envelope trimers to silence non-neutralizing epitopes and eliminate CD4 binding. Nat. Commun. 8, 1655 (2017).",
+                "journal-title": "Nat. Commun."
+            },
+            {
+                "key": "753_CR246",
+                "doi-asserted-by": "publisher",
+                "first-page": "eaba0512",
+                "DOI": "10.1126\/sciadv.aba0512",
+                "volume": "6",
+                "author": "B Nogal",
+                "year": "2020",
+                "unstructured": "Nogal, B. et al. HIV envelope trimer-elicited autologous neutralizing antibodies bind a region overlapping the N332 glycan supersite. Sci. Adv. 6, eaba0512 (2020).",
+                "journal-title": "Sci. Adv."
+            },
+            {
+                "key": "753_CR247",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1007920",
+                "volume": "15",
+                "author": "A Torrents de la Pe\u00f1a",
+                "year": "2019",
+                "unstructured": "Torrents de la Pe\u00f1a, A. et al. Similarities and differences between native HIV-1 envelope glycoprotein trimers and stabilized soluble trimer mimetics. PLoS Pathog. 15, e1007920 (2019).",
+                "journal-title": "PLoS Pathog."
+            },
+            {
+                "key": "753_CR248",
+                "doi-asserted-by": "publisher",
+                "first-page": "108933",
+                "DOI": "10.1016\/j.celrep.2021.108933",
+                "volume": "35",
+                "author": "R Derking",
+                "year": "2021",
+                "unstructured": "Derking, R. et al. Enhancing glycan occupancy of soluble HIV-1 envelope trimers to mimic the native viral spike. Cell Rep. 35, 108933 (2021).",
+                "journal-title": "Cell Rep."
+            },
+            {
+                "key": "753_CR249",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1128\/mBio.00429-21",
+                "volume": "12",
+                "author": "S Kumar",
+                "year": "2021",
+                "unstructured": "Kumar, S. et al. Neutralizing antibodies induced by first-generation gp41-stabilized HIV-1 envelope trimers and nanoparticles. mBio 12, e0042921 (2021).",
+                "journal-title": "mBio"
+            },
+            {
+                "key": "753_CR250",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1128\/jvi.01656-18",
+                "author": "RP Ringe",
+                "year": "2019",
+                "unstructured": "Ringe, R. P. et al. Closing and opening holes in the glycan shield of HIV-1 envelope glycoprotein SOSIP trimers can redirect the neutralizing antibody response to the newly unmasked epitopes. J. Virol. https:\/\/doi.org\/10.1128\/jvi.01656-18 (2019).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR251",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1128\/JVI.01552-21",
+                "volume": "96",
+                "author": "A Schorcht",
+                "year": "2022",
+                "unstructured": "Schorcht, A. et al. The glycan hole area of HIV-1 envelope trimers contributes prominently to the induction of autologous neutralization. J. Virol. 96, e0155221 (2022).",
+                "journal-title": "J. Virol."
+            },
+            {
+                "key": "753_CR252",
+                "doi-asserted-by": "publisher",
+                "first-page": "893",
+                "DOI": "10.1016\/j.celrep.2018.09.087",
+                "volume": "25",
+                "author": "K Wagh",
+                "year": "2018",
+                "unstructured": "Wagh, K. et al. Completeness of HIV-1 envelope glycan shield at transmission determines neutralization breadth. Cell Rep. 25, 893\u2013908.e7 (2018).",
+                "journal-title": "Cell Rep."
+            },
+            {
+                "key": "753_CR253",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/sciadv.abh2791",
+                "author": "HL Turner",
+                "year": "2021",
+                "unstructured": "Turner, H. L. et al. Disassembly of HIV envelope glycoprotein trimer immunogens is driven by antibodies elicited via immunization. Sci. Adv. https:\/\/doi.org\/10.1126\/sciadv.abh2791 (2021).",
+                "journal-title": "Sci. Adv."
+            },
+            {
+                "key": "753_CR254",
+                "doi-asserted-by": "publisher",
+                "first-page": "2234",
+                "DOI": "10.1038\/s41591-021-01574-5",
+                "volume": "27",
+                "author": "P Zhang",
+                "year": "2021",
+                "unstructured": "Zhang, P. et al. A multiclade env\u2013gag VLP mRNA vaccine elicits tier-2 HIV-1-neutralizing antibodies and reduces the risk of heterologous SHIV infection in macaques. Nat. Med. 27, 2234\u20132245 (2021).",
+                "journal-title": "Nat. Med."
+            }
+        ],
+        "updated-by": [
+            {
+                "updated": {
+                    "date-parts": [
+                        [
+                            2023,
+                            3,
+                            1
+                        ]
+                    ],
+                    "date-time": "2023-03-01T00:00:00Z",
+                    "timestamp": 1677628800000
+                },
+                "DOI": "10.1038\/s41577-023-00854-0",
+                "type": "correction",
+                "source": "publisher",
+                "label": "Correction"
+            }
+        ],
+        "container-title": [
+            "Nature Reviews Immunology"
+        ],
+        "original-title": [],
+        "language": "en",
+        "link": [
+            {
+                "URL": "https:\/\/www.nature.com\/articles\/s41577-022-00753-w.pdf",
+                "content-type": "application\/pdf",
+                "content-version": "vor",
+                "intended-application": "text-mining"
+            },
+            {
+                "URL": "https:\/\/www.nature.com\/articles\/s41577-022-00753-w",
+                "content-type": "text\/html",
+                "content-version": "vor",
+                "intended-application": "text-mining"
+            },
+            {
+                "URL": "https:\/\/www.nature.com\/articles\/s41577-022-00753-w.pdf",
+                "content-type": "application\/pdf",
+                "content-version": "vor",
+                "intended-application": "similarity-checking"
+            }
+        ],
+        "deposited": {
+            "date-parts": [
+                [
+                    2024,
+                    12,
+                    11
+                ]
+            ],
+            "date-time": "2024-12-11T23:07:07Z",
+            "timestamp": 1733958427000
+        },
+        "score": 1,
+        "resource": {
+            "primary": {
+                "URL": "https:\/\/www.nature.com\/articles\/s41577-022-00753-w"
+            }
+        },
+        "subtitle": [],
+        "short-title": [],
+        "issued": {
+            "date-parts": [
+                [
+                    2022,
+                    8,
+                    12
+                ]
+            ]
+        },
+        "references-count": 254,
+        "journal-issue": {
+            "issue": "3",
+            "published-print": {
+                "date-parts": [
+                    [
+                        2023,
+                        3
+                    ]
+                ]
+            }
+        },
+        "alternative-id": [
+            "753"
+        ],
+        "URL": "https:\/\/doi.org\/10.1038\/s41577-022-00753-w",
+        "relation": {
+            "has-review": [
+                {
+                    "id-type": "doi",
+                    "id": "10.3410\/f.742280173.793594805",
+                    "asserted-by": "object"
+                }
+            ]
+        },
+        "ISSN": [
+            "1474-1733",
+            "1474-1741"
+        ],
+        "issn-type": [
+            {
+                "type": "print",
+                "value": "1474-1733"
+            },
+            {
+                "type": "electronic",
+                "value": "1474-1741"
+            }
+        ],
+        "subject": [],
+        "published": {
+            "date-parts": [
+                [
+                    2022,
+                    8,
+                    12
+                ]
+            ]
+        },
+        "assertion": [
+            {
+                "value": "15 June 2022",
+                "order": 1,
+                "name": "accepted",
+                "label": "Accepted",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "12 August 2022",
+                "order": 2,
+                "name": "first_online",
+                "label": "First Online",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "1 March 2023",
+                "order": 3,
+                "name": "change_date",
+                "label": "Change Date",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "Correction",
+                "order": 4,
+                "name": "change_type",
+                "label": "Change Type",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "A Correction to this paper has been published:",
+                "order": 5,
+                "name": "change_details",
+                "label": "Change Details",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "https:\/\/doi.org\/10.1038\/s41577-023-00854-0",
+                "URL": "https:\/\/doi.org\/10.1038\/s41577-023-00854-0",
+                "order": 6,
+                "name": "change_details",
+                "label": "Change Details",
+                "group": {
+                    "name": "ArticleHistory",
+                    "label": "Article History"
+                }
+            },
+            {
+                "value": "K.O.S. and B.F.H. are inventors on International Patent Application PCT\/US2018\/020788 submitted by Duke University that covers the composition and use of CH848 HIV-1 Envs for induction of HIV-1 antibodies. K.O.S., K.W. and B.F.H. are inventors on International Patent Application PCT\/US2018\/03477 submitted by Duke University that covers the composition and use of CH505 HIV-1 Envs for induction of HIV-1 antibodies.",
+                "order": 1,
+                "name": "Ethics",
+                "group": {
+                    "name": "EthicsHeading",
+                    "label": "Competing interests"
+                }
+            }
+        ]
+    }
+}

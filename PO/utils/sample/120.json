@@ -1,0 +1,2119 @@
+{
+    "status": "ok",
+    "message-type": "work",
+    "message-version": "1.0.0",
+    "message": {
+        "indexed": {
+            "date-parts": [
+                [
+                    2025,
+                    8,
+                    2
+                ]
+            ],
+            "date-time": "2025-08-02T19:47:13Z",
+            "timestamp": 1754164033616,
+            "version": "3.41.2"
+        },
+        "reference-count": 107,
+        "publisher": "American Association for the Advancement of Science (AAAS)",
+        "issue": "6759",
+        "content-domain": {
+            "domain": [
+                "www.science.org"
+            ],
+            "crossmark-restriction": true
+        },
+        "short-container-title": [
+            "Science"
+        ],
+        "published-print": {
+            "date-parts": [
+                [
+                    2025,
+                    7,
+                    31
+                ]
+            ]
+        },
+        "abstract": "<jats:p>A leading HIV vaccine strategy requires a priming immunogen to induce broadly neutralizing antibody (bnAb) precursors, followed by a series of heterologous boosters to elicit somatic hypermutation (SHM) and produce bnAbs. In two randomized, open-label phase 1 human clinical trials, IAVI G002 in the United States and IAVI G003 in Rwanda and South Africa (IAVI, International Aids Vaccine Initiative), we evaluated the safety and immunogenicity of mRNA-encoded nanoparticles as priming immunogens (both trials) and first-boosting immunogens (IAVI G002). The vaccines were generally safe and well tolerated, except that 18% of IAVI G002 participants experienced skin reactions. Priming induced bnAb precursors with substantial frequencies and SHM; heterologous boosting elicited increased SHM, affinity, and neutralization activity toward bnAb development; and elicited antibodies exhibited precise bnAb structural mimicry. The results establish clinical proof of concept that heterologous boosting can advance bnAb precursor maturation and demonstrate bnAb priming in Africa, where the HIV burden is highest.<\/jats:p>",
+        "DOI": "10.1126\/science.adr8382",
+        "type": "journal-article",
+        "created": {
+            "date-parts": [
+                [
+                    2025,
+                    5,
+                    15
+                ]
+            ],
+            "date-time": "2025-05-15T13:59:11Z",
+            "timestamp": 1747317551000
+        },
+        "update-policy": "https:\/\/doi.org\/10.34133\/aaas_crossmark",
+        "source": "Crossref",
+        "is-referenced-by-count": 8,
+        "title": [
+            "Vaccination with mRNA-encoded nanoparticles drives early maturation of HIV bnAb precursors in humans"
+        ],
+        "prefix": "10.1126",
+        "volume": "389",
+        "author": [
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-0135-5263",
+                "authenticated-orcid": true,
+                "given": "Jordan R.",
+                "family": "Willis",
+                "sequence": "first",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-1981-9054",
+                "authenticated-orcid": true,
+                "given": "Madhu",
+                "family": "Prabhakaran",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-0770-4468",
+                "authenticated-orcid": true,
+                "given": "Michelle",
+                "family": "Muthui",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Kenya Medical Research Institute \u2013 Wellcome Trust Research Programme, Kilifi, Kenya."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0000-6413-2895",
+                "authenticated-orcid": true,
+                "given": "Ansuya",
+                "family": "Naidoo",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-4556-649X",
+                "authenticated-orcid": true,
+                "given": "Troy",
+                "family": "Sincomb",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0008-6015-9167",
+                "authenticated-orcid": true,
+                "given": "Weiwei",
+                "family": "Wu",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-3364-3083",
+                "authenticated-orcid": true,
+                "given": "Christopher A.",
+                "family": "Cottrell",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-8183-5565",
+                "authenticated-orcid": true,
+                "given": "Elise",
+                "family": "Landais",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-1404-4322",
+                "authenticated-orcid": true,
+                "given": "Allan C.",
+                "family": "deCamp",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-4817-4053",
+                "authenticated-orcid": true,
+                "given": "Nahid R.",
+                "family": "Keshavarzi",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-5273-1951",
+                "authenticated-orcid": true,
+                "given": "Oleksandr",
+                "family": "Kalyuzhniy",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-7371-845X",
+                "authenticated-orcid": true,
+                "given": "Jeong Hyun",
+                "family": "Lee",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Linda M.",
+                "family": "Murungi",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, Nairobi, Kenya."
+                    }
+                ]
+            },
+            {
+                "given": "Wilfrida A.",
+                "family": "Ogonda",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Kenya Medical Research Institute \u2013 Wellcome Trust Research Programme, Kilifi, Kenya."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-2678-1311",
+                "authenticated-orcid": true,
+                "given": "Nicole L.",
+                "family": "Yates",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Center for Human Systems Immunology, Departments of Surgery, Immunology, Molecular Genetics and Microbiology, Duke University, Durham, NC, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-2774-0936",
+                "authenticated-orcid": true,
+                "given": "Martin M.",
+                "family": "Corcoran",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Microbiology, Tumor and Cell Biology, Karolinska Institutet, Stockholm, Sweden."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-1272-7712",
+                "authenticated-orcid": true,
+                "given": "Swastik",
+                "family": "Phulera",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Department of Integrative Structural and Computational Biology, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Joel",
+                "family": "Musando",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "KAVI \u2013 Institute of Clinical Research, University of Nairobi, Nairobi, Kenya."
+                    }
+                ]
+            },
+            {
+                "given": "Amanda",
+                "family": "Tsai",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Gabrielle",
+                "family": "Lemire",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-6448-672X",
+                "authenticated-orcid": true,
+                "given": "Yiakon",
+                "family": "Sein",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Kenya Medical Research Institute \u2013 Wellcome Trust Research Programme, Kilifi, Kenya."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0006-0937-2857",
+                "authenticated-orcid": true,
+                "given": "Michael",
+                "family": "Muteti",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Kenya Medical Research Institute \u2013 Wellcome Trust Research Programme, Kilifi, Kenya."
+                    }
+                ]
+            },
+            {
+                "given": "Praveen",
+                "family": "Alamuri",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Jennifer A.",
+                "family": "Bohl",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0006-0595-7495",
+                "authenticated-orcid": true,
+                "given": "Drienna",
+                "family": "Holman",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-7954-9674",
+                "authenticated-orcid": true,
+                "given": "Sunny",
+                "family": "Himansu",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Moderna, Cambridge, MA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Brett",
+                "family": "Leav",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Moderna, Cambridge, MA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0005-6083-5717",
+                "authenticated-orcid": true,
+                "given": "Caroline",
+                "family": "Reuter",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Moderna, Cambridge, MA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-2731-1346",
+                "authenticated-orcid": true,
+                "given": "Li-An",
+                "family": "Lin",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Moderna, Cambridge, MA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0009-7819-7951",
+                "authenticated-orcid": true,
+                "given": "Baoyu",
+                "family": "Ding",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Moderna, Cambridge, MA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Chunla",
+                "family": "He",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Moderna, Cambridge, MA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Walter L.",
+                "family": "Straus",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Moderna, Cambridge, MA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0008-0993-4009",
+                "authenticated-orcid": true,
+                "given": "Kellie J.",
+                "family": "MacPhee",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Isabel",
+                "family": "Regadas",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Microbiology, Tumor and Cell Biology, Karolinska Institutet, Stockholm, Sweden."
+                    }
+                ]
+            },
+            {
+                "given": "Diana V.",
+                "family": "Nyabundi",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Kenya Medical Research Institute \u2013 Wellcome Trust Research Programme, Kilifi, Kenya."
+                    }
+                ]
+            },
+            {
+                "given": "Ruth",
+                "family": "Chirchir",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "KAVI \u2013 Institute of Clinical Research, University of Nairobi, Nairobi, Kenya."
+                    }
+                ]
+            },
+            {
+                "given": "Omu",
+                "family": "Anzala",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "KAVI \u2013 Institute of Clinical Research, University of Nairobi, Nairobi, Kenya."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-4843-9958",
+                "authenticated-orcid": true,
+                "given": "John N.",
+                "family": "Kimotho",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Kenya Medical Research Institute \u2013 Wellcome Trust Research Programme, Kilifi, Kenya."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-0312-4282",
+                "authenticated-orcid": true,
+                "given": "Caleb",
+                "family": "Kibet",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Center for Human Systems Immunology, Departments of Surgery, Immunology, Molecular Genetics and Microbiology, Duke University, Durham, NC, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Kelli",
+                "family": "Greene",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Duke University Medical Center, Durham, NC, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-2468-8589",
+                "authenticated-orcid": true,
+                "given": "Hongmei",
+                "family": "Gao",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Duke University Medical Center, Durham, NC, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0000-6352-1872",
+                "authenticated-orcid": true,
+                "given": "Erica",
+                "family": "Beatman",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0004-1344-5719",
+                "authenticated-orcid": true,
+                "given": "Kiara",
+                "family": "Benson",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Dominick",
+                "family": "Laddy",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-4463-8316",
+                "authenticated-orcid": true,
+                "given": "David M.",
+                "family": "Brown",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "The Foundation for the National Institutes of Health, North Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0009-5513-3250",
+                "authenticated-orcid": true,
+                "given": "Rhianna",
+                "family": "Bronson",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0008-5598-068X",
+                "authenticated-orcid": true,
+                "given": "Jalen",
+                "family": "Jean-Baptiste",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-3828-1958",
+                "authenticated-orcid": true,
+                "given": "Suprabhath",
+                "family": "Gajjala",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-1127-1290",
+                "authenticated-orcid": true,
+                "given": "Zahra",
+                "family": "Rikhtegaran-Tehrani",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0001-8864-4091",
+                "authenticated-orcid": true,
+                "given": "Alison",
+                "family": "Benner",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-4804-5676",
+                "authenticated-orcid": true,
+                "given": "Mukundhan",
+                "family": "Ramaswami",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-2340-3377",
+                "authenticated-orcid": true,
+                "given": "Danny",
+                "family": "Lu",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-3848-6280",
+                "authenticated-orcid": true,
+                "given": "Nushin",
+                "family": "Alavi",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Sonya",
+                "family": "Amirzehni",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Michael",
+                "family": "Kubitz",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-2874-7010",
+                "authenticated-orcid": true,
+                "given": "Ryan",
+                "family": "Tingle",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-5137-4625",
+                "authenticated-orcid": true,
+                "given": "Erik",
+                "family": "Georgeson",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-9613-3921",
+                "authenticated-orcid": true,
+                "given": "Nicole",
+                "family": "Phelps",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-0795-9375",
+                "authenticated-orcid": true,
+                "given": "Yumiko",
+                "family": "Adachi",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-8606-574X",
+                "authenticated-orcid": true,
+                "given": "Alessia",
+                "family": "Liguori",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Claudia",
+                "family": "Flynn",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-7321-0530",
+                "authenticated-orcid": true,
+                "given": "Katherine",
+                "family": "McKenney",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0001-5074-5815",
+                "authenticated-orcid": true,
+                "given": "Xiaoya",
+                "family": "Zhou",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "D. Collins",
+                "family": "Owuor",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-0118-6823",
+                "authenticated-orcid": true,
+                "given": "Sharon A.",
+                "family": "Owuor",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-3541-4206",
+                "authenticated-orcid": true,
+                "given": "Soo-Young",
+                "family": "Kim",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0008-4279-0756",
+                "authenticated-orcid": true,
+                "given": "Michael",
+                "family": "Duff",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0002-1317-1223",
+                "authenticated-orcid": true,
+                "given": "Ju Yeong",
+                "family": "Kim",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0002-8312-2953",
+                "authenticated-orcid": true,
+                "given": "Grace",
+                "family": "Gibson",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Integrative Structural and Computational Biology, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-4547-5160",
+                "authenticated-orcid": true,
+                "given": "Sabyasachi",
+                "family": "Baboo",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Integrative Structural and Computational Biology, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-6489-4558",
+                "authenticated-orcid": true,
+                "given": "Jolene",
+                "family": "Diedrich",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Integrative Structural and Computational Biology, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Torben",
+                "family": "Schiffner",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Marisa",
+                "family": "Shields",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0009-5433-5862",
+                "authenticated-orcid": true,
+                "given": "Mabela",
+                "family": "Matsoso",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0008-0170-0080",
+                "authenticated-orcid": true,
+                "given": "Jennifer",
+                "family": "Santos",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0008-0816-2203",
+                "authenticated-orcid": true,
+                "given": "Kristen",
+                "family": "Syvertsen",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Allison",
+                "family": "Kennedy",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0008-9613-6936",
+                "authenticated-orcid": true,
+                "given": "Melissa",
+                "family": "Schroeter",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Johan",
+                "family": "Vekemans",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-5267-1672",
+                "authenticated-orcid": true,
+                "suffix": "III",
+                "given": "John R.",
+                "family": "Yates",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Integrative Structural and Computational Biology, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-4589-5322",
+                "authenticated-orcid": true,
+                "given": "James C.",
+                "family": "Paulson",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-1909-2542",
+                "authenticated-orcid": true,
+                "given": "Ollivier",
+                "family": "Hyrien",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-0616-9117",
+                "authenticated-orcid": true,
+                "given": "Adrian B.",
+                "family": "McDermott",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccines Research and Development, Sanofi, Swiftwater, PA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-6063-4353",
+                "authenticated-orcid": true,
+                "given": "Pholo",
+                "family": "Maenetje",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "The Aurum Institute, Rustenburg Research Centre, Rustenburg, South Africa."
+                    }
+                ]
+            },
+            {
+                "given": "Julien",
+                "family": "Nyombayire",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Center For Family Health Research, Kicukiro, Kigali, Rwanda."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-9475-5436",
+                "authenticated-orcid": true,
+                "given": "Etienne",
+                "family": "Karita",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Center For Family Health Research, Kicukiro, Kigali, Rwanda."
+                    }
+                ]
+            },
+            {
+                "given": "Rosine",
+                "family": "Ingabire",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Center For Family Health Research, Kicukiro, Kigali, Rwanda."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-3952-4760",
+                "authenticated-orcid": true,
+                "given": "Vinodh",
+                "family": "Edward",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "The Aurum Institute, Rustenburg Research Centre, Rustenburg, South Africa."
+                    },
+                    {
+                        "name": "Department of Medicine, Vanderbilt University, Nashville, TN, USA."
+                    },
+                    {
+                        "name": "School of Health Sciences, College of Health Sciences, Westville Campus, University of KwaZulu-Natal, Durban, South Africa."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-1620-3999",
+                "authenticated-orcid": true,
+                "given": "Vincent",
+                "family": "Muturi-Kioi",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, Nairobi, Kenya."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-3992-4193",
+                "authenticated-orcid": true,
+                "given": "Janine",
+                "family": "Maenza",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    },
+                    {
+                        "name": "Department of Medicine, University of Washington, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-3106-1258",
+                "authenticated-orcid": true,
+                "given": "Adrienne E.",
+                "family": "Shapiro",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    },
+                    {
+                        "name": "Department of Medicine, University of Washington, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-2276-7117",
+                "authenticated-orcid": true,
+                "given": "M. Juliana",
+                "family": "McElrath",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine and Infectious Disease Division, Fred Hutchinson Cancer Center, Seattle, WA, USA."
+                    },
+                    {
+                        "name": "Department of Medicine, University of Washington, Seattle, WA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-6566-9969",
+                "authenticated-orcid": true,
+                "given": "Srilatha",
+                "family": "Edupuganti",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Division of Infectious Diseases, Department of Medicine, Emory University School of Medicine, Atlanta, GA, USA."
+                    }
+                ]
+            },
+            {
+                "given": "Barbara S.",
+                "family": "Taylor",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Division of Infectious Diseases, Department of Medicine, University of Texas Health Science Center at San Antonio, San Antonio, Texas."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-2789-0512",
+                "authenticated-orcid": true,
+                "given": "David",
+                "family": "Diemert",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Microbiology, Immunology and Tropical Medicine, School of Medicine and Health Sciences, The George Washington University, Washington, DC, USA."
+                    },
+                    {
+                        "name": "Department of Medicine, School of Medicine and Health Sciences, The George Washington University, Washington, DC, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-9695-8138",
+                "authenticated-orcid": true,
+                "given": "Gabriel",
+                "family": "Ozorowski",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Department of Integrative Structural and Computational Biology, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-3090-7282",
+                "authenticated-orcid": true,
+                "given": "Richard A.",
+                "family": "Koup",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0003-0856-6319",
+                "authenticated-orcid": true,
+                "given": "David",
+                "family": "Montefiori",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Duke University Medical Center, Durham, NC, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-7153-3769",
+                "authenticated-orcid": true,
+                "given": "Andrew B.",
+                "family": "Ward",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Department of Integrative Structural and Computational Biology, The Scripps Research Institute, La Jolla, CA, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-7255-9047",
+                "authenticated-orcid": true,
+                "given": "Gunilla B.",
+                "family": "Karlsson Hedestam",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Microbiology, Tumor and Cell Biology, Karolinska Institutet, Stockholm, Sweden."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-8076-1931",
+                "authenticated-orcid": true,
+                "given": "Georgia",
+                "family": "Tomaras",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Center for Human Systems Immunology, Departments of Surgery, Immunology, Molecular Genetics and Microbiology, Duke University, Durham, NC, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-2248-9180",
+                "authenticated-orcid": true,
+                "given": "Devin J.",
+                "family": "Hunt",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-7995-1682",
+                "authenticated-orcid": true,
+                "given": "Daniel",
+                "family": "Muema",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "KAVI \u2013 Institute of Clinical Research, University of Nairobi, Nairobi, Kenya."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-9354-1740",
+                "authenticated-orcid": true,
+                "given": "Devin",
+                "family": "Sok",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0009-0009-6888-8281",
+                "authenticated-orcid": true,
+                "given": "Dagna S.",
+                "family": "Laufer",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "IAVI, New York, NY, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-2583-1949",
+                "authenticated-orcid": true,
+                "given": "Sarah F.",
+                "family": "Andrews",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Vaccine Research Center, National Institute of Allergy and Infectious Diseases, National Institutes of Health, Bethesda, MD, USA."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0001-7578-3095",
+                "authenticated-orcid": true,
+                "given": "Eunice W.",
+                "family": "Nduati",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Kenya Medical Research Institute \u2013 Wellcome Trust Research Programme, Kilifi, Kenya."
+                    }
+                ]
+            },
+            {
+                "ORCID": "https:\/\/orcid.org\/0000-0002-1120-0150",
+                "authenticated-orcid": true,
+                "given": "William R.",
+                "family": "Schief",
+                "sequence": "additional",
+                "affiliation": [
+                    {
+                        "name": "Department of Immunology and Microbial Science, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "IAVI Neutralizing Antibody Center, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Center for HIV\/AIDS Vaccine Development, The Scripps Research Institute, La Jolla, CA, USA."
+                    },
+                    {
+                        "name": "Moderna, Cambridge, MA, USA."
+                    }
+                ]
+            }
+        ],
+        "member": "221",
+        "reference": [
+            {
+                "key": "e_1_3_2_2_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.chom.2019.08.014"
+            },
+            {
+                "key": "e_1_3_2_3_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1056\/NEJMoa2031738"
+            },
+            {
+                "key": "e_1_3_2_4_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41591-022-01953-6"
+            },
+            {
+                "key": "e_1_3_2_5_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.adh9039"
+            },
+            {
+                "key": "e_1_3_2_6_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.1234150"
+            },
+            {
+                "key": "e_1_3_2_7_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1084\/jem.20122824"
+            },
+            {
+                "key": "e_1_3_2_8_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.cell.2016.07.030"
+            },
+            {
+                "key": "e_1_3_2_9_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.aad9195"
+            },
+            {
+                "key": "e_1_3_2_10_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.immuni.2016.08.016"
+            },
+            {
+                "key": "e_1_3_2_11_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.cell.2016.07.029"
+            },
+            {
+                "key": "e_1_3_2_12_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1084\/jem.20161160"
+            },
+            {
+                "key": "e_1_3_2_13_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.celrep.2019.10.071"
+            },
+            {
+                "key": "e_1_3_2_14_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.aax4380"
+            },
+            {
+                "key": "e_1_3_2_15_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.immuni.2020.12.014"
+            },
+            {
+                "key": "e_1_3_2_16_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.add6502"
+            },
+            {
+                "key": "e_1_3_2_17_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.adf3309"
+            },
+            {
+                "key": "e_1_3_2_18_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41541-024-00811-5"
+            },
+            {
+                "key": "e_1_3_2_19_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.cell.2023.10.022"
+            },
+            {
+                "key": "e_1_3_2_20_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1084\/jem.20231838"
+            },
+            {
+                "key": "e_1_3_2_21_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.immuni.2023.12.010"
+            },
+            {
+                "key": "e_1_3_2_22_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.chom.2020.07.001"
+            },
+            {
+                "key": "e_1_3_2_23_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.immuni.2022.07.020"
+            },
+            {
+                "key": "e_1_3_2_24_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41586-022-05609-w"
+            },
+            {
+                "key": "e_1_3_2_25_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.cell.2019.11.032"
+            },
+            {
+                "key": "e_1_3_2_26_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.cell.2020.09.063"
+            },
+            {
+                "key": "e_1_3_2_27_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.adn0223"
+            },
+            {
+                "key": "e_1_3_2_28_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/sciimmunol.adn0622"
+            },
+            {
+                "key": "e_1_3_2_29_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1073\/pnas.1208984109"
+            },
+            {
+                "key": "e_1_3_2_30_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.immuni.2013.04.012"
+            },
+            {
+                "key": "e_1_3_2_31_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1056\/NEJMoa2035389"
+            },
+            {
+                "key": "e_1_3_2_32_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1056\/NEJMoa2307079"
+            },
+            {
+                "key": "e_1_3_2_33_2",
+                "unstructured": "UNAIDS \u201cGlobal HIV & AIDS statistics \u2014 Fact sheet\u201d (2024); https:\/\/www.unaids.org\/en\/resources\/fact-sheet."
+            },
+            {
+                "key": "e_1_3_2_34_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1146\/annurev.genom.9.081307.164258"
+            },
+            {
+                "key": "e_1_3_2_35_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.ajhg.2013.03.004"
+            },
+            {
+                "key": "e_1_3_2_36_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.4049\/jimmunol.1500118"
+            },
+            {
+                "key": "e_1_3_2_37_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41467-023-40070-x"
+            },
+            {
+                "key": "e_1_3_2_38_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/sciimmunol.aay6125"
+            },
+            {
+                "key": "e_1_3_2_39_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.chom.2012.10.001"
+            },
+            {
+                "key": "e_1_3_2_40_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1172\/JCI10182"
+            },
+            {
+                "key": "e_1_3_2_41_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1097\/00002030-200009290-00003"
+            },
+            {
+                "key": "e_1_3_2_42_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.celrep.2023.113450"
+            },
+            {
+                "key": "e_1_3_2_43_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.adf4100"
+            },
+            {
+                "key": "e_1_3_2_44_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/S1473-3099(25)00236-1"
+            },
+            {
+                "key": "e_1_3_2_45_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1056\/NEJMra2120166"
+            },
+            {
+                "key": "e_1_3_2_46_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1073\/pnas.2308942121"
+            },
+            {
+                "key": "e_1_3_2_47_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1111\/j.2517-6161.1995.tb02031.x"
+            },
+            {
+                "key": "e_1_3_2_48_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.ppat.1005815"
+            },
+            {
+                "key": "e_1_3_2_49_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1084\/jem.20130221"
+            },
+            {
+                "key": "e_1_3_2_50_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1056\/NEJMoa2113017"
+            },
+            {
+                "key": "e_1_3_2_51_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1111\/all.15447"
+            },
+            {
+                "key": "e_1_3_2_52_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1001\/jamanetworkopen.2022.54298"
+            },
+            {
+                "key": "e_1_3_2_53_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.3390\/pharmaceutics16060742"
+            },
+            {
+                "key": "e_1_3_2_54_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1021\/acs.jproteome.7b00639"
+            },
+            {
+                "key": "e_1_3_2_55_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.7326\/ANNALS-24-02701"
+            },
+            {
+                "key": "e_1_3_2_56_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.immuni.2022.09.001"
+            },
+            {
+                "key": "e_1_3_2_57_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.immuni.2022.09.003"
+            },
+            {
+                "key": "e_1_3_2_58_2",
+                "doi-asserted-by": "crossref",
+                "unstructured": "P. Ramezani-Rad C. A. Cottrell E. Marina-Z\u00e1rate A. Liguori E. Landais J. L. Torres A. Myers J. H. Lee S. Baboo C. Flynn K. McKenney E. Salcedo X. Zhou O. Kalyuzhniy E. Georgeson N. Phelps D. Lu S. Eskandarzadeh S. Menis M. Kubitz B. Groschel N. Alavi A. M. Jackson W.-H. Lee A. S. Tran E. Ben-Akiva K. K. Michaels J. K. Diedrich C. A. Enemuo V. Lewis A. Pradhan S. P. Kasturi T. Schiffner J. M. Steichen D. G. Carnathan S. Himansu J. R. Yates III J. C. Paulson G. Ozorowski D. J. Irvine G. Silvestri D. Sok A. B. Ward S. Crotty W. R. Schief Vaccination with mRNA-encoded membrane-bound HIV Envelope trimer induces neutralizing antibodies in animal models. bioRxiv 2025.01.24.634423 [Preprint] (2025); https:\/\/doi.org\/10.1101\/2025.01.24.634423.",
+                "DOI": "10.1101\/2025.01.24.634423"
+            },
+            {
+                "key": "e_1_3_2_59_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.adk0582"
+            },
+            {
+                "key": "e_1_3_2_60_2",
+                "unstructured": "J. Willis T. Sincomb C. Kibet SchiefLab\/G002-and-G003: v1.0.1 Zenodo (2025); https:\/\/doi.org\/10.5281\/zenodo.15284777."
+            },
+            {
+                "key": "e_1_3_2_61_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/science.aah3945"
+            },
+            {
+                "key": "e_1_3_2_62_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.immuni.2017.11.023"
+            },
+            {
+                "key": "e_1_3_2_63_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.aat0381"
+            },
+            {
+                "key": "e_1_3_2_64_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1073\/pnas.2004489117"
+            },
+            {
+                "key": "e_1_3_2_65_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.15252\/embj.2020105926"
+            },
+            {
+                "key": "e_1_3_2_66_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41541-024-00918-9"
+            },
+            {
+                "key": "e_1_3_2_67_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1128\/JVI.01708-08"
+            },
+            {
+                "key": "e_1_3_2_68_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1126\/scitranslmed.3007730"
+            },
+            {
+                "key": "e_1_3_2_69_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1128\/JVI.01843-17"
+            },
+            {
+                "key": "e_1_3_2_70_2",
+                "doi-asserted-by": "crossref",
+                "unstructured": "T. Schiffner A. Palser J. G. Jardine A. Liguori S. Menis S. Raemisch X. Hu D. W. Kulp X. Wang J. K. Diedrich B. Groschel O. Kalyuzhniy R. Tingle K. Le E. Georgeson Y. Adachi M. Kubitz E. Landais J. R. Yates III J. C. Paulson D. Sok P. Kellam W. R. Schief Diverse competitor B cell responses to a germline-targeting priming immunogen in human Ig loci transgenic mice. bioRxiv 2024.01.22.575410 [Preprint] (2024); https:\/\/doi.org\/10.1101\/2024.01.22.575410.",
+                "DOI": "10.1101\/2024.01.22.575410"
+            },
+            {
+                "key": "e_1_3_2_71_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.3389\/fimmu.2019.00660"
+            },
+            {
+                "key": "e_1_3_2_72_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/ncomms13642"
+            },
+            {
+                "key": "e_1_3_2_73_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.3389\/fimmu.2023.1125884"
+            },
+            {
+                "key": "e_1_3_2_74_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.3389\/fimmu.2017.01418"
+            },
+            {
+                "key": "e_1_3_2_75_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1371\/journal.pcbi.1009885"
+            },
+            {
+                "key": "e_1_3_2_76_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1073\/pnas.1906020116"
+            },
+            {
+                "key": "e_1_3_2_77_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.4049\/jimmunol.2300851"
+            },
+            {
+                "key": "e_1_3_2_78_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.7554\/eLife.70873"
+            },
+            {
+                "key": "e_1_3_2_79_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.2307\/2685469"
+            },
+            {
+                "key": "e_1_3_2_80_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.4049\/jimmunol.1800708"
+            },
+            {
+                "key": "e_1_3_2_81_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1002\/pro.4205"
+            },
+            {
+                "key": "e_1_3_2_82_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1021\/acs.analchem.1c03059"
+            },
+            {
+                "key": "e_1_3_2_83_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1128\/JVI.00381-18"
+            },
+            {
+                "key": "e_1_3_2_84_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1007\/978-1-59745-170-3_26"
+            },
+            {
+                "key": "e_1_3_2_85_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.jim.2013.11.022"
+            },
+            {
+                "key": "e_1_3_2_86_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.jim.2011.09.007"
+            },
+            {
+                "key": "e_1_3_2_87_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/nmeth.4169"
+            },
+            {
+                "key": "e_1_3_2_88_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41586-024-07487-w"
+            },
+            {
+                "key": "e_1_3_2_89_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s42003-023-04927-7"
+            },
+            {
+                "key": "e_1_3_2_90_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1002\/pro.4792"
+            },
+            {
+                "key": "e_1_3_2_91_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1002\/pro.3791"
+            },
+            {
+                "key": "e_1_3_2_92_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1107\/S2059798318006551"
+            },
+            {
+                "key": "e_1_3_2_93_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1002\/jcc.20084"
+            },
+            {
+                "key": "e_1_3_2_94_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41467-019-14196-w"
+            },
+            {
+                "key": "e_1_3_2_95_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/j.str.2011.03.019"
+            },
+            {
+                "key": "e_1_3_2_96_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1093\/nar\/gkv314"
+            },
+            {
+                "key": "e_1_3_2_97_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/nature23010"
+            },
+            {
+                "key": "e_1_3_2_98_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1093\/biomet\/26.4.404"
+            },
+            {
+                "key": "e_1_3_2_99_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.2307\/2532051"
+            },
+            {
+                "key": "e_1_3_2_100_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1080\/00031305.1996.10473566"
+            },
+            {
+                "key": "e_1_3_2_101_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1093\/biomet\/73.1.13"
+            },
+            {
+                "key": "e_1_3_2_102_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1109\/MCSE.2007.55"
+            },
+            {
+                "key": "e_1_3_2_103_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.21105\/joss.03021"
+            },
+            {
+                "key": "e_1_3_2_104_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/nm.3743"
+            },
+            {
+                "key": "e_1_3_2_105_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41541-021-00376-7"
+            },
+            {
+                "key": "e_1_3_2_106_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1038\/s41467-017-01549-6"
+            },
+            {
+                "key": "e_1_3_2_107_2",
+                "doi-asserted-by": "publisher",
+                "DOI": "10.1016\/S0021-9258(17)39891-5"
+            },
+            {
+                "key": "e_1_3_2_108_2",
+                "unstructured": "E. A. Kabat Sequences of Proteins of Immunological Interest vol. 1 (US Department of Health and Human Services Public Health Service National Institutes of Health ed. 5 1991)."
+            }
+        ],
+        "container-title": [
+            "Science"
+        ],
+        "original-title": [],
+        "language": "en",
+        "link": [
+            {
+                "URL": "https:\/\/www.science.org\/doi\/pdf\/10.1126\/science.adr8382",
+                "content-type": "unspecified",
+                "content-version": "vor",
+                "intended-application": "similarity-checking"
+            }
+        ],
+        "deposited": {
+            "date-parts": [
+                [
+                    2025,
+                    7,
+                    31
+                ]
+            ],
+            "date-time": "2025-07-31T18:03:52Z",
+            "timestamp": 1753985032000
+        },
+        "score": 1,
+        "resource": {
+            "primary": {
+                "URL": "https:\/\/www.science.org\/doi\/10.1126\/science.adr8382"
+            }
+        },
+        "subtitle": [],
+        "short-title": [],
+        "issued": {
+            "date-parts": [
+                [
+                    2025,
+                    7,
+                    31
+                ]
+            ]
+        },
+        "references-count": 107,
+        "journal-issue": {
+            "issue": "6759",
+            "published-print": {
+                "date-parts": [
+                    [
+                        2025,
+                        7,
+                        31
+                    ]
+                ]
+            }
+        },
+        "alternative-id": [
+            "10.1126\/science.adr8382"
+        ],
+        "URL": "https:\/\/doi.org\/10.1126\/science.adr8382",
+        "relation": {},
+        "ISSN": [
+            "0036-8075",
+            "1095-9203"
+        ],
+        "issn-type": [
+            {
+                "type": "print",
+                "value": "0036-8075"
+            },
+            {
+                "type": "electronic",
+                "value": "1095-9203"
+            }
+        ],
+        "subject": [],
+        "published": {
+            "date-parts": [
+                [
+                    2025,
+                    7,
+                    31
+                ]
+            ]
+        },
+        "assertion": [
+            {
+                "value": "2024-07-17",
+                "order": 0,
+                "name": "received",
+                "label": "Received",
+                "group": {
+                    "name": "publication_history",
+                    "label": "Publication History"
+                }
+            },
+            {
+                "value": "2025-05-02",
+                "order": 2,
+                "name": "accepted",
+                "label": "Accepted",
+                "group": {
+                    "name": "publication_history",
+                    "label": "Publication History"
+                }
+            },
+            {
+                "value": "2025-07-31",
+                "order": 3,
+                "name": "published",
+                "label": "Published",
+                "group": {
+                    "name": "publication_history",
+                    "label": "Publication History"
+                }
+            }
+        ],
+        "article-number": "eadr8382"
+    }
+}
