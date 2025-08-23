@@ -18,7 +18,6 @@ retmax = 20
 
 #Datos a extraer
 count = 0
-lista_ids = []
 
 
 new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
@@ -32,6 +31,8 @@ count = int(datosFormatted.find(".//Count").text)
 
 #Paginación
 while retstart < count:
+    lista_ids = []
+    
     #Nueva url con parametros
     new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
 
