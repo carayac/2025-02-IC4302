@@ -50,8 +50,18 @@ df2.createOrReplaceTempView("dfFormateado")
 spark.sql("""SELECT author, transform(author, a -> concat(a.family, ' , ', a.given)) AS autor_names, DOI FROM messages""").createOrReplaceTempView("autors")
 
 
-
 //----------------------------TRANSFOMACION 3 -------------------------------------------------------
+
+//Almaceno los doi y repsctivo tittle juntos
+spark.sql("""SELECT lower(trim(DOI)) AS DOI, title[0] AS titulo FROM messages WHERE DOI IS NOT NULL""").createOrReplaceTempView("titulos")
+
+//Obtengo el DOI de referencia unicamente en los que tienen
+//DOIorg corresponde al del articulo base, DOIref es de cada referencia 
+
+spark.sql("""SELECT lower(trim(m.DOI)) as DOIorg, lower(trim(ref.DOI)) AS DOIref FROM messages m LATERAL VIEW OUTER explode(m.reference) r as ref WHERE ref.DOI IS NOT NULL""").createOrReplaceTempView("referencias")
+
+//Se unen ambas tablas: titulos y referencias para conseguir un array con cada tittle
+spark.sql("""SELECT r.DOIorg, collect_set(t.titulo) AS reference_tittle FROM referencias r JOIN titulos t ON r.DOIref = t.DOI GROUP BY r.DOIorg """).createOrReplaceTempView("referencess")
 
 
 //FIN DE LAS Transformaciones
@@ -65,10 +75,12 @@ SELECT
     A.*,
     B.created,
     B.indexed,
-    C.autor_names
+    C.autor_names,
+    D.reference_tittle
 FROM messagesFinal AS A
 LEFT JOIN dates AS B ON A.DOI = B.DOI
 LEFT JOIN autors AS C ON A.DOI = C.DOI
+LEFT JOIN referencess AS D ON lower(trim(A.DOI)) = D.DOIorg
 """).createOrReplaceTempView("messagesFinal")
 
 //SE REINTEGRA MESSAGES CON LOS DEMAS CAMPOS DEL JSON ORIGINAL GENERO UN NUEVO STRUCT PARA AGRUPAR TODOS LOS CAMPOS DE MESSAGES Y QUE SE VUELVA A ANIDAR EN MESSAGE COMO EL ORIGINAL
