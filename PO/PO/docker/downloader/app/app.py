@@ -168,7 +168,58 @@ def callback(ch, method, properties, body):
         print(f" Error procesando mensaje: {e}")
         print(f" Body recibido: {body}")
 
+def process_dois(job_id, dois_list):
+    omitidos = []
 
+    for doi in dois_list:
+        crossref_data = crossref_API(doi)
+        if crossref_data:
+            save_json(doi, crossref_data)
+        else:
+            omitidos.append(doi)
+
+    # Guardamos los omitidos en la tabla (si hay)
+    if omitidos:
+        try:
+            connection = connection_MariaDB()
+            cursor = connection.cursor()
+            query = f"UPDATE {MARIADB_TABLE} SET omitido = ? WHERE id = ?"
+            cursor.execute(query, (",".join(omitidos), job_id))
+            connection.commit()
+            print(f"Job {job_id} → {len(omitidos)} DOIs omitidos guardados en DB")
+        except mariadb.Error as e:
+            print(f"Error guardando omitidos en DB: {e}")
+            connection.rollback()
+        finally:
+            cursor.close()
+            connection.close()
+
+    # Actualizamos el estado del job a "done"
+    update_job_status(job_id, "done")
+    print(f"Job {job_id} finalizado correctamente.")
+
+def save_json(doi, data):
+    path = os.getenv("PATH", "/data")  # ruta compartida desde K8s
+    filename = hashlib.md5(doi.encode()).hexdigest() + ".json"
+    filepath = os.path.join(path, filename)
+    try:
+        with open(filepath, "w") as f:
+            json.dump(data, f)
+        print(f"Saved {filepath}")
+    except Exception as e:
+        print(f"Error at {filepath}: {e}")
+def crossref_API(doi):
+    url = f"https://api.crossref.org/works/{doi}"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"Crossref error")
+            return None
+    except Exception as e:
+        print(f"Crossref error" + e)
+        return None
 
 
 credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
