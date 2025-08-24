@@ -76,6 +76,9 @@ spark.sql("""SELECT r.DOIorg, collect_set(t.titulo) AS reference_tittle FROM ref
 spark.sql("SELECT message.* FROM dfFormateado").createOrReplaceTempView("messagesFinal")
 
 //AQUI SE UNE LA ESTRUCTURA DE MESSAGES CON LOS NUEVOS CAMPOS
+//Se unen todas las tablas temporales creadas anteriormente con messagesFinal
+//LEFT JOIN PARA QUE NO SE PIERDAN LOS REGISTROS QUE NO TIENEN DATOS EN LAS OTRAS TABLAS    
+//SE HACE UN LOWER Y TRIM A LOS DOIS PARA EVITAR PROBLEMAS DE UNION POR ESPACIOS O MAYUSCULAS
 spark.sql("""
 SELECT 
     A.*,
@@ -90,6 +93,7 @@ LEFT JOIN referencess AS D ON lower(trim(A.DOI)) = D.DOIorg
 """).createOrReplaceTempView("messagesFinal")
 
 //SE REINTEGRA MESSAGES CON LOS DEMAS CAMPOS DEL JSON ORIGINAL GENERO UN NUEVO STRUCT PARA AGRUPAR TODOS LOS CAMPOS DE MESSAGES Y QUE SE VUELVA A ANIDAR EN MESSAGE COMO EL ORIGINAL
+//SE HACE UN LEFT JOIN PARA NO PERDER REGISTROS
 val dFinal = spark.sql(""" SELECT 
     A.status,
     A.`message-type`,
@@ -103,8 +107,8 @@ LEFT JOIN messagesFinal AS B
 
 // UNION FINAL DE LOS NUEVOS CAMPOS TRANSFORMADOS A LA ESTRUCTURA DE message
 
-dFinal.show(false)
-dFinal.printSchema()
+//dFinal.show(false)
+//dFinal.printSchema()
 
 // Guardar resultado en ES
 dFinal.saveToEs("articulos", Map(
@@ -118,4 +122,4 @@ dFinal.saveToEs("articulos", Map(
 ))
 
 
-println("Se guardaron los índices de prueba")
+//println("Se guardaron los índices de prueba")
