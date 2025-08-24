@@ -10,12 +10,18 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.Column //Esta libreria me permite hacer un dropFields por medio de columnas
 
 
-// Crear SparkSession
+// Crea la SparkSession
 val spark = SparkSession.builder().getOrCreate()
 val sc = spark.sparkContext
 val sqlcontext = new org.apache.spark.sql.SQLContext(sc)
 
-// Leer variables de entorno
+// Lee las variables de entorno las cuales permiten la conexion a ES
+// ELASTIC, ELASTIC_USER, ELASTIC_PASS
+// ELASTIC es la IP o dominio de elasticsearch      
+// ELASTIC_USER es el usuario
+// ELASTIC_PASS es la contraseña    
+// ELASTIC_PORT es el puerto, pero en este caso es fijo 9200
+
 val esHost = sys.env("ELASTIC")
 val esPort = "9200"   // Puerto fijo
 val esUser = sys.env("ELASTIC_USER")
