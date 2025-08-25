@@ -65,7 +65,8 @@ cd ./PO/charts
 # copy the name that says debug from the following command
 kubectl get pods
 # then replace debug-844bb45d6f-9jt45 by that name
-kubectl exec --stdin --tty debug-844bb45d6f-9jt45 -- /bin/bash
+kubectl exec --stdin --tty debug-8bccd5cc8-527rb -- /bin/bash
+#kubectl exec --it debug-8bccd5cc8-527rb -- sh
 ```
 
 ### Execute Spark
