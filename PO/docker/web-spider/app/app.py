@@ -131,6 +131,7 @@ while retstart < count:
 
     msg = str(job["id"])
     channel.basic_publish(exchange='', routing_key=QUEUE_NAME, body=msg)
+    print(DATA)
     connection.close()
     ###########
 
