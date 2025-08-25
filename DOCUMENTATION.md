@@ -6,6 +6,22 @@
 **Semestre:** Segundo Semestre 2025  
 
 ---
+## 📖 Índice
+🌎 [Introducción](#1-introducción)  
+  
+🌎 [Objetivos](#2-objetivos)  
+  
+🌎 [Arquitectura del Sistema](#3-arquitectura-del-sistema)  
+  
+🌎 [Instrucciones de ejecución](#4-instrucciones-de-ejecución)  
+  
+🌎 [Pruebas](#5-pruebas)  
+  
+🌎 [Resultados](#6-resultados)  
+  
+🌎 [Conclusiones y Recomendaciones](#7-conclusiones-y-recomendaciones)  
+  
+
 
 ## 1. Introducción
 Este documento describe el desarrollo e implementación del proyecto **Crossref Search**, cuyo propósito es construir un motor de búsqueda de artículos científicos utilizando las APIs de la **National Library of Medicine (PubMed)** y **Crossref**.  
