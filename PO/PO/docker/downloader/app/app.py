@@ -163,6 +163,7 @@ def callback(ch, method, properties, body):
         dois_list = dois_pubmed(pubmed_response)
         if dois_list:
             print(f" Se encontraron los siguientes DOIs  {dois_list}")
+            process_dois(job_id, dois_list)
 
     except Exception as e:
         print(f" Error procesando mensaje: {e}")
