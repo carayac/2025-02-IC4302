@@ -20,15 +20,24 @@
 🌎 [Resultados](#6-resultados)  
   
 🌎 [Conclusiones y Recomendaciones](#7-conclusiones-y-recomendaciones)  
+
+🌎 [Referencias](#8-referencias)  
   
 
 
-## 1. Introducción
+## 1. Introducción  
+<details>
+  <summary>Desplegar información</summary>
+  
 Este documento describe el desarrollo e implementación del proyecto **Crossref Search**, cuyo propósito es construir un motor de búsqueda de artículos científicos utilizando las APIs de la **National Library of Medicine (PubMed)** y **Crossref**.  
-
+  
 ---
+</details>
 
 ## 2. Objetivos
+
+<details>
+  <summary>Desplegar información</summary>
 
 ### 2.1 General
 Desarrollar competencias en el uso de tecnologías y lenguajes de programación que se emplearán durante el curso.
@@ -42,8 +51,13 @@ Desarrollar competencias en el uso de tecnologías y lenguajes de programación 
 - Instalar y configurar **bases de datos relacionales y NoSQL**.  
 
 ---
-
+</details>
+  
 ## 3. Arquitectura del Sistema
+
+<details>
+  <summary>Desplegar información</summary>
+  
 El sistema está compuesto por los siguientes servicios:
 
 - **Web Spider (Python, Kubernetes CronJob):** consulta periódicamente PubMed y organiza los artículos en *jobs*.  
@@ -53,8 +67,12 @@ El sistema está compuesto por los siguientes servicios:
 Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en **MariaDB** y **Elasticsearch**, permitiendo su consulta a través de **Kibana**.
 
 ---
+</details>
 
 ## 4. Instrucciones de Ejecución
+  
+<details>
+  <summary>Desplegar información</summary>
 
 ### 4.1 Requisitos Previos
 - Docker y Docker Compose  
@@ -72,8 +90,12 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
    ```
 
 ---
+</details>
 
 ## 5. Pruebas
+
+<details>
+  <summary>Desplegar información</summary>
 
 ### 5.1 Pruebas Unitarias
 - Scripts en Python para validar la correcta conexión con PubMed y Crossref.  
@@ -89,14 +111,23 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 
 ---
 
+</details>
+
 ## 6. Resultados
+
+<details>
+  <summary>Desplegar información</summary>
+
 - Número de artículos procesados.  
 - Ejemplos de documentos transformados en Elasticsearch.  
 - Evidencia de búsquedas realizadas en Kibana.  
 
 ---
+</details>
 
 ## 7. Conclusiones y Recomendaciones
+<details>
+  <summary>Desplegar información</summary>
 
 ### 7.1 Conclusiones
 1. ...  
@@ -111,8 +142,13 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 *(al menos 10 recomendaciones)*  
 
 ---
+</details>
 
 ## 8. Referencias
+
+<details>
+  <summary>Desplegar información</summary>
+
 - [Apache Spark](https://spark.apache.org/)  
 - [Crossref API](https://api.crossref.org)  
 - [PubMed API](https://eutils.ncbi.nlm.nih.gov/)  
@@ -120,3 +156,4 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 - [Docker Documentation](https://docs.docker.com/)  
 
 ---
+</details>
