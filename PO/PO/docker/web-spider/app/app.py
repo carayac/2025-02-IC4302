@@ -1,4 +1,5 @@
 import os
+import time
 import pika
 import requests
 import xml.etree.ElementTree as ET
@@ -14,7 +15,8 @@ url_base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 db = "pubmed"
 term = "science journal"
 retstart = 0
-retmax = 20
+JOB_SIZE = 20
+retmax = JOB_SIZE
 
 #Datos a extraer
 count = 0
@@ -27,6 +29,32 @@ data = response.text #datos en formato xml
 datosFormatted = ET.fromstring(data)
 #Guardamos Count
 count = int(datosFormatted.find(".//Count").text)
+
+
+#Hacemos la conexión a MariaDB
+conn = mariadb.connect(
+    host=os.getenv('MARIADB'),
+    user=os.getenv('MARIADB_USER'),
+    password=os.getenv('MARIADB_PASS')
+)
+cursor = conn.cursor()
+
+# Crear la base de datos si no existe
+cursor.execute(f"CREATE DATABASE IF NOT EXISTS {os.getenv('MARIADB_DB')}")
+cursor.execute(f"USE {os.getenv('MARIADB_DB')}")
+
+# Crear la tabla si no existe
+cursor.execute(f"""
+CREATE TABLE IF NOT EXISTS {os.getenv('MARIADB_TABLE')} (
+    id VARCHAR(36) PRIMARY KEY,
+    estado VARCHAR(20),
+    lista_ids TEXT,
+    omitido TEXT,
+    fecha_inicio DATETIME,
+    fecha_final DATETIME
+)
+""")
+conn.commit()
 
 
 #Paginación
@@ -56,63 +84,27 @@ while retstart < count:
     }
 
     #Aquí lo subimos a MariaDB
-    conn = mariadb.connect(
-        host=os.getenv('MARIADB'),
-        user=os.getenv('MARIADB_USER'),
-        password=os.getenv('MARIADB_PASS')
-    )
-    cursor = conn.cursor()
+    #Insertar Job
+    insert_query = f"""
+        INSERT INTO {os.getenv('MARIADB_TABLE')}
+        (id, estado, lista_ids, omitido, fecha_inicio, fecha_final)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """
 
-    # Crear la base de datos si no existe
-    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {os.getenv('MARIADB_DB')}")
-    cursor.execute(f"USE {os.getenv('MARIADB_DB')}")
-
-    # Crear la tabla si no existe
-    cursor.execute(f"""
-    CREATE TABLE IF NOT EXISTS {os.getenv('MARIADB_TABLE')} (
-        id VARCHAR(36) PRIMARY KEY,
-        estado VARCHAR(20),
-        lista_ids TEXT,
-        omitido TEXT,
-        fecha_inicio DATETIME,
-        fecha_final DATETIME
-    )
-    """)
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-
-    db_config = {
-    'host': os.getenv('MARIADB'),
-    'port': 3306,
-    'user': os.getenv('MARIADB_USER'),
-    'password': os.getenv('MARIADB_PASS'),
-    'database': os.getenv('MARIADB_DB')
-    }
-
-    TABLE_NAME = os.getenv("MARIADB_TABLE")
     try:
-        conn = mariadb.connect(**db_config)
-        cursor = conn.cursor()
-
-        insert_query = f"INSERT INTO {TABLE_NAME} (id, estado, lista_ids, omitido, fecha_inicio, fecha_final) VALUES (?, ?, ?, ?, ?, ?)"
-        try:
-            cursor.execute(insert_query, (str(job["id"])
-                                          , job["estado"]
-                                          , str(job["lista_ids"]) #hay que convertirlo a list
-                                          , str(job["omitido"]) #hay que convertirlo a list
-                                          , job["fecha_inicio"]
-                                          , job["fecha_final"]))
-            conn.commit()
-        except mariadb.Error as e:
-            conn.rollback()
-
+        cursor.execute(insert_query, (
+            str(job["id"]),
+            job["estado"],
+            str(job["lista_ids"]),
+            str(job["omitido"]),
+            job["fecha_inicio"],
+            job["fecha_final"]
+        ))
+        conn.commit()
     except mariadb.Error as e:
-        sys.exit(1)
-    finally:
-        cursor.close()
-        conn.close()
+        conn.rollback()
+        print(f"Error insertando job: {e}")
+
 
 
     #Luego enviamos el id del job por RabbitMQ
@@ -131,7 +123,11 @@ while retstart < count:
 
     msg = str(job["id"])
     channel.basic_publish(exchange='', routing_key=QUEUE_NAME, body=msg)
+    time.sleep(1)
     connection.close()
     ###########
 
-    retstart+=20
+    retstart+=retmax
+
+cursor.close()
+conn.close()
