@@ -198,7 +198,7 @@ def callback(ch, method, properties, body):
         print(f" Body recibido: {body}")
 
 
-def process_dois(job_id, dois_list):
+def process_dois(job_id, dois_list): #Recibe una lista de dois, consulta crossref e invoca la funcion que guarda el json o añade el doi a omitidos. 
     omitidos = []
 
     for doi in dois_list:
@@ -216,7 +216,7 @@ def process_dois(job_id, dois_list):
             query = f"UPDATE {MARIADB_TABLE} SET omitido = ? WHERE id = ?"
             cursor.execute(query, (",".join(omitidos), job_id))
             connection.commit()
-            print(f"Job {job_id} → {len(omitidos)} DOIs omitidos guardados en DB")
+            print(f"Job {job_id}: {len(omitidos)} DOIs omitidos guardados en DB")
         except mariadb.Error as e:
             print(f"Error guardando omitidos en DB: {e}")
             connection.rollback()
@@ -229,17 +229,17 @@ def process_dois(job_id, dois_list):
     update_job_end_date(job_id)
     print(f"Job {job_id} finalizado correctamente.")
 
-def save_json(doi, data):
-    path = os.getenv("XPATH", "/data")  # ruta compartida desde K8s
+def save_json(doi, data): #Guarda el Json en el volumen. 
+    path = os.getenv("XPATH", "/data")  # ruta compartida definida en charts/application/templates/volume.yaml
     filename = hashlib.md5(doi.encode()).hexdigest() + ".json"
     filepath = os.path.join(path, filename)
     try:
         with open(filepath, "w") as f:
             json.dump(data, f)
-        print(f"Saved {filepath}")
+        print(f"Guardado correctamente {filepath}")
     except Exception as e:
-        print(f"Error at {filepath}: {e}")
-def crossref_API(doi):
+        print(f"Error en {filepath}: {e}")
+def crossref_API(doi): #Consulta Crossref
     url = f"https://api.crossref.org/works/{doi}"
     try:
         response = requests.get(url)
@@ -249,7 +249,7 @@ def crossref_API(doi):
             print(f"Crossref error")
             return None
     except Exception as e:
-        print(f"Crossref error" + e)
+        print(f"Crossref error:" + e)
         return None
 
 
