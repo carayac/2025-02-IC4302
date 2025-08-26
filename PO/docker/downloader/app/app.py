@@ -70,6 +70,32 @@ def update_job_status(job_id, status):
         cursor.close()
         connection.close()
 
+# Actualizamos la fecha final con la hora actual
+def update_job_end_date(job_id):
+    connection = connection_MariaDB()
+    try:
+        # Ejecutamos el query para cambiar la fecha final
+        cursor = connection.cursor()
+        query = f"UPDATE {MARIADB_TABLE} SET fecha_final = ? WHERE id = ?"
+        cursor.execute(query, (datetime.now(), job_id))
+        connection.commit()
+
+        # Verificamos si se actualizo el job
+        if cursor.rowcount > 0:
+            print(f"Job {job_id} actualizado con nueva fecha final.")
+            return True
+        else:
+            print(f"No se encontró job con ID: {job_id}")
+            return False
+
+    except mariadb.Error as e:
+        print(f"Error actualizando fecha final del job {job_id}: {e}")
+        connection.rollback()
+        return False
+    finally:
+        cursor.close()
+        connection.close()
+
 # Obtenemos los ids del job
 def get_job_ids(job_id):
     connection = connection_MariaDB()
@@ -152,12 +178,14 @@ def callback(ch, method, properties, body):
         # Obtenemos la lista de IDs de artículos del job
         ids_list = get_job_ids(job_id)
         if ids_list:
-            print(f" Se obtuvieron los IDs del job {job_id}")
+            print(f" Se obtuvieron los siguienres Ids: {ids_list}")
             
         # Consultamos la API 
         pubmed_response = pubmed_API(ids_list)
+        ids_string = ",".join(ids_list)
+        url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id={ids_string}"
         if pubmed_response:
-            print(f" Se obtuvo respuesta de PubMed {pubmed_response}")
+            print(f" Se consulto con exito esta API: {url}")
             
         # Extraemos DOIs de la respuesta de PubMed
         dois_list = dois_pubmed(pubmed_response)
@@ -168,6 +196,7 @@ def callback(ch, method, properties, body):
     except Exception as e:
         print(f" Error procesando mensaje: {e}")
         print(f" Body recibido: {body}")
+
 
 def process_dois(job_id, dois_list):
     omitidos = []
@@ -197,10 +226,11 @@ def process_dois(job_id, dois_list):
 
     # Actualizamos el estado del job a "done"
     update_job_status(job_id, "done")
+    update_job_end_date(job_id)
     print(f"Job {job_id} finalizado correctamente.")
 
 def save_json(doi, data):
-    path = os.getenv("PATH", "/data")  # ruta compartida desde K8s
+    path = os.getenv("XPATH", "/data")  # ruta compartida desde K8s
     filename = hashlib.md5(doi.encode()).hexdigest() + ".json"
     filepath = os.path.join(path, filename)
     try:
