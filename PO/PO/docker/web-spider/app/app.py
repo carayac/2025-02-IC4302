@@ -13,7 +13,7 @@ url_base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 
 #Parametros en la url
 db = "pubmed"
-term = "science journal"
+term = "science[journal]"
 retstart = 0
 JOB_SIZE = 20
 retmax = JOB_SIZE
