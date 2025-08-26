@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: {{ .Values.config.producer.name }}
 spec:
-  schedule: {{ .Values.config.producer.schedule }}   
+  schedule: "0 * * * *" 
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
