@@ -192,6 +192,8 @@ def callback(ch, method, properties, body):
         if dois_list:
             print(f" Se encontraron los siguientes DOIs  {dois_list}")
             process_dois(job_id, dois_list)
+        
+        print("------------------------------------------------------")
 
     except Exception as e:
         print(f" Error procesando mensaje: {e}")
@@ -224,7 +226,7 @@ def process_dois(job_id, dois_list): #Recibe una lista de dois, consulta crossre
             cursor.close()
             connection.close()
 
-    # Actualizamos el estado del job a "done"
+    # Actualizamos el estado del job a "done" y agregramos la fecha final
     update_job_status(job_id, "done")
     update_job_end_date(job_id)
     print(f"Job {job_id} finalizado correctamente.")
