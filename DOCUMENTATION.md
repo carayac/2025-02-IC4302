@@ -6,22 +6,22 @@
 **Semestre:** Segundo Semestre 2025  
 
 ---
-## 📖 Índice
-🌎 [Introducción](#1-introducción)  
+## Contenido
+-> [Introducción](#1-introducción)  
   
-🌎 [Objetivos](#2-objetivos)  
+-> [Objetivos](#2-objetivos)  
   
-🌎 [Arquitectura del Sistema](#3-arquitectura-del-sistema)  
+-> [Arquitectura del Sistema](#3-arquitectura-del-sistema)  
   
-🌎 [Instrucciones de ejecución](#4-instrucciones-de-ejecución)  
+-> [Instrucciones de ejecución](#4-instrucciones-de-ejecución)  
   
-🌎 [Pruebas](#5-pruebas)  
+-> [Pruebas](#5-pruebas)  
   
-🌎 [Resultados](#6-resultados)  
+-> [Resultados](#6-resultados)  
   
-🌎 [Conclusiones y Recomendaciones](#7-conclusiones-y-recomendaciones)  
+-> [Conclusiones y Recomendaciones](#7-conclusiones-y-recomendaciones)  
 
-🌎 [Referencias](#8-referencias)  
+-> [Referencias](#8-referencias)  
   
 
 
@@ -130,15 +130,18 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
   <summary>Desplegar información</summary>
 
 ### 7.1 Conclusiones
-1. ...  
-2. ...  
-3. ...  
+1. El proyecto logró que uno aprendiera bastante a como manejar la automatización de procesos mediante las variables de entorno y Kubernetes. Esto es muy valioso de aprender para seguir practicándolo en proyectos futuros, con el fin de mejorar su eficiencia, escalabilidad y profesionalismo.
+2. RabbitMQ demostró ser una herramienta de gran ayuda, ya que facilita la comunicación de sistemas de manera automática. Lo cual es bastante eficiente y útil para este tipo de proyectos.
+3. El uso de la herramienta SparkSQL permite desarrollar un estilo de programacion simplificado, ya que facilita el manejo de datos usando consultas SQL familiares sin necesidad de escribir mucho código en APIs más verbosas.
+4. Los contenedores permiten integrar múltiples tecnologías dentro de un mismo proyecto de manera flexible y portable. En conjunto con Helm Charts, se facilita la instalación, gestión y despliegue de aplicaciones, lo que representa un interesante avance hacia la automatización.
 *(al menos 10 conclusiones)*  
 
 ### 7.2 Recomendaciones
-1. ...  
-2. ...  
-3. ...  
+1. Siempre implementar prints mediante los procesos, de manera que se puede seguir todo paso a paso y ver los resultados que están dando las funciones para verificar si son correctos 
+2. Todas las funciones manejarlas con try y errores, ya que es muy útil para reconocer el fallo en específico a la hora de hacer las pruebas, además facilita mucho el proceso de correcciones  
+3. El uso de variables de entorno permiten separar la configuración del código, lo que facilita su mantenimiento, y aumenta la portabilidad entre distintos entornos y reduce la complejidad al realizar cambios o actualizaciones en este caso fue de utilidad para rutas y credenciales.
+4. Se recomienda investigar previamente las tecnologías poco conocidas o con limitada comprensión, ya que esto facilita su aplicación en el desarrollo de proyectos, mejora la comprensión de su funcionamiento y agiliza la solución de errores.
+   
 *(al menos 10 recomendaciones)*  
 
 ---
@@ -154,6 +157,12 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 - [PubMed API](https://eutils.ncbi.nlm.nih.gov/)  
 - [Kubernetes Documentation](https://kubernetes.io/)  
 - [Docker Documentation](https://docs.docker.com/)  
+- [Funciones de PySpark](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.Column.dropFields.html)
+- [Volumenes](https://kubernetes.io/docs/concepts/storage/volumes/)
+- [Dev Tool Kibana+Elastic](https://www.elastic.co/docs/explore-analyze/query-filter/tools/console)
+- [Apache Spark Support](https://www.elastic.co/docs/reference/elasticsearch-hadoop/apache-spark-support)
+- [Upsert-ElasticSearch](https://stackoverflow.com/questions/50962579/spark-dataframe-upsert-to-elasticsearch)
+  
 
 ---
 </details>
