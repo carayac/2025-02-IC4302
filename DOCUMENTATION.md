@@ -134,6 +134,8 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 2. RabbitMQ demostró ser una herramienta de gran ayuda, ya que facilita la comunicación de sistemas de manera automática. Lo cual es bastante eficiente y útil para este tipo de proyectos.
 3. El uso de la herramienta SparkSQL permite desarrollar un estilo de programacion simplificado, ya que facilita el manejo de datos usando consultas SQL familiares sin necesidad de escribir mucho código en APIs más verbosas.
 4. Los contenedores permiten integrar múltiples tecnologías dentro de un mismo proyecto de manera flexible y portable. En conjunto con Helm Charts, se facilita la instalación, gestión y despliegue de aplicaciones, lo que representa un interesante avance hacia la automatización.
+5. Además, los contenedores de Kubernetes proporcionan un entorno aislado, permitiendo que diferentes componentes funcionen de manera independiente, garantizando la estabilidad del software. Esto también facilita las pruebas y desarrollo en paralelo para programas de gran tamaño.
+6. El sistema de gestión de MariaDB fue muy útil a la hora de volúmenes grandes de datos por medio de procesos de paginación, y permite almacenar datos de manera estructurada y consistente, lo que resulta fundamental para cualquier proyecto de software a nivel profesional. 
 *(al menos 10 conclusiones)*  
 
 ### 7.2 Recomendaciones
@@ -141,6 +143,7 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 2. Todas las funciones manejarlas con try y errores, ya que es muy útil para reconocer el fallo en específico a la hora de hacer las pruebas, además facilita mucho el proceso de correcciones  
 3. El uso de variables de entorno permiten separar la configuración del código, lo que facilita su mantenimiento, y aumenta la portabilidad entre distintos entornos y reduce la complejidad al realizar cambios o actualizaciones en este caso fue de utilidad para rutas y credenciales.
 4. Se recomienda investigar previamente las tecnologías poco conocidas o con limitada comprensión, ya que esto facilita su aplicación en el desarrollo de proyectos, mejora la comprensión de su funcionamiento y agiliza la solución de errores.
+5. 
    
 *(al menos 10 recomendaciones)*  
 
