@@ -12,7 +12,7 @@ spec:
       template:
         spec:
           terminationGracePeriodSeconds: 0
-          restartPolicy: Always
+          restartPolicy: OnFailure
           containers:
             - name: {{ .Values.config.producer.name }}
               image: {{ .Values.config.docker_registry }}/{{ .Values.config.producer.image }}
