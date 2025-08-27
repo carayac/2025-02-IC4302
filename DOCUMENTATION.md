@@ -166,7 +166,10 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 - [Dev Tool Kibana+Elastic](https://www.elastic.co/docs/explore-analyze/query-filter/tools/console)
 - [Apache Spark Support](https://www.elastic.co/docs/reference/elasticsearch-hadoop/apache-spark-support)
 - [Upsert-ElasticSearch](https://stackoverflow.com/questions/50962579/spark-dataframe-upsert-to-elasticsearch)
-  
+- [Requests Documentation](https://docs.python-requests.org/en/latest/index.html)
+- [UUID Documentation](https://docs.python.org/es/3/library/uuid.html)
+- [MariaDB / Python](https://mariadb.com/docs/connectors/connectors-quickstart-guides/connector-python-guide)
+- [Kubernetes CronJob](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/)
 
 ---
 </details>
