@@ -143,7 +143,8 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 2. Todas las funciones manejarlas con try y errores, ya que es muy útil para reconocer el fallo en específico a la hora de hacer las pruebas, además facilita mucho el proceso de correcciones  
 3. El uso de variables de entorno permiten separar la configuración del código, lo que facilita su mantenimiento, y aumenta la portabilidad entre distintos entornos y reduce la complejidad al realizar cambios o actualizaciones en este caso fue de utilidad para rutas y credenciales.
 4. Se recomienda investigar previamente las tecnologías poco conocidas o con limitada comprensión, ya que esto facilita su aplicación en el desarrollo de proyectos, mejora la comprensión de su funcionamiento y agiliza la solución de errores.
-5. 
+5. Es recomendable probar los distintos componentes del software por separado antes de integrarlos, para poder detectar problemas específicos antes de que afecten todo el sistema. 
+6. Hacer un control de versiones y documentar los cambios en el código, usando herramientas como GitHub, para facilitar la colaboración en equipo y la recuperación y restauración del código anterior en caso de  errores accidentales. 
    
 *(al menos 10 recomendaciones)*  
 
