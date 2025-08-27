@@ -256,7 +256,7 @@ def crossref_API(doi): #Consulta Crossref
 
 
 credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
-parameters = pika.ConnectionParameters(host=RABBIT_MQ, credentials=credentials) 
+parameters = pika.ConnectionParameters(host=RABBIT_MQ, credentials=credentials, heartbeat=60, blocked_connection_timeout=300)
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 channel.queue_declare(queue=QUEUE_NAME)
