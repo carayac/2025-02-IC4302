@@ -8,9 +8,14 @@ import org.elasticsearch.spark.sql._
 import org.elasticsearch.spark._ 
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.Column //Esta libreria me permite hacer un dropFields por medio de columnas
-import java.io.File
+import java.io.File //Esta libreria me permite verificar si existen archivos en el directorio /data
+
 
 // Crea la SparkSession
+val spark = SparkSession.builder().getOrCreate()
+val sc = spark.sparkContext
+val sqlcontext = new org.apache.spark.sql.SQLContext(sc)
+
 // Lee las variables de entorno las cuales permiten la conexion a ES
 // ELASTIC, ELASTIC_USER, ELASTIC_PASS
 // ELASTIC es la IP o dominio de elasticsearch      
@@ -22,24 +27,6 @@ val esHost = sys.env("ELASTIC")
 val esPort = "9200"   // Puerto fijo
 val esUser = sys.env("ELASTIC_USER")
 val esPass = sys.env("ELASTIC_PASS")
-
-//CONFIGURACION DE SPARK PARA ELASTICSEARCH
-val conf = new SparkConf()
-    .set("es.nodes", esHost)
-    .set("es.port", esPort)
-    .set("es.nodes.wan.only", "true")
-    .set("es.net.http.auth.user", esUser)
-    .set("es.net.http.auth.pass", esPass)
-    .set("es.index.auto.create", "true") // Crea el índice automáticamente si no existe
-    .set("es.mapping.id", "message.DOI") // Usa message.DOI como ID del documento
-
-
-
-
-val spark = SparkSession.builder.config(conf).getOrCreate()
-val sc = spark.sparkContext
-
-val sqlcontext = new org.apache.spark.sql.SQLContext(sc)
 
 
 val dataPath = "/data"
@@ -131,9 +118,15 @@ if (filesExist) {
     //dFinal.printSchema()
 
     // Guardar resultado en ES
-    dFinal.saveToEs("data")
-
-
+    dFinal.saveToEs("data", Map(
+    "es.nodes" -> esHost,
+    "es.port" -> esPort,
+    "es.nodes.wan.only" -> "true",
+    "es.net.http.auth.user" -> esUser,
+    "es.net.http.auth.pass" -> esPass,
+    "es.write.operation" -> "upsert",  // Inserta si no existe, sobreescribe si existe
+    "es.mapping.id" -> "message.DOI"
+    ))
     //println("Se guardaron los índices de prueba")
 
 } 
