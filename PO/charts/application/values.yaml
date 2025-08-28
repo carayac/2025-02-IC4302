@@ -4,6 +4,7 @@ config:
     replicas: 1
     name: web-spider
     image: web-spider
+    schedule: "0 */12 * * *"
   consumer:
     replicas: 1
     name: downloader

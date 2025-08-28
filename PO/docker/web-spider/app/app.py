@@ -22,7 +22,10 @@ retmax = JOB_SIZE
 def obtener_count(url_base, db, term, retstart, retmax):
     new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
     # Enviamos un request
-    response = requests.get(new_url)
+    try:
+        response = requests.get(new_url)
+    except:
+        print(f"Error consultando API")
     data = response.text  # datos en formato xml
     datosFormatted = ET.fromstring(data)
     # Guardamos Count
@@ -33,7 +36,10 @@ def obtener_count(url_base, db, term, retstart, retmax):
 def obtener_ids(url_base, db, term, retstart, retmax):
     new_url = f"{url_base}?db={db}&term={term}&retstart={retstart}&retmax={retmax}"
     # Enviamos un request
-    response = requests.get(new_url)
+    try:
+        response = requests.get(new_url)
+    except:
+        print(f"Error consultando API")
     data = response.text  # datos en formato xml
     datosFormatted = ET.fromstring(data)
     # Guardamos los datos
@@ -100,14 +106,17 @@ def enviar_rabbitmq(job_id):
     RABBIT_MQ_PASSWORD = os.getenv('RABBITMQ_PASS')
     QUEUE_NAME = os.getenv('RABBITMQ_QUEUE')
 
-    credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
-    parameters = pika.ConnectionParameters(host=RABBIT_MQ, credentials=credentials)
-    connection = pika.BlockingConnection(parameters)
-    channel = connection.channel()
-    channel.queue_declare(queue=QUEUE_NAME)
+    try:
+        credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
+        parameters = pika.ConnectionParameters(host=RABBIT_MQ, credentials=credentials)
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel()
+        channel.queue_declare(queue=QUEUE_NAME)
 
-    msg = str(job_id)
-    channel.basic_publish(exchange='', routing_key=QUEUE_NAME, body=msg)
+        msg = str(job_id)
+        channel.basic_publish(exchange='', routing_key=QUEUE_NAME, body=msg)
+    except:
+        print(f"Error enviando job-id por RabbitMQ")
     time.sleep(1)
     connection.close()
 

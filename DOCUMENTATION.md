@@ -98,6 +98,10 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
   <summary>Desplegar información</summary>
 
 ### 5.1 Pruebas Unitarias
+- Extracción de count de API de Pubmed
+- Obtener lista de ids de API de Pubmed
+- Inicializar job con los campos correctos
+
 - Scripts en Python para validar la correcta conexión con PubMed y Crossref.  
 - Funciones para verificar transformación de fechas y autores en Spark SQL.  
 
@@ -105,6 +109,7 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 
 ### 5.2 Pruebas Funcionales
 - Verificar que los *jobs* se crean en MariaDB.  
+- Verificar que los *jobs-id* se envían a través del canal de RabbitMQ.
 - Comprobar que los documentos se guardan en JSON.  
 - Confirmar que Elasticsearch contiene los documentos procesados.  
 - Visualizar en Kibana los resultados.  
