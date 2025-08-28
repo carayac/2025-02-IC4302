@@ -1,5 +1,5 @@
 config:
-  docker_registry: darcecampos
+  docker_registry: carayacn
   producer:
     replicas: 1
     name: web-spider

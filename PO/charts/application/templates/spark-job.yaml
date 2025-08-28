@@ -20,12 +20,12 @@ spec:
           - name: scripts
             configMap:
               name: scala
-              defaultMode: 0700
+              defaultMode: 0644 
           containers:
             - image: {{ .Values.config.docker_registry }}/{{ .Values.config.cronjob.image }}
               name: {{ .Values.config.cronjob.name }}
               command:
-                - "spark/bin/spark-shell"
+                - "/opt/spark/bin/spark-shell"
                 - "-i"
                 - "/scripts/app.scala"
               env:
@@ -40,7 +40,7 @@ spec:
                       key: elastic
                       optional: false
                 - name: ELASTIC
-                  value: "ic4302-es-http"
+                  value: "ic4302-es-http.default.svc.cluster.local"
               volumeMounts:
                 - mountPath: "/data"
                   name: data
