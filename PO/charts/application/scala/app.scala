@@ -111,7 +111,7 @@ LEFT JOIN messagesFinal AS B
 //dFinal.printSchema()
 
 // Guardar resultado en ES
-dFinal.saveToEs("articulos", Map(
+dFinal.saveToEs("data", Map(
     "es.nodes" -> esHost,
     "es.port" -> esPort,
     "es.nodes.wan.only" -> "true",
