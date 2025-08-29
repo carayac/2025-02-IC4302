@@ -98,11 +98,11 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
   <summary>Desplegar información</summary>
 
 ### 5.1 Pruebas Unitarias
-- Extracción de count de API de Pubmed ![Resultados]()
-- Obtener lista de ids de API de Pubmed ![Resultados]()
-- Inicializar job con los campos correctos ![Resultados]()
-- Insertar job en MariaDB ![Resultados]()
-- Enviar job_id por RabbitMQ ![Resultados]()
+- Extracción de count de API de Pubmed ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_pubmed_web-spider.png)
+- Obtener lista de ids de API de Pubmed ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_pubmed_web-spider.png)
+- Inicializar job con los campos correctos ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_pubmed_web-spider.png)
+- Insertar job en MariaDB ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_MariaDB_web-spider.png)
+- Enviar job_id por RabbitMQ ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_RabbitMQ_web-spider.png)
 
 - Scripts en Python para validar la correcta conexión con PubMed y Crossref.  
 - Funciones para verificar transformación de fechas y autores en Spark SQL.  
