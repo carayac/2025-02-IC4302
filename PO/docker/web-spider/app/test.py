@@ -9,6 +9,8 @@ import os
 import pytest
 import unittest
 
+retstart = 0
+
 # Test 1: obtener_count devuelve un entero válido
 def test_obtener_count():
     count = obtener_count(url_base, db, term, retstart, retmax)

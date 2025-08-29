@@ -177,6 +177,10 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 - [UUID Documentation](https://docs.python.org/es/3/library/uuid.html)
 - [MariaDB / Python](https://mariadb.com/docs/connectors/connectors-quickstart-guides/connector-python-guide)
 - [Kubernetes CronJob](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/)
+- [Unittest MagicMock](https://docs.python.org/3/library/unittest.mock.html#magic-mock)
+- [Pytest](https://docs.pytest.org/en/stable/getting-started.html)
+- [Mock DBs](https://medium.com/@prasanna44.palivela/python-unittest-framework-how-to-mock-db-and-apis-5f8ca2baf2b2)
+
 
 ---
 </details>

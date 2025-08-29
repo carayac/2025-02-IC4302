@@ -14,7 +14,6 @@ url_base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 #Parametros en la url
 db = "pubmed"
 term = "science[journal]"
-retstart = 0
 JOB_SIZE = 20
 retmax = JOB_SIZE
 
@@ -140,6 +139,7 @@ def crear_job(lista_ids):
 
 #Ciclo Principal con Paginacion
 def main():
+    retstart = 0
     # Conexión MariaDB
     conn, cursor = conectar_MariaDB()
     table_name = os.getenv('MARIADB_TABLE')
@@ -151,7 +151,6 @@ def main():
     count = obtener_count(url_base, db, term, retstart, retmax)
 
     # Paginación
-    global retstart
     while retstart < count:
         lista_ids = obtener_ids(url_base, db, term, retstart, retmax)
 
