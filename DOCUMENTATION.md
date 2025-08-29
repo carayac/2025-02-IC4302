@@ -98,9 +98,11 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
   <summary>Desplegar información</summary>
 
 ### 5.1 Pruebas Unitarias
-- Extracción de count de API de Pubmed
-- Obtener lista de ids de API de Pubmed
-- Inicializar job con los campos correctos
+- Extracción de count de API de Pubmed ![Resultados]()
+- Obtener lista de ids de API de Pubmed ![Resultados]()
+- Inicializar job con los campos correctos ![Resultados]()
+- Insertar job en MariaDB ![Resultados]()
+- Enviar job_id por RabbitMQ ![Resultados]()
 
 - Scripts en Python para validar la correcta conexión con PubMed y Crossref.  
 - Funciones para verificar transformación de fechas y autores en Spark SQL.  

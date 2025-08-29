@@ -1,4 +1,4 @@
 pika
 mariadb
-boto3
 requests
+pytest
