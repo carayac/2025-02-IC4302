@@ -25,7 +25,7 @@ val spark = SparkSession.builder.config(sc.getConf).getOrCreate()
 
 val sqlcontext = new org.apache.spark.sql.SQLContext(sc)
 
-val options = Map("es.read.field.as.array.include" -> "data")
+val options = Map("es.read.field.as.array.include" -> "data") //Se puede usar la carpeta de sample o tambien puedo cargar el volumen de json de ejemplos!
 
 val tmp_data = spark.read.json("/data")
 tmp_data.createOrReplaceTempView("tmp")
