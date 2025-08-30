@@ -29,8 +29,8 @@ try {
     //Validacion de extraccion de fechas
     Functions.extractDates(spark)
     val createdDates = spark.sql("SELECT * FROM dates")
-    // Filtra filas donde DOI sea "10.1126/science.ady0241"
-    val dateValues = createdDates.filter(col("DOI") === "10.1126/science.ady0241")
+    // Filtra filas donde DOI sea "10.1126/science.adz6436"
+    val dateValues = createdDates.filter(col("DOI") === "10.1126/science.adz6436")
     assert(dateValues.count() == 1, "No se encontró exactamente un registro con DOI '10.1126/science.ady0241'")
     
     // Verifica que las fechas coincidan con los valores esperados de "08-02-2025" en indexed.date
