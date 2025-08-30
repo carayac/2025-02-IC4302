@@ -75,6 +75,7 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
   <summary>Desplegar información</summary>  
   
 ### 4.1 Requisitos Previos
+- Cuenta en Docker Hub
 - Docker y Docker Compose  
 - Kubernetes (Minikube o Docker Desktop)  
 - Helm Charts instalados  
@@ -140,25 +141,22 @@ kubectl get pods
  ```
 O también puede ingresar a la aplicación de **Lens** y dirigirse a la sección de **Workloads --> Pods** y verifique que estos tengan un estado de *Running*
 
-> NOTA: 
-> IMAGEN  
+![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/estado%20running.png)  
 
 #### 7. Inicie el flujo del web-spider
 
-Después de ejecutar los pasos anteriores, el web.spider está definido como un CronJob en Kubernetes.  Para poder ejecutar su flujo sin esperar su horario programado debe dirigirse a **Workloads --> Cron Jobs** y seleccionar el web-spider y usar la opción "Trigger" para ejecutar el job de inmediato.  
+Después de ejecutar los pasos anteriores, el web.spider está definido como un CronJob en Kubernetes el cual se ejecuta cada 12 horas.  Para poder ejecutar su flujo sin esperar su horario programado debe dirigirse a **Workloads --> Cron Jobs** y seleccionar el web-spider y usar la opción "Trigger" para ejecutar el job de inmediato.  
 
-> NOTA: 
-> IMAGEN
+![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/cron%20Job.png)
 
 Una vez realizado este paso, puede dirigirse a la sección de **Pods** y esperar a que el web-spider cambie su estado a Succeed, lo que significará que ha terminado su ejecución.  
 
 #### 8. Inicie el flujo del spark-job
 
 Después de que la ejecución del web-spider ha terminado, puede empezar el flujo del spark-job de la misma forma.  
-El spark job está definido como un CronJob en Kubernetes.  Para poder ejecutar su flujo sin esperar su horario programado debe dirigirse a **Workloads --> Cron Jobs** y seleccionar el spark-job y usar la opción "Trigger" para ejecutar el job de inmediato.  
+El spark job está definido como un CronJob en Kubernetes el cual se ejecuta cada 12 horas.  Para poder ejecutar su flujo sin esperar su horario programado debe dirigirse a **Workloads --> Cron Jobs** y seleccionar el spark-job y usar la opción "Trigger" para ejecutar el job de inmediato.  
 
-> NOTA: 
-> IMAGEN
+![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/cron%20Job.png)
 
 Una vez realizado este paso, puede dirigirse a la sección de **Pods** y esperar a que el spark-job cambie su estado a Succeed, lo que significará que ha terminado su ejecución.  
 
@@ -168,20 +166,17 @@ Una vez que el **spark-job** haya terminado su ejecución y el pod cambie su est
 Para ingresar a Kibana:  
 - Ingrese a **Network --> Services**. y seleccione el serivio llamado `ic4302-kb-http`
 - Seleccione la opción **Port Forward** para exponer el servicio en su máquina local.  Inmediatamente se abrirá un enlace en su navegador para poder ingresar a la pagina de inicio.
+![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/kibana.png)  
 - Ingrese los datos de inicio de sesión
  ```
 User: `elastic`
 Password:** debe obtenerse desde Lens:
  ```
 - Para obetner la contraseña, debe ingresar a **Config --> Secrets**, seleccionar `ic4302-es-elastic-user` y copie el valor de la contraseña y peguelo en el inicio de sesión.
+![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/secret.png)
 
 Una vez haya completado estos pasos, puede crear consultas para ver los documentos almacenados y verificar los nuevos campos.  
   
-
-> NOTA: 
-> IMAGEN
-
-
 ---
 </details>
 
