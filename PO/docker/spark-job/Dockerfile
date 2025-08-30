@@ -5,6 +5,8 @@ WORKDIR /app
 
 COPY app/app.scala .
 COPY app/elasticsearch-spark-30_2.12-8.14.3.jar /opt/spark/jars/
+COPY app/functions.scala .
+COPY app/test.scala .
 
 #CMD [ "tail", "-f", "/dev/null" ]
-CMD ["spark-shell", "-i", "/app/app.scala"]
+CMD ["spark-shell", "-i", "/app/functions.scala", "-i", "/app/app.scala"]
