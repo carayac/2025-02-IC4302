@@ -165,6 +165,18 @@ Una vez realizado este paso, puede dirigirse a la sección de **Pods** y esperar
 #### 9. Acceda a Kibana para consultar los datos y transformaciones  
   
 Una vez que el **spark-job** haya terminado su ejecución y el pod cambie su estado a **Succeed**, los datos ya estarán disponibles en **Elasticsearch** y podrán consultarse mediante **Kibana**.  
+Para ingresar a Kibana:  
+- Ingrese a **Network --> Services**. y seleccione el serivio llamado `ic4302-kb-http`
+- Seleccione la opción **Port Forward** para exponer el servicio en su máquina local.  Inmediatamente se abrirá un enlace en su navegador para poder ingresar a la pagina de inicio.
+- Ingrese los datos de inicio de sesión
+ ```
+User: `elastic`
+Password:** debe obtenerse desde Lens:
+ ```
+- Para obetner la contraseña, debe ingresar a **Config --> Secrets**, seleccionar `ic4302-es-elastic-user` y copie el valor de la contraseña y peguelo en el inicio de sesión.
+
+Una vez haya completado estos pasos, puede crear consultas para ver los documentos almacenados y verificar los nuevos campos.  
+  
 
 > NOTA: 
 > IMAGEN
