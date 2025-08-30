@@ -29,7 +29,7 @@
 <details>
   <summary>Desplegar información</summary>
   
-Este documento describe el desarrollo e implementación del proyecto **Crossref Search**, cuyo propósito es construir un motor de búsqueda de artículos científicos utilizando las APIs de la **National Library of Medicine (PubMed)** y **Crossref**.  
+Este documento describe el desarrollo e implementación del proyecto **Crossref Search**, cuyo propósito es generar ciertos pasos en cadena, ejecutarlos en diferentes maquinas y así obtener un gran volumen  de datos; todo esto basado en microservicios desplegados en Docker, Kubernetes y Helms.  Crossref search integra tres componentes principales: un **web-spider** que se encarga de consultar a la API de Pubmed para conseguir ciertos identificadores de articulos y así generar jobs; un **downloader** que descarga los metadatos, consulta a la API de Crossref los documentos JSON con la información pertinente de cada artículo y finalmente se implementa un **spark-job** que procesa los archivos almacenados y realiza transformaciones utilizando en campos de fecha, autores y referencias utilizando Spark SQL.  
   
 ---
 </details>
@@ -72,22 +72,103 @@ Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en
 ## 4. Instrucciones de Ejecución
   
 <details>
-  <summary>Desplegar información</summary>
-
+  <summary>Desplegar información</summary>  
+  
 ### 4.1 Requisitos Previos
 - Docker y Docker Compose  
 - Kubernetes (Minikube o Docker Desktop)  
 - Helm Charts instalados  
 - Git  
 
-### 4.2 Instalación de Componentes
-1. Clonar el repositorio:  
+### 4.2 Instalación de Componentes  
+
+
+#### 1. Descargue el repositorio del proyecto en su computadora 
+  
    ```bash
    git clone <URL_REPO>
-   cd crossref-search
    ```
 
+Después ingrese a la carpeta del repositorio por medio de la terminal bash:  
+
    ```
+cd 2025-02-IC4302
+   ```
+  
+#### 2. Construya la imagenes de docker
+Para poder realizar la construcción de las imágenes Docker. debe ingresar a la carpeta **docker** desde una terminal Bash y ejecutar el siguiente comando: 
+
+ ```
+./build.sh usuario 
+ ```  
+  
+> NOTA: 
+> Sustituya la palabra ususario con su usario de Docker Hub
+
+#### 3. Configure el registro de  las imágenes para el chart
+En su proyecto, ingrese a la carpeta de charts **-->** application **-->** values.yaml y reemplace el resgistro de docker por su usuario correspondiente en docker hub:  
+  
+ ```
+config:
+  docker_registry: usuario
+ ```
+
+#### 4. Instale el Helm Chart del proyecto  
+
+En su proyecto, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./install.sh
+ ```
+
+#### 5. Desinstalación del Helm Chart del proyecto
+
+En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./uninstall.sh
+ ```
+> NOTA: 
+> Si no necesita la instalación, ignore este paso
+  
+#### 6. Accese a los pod
+
+Para verificar que su instalación se ejecutó correctamente puede ejecutar el siguiente comando desde la terminal Bash:  
+    
+ ```
+kubectl get pods
+ ```
+O también puede ingresar a la aplicación de **Lens** y dirigirse a la sección de **Workloads --> Pods** y verifique que estos tengan un estado de *Running*
+
+> NOTA: 
+> IMAGEN  
+
+#### 7. Inicie el flujo del web-spider
+
+Después de ejecutar los pasos anteriores, el web.spider está definido como un CronJob en Kubernetes.  Para poder ejecutar su flujo sin esperar su horario programado debe dirigirse a **Workloads --> Cron Jobs** y seleccionar el web-spider y usar la opción "Trigger" para ejecutar el job de inmediato.  
+
+> NOTA: 
+> IMAGEN
+
+Una vez realizado este paso, puede dirigirse a la sección de **Pods** y esperar a que el web-spider cambie su estado a Succeed, lo que significará que ha terminado su ejecución.  
+
+#### 8. Inicie el flujo del spark-job
+
+Después de que la ejecución del web-spider ha terminado, puede empezar el flujo del spark-job de la misma forma.  
+El spark job está definido como un CronJob en Kubernetes.  Para poder ejecutar su flujo sin esperar su horario programado debe dirigirse a **Workloads --> Cron Jobs** y seleccionar el spark-job y usar la opción "Trigger" para ejecutar el job de inmediato.  
+
+> NOTA: 
+> IMAGEN
+
+Una vez realizado este paso, puede dirigirse a la sección de **Pods** y esperar a que el spark-job cambie su estado a Succeed, lo que significará que ha terminado su ejecución.  
+
+#### 9. Acceda a Kibana para consultar los datos y transformaciones  
+  
+Una vez que el **spark-job** haya terminado su ejecución y el pod cambie su estado a **Succeed**, los datos ya estarán disponibles en **Elasticsearch** y podrán consultarse mediante **Kibana**.  
+
+> NOTA: 
+> IMAGEN
+
 
 ---
 </details>
