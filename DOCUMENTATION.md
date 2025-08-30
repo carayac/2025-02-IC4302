@@ -147,7 +147,7 @@ O también puede ingresar a la aplicación de **Lens** y dirigirse a la sección
 
 Después de ejecutar los pasos anteriores, el web.spider está definido como un CronJob en Kubernetes el cual se ejecuta cada 12 horas.  Para poder ejecutar su flujo sin esperar su horario programado debe dirigirse a **Workloads --> Cron Jobs** y seleccionar el web-spider y usar la opción "Trigger" para ejecutar el job de inmediato.  
 
-![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/cron%20Job.png)
+![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/cronJob.png)
 
 Una vez realizado este paso, puede dirigirse a la sección de **Pods** y esperar a que el web-spider cambie su estado a Succeed, lo que significará que ha terminado su ejecución.  
 
@@ -156,7 +156,7 @@ Una vez realizado este paso, puede dirigirse a la sección de **Pods** y esperar
 Después de que la ejecución del web-spider ha terminado, puede empezar el flujo del spark-job de la misma forma.  
 El spark job está definido como un CronJob en Kubernetes el cual se ejecuta cada 12 horas.  Para poder ejecutar su flujo sin esperar su horario programado debe dirigirse a **Workloads --> Cron Jobs** y seleccionar el spark-job y usar la opción "Trigger" para ejecutar el job de inmediato.  
 
-![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/cron%20Job.png)
+![](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/cronJob.png)
 
 Una vez realizado este paso, puede dirigirse a la sección de **Pods** y esperar a que el spark-job cambie su estado a Succeed, lo que significará que ha terminado su ejecución.  
 
