@@ -3,6 +3,7 @@ import org.apache.spark.sql.functions._
 
 object Functions {
 
+    // Extrae las fechas de created e indexed y las formatea a MM-dd-yyyy
   def extractDates(spark: SparkSession): Unit = {
     spark.sql(
       """SELECT 
@@ -10,13 +11,13 @@ object Functions {
            struct(indexed.* , date_format(to_timestamp(indexed.`date-time`, "yyyy-MM-dd'T'HH:mm:ss'Z'"), "MM-dd-yyyy") AS date) as indexed , 
            DOI 
          FROM messages"""
-    ).createOrReplaceTempView("dates")
+    ).createOrReplaceTempView("dates") // Crea una vista temporal llamada "dates"
   }
-
+    // Formatea el DataFrame eliminando las columnas created e indexed del struct message
   def formatDf(df: DataFrame): DataFrame = {
     val df2 = df.withColumn("message", col("message").dropFields("created", "indexed"))
     df2.createOrReplaceTempView("dfFormateado")
-    df2
+    df2// Retorna el DataFrame formateado
   }
 
   def extractAuthors(spark: SparkSession): Unit = {
@@ -51,7 +52,7 @@ object Functions {
          GROUP BY r.DOIorg"""
     ).createOrReplaceTempView("referencess")
   }
-
+// Une todas las vistas temporales en una sola vista llamada messagesFinal representando el nodo message transformado
   def joinAll(spark: SparkSession): Unit = {
     spark.sql("SELECT message.* FROM dfFormateado").createOrReplaceTempView("messagesFinal")
 
@@ -66,9 +67,9 @@ object Functions {
          LEFT JOIN dates AS B ON A.DOI = B.DOI
          LEFT JOIN autors AS C ON A.DOI = C.DOI
          LEFT JOIN referencess AS D ON lower(trim(A.DOI)) = D.DOIorg"""
-    ).createOrReplaceTempView("messagesFinal")
+    ).createOrReplaceTempView("messagesFinal") // Sobrescribe la vista messagesFinal con los nuevos datos
   }
-
+// Construye el DataFrame final con la estructura requerida los campos status, message-type, message-version y message
   def buildFinalDf(spark: SparkSession): DataFrame = {
     spark.sql(
       """ SELECT 

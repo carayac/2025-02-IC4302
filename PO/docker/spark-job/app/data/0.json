@@ -1,0 +1,483 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [2025, 8, 2]
+      ],
+      "date-time": "2025-08-02T19:47:15Z",
+      "timestamp": 1754164035828,
+      "version": "3.41.2"
+    },
+    "reference-count": 31,
+    "publisher": "American Association for the Advancement of Science (AAAS)",
+    "issue": "6759",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [2026, 7, 31]
+          ],
+          "date-time": "2026-07-31T00:00:00Z",
+          "timestamp": 1785456000000
+        },
+        "content-version": "vor",
+        "delay-in-days": 365,
+        "URL": "https://www.science.org/content/page/science-licenses-journal-article-reuse"
+      }
+    ],
+    "content-domain": {
+      "domain": [
+        "www.science.org"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [
+      "Science"
+    ],
+    "published-print": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "abstract": "\u003Cjats:p\u003E\n            The heavy fermion material UTe\n            \u003Cjats:sub\u003E2\u003C/jats:sub\u003E\n            is a candidate topological superconductor that exhibits multiple magnetic field–induced superconducting phases. One such phase exists only at fields greater than 40 tesla, a considerable scale given its critical temperature of only 2 K. Here, we extend measurements of this state with fields outside of the\n            \u003Cjats:italic toggle=\"yes\"\u003Ebc\u003C/jats:italic\u003E\n            crystallographic plane and reveal its core structure: The superconducting phase wraps around the\n            \u003Cjats:italic toggle=\"yes\"\u003Eb\u003C/jats:italic\u003E\n            axis in a halo-like fashion and appears to be stabilized by a field component perpendicular to the magnetic easy axis. This angle dependence points to a multicomponent spin-triplet order parameter with a finite angular momentum of the Cooper pairs. The pairing mechanism remains enigmatic, and UTe\n            \u003Cjats:sub\u003E2\u003C/jats:sub\u003E\n            ’s specific magnetophilic superconducting tendencies seem incompatible with existing models for field-enhanced superconductivity.\n          \u003C/jats:p\u003E",
+    "DOI": "10.1126/science.adn7673",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [2025, 7, 31]
+      ],
+      "date-time": "2025-07-31T18:03:25Z",
+      "timestamp": 1753985005000
+    },
+    "page": "512-515",
+    "update-policy": "https://doi.org/10.34133/aaas_crossmark",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "High-field superconducting halo in UTe\n            \u003Csub\u003E2\u003C/sub\u003E"
+    ],
+    "prefix": "10.1126",
+    "volume": "389",
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0001-5624-5881",
+        "authenticated-orcid": true,
+        "given": "Sylvia K.",
+        "family": "Lewin",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "NIST Center for Neutron Research, National Institute of Standards and Technology, Gaithersburg, MD, USA."
+          },
+          {
+            "name": "Maryland Quantum Materials Center, Department of Physics, University of Maryland, College Park, MD, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-9938-0952",
+        "authenticated-orcid": true,
+        "given": "Peter",
+        "family": "Czajka",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "NIST Center for Neutron Research, National Institute of Standards and Technology, Gaithersburg, MD, USA."
+          },
+          {
+            "name": "Maryland Quantum Materials Center, Department of Physics, University of Maryland, College Park, MD, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2638-7795",
+        "authenticated-orcid": true,
+        "given": "Corey E.",
+        "family": "Frank",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "NIST Center for Neutron Research, National Institute of Standards and Technology, Gaithersburg, MD, USA."
+          },
+          {
+            "name": "Maryland Quantum Materials Center, Department of Physics, University of Maryland, College Park, MD, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0004-8440-4826",
+        "authenticated-orcid": true,
+        "given": "Gicela",
+        "family": "Saucedo Salas",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Maryland Quantum Materials Center, Department of Physics, University of Maryland, College Park, MD, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-4263-088X",
+        "authenticated-orcid": true,
+        "given": "G. Timothy",
+        "family": "Noe II",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "National High Magnetic Field Laboratory, Los Alamos National Laboratory, Los Alamos, NM, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6553-5493",
+        "authenticated-orcid": true,
+        "given": "Hyeok",
+        "family": "Yoon",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Maryland Quantum Materials Center, Department of Physics, University of Maryland, College Park, MD, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-8715-8649",
+        "authenticated-orcid": true,
+        "given": "Yun Suk",
+        "family": "Eo",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Maryland Quantum Materials Center, Department of Physics, University of Maryland, College Park, MD, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-7257-014X",
+        "authenticated-orcid": true,
+        "given": "Johnpierre",
+        "family": "Paglione",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Maryland Quantum Materials Center, Department of Physics, University of Maryland, College Park, MD, USA."
+          },
+          {
+            "name": "Canadian Institute for Advanced Research, Toronto, Ontario, Canada."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-8684-7979",
+        "authenticated-orcid": true,
+        "given": "Andriy H.",
+        "family": "Nevidomskyy",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Physics and Astronomy, Rice University, Houston, TX, USA."
+          },
+          {
+            "name": "Rice Center for Quantum Materials, Rice University, Houston, TX, USA."
+          },
+          {
+            "name": "Rice Advanced Materials Institute, Rice University, Houston, TX, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-6109-6905",
+        "authenticated-orcid": true,
+        "given": "John",
+        "family": "Singleton",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "National High Magnetic Field Laboratory, Los Alamos National Laboratory, Los Alamos, NM, USA."
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-6083-8388",
+        "authenticated-orcid": true,
+        "given": "Nicholas P.",
+        "family": "Butch",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "NIST Center for Neutron Research, National Institute of Standards and Technology, Gaithersburg, MD, USA."
+          },
+          {
+            "name": "Maryland Quantum Materials Center, Department of Physics, University of Maryland, College Park, MD, USA."
+          }
+        ]
+      }
+    ],
+    "member": "221",
+    "reference": [
+      {
+        "key": "e_1_3_2_2_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.aav8645"
+      },
+      {
+        "key": "e_1_3_2_3_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41567-019-0670-x"
+      },
+      {
+        "key": "e_1_3_2_4_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1088/1361-6633/acfb93"
+      },
+      {
+        "key": "e_1_3_2_5_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1088/1361-648X/ac5863"
+      },
+      {
+        "key": "e_1_3_2_6_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41586-020-2122-2"
+      },
+      {
+        "key": "e_1_3_2_7_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.abb0272"
+      },
+      {
+        "key": "e_1_3_2_8_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.7566/JPSJ.88.063707"
+      },
+      {
+        "key": "e_1_3_2_9_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1103/PhysRevMaterials.6.073401"
+      },
+      {
+        "key": "e_1_3_2_10_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1103/PhysRevB.106.L060505"
+      },
+      {
+        "key": "e_1_3_2_11_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1103/PhysRevB.106.144406"
+      },
+      {
+        "key": "e_1_3_2_12_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.aab2277"
+      },
+      {
+        "key": "e_1_3_2_13_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1080/00107510110108681"
+      },
+      {
+        "key": "e_1_3_2_14_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1103/PhysRevLett.87.067002"
+      },
+      {
+        "key": "e_1_3_2_15_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.7566/JPSJ.88.022001"
+      },
+      {
+        "key": "e_1_3_2_16_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.1115498"
+      },
+      {
+        "key": "e_1_3_2_17_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s42005-021-00545-z"
+      },
+      {
+        "key": "e_1_3_2_18_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.7566/JPSJ.88.063705"
+      },
+      {
+        "key": "e_1_3_2_19_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1063/1.3152219"
+      },
+      {
+        "key": "e_1_3_2_20_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1073/pnas.2403067121"
+      },
+      {
+        "key": "e_1_3_2_21_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1088/0034-4885/75/10/102501"
+      },
+      {
+        "key": "e_1_3_2_22_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1007/s10948-016-3727-4"
+      },
+      {
+        "key": "e_1_3_2_23_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1103/PhysRevB.100.054507"
+      },
+      {
+        "key": "e_1_3_2_26_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-024-47090-1"
+      },
+      {
+        "key": "e_1_3_2_27_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-023-44183-1"
+      },
+      {
+        "key": "e_1_3_2_28_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.7566/JPSJ.88.063706"
+      },
+      {
+        "key": "e_1_3_2_30_2",
+        "unstructured": "S. K. Lewin P. Czajka Data for: High-field superconducting halo in UTe2 version 2.0 Harvard Dataverse (2024); 10.7910/DVN/EYNSUX."
+      },
+      {
+        "key": "e_1_3_2_31_2",
+        "unstructured": "A. H. Nevidomskyy Stability of a nonunitary triplet pairing on the border of magnetism in UTe_2. arXiv:2001.02699 [cond-mat.supr-con] (2020)."
+      },
+      {
+        "key": "e_1_3_2_32_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41535-019-0206-8"
+      },
+      {
+        "key": "e_1_3_2_33_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1103/PhysRevLett.131.036501"
+      },
+      {
+        "key": "e_1_3_2_34_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1103/PhysRevLett.124.076401"
+      },
+      {
+        "key": "e_1_3_2_35_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41535-021-00376-9"
+      }
+    ],
+    "container-title": [
+      "Science"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://www.science.org/doi/pdf/10.1126/science.adn7673",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "syndication"
+      },
+      {
+        "URL": "https://www.science.org/doi/pdf/10.1126/science.adn7673",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [2025, 7, 31]
+      ],
+      "date-time": "2025-07-31T18:04:10Z",
+      "timestamp": 1753985050000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://www.science.org/doi/10.1126/science.adn7673"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "references-count": 31,
+    "journal-issue": {
+      "issue": "6759",
+      "published-print": {
+        "date-parts": [
+          [2025, 7, 31]
+        ]
+      }
+    },
+    "alternative-id": [
+      "10.1126/science.adn7673"
+    ],
+    "URL": "https://doi.org/10.1126/science.adn7673",
+    "relation": {
+
+    },
+    "ISSN": [
+      "0036-8075",
+      "1095-9203"
+    ],
+    "issn-type": [
+      {
+        "type": "print",
+        "value": "0036-8075"
+      },
+      {
+        "type": "electronic",
+        "value": "1095-9203"
+      }
+    ],
+    "subject": [],
+    "published": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "assertion": [
+      {
+        "value": "2024-03-21",
+        "order": 0,
+        "name": "received",
+        "label": "Received",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      },
+      {
+        "value": "2025-06-05",
+        "order": 2,
+        "name": "accepted",
+        "label": "Accepted",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      },
+      {
+        "value": "2025-07-31",
+        "order": 3,
+        "name": "published",
+        "label": "Published",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      }
+    ]
+  }
+}

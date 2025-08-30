@@ -1,0 +1,235 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [
+        [2025, 8, 2]
+      ],
+      "date-time": "2025-08-02T19:47:14Z",
+      "timestamp": 1754164034720,
+      "version": "3.41.2"
+    },
+    "reference-count": 15,
+    "publisher": "American Association for the Advancement of Science (AAAS)",
+    "issue": "6759",
+    "content-domain": {
+      "domain": [
+        "www.science.org"
+      ],
+      "crossmark-restriction": true
+    },
+    "short-container-title": [
+      "Science"
+    ],
+    "published-print": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "abstract": "\u003Cjats:p\u003ERibosome stalling drives aging in the killifish brain\u003C/jats:p\u003E",
+    "DOI": "10.1126/science.adz4995",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [2025, 7, 31]
+      ],
+      "date-time": "2025-07-31T18:03:25Z",
+      "timestamp": 1753985005000
+    },
+    "page": "457-458",
+    "update-policy": "https://doi.org/10.34133/aaas_crossmark",
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Translational traffic jam in aging brains"
+    ],
+    "prefix": "10.1126",
+    "volume": "389",
+    "author": [
+      {
+        "given": "Olivier",
+        "family": "Dionne",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Department of Biochemistry and Functional Genomics, Faculty of Medicine and Health Sciences, Université de Sherbrooke, Sherbrooke, QC, Canada."
+          }
+        ]
+      },
+      {
+        "given": "Benoit",
+        "family": "Laurent",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Biochemistry and Functional Genomics, Faculty of Medicine and Health Sciences, Université de Sherbrooke, Sherbrooke, QC, Canada."
+          },
+          {
+            "name": "Research Center on Aging, Centre Intégré Universitaire de Santé et Services Sociaux de l’Estrie-Centre Hospitalier Universitaire de Sherbrooke, Sherbrooke, QC, Canada."
+          }
+        ]
+      }
+    ],
+    "member": "221",
+    "reference": [
+      {
+        "key": "e_1_3_1_2_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.cell.2022.11.001"
+      },
+      {
+        "key": "e_1_3_1_3_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41580-019-0101-y"
+      },
+      {
+        "key": "e_1_3_1_4_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.adk3079"
+      },
+      {
+        "key": "e_1_3_1_5_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.cmet.2022.11.001"
+      },
+      {
+        "key": "e_1_3_1_6_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1093/nar/gkae172"
+      },
+      {
+        "key": "e_1_3_1_7_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.cell.2018.03.079"
+      },
+      {
+        "key": "e_1_3_1_8_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.3389/fcell.2023.1129281"
+      },
+      {
+        "key": "e_1_3_1_9_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.cell.2019.02.038"
+      },
+      {
+        "key": "e_1_3_1_10_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/nrm.2017.91"
+      },
+      {
+        "key": "e_1_3_1_11_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s44320-024-00026-9"
+      },
+      {
+        "key": "e_1_3_1_12_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1016/j.bpc.2022.106780"
+      },
+      {
+        "key": "e_1_3_1_13_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1126/science.aau1646"
+      },
+      {
+        "key": "e_1_3_1_14_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1038/s41467-023-40422-7"
+      },
+      {
+        "key": "e_1_3_1_15_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1074/jbc.REV119.006513"
+      },
+      {
+        "key": "e_1_3_1_16_2",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.1073/pnas.2317860121"
+      }
+    ],
+    "container-title": [
+      "Science"
+    ],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https://www.science.org/doi/pdf/10.1126/science.adz4995",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [2025, 7, 31]
+      ],
+      "date-time": "2025-07-31T18:04:03Z",
+      "timestamp": 1753985043000
+    },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https://www.science.org/doi/10.1126/science.adz4995"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "references-count": 15,
+    "journal-issue": {
+      "issue": "6759",
+      "published-print": {
+        "date-parts": [
+          [2025, 7, 31]
+        ]
+      }
+    },
+    "alternative-id": [
+      "10.1126/science.adz4995"
+    ],
+    "URL": "https://doi.org/10.1126/science.adz4995",
+    "relation": {
+
+    },
+    "ISSN": [
+      "0036-8075",
+      "1095-9203"
+    ],
+    "issn-type": [
+      {
+        "type": "print",
+        "value": "0036-8075"
+      },
+      {
+        "type": "electronic",
+        "value": "1095-9203"
+      }
+    ],
+    "subject": [],
+    "published": {
+      "date-parts": [
+        [2025, 7, 31]
+      ]
+    },
+    "assertion": [
+      {
+        "value": "2025-07-31",
+        "order": 3,
+        "name": "published",
+        "label": "Published",
+        "group": {
+          "name": "publication_history",
+          "label": "Publication History"
+        }
+      }
+    ]
+  }
+}
