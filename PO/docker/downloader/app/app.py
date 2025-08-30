@@ -10,6 +10,7 @@ import requests
 import xml.etree.ElementTree as ET
 import re
 import ast
+import time
 
 
 hostname = os.getenv('HOSTNAME')
@@ -164,42 +165,6 @@ def dois_pubmed(xml_response):
         return []
 
 
-
-def callback(ch, method, properties, body):
-    try:
-        job_id = body.decode('utf-8').strip()
-        print(f" Job ID: {job_id}")
-
-        # Actualizamos el estado del job
-        change = update_job_status(job_id, "in-progress")
-        if change:
-            print(f" Se actualizo el estado del job {job_id}")
-        
-        # Obtenemos la lista de IDs de artículos del job
-        ids_list = get_job_ids(job_id)
-        if ids_list:
-            print(f" Se obtuvieron los siguienres Ids: {ids_list}")
-            
-        # Consultamos la API 
-        pubmed_response = pubmed_API(ids_list)
-        ids_string = ",".join(ids_list)
-        url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id={ids_string}"
-        if pubmed_response:
-            print(f" Se consulto con exito esta API: {url}")
-            
-        # Extraemos DOIs de la respuesta de PubMed
-        dois_list = dois_pubmed(pubmed_response)
-        if dois_list:
-            print(f" Se encontraron los siguientes DOIs  {dois_list}")
-            process_dois(job_id, dois_list)
-        
-        print("------------------------------------------------------")
-
-    except Exception as e:
-        print(f" Error procesando mensaje: {e}")
-        print(f" Body recibido: {body}")
-
-
 def process_dois(job_id, dois_list): #Recibe una lista de dois, consulta crossref e invoca la funcion que guarda el json o añade el doi a omitidos. 
     omitidos = []
 
@@ -254,12 +219,42 @@ def crossref_API(doi): #Consulta Crossref
         print(f"Crossref error:" + e)
         return None
 
+contador=0
+
+def callback(ch, method, properties, body):
+    global contador
+    job_id = body.decode('utf-8').strip()
+
+    try:
+        change = update_job_status(job_id, "in-progress")
+        ids_list = get_job_ids(job_id)
+
+        pubmed_response = pubmed_API(ids_list)
+        dois_list = dois_pubmed(pubmed_response)
+        process_dois(job_id, dois_list)
+
+        contador += 1
+        print(f"Job {contador} listo")
+        print("------------------------------------------------------")
+
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+
+    except Exception as e:
+        print(f"Error procesando mensaje: {e}")
+        print(f"Body recibido: {body}")
+
+        time.sleep(5)
+        ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+
+
+
 
 credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
-parameters = pika.ConnectionParameters(host=RABBIT_MQ, credentials=credentials, heartbeat=60, blocked_connection_timeout=300)
+parameters = pika.ConnectionParameters(host=RABBIT_MQ, credentials=credentials, heartbeat=600, blocked_connection_timeout=300)
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 channel.queue_declare(queue=QUEUE_NAME)
-channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=True)
+channel.basic_qos(prefetch_count=1)  
+channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False)
 print(' [*] Waiting for messages. To exit press CTRL+C')
 channel.start_consuming()
