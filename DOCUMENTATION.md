@@ -242,6 +242,12 @@ La transfromación de fechas consiste en cambiar los campos de la columna messag
   "date": "08-01-2025"
  ```
 
+**Salidas en caso de fallar:**
+
+Test falló: La fecha 'indexed.date' no coincide con el valor esperado
+Test falló: La fecha 'created.date' no coincide con el valor esperado
+
+
 #### Transformación 2 – Autores  
 La transformacion de autores agrega un nuevo campo en la columna message `autor_names` que contiene una lista de los autores del artículo en el formato **"Apellido, Nombre"**, construido a partir de los campos `author.family` y `author.given` ambos de la columna message tambien.  
 - **Objetivo de la prueba:** Validar que se extraen correctamente todos los autores en `autor_names` con el formato que corresponde.  
@@ -250,6 +256,10 @@ La transformacion de autores agrega un nuevo campo en la columna message `autor_
 ```json
 "autor_names": ["Permar, Sallie R.", "Wilson, Patrick C."]
 ```
+
+**Salidas en caso de fallar:**
+Test falló: La lista de 'autor_names' no coincide con el valor esperado
+
 
 #### Transformación 3 – Referencias  
 La transformación de referencias consiste en agregar un nuevo campo en la columna message llamada `reference_tittle` que contenga una lista de los títulos de los artículos referenciados, tomando como base el campo `reference` tambien de la columna message, siempre y cuando estas referencias contengan un DOI.  Si una referencia no tiene DOI es ignorada, de lo contrario se agrega el campo.  
@@ -261,6 +271,11 @@ La transformación de referencias consiste en agregar un nuevo campo en la colum
   "Precise targeting of HIV broadly neutralizing antibody precursors in humans",
   "Vaccination with mRNA-encoded nanoparticles drives early maturation of HIV bnAb precursors in humans"]
 ```
+
+
+**Salidas en caso de fallar:**
+Test falló: La lista de 'message.reference_tittle' no coincide con el valor esperado
+
 
 </details>  
 
