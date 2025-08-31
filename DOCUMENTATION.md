@@ -15,9 +15,9 @@
   
 -> [Instrucciones de ejecución](#4-instrucciones-de-ejecución)  
   
--> [Pruebas](#5-pruebas)  
+-> [Pruebas Unitarias y Resultados](#5-pruebas-unitarias-y-resultados)  
   
--> [Resultados](#6-resultados)  
+-> [Pruebas Funcionales y Resultados](#6-pruebas-funcionales-y-resultados)  
   
 -> [Conclusiones y Recomendaciones](#7-conclusiones-y-recomendaciones)  
 
@@ -60,11 +60,32 @@ Desarrollar competencias en el uso de tecnologías y lenguajes de programación 
   
 El sistema está compuesto por los siguientes servicios:
 
-- **Web Spider (Python, Kubernetes CronJob):** consulta periódicamente PubMed y organiza los artículos en *jobs*.  
-- **Downloader (Python, Kubernetes Deployment):** recibe los *jobs*, descarga metadatos desde PubMed y Crossref, y guarda los resultados en JSON.  
-- **Spark Job (Scala, Kubernetes CronJob):** procesa los datos, realiza transformaciones con Spark SQL y los indexa en Elasticsearch.  
-
-Los servicios se comunican mediante **RabbitMQ**, y los datos son almacenados en **MariaDB** y **Elasticsearch**, permitiendo su consulta a través de **Kibana**.
+**Web Spider**  
+Este componente es el encargado de inciciar el flujo del sistema, se ejecuta periódicamente (cada 12 horas) y consulta la API de *PubMed* para obtener artículos cientificos. Seguidamente, organiza los resultados en *jobs* que incluyen los identificadores de los artículos encontrados, los almacena en *MariaDB* y publica el `job_id` en RabbitMQ para que pueda ser utilizado posteriormente.
+  
+**Downloader**  
+El dowloader funciona como un consumidor activo de RabbitMQ. Cuando recibe un `job_id`, actualiza su estado en MariaDB a *in-progress*, obtiene los datos básicos de PubMed incluyendo incluyendo el DOI y consulta la API de *Crossref* con ese mismo DOI obtenido. El resultado se guarda como archivos JSON en un *PVC (Persistent Volume Claim)*.  
+  
+**Spark Job**  
+Una vez el dowloader termine su ejecución, el spark-job procesa todos los JSON generados para realizar transaformaciones utilizando *Apache Spark SQL* como las siguientes:  
+  - Normalización de fechas (`created.date` y `indexed.date`).  
+  - Creación de una lista de autores con formato `"apellido, nombre"`.  
+  - Extracción de títulos de referencias que contienen DOI.  
+  Una vez las transformaciones se hayan ejecutado, los documentos se envían a un índice en *Elasticsearch* llamado data, para que posteriormente sean consultados mediante *Kibana*.
+  
+Dentro de la infraestructura de soporte dentro del sistema se encuentran:  
+  
+**RabbitMQ**  
+Es el sistema que sirve como intermediario para que los servicios se pasen mensajes y realizar sus funciones correspondientes. Permite que el Web Spider y el Downloader trabajen de forma asíncrona, equilibrada en caso de que haya más de un dowloader y soportando reinicio en caso de que algun mensaje no se procese.
+  
+**MariaDB**  
+Es la base de datos relacional utilizada para registrar los *jobs*, sus estados, fechas de inicio y fin, y la lista de artículos omitidos que son los que no pudieron procesarse.  
+  
+**Elasticsearch**  
+Es el sistema que se encarga de la busqueda y el analisis que almacena los datos procesados por el spark y permite consultas y filtros sobre los componenetes de los json una vez los docs queden indexados
+  
+**Kibana**  
+Es la interfaz gráfica utilizada para desplegar y consultar los datos y transformaciones procesados por Elasticsearch.
 
 ---
 </details>
@@ -180,42 +201,53 @@ Una vez haya completado estos pasos, puede crear consultas para ver los document
 ---
 </details>
 
-## 5. Pruebas
+## 5. Pruebas Unitarias y Resultados
 
 <details>
   <summary>Desplegar información</summary>
 
-### 5.1 Pruebas Unitarias
+#### Web-Spider  
+<details>
+  <summary>Desplegar información</summary>
+  
 - Extracción de count de API de Pubmed ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_pubmed_web-spider.png)
 - Obtener lista de ids de API de Pubmed ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_pubmed_web-spider.png)
 - Inicializar job con los campos correctos ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_pubmed_web-spider.png)
 - Insertar job en MariaDB ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_MariaDB_web-spider.png)
 - Enviar job_id por RabbitMQ ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/pruebas_RabbitMQ_web-spider.png)
 
-- Scripts en Python para validar la correcta conexión con PubMed y Crossref.  
+</details>
+
+#### Downloader  
+<details>
+  <summary>Desplegar información</summary>
+- Scripts en Python para validar la correcta conexión con PubMed y Crossref. 
+</details>
+
+#### Spark-Job  
+<details>
+  <summary>Desplegar información</summary>
 - Funciones para verificar transformación de fechas y autores en Spark SQL.  
-
-
-
-### 5.2 Pruebas Funcionales
-- Verificar que los *jobs* se crean en MariaDB.  
-- Verificar que los *jobs-id* se envían a través del canal de RabbitMQ.
-- Comprobar que los documentos se guardan en JSON.  
-- Confirmar que Elasticsearch contiene los documentos procesados.  
-- Visualizar en Kibana los resultados.  
+</details>  
 
 ---
 
 </details>
 
-## 6. Resultados
+## 6. Pruebas Funcionales y Resultados
 
 <details>
   <summary>Desplegar información</summary>
 
 - Número de artículos procesados.  
 - Ejemplos de documentos transformados en Elasticsearch.  
-- Evidencia de búsquedas realizadas en Kibana.  
+- Evidencia de búsquedas realizadas en Kibana.
+- ### 5.2 Pruebas Funcionales
+- Verificar que los *jobs* se crean en MariaDB.  
+- Verificar que los *jobs-id* se envían a través del canal de RabbitMQ.
+- Comprobar que los documentos se guardan en JSON.  
+- Confirmar que Elasticsearch contiene los documentos procesados.  
+- Visualizar en Kibana los resultados.  
 
 ---
 </details>
@@ -230,8 +262,12 @@ Una vez haya completado estos pasos, puede crear consultas para ver los document
 3. El uso de la herramienta SparkSQL permite desarrollar un estilo de programacion simplificado, ya que facilita el manejo de datos usando consultas SQL familiares sin necesidad de escribir mucho código en APIs más verbosas.
 4. Los contenedores permiten integrar múltiples tecnologías dentro de un mismo proyecto de manera flexible y portable. En conjunto con Helm Charts, se facilita la instalación, gestión y despliegue de aplicaciones, lo que representa un interesante avance hacia la automatización.
 5. Además, los contenedores de Kubernetes proporcionan un entorno aislado, permitiendo que diferentes componentes funcionen de manera independiente, garantizando la estabilidad del software. Esto también facilita las pruebas y desarrollo en paralelo para programas de gran tamaño.
-6. El sistema de gestión de MariaDB fue muy útil a la hora de volúmenes grandes de datos por medio de procesos de paginación, y permite almacenar datos de manera estructurada y consistente, lo que resulta fundamental para cualquier proyecto de software a nivel profesional. 
-*(al menos 10 conclusiones)*  
+6. El sistema de gestión de MariaDB fue muy útil a la hora de volúmenes grandes de datos por medio de procesos de paginación, y permite almacenar datos de manera estructurada y consistente, lo que resulta fundamental para cualquier proyecto de software a nivel profesional.
+7. El uso de cron jobs en Kubernetes es sumamente util porque permite la ejecución periodica de los procesos así como su testeo o ejecución en caso de que no se quiera esperar al horario programado.
+8. Kibana representó una herramienta de gran valor al proyecto pues por medio de ella puede visualizarse los resultados de todas las tranformaciones haciendo el sistema y su objetivo principal mucho más comprensibles.
+9. El uso de Kubernetes y contenedores fue muy util para conocer más sobre la escalabilidad en en los proyectos de software, porque permite añadir más réplicas de un servicio. Como por ejemplo con los dowloaders que permite manejar varios a la vez dependiendo la carga que necesite procesarse.
+10. El uso de volúmenes persistentes en Kubernetes fue bastatnte útil para compartir datos entre todos los serivicios del sistema y asi poder accesar a cualquier docuemento dentro estos dervicios.
+11. En general, el proyecto fue muy util para comprender conceptos y obetener experiencia a prácticas de big data y data engineering modernas y que son utilizadas frecuentemente en el mercado, así como para ka preparación para proyectos futuros que sean más grandes y complejos.
 
 ### 7.2 Recomendaciones
 1. Siempre implementar prints mediante los procesos, de manera que se puede seguir todo paso a paso y ver los resultados que están dando las funciones para verificar si son correctos 
@@ -239,9 +275,11 @@ Una vez haya completado estos pasos, puede crear consultas para ver los document
 3. El uso de variables de entorno permiten separar la configuración del código, lo que facilita su mantenimiento, y aumenta la portabilidad entre distintos entornos y reduce la complejidad al realizar cambios o actualizaciones en este caso fue de utilidad para rutas y credenciales.
 4. Se recomienda investigar previamente las tecnologías poco conocidas o con limitada comprensión, ya que esto facilita su aplicación en el desarrollo de proyectos, mejora la comprensión de su funcionamiento y agiliza la solución de errores.
 5. Es recomendable probar los distintos componentes del software por separado antes de integrarlos, para poder detectar problemas específicos antes de que afecten todo el sistema. 
-6. Hacer un control de versiones y documentar los cambios en el código, usando herramientas como GitHub, para facilitar la colaboración en equipo y la recuperación y restauración del código anterior en caso de  errores accidentales. 
-   
-*(al menos 10 recomendaciones)*  
+6. Hacer un control de versiones y documentar los cambios en el código, usando herramientas como GitHub, para facilitar la colaboración en equipo y la recuperación y restauración del código anterior en caso de  errores accidentales.
+7. Realizar una limpieza del Persistent Volume Claim utilizado después de realizar la desinstalación de los charts o antes de su instalación, esto con el objetivo de prevenir posibles errores a la hora de ejecutar los 3 componentes principales.
+8. Realizar pruebas automatizadas o unitarias a cada uno de los componenetes principales antes de desplegar en kubernetes para reducir errores.
+9. Establecer code reviews semanales con el equipo para mejorar la calidad del código, para compartir conocimientos adquiridos durante el desarrollo de componentes o bien para detectar errores y no esperar hasta la integración final del proyecto.
+10. Implementar documentación interna dentro del código donde se especifique descripcion, entradas y salidas del programa para una mejor comprensión
 
 ---
 </details>
@@ -268,6 +306,7 @@ Una vez haya completado estos pasos, puede crear consultas para ver los document
 - [Unittest MagicMock](https://docs.python.org/3/library/unittest.mock.html#magic-mock)
 - [Pytest](https://docs.pytest.org/en/stable/getting-started.html)
 - [Mock DBs](https://medium.com/@prasanna44.palivela/python-unittest-framework-how-to-mock-db-and-apis-5f8ca2baf2b2)
+- [Scala Test](https://www.scalatest.org/user_guide/using_assertions)
 
 
 ---
