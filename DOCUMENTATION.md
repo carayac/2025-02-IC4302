@@ -206,7 +206,7 @@ Una vez haya completado estos pasos, puede crear consultas para ver los document
 <details>
   <summary>Desplegar información</summary>
 
-#### Web-Spider  
+### Web-Spider  
 <details>
   <summary>Desplegar información</summary>
   
@@ -218,16 +218,49 @@ Una vez haya completado estos pasos, puede crear consultas para ver los document
 
 </details>
 
-#### Downloader  
+### Downloader  
 <details>
   <summary>Desplegar información</summary>
 - Scripts en Python para validar la correcta conexión con PubMed y Crossref. 
 </details>
 
-#### Spark-Job  
+### Spark-Job  
 <details>
   <summary>Desplegar información</summary>
-- Funciones para verificar transformación de fechas y autores en Spark SQL.  
+
+#### Transformación 1 – Fechas  
+La transfromación de fechas consiste en cambiar los campos de la columna message `indexed.date-time` y `created.date-time` al formato **MM-DD-YYYY**, y guardar los cambios en un nuevo campo llamado `indexed.date` y `reated.date` en la columna message  
+- **Objetivo de la prueba:** Validar que se extraen correctamente las fechas `created` e `indexed` y que se formatean correctamente.  
+- **Condición:** La pruba se basa en el documento JSON con el DOI = `10.1126/science.adz6436`  
+- **Salida esperada:**
+```json
+"indexed": {
+  "date": "08-02-2025"
+}, 
+"created": {
+  "date": "08-01-2025"
+ ```
+
+#### Transformación 2 – Autores  
+La transformacion de autores agrega un nuevo campo en la columna message `autor_names` que contiene una lista de los autores del artículo en el formato **"Apellido, Nombre"**, construido a partir de los campos `author.family` y `author.given` ambos de la columna message tambien.  
+- **Objetivo de la prueba:** Validar que se extraen correctamente todos los autores en `autor_names` con el formato que corresponde.  
+- **Condición:** La pruba se basa en el documento JSON con el DOI = `10.1126/science.adz6436`  
+- **Salida esperada:**  
+```json
+"autor_names": ["Permar, Sallie R.", "Wilson, Patrick C."]
+```
+
+#### Transformación 3 – Referencias  
+La transformación de referencias consiste en agregar un nuevo campo en la columna message llamada `reference_tittle` que contenga una lista de los títulos de los artículos referenciados, tomando como base el campo `reference` tambien de la columna message, siempre y cuando estas referencias contengan un DOI.  Si una referencia no tiene DOI es ignorada, de lo contrario se agrega el campo.  
+- **Objetivo de la prueba:** Validar que los todos los títulos referenciados se extraen correctamente.
+- **Condición:** La pruba se basa en el documento JSON con el DOIorg = `10.1126/science.adz6436`
+- **Salida esperada:**
+ ```json
+  "reference_tittle": ["Strategies for HIV-1 vaccines that induce broadly neutralizing antibodies",
+  "Precise targeting of HIV broadly neutralizing antibody precursors in humans",
+  "Vaccination with mRNA-encoded nanoparticles drives early maturation of HIV bnAb precursors in humans"]
+```
+
 </details>  
 
 ---
@@ -266,8 +299,8 @@ Una vez haya completado estos pasos, puede crear consultas para ver los document
 7. El uso de cron jobs en Kubernetes es sumamente util porque permite la ejecución periodica de los procesos así como su testeo o ejecución en caso de que no se quiera esperar al horario programado.
 8. Kibana representó una herramienta de gran valor al proyecto pues por medio de ella puede visualizarse los resultados de todas las tranformaciones haciendo el sistema y su objetivo principal mucho más comprensibles.
 9. El uso de Kubernetes y contenedores fue muy util para conocer más sobre la escalabilidad en en los proyectos de software, porque permite añadir más réplicas de un servicio. Como por ejemplo con los dowloaders que permite manejar varios a la vez dependiendo la carga que necesite procesarse.
-10. El uso de volúmenes persistentes en Kubernetes fue bastatnte útil para compartir datos entre todos los serivicios del sistema y asi poder accesar a cualquier docuemento dentro estos dervicios.
-11. En general, el proyecto fue muy util para comprender conceptos y obetener experiencia a prácticas de big data y data engineering modernas y que son utilizadas frecuentemente en el mercado, así como para ka preparación para proyectos futuros que sean más grandes y complejos.
+10. El uso de volúmenes persistentes en Kubernetes fue bastatnte útil para compartir datos entre todos los serivicios del sistema y asi poder accesar a cualquier documento dentro estos dervicios.
+11. En general, el proyecto fue muy util para comprender conceptos y obetener experiencia en prácticas de big data y data engineering modernas y que son utilizadas frecuentemente en el mercado, así como para la preparación para proyectos futuros que sean más grandes y complejos.
 
 ### 7.2 Recomendaciones
 1. Siempre implementar prints mediante los procesos, de manera que se puede seguir todo paso a paso y ver los resultados que están dando las funciones para verificar si son correctos 
