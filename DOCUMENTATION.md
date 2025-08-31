@@ -100,7 +100,8 @@ Es la interfaz gráfica utilizada para desplegar y consultar los datos y transfo
 - Docker y Docker Compose  
 - Kubernetes (Minikube o Docker Desktop)  
 - Helm Charts instalados  
-- Git  
+- Git
+- Lens
 
 ### 4.2 Instalación de Componentes  
 
