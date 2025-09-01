@@ -1,0 +1,8 @@
+config:
+  flask:
+    enabled: true
+    name: flasktest
+    replicas: 10
+    image: carayacn/flask-example
+    prometheusEndpoint: "http://prometheus-operated.monitoring.svc.cluster.local:9090" . # URL del servicio de Prometheus en el clúster de Kubernetes
+

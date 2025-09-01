@@ -1,0 +1,40 @@
+{{ if .Values.config.flask.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.config.flask.name }}
+  labels:
+    app: {{ .Values.config.flask.name }}
+spec:
+  replicas: {{ .Values.config.flask.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.config.flask.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.config.flask.name }}
+    spec:
+      containers:
+      - name: {{ .Values.config.flask.name }}
+        image: {{ .Values.config.flask.image }}
+        ports:
+        - containerPort: 5000
+        env:
+            - name: PROMETHEUSENDPOINT
+              value: "{{ .Values.config.flask.prometheusEndpoint }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.config.flask.name }}
+spec:
+  type: NodePort
+  selector:
+    app: {{ .Values.config.flask.name }}
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30080
+{{ end }}
