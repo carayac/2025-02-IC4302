@@ -316,7 +316,8 @@ Test falló: La lista de 'message.reference_tittle' no coincide con el valor esp
 8. Kibana representó una herramienta de gran valor al proyecto pues por medio de ella puede visualizarse los resultados de todas las tranformaciones haciendo el sistema y su objetivo principal mucho más comprensibles.
 9. El uso de Kubernetes y contenedores fue muy util para conocer más sobre la escalabilidad en en los proyectos de software, porque permite añadir más réplicas de un servicio. Como por ejemplo con los dowloaders que permite manejar varios a la vez dependiendo la carga que necesite procesarse.
 10. El uso de volúmenes persistentes en Kubernetes fue bastatnte útil para compartir datos entre todos los serivicios del sistema y asi poder accesar a cualquier documento dentro estos dervicios.
-11. En general, el proyecto fue muy util para comprender conceptos y obetener experiencia en prácticas de big data y data engineering modernas y que son utilizadas frecuentemente en el mercado, así como para la preparación para proyectos futuros que sean más grandes y complejos.
+11. El tener dispositivos con distintos sistemas operativos genera complicaciones a la hora de unificar. Por ejemplo, a la hora de correr una máquina virtual de windows en una computadora mac, los permisos de virtualización van a generar problemas constantes al correr Docker Desktop.
+12. En general, el proyecto fue muy util para comprender conceptos y obetener experiencia en prácticas de big data y data engineering modernas y que son utilizadas frecuentemente en el mercado, así como para la preparación para proyectos futuros que sean más grandes y complejos.
 
 ### 7.2 Recomendaciones
 1. Siempre implementar prints mediante los procesos, de manera que se puede seguir todo paso a paso y ver los resultados que están dando las funciones para verificar si son correctos 
@@ -328,7 +329,8 @@ Test falló: La lista de 'message.reference_tittle' no coincide con el valor esp
 7. Realizar una limpieza del Persistent Volume Claim utilizado después de realizar la desinstalación de los charts o antes de su instalación, esto con el objetivo de prevenir posibles errores a la hora de ejecutar los 3 componentes principales.
 8. Realizar pruebas automatizadas o unitarias a cada uno de los componenetes principales antes de desplegar en kubernetes para reducir errores.
 9. Establecer code reviews semanales con el equipo para mejorar la calidad del código, para compartir conocimientos adquiridos durante el desarrollo de componentes o bien para detectar errores y no esperar hasta la integración final del proyecto.
-10. Implementar documentación interna dentro del código donde se especifique descripcion, entradas y salidas del programa para una mejor comprensión
+10. Utilizar los dispositivos en su sistema operativo original y buscar que todo el equipo tenga el mismo sistema operativo para facilitar la cohesión de los distintos avances.
+11. Implementar documentación interna dentro del código donde se especifique descripcion, entradas y salidas del programa para una mejor comprensión
 
 ---
 </details>
@@ -356,6 +358,7 @@ Test falló: La lista de 'message.reference_tittle' no coincide con el valor esp
 - [Pytest](https://docs.pytest.org/en/stable/getting-started.html)
 - [Mock DBs](https://medium.com/@prasanna44.palivela/python-unittest-framework-how-to-mock-db-and-apis-5f8ca2baf2b2)
 - [Scala Test](https://www.scalatest.org/user_guide/using_assertions)
+- [Http Status Codes] (https://developer.mozilla.org/es/docs/Web/HTTP/Reference/Status)
 
 
 ---
