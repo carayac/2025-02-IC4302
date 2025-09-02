@@ -229,7 +229,7 @@ def crossref_API(doi): #Consulta Crossref
         if response.status_code == 200:
             return response.json()
         else:
-            print(f"Crossref error")
+            print(f"Crossref error con el codigo: {response.status_code}")
             return None
     except Exception as e:
         print(f"Crossref error: {e}")
