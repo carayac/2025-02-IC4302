@@ -83,6 +83,69 @@ def test_dois_pubmed():
     assert "10.1000/xyz123" in dois
     assert "10.1000/abc456" in dois
 
+#Test 7: process_dois procesa la lista de dois 
+def test_process_dois(monkeypatch):
+    # Falsos datos de Crossref
+    fake_data = {"title": "testing"}
+
+    monkeypatch.setattr("functions.crossref_API", lambda doi: fake_data)
+
+    saved = {}
+    def fake_save_json(doi, data):
+        saved[doi] = data
+    monkeypatch.setattr("functions.save_json", fake_save_json)
+
+    #fake para omitidos
+    fake_conn = MagicMock()
+    fake_cursor = MagicMock()
+    fake_conn.cursor.return_value = fake_cursor
+    monkeypatch.setattr("functions.connection_MariaDB", lambda: fake_conn)
+
+    monkeypatch.setattr("functions.update_job_status", lambda job_id, status: True)
+    monkeypatch.setattr("functions.update_job_end_date", lambda job_id: True)
+
+    dois = ["10.1000/cjg217", "10.1000/bfc123"]
+    process_dois("123", dois)
+
+    assert "10.1000/cjg217" in saved
+    assert "10.1000/bfc123" in saved
+    assert saved["10.1000/cjg217"] == fake_data
+
+#Test #8: save_json guarda json en el path
+def test_save_json(tmp_path, monkeypatch):
+    monkeypatch.setenv("XPATH", str(tmp_path))
+
+    #fake data para probar
+    doi = "10.1000/test"
+    data = {"just": "testing"}
+
+    save_json(doi, data)
+
+    import hashlib, json, os
+    filename = hashlib.md5(doi.encode()).hexdigest() + ".json"
+    filepath = os.path.join(tmp_path, filename)
+
+    assert os.path.exists(filepath)
+
+    with open(filepath, "r") as f:
+        content = json.load(f)
+    assert content == data
+
+#Test 9: crossref_api hace la consulta a crossref
+def test_crossref_api(monkeypatch):
+    class FakeResponse:
+        status_code = 200
+        def json(self):
+            return {"title": "Crossref"}
+
+    monkeypatch.setattr("requests.get", lambda *args, **kwargs: FakeResponse())
+
+    doi = "10.1000/testing"
+    result = crossref_API(doi)
+
+    assert isinstance(result, dict)
+    assert result["title"] == "Crossref"
+
 
 #-------------------------------------------
 if __name__ == "__main__":
