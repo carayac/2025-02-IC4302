@@ -15,7 +15,7 @@ def test_connection_mariadb(monkeypatch):
     assert conn == fake_conn
 
 
-# 
+
 # Test 2: update_job_status actualiza correctamente
 def test_update_job_status(monkeypatch):
     fake_conn = MagicMock()
