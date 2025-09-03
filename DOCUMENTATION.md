@@ -223,15 +223,24 @@ Una vez haya completado estos pasos, puede crear consultas para ver los document
 <details>
   <summary>Desplegar información</summary>
 
-- Conexión a MariaDB ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba1-downloader.jpg)
-- Actualización del estado del job ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba2-downloader.jpg)
-- Actualización del end date del job ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba3-downloader.jpg)
-- Obtener los IDs del job ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba4-downloader.jpg)
-- Obtiene respuesta válida de Pubmed ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba5-downloader.jpg)
-- Extrae correctamente los DOIs ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba6-downloader.jpg)
-- Procesa correctamente los DOIs ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba7-downloader.jpg)
-- Guarda correctamente el JSON ![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba8-downloader.jpg)
-- Funciona correctamente el Crossref![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba9-downloader.jpg)
+- Conexión a MariaDB 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba1-downloader.jpg)
+- Actualización del estado del job 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba2-downloader.jpg)
+- Actualización del end date del job 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba3-downloader.jpg)
+- Obtener los IDs del job 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba4-downloader.jpg)
+- Obtiene respuesta válida de Pubmed 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba5-downloader.jpg)
+- Extrae correctamente los DOIs 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba6-downloader.jpg)
+- Procesa correctamente los DOIs 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba7-downloader.jpg)
+- Guarda correctamente el JSON 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba8-downloader.jpg)
+- Funciona correctamente el Crossref 
+![Resultados](https://github.com/carayac/2025-02-IC4302/blob/proyecto-opcional/PO/images/Prueba9-downloader.jpg)
 </details>
 
 ### Spark-Job  
