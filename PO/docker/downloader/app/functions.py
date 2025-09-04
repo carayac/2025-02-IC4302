@@ -228,6 +228,9 @@ def crossref_API(doi): #Consulta Crossref
         response = requests.get(url, timeout=30)
         if response.status_code == 200:
             return response.json()
+        elif response.status_code == 404:
+            print(f"DOI no encontrado en Crossref: {doi}")
+            return None
         else:
             print(f"Crossref error con el codigo: {response.status_code}") #Si el status code no es 200 lo imprime para ver qué respuesta dio
             return None
