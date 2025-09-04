@@ -13,9 +13,10 @@ elasticsearch:
       enabled: true
       namespace: "monitoring"
 elastic:
-  enabled: true
+  enabled: false
   version: 8.6.1
-  replicas: 1
+  replicas: 1 #minimo 3 datanodes
+  masterReplicas: 1
   name: ic4302
 kibana:
   version: 8.6.1
