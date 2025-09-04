@@ -2,10 +2,17 @@ FROM python:3.12.4-slim-bookworm
 
 WORKDIR /app
 
-COPY app/. .
+# Copiar primero solo el archivo de dependencias
+COPY app/requirements.txt .
+
+# Instalar dependencias (capa que raramente cambia)
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expone el puerto de Flask para que pueda ser accesible desde fuera del contenedor
+# Ahora copiar el resto del código
+COPY app/. .
+
+# Exponer puerto
 EXPOSE 5000
 
-CMD [ "flask", "--app", "app", "run", "--host=0.0.0.0", "--port=5000" ]
+# Comando para iniciar Flask
+CMD ["flask", "--app", "app", "run", "--host=0.0.0.0", "--port=5000"]

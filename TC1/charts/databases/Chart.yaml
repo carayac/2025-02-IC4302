@@ -36,4 +36,7 @@ dependencies:
     version: "15.5.21"
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
+  - name: chromadb
+    version: "0.1.24"
+    repository: https://amikos-tech.github.io/chromadb-chart/
 

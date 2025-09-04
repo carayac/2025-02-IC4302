@@ -8,5 +8,8 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 15.5.21
-digest: sha256:d346ab15b755789ec46cb9d7a045dd95b11fa56782be53ed187b212c25f2b1db
-generated: "2025-09-03T22:30:54.7089898-06:00"
+- name: chromadb
+  repository: https://amikos-tech.github.io/chromadb-chart/
+  version: 0.1.24
+digest: sha256:a3d07d966965885e5d65a9587d009b2cecd07fd90c8f2e17fea94e7dbeead393
+generated: "2025-09-04T12:31:11.7508636-06:00"
