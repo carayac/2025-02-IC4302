@@ -3,7 +3,10 @@ FROM spark:3.5.1-scala2.12-java11-ubuntu
 
 WORKDIR /app
 
-COPY app/. .
+COPY app/app.scala .
+COPY app/elasticsearch-spark-30_2.12-8.14.3.jar /opt/spark/jars/
+COPY app/functions.scala .
+COPY app/test.scala .
 RUN /opt/spark/bin/spark-shell -i functions.scala -i test.scala
 
 #CMD [ "tail", "-f", "/dev/null" ]

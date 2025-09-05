@@ -25,9 +25,12 @@ spec:
             - image: {{ .Values.config.docker_registry }}/{{ .Values.config.cronjob.image }}
               name: {{ .Values.config.cronjob.name }}
               command:
-                - "/opt/spark/bin/spark-shell"
-                - "-i"
-                - "/scripts/app.scala"
+              - "/opt/spark/bin/spark-shell"
+              - "-i"
+              - "functions.scala"
+              - "-i"
+              - "app.scala"
+
               env:
                 - name: XPATH
                   value: "/data"
