@@ -34,7 +34,7 @@ try {
     assert(dateValues.count() == 1, "No se encontró exactamente un registro con DOI '10.1126/science.adz6436'")
     
     // Verifica que las fechas coincidan con los valores esperados de "08-02-2025" en indexed.date
-    val invalidindexed = dateValues.filter(col("indexed.date") =!= "08-02-2025")
+    val invalidindexed = dateValues.filter(col("indexed.date") =!= "08-025")
     assert(invalidindexed.count() == 0, "La fecha 'indexed.date' no coincide con el valor esperado")
     // Verifica que las fechas coincidan con los valores esperados de "08-01-2025" en created.date
     val invalidCreated = dateValues.filter(col("created.date") =!= "07-31-2025")
