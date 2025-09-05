@@ -1,5 +1,5 @@
 mariadb:
-  enabled: false
+  enabled: true
   metrics:
     enabled: true
     serviceMonitor:
