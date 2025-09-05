@@ -1,5 +1,14 @@
 mariadb:
   enabled: true
+  auth: #Convertir en variables de entorno
+    rootPassword: "root123"
+    database: "ic4302_db"
+    username: "app_user"
+    password: "app_password"
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
   metrics:
     enabled: true
     serviceMonitor:
@@ -8,7 +17,7 @@ mariadb:
 
 elasticsearch:
   metrics:
-    enabled: true
+    enabled: true 
     serviceMonitor:
       enabled: true
       namespace: "monitoring"

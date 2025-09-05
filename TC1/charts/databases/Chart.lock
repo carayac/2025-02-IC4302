@@ -11,5 +11,8 @@ dependencies:
 - name: chromadb
   repository: https://amikos-tech.github.io/chromadb-chart/
   version: 0.1.24
-digest: sha256:a3d07d966965885e5d65a9587d009b2cecd07fd90c8f2e17fea94e7dbeead393
-generated: "2025-09-04T12:31:11.7508636-06:00"
+- name: mariadb
+  repository: https://charts.bitnami.com/bitnami
+  version: 18.2.1
+digest: sha256:544fec1ec7d007e104a6052c498f02877d4fe43035b3d5bddd3b39592f4effda
+generated: "2025-09-05T01:15:44.9907392-06:00"
