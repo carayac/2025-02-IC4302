@@ -306,15 +306,18 @@ Test falló: La lista de 'message.reference_tittle' no coincide con el valor esp
 <details>
   <summary>Desplegar información</summary>
 
-- Número de artículos procesados.  
-- Ejemplos de documentos transformados en Elasticsearch.  
-- Evidencia de búsquedas realizadas en Kibana.
+
 - ### 5.2 Pruebas Funcionales
+
+A continuación, se adjunta un video donde se demuestra que el proyecto cumple con todas las funcionalidades, donde especificamente demuestra las siguientes:
+
 - Verificar que los *jobs* se crean en MariaDB.  
 - Verificar que los *jobs-id* se envían a través del canal de RabbitMQ.
 - Comprobar que los documentos se guardan en JSON.  
 - Confirmar que Elasticsearch contiene los documentos procesados.  
 - Visualizar en Kibana los resultados.  
+
+[Video de Demostración](PO/images/Video.mkv)
 
 ---
 </details>
