@@ -306,9 +306,6 @@ Test falló: La lista de 'message.reference_tittle' no coincide con el valor esp
 <details>
   <summary>Desplegar información</summary>
 
-
-- ### 5.2 Pruebas Funcionales
-
 A continuación, se adjunta un video donde se demuestra que el proyecto cumple con todas las funcionalidades, donde especificamente demuestra las siguientes:
 
 - Verificar que los *jobs* se crean en MariaDB.  
@@ -379,7 +376,7 @@ A continuación, se adjunta un video donde se demuestra que el proyecto cumple c
 - [Pytest](https://docs.pytest.org/en/stable/getting-started.html)
 - [Mock DBs](https://medium.com/@prasanna44.palivela/python-unittest-framework-how-to-mock-db-and-apis-5f8ca2baf2b2)
 - [Scala Test](https://www.scalatest.org/user_guide/using_assertions)
-- [Http Status Codes] (https://developer.mozilla.org/es/docs/Web/HTTP/Reference/Status)
+- [Http Status Codes](https://developer.mozilla.org/es/docs/Web/HTTP/Reference/Status)
 
 
 ---
