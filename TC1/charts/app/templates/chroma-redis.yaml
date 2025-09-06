@@ -1,0 +1,40 @@
+{{ if .Values.config.chroma-redis.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.config.chroma-redis.name }}
+  labels:
+    app: {{ .Values.config.chroma-redis.name }}
+spec:
+  replicas: {{ .Values.config.chroma-redis.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.config.chroma-redis.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.config.chroma-redis.name }}
+    spec:
+      containers:
+      - name: {{ .Values.config.chroma-redis.name }}
+        image: {{ .Values.config.chroma-redis.image }}
+        ports:
+        - containerPort: 5000
+        env:
+            - name: PROMETHEUSENDPOINT
+              value: "{{ .Values.config.flask.prometheusEndpoint }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.config.chroma-redis.name }}
+spec:
+  type: NodePort
+  selector:
+    app: {{ .Values.config.chroma-redis.name }}
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30080
+{{ end }}
