@@ -90,3 +90,48 @@ chromadb:
     collection_cache_limit_bytes: 1000000000 # defaults to 1GB. TODO: this must also observe limits if defined
   auth: # not working in 1.0.x
     enabled: false
+
+vespa:
+  enabled: true
+  image:
+    repository: vespaengine/vespa
+    tag: ""           
+    pullPolicy: IfNotPresent
+  replicas: 1
+  service:
+    type: ClusterIP            # para exponer NodePort/LoadBalancer 
+    ports:
+      - name: config
+        port: 19071
+        targetPort: 19071
+      - name: http
+        port: 8081
+        targetPort: 8081
+  env:
+    - name: VESPA_CONFIGSERVERS
+      value: "databases-vespa-0.databases-vespa.default.svc.cluster.local"
+  persistence:
+    enabled: true
+    size: 20Gi                 
+    storageClass: null         
+    accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: "monitoring"
+      interval: 30s            
+  ingress:
+    enabled: false           
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+
