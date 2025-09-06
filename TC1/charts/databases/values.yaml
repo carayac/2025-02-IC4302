@@ -9,6 +9,11 @@ mariadb:
     persistence:
       enabled: true
       size: 8Gi
+  secondary: #Minimo 2 replicas
+    persistence:
+      replicas: 2 
+      enabled: true
+      size: 8Gi
   metrics:
     enabled: true
     serviceMonitor:
