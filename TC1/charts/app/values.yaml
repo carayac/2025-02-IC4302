@@ -2,13 +2,7 @@ config:
   flask:
     enabled: true
     name: flasktest
-    replicas: 1
-    image: carayacn/flask-example
+    replicas: 10
+    image: prosoli/flask-example
     prometheusEndpoint: "http://prometheus-operated.monitoring.svc.cluster.local:9090"  # URL del servicio de Prometheus en el clúster de Kubernetes
 
-  chroma-redis:
-    enabled: true
-    name: chromadb_redis
-    replicas: 1
-    image: carayacn/chroma-redis
-    prometheusEndpoint: "http://prometheus-operated.monitoring.svc.cluster.local:9090"  # URL del servicio de Prometheus en el clúster de Kubernetes

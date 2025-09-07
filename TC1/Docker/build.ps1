@@ -11,15 +11,9 @@ Set-Location FlaskApp
 
 # Construir la imagen
 docker build -t "$Username/flask-example" .
+
 # Subir la imagen
 docker push "$Username/flask-example"
 
-#INSTALACION DE IMAGENES DE CHROMA----------------------------------------------------------------
-#CHROMA-REDIS
-# Ir a la carpeta Chroma-Redis
-Set-Location ../Chroma-Redis
-# Construir la imagen
-docker build -t "$Username/chroma-redis" .
-# Subir la imagen
-docker push "$Username/chroma-redis"
-
+# Volver a la carpeta anterior
+Set-Location ..
