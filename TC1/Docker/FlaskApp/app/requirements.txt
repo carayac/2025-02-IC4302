@@ -1,2 +1,6 @@
 flask
 chromadb
+pandas
+mysql-connector-python
+kagglehub
+prometheus-client
