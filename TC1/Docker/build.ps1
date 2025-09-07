@@ -10,10 +10,10 @@ docker login
 Set-Location FlaskApp
 
 # Construir la imagen
-docker build -t "$Username/flask-example" .
+docker build -t "$Username/flasktest" .
 
 # Subir la imagen
-docker push "$Username/flask-example"
+docker push "$Username/flaskTest"
 
 # Volver a la carpeta anterior
 Set-Location ..
