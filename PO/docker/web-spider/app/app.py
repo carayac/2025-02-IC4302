@@ -2,7 +2,7 @@ from functions import *
 
 #Ciclo Principal con Paginacion
 def main():
-    retstart = 0
+    retstart = 0 
     # Conexión MariaDB
     conn, cursor = conectar_MariaDB()
     table_name = os.getenv('MARIADB_TABLE')
@@ -23,7 +23,7 @@ def main():
         insertar_job(cursor, conn, table_name, job)
         enviar_rabbitmq(job["id"], channel, queue_name)
 
-        retstart += retmax
+        retstart += retmax  # Incrementamos retstart de 20 en 20
 
     # Cierres
     cursor.close()

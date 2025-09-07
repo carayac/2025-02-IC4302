@@ -184,7 +184,7 @@ def process_dois(job_id, dois_list): #Recibe una lista de dois, consulta crossre
     omitidos = []
 
     for doi in dois_list:
-        crossref_data = crossref_API(doi)
+        crossref_data = crossref_API(doi) #Consulta con cada doi
         if crossref_data:
             save_json(doi, crossref_data)
         else:
@@ -213,11 +213,11 @@ def process_dois(job_id, dois_list): #Recibe una lista de dois, consulta crossre
 
 def save_json(doi, data): #Guarda el Json en el volumen. 
     path = os.getenv("XPATH", "/data")  # ruta compartida definida en charts/application/templates/volume.yaml
-    filename = hashlib.md5(doi.encode()).hexdigest() + ".json"
-    filepath = os.path.join(path, filename)
+    filename = hashlib.md5(doi.encode()).hexdigest() + ".json" # Nombre del archivo basado en el hash del DOI 
+    filepath = os.path.join(path, filename) # Une la ruta y el nombre del archivo
     try:
         with open(filepath, "w") as f:
-            json.dump(data, f)
+            json.dump(data, f) # Escribemos el JSON en el archivo
         print(f"Guardado correctamente {filepath}")
     except Exception as e:
         print(f"Error en {filepath}: {e}")
@@ -272,6 +272,7 @@ def callback(ch, method, properties, body):
         print(f"Job {contador} procesado")
         print("------------------------------------------------------")
 
+        # Confirmamos que el mensaje fue procesado correctamente y lo eliminamos de la cola
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     except Exception as e:
@@ -280,6 +281,8 @@ def callback(ch, method, properties, body):
         update_job_status(job_id, "error")
         update_job_end_date(job_id)
         time.sleep(5)
+
+        # El mensaje se rechaza y se vuelve a poner en la cola para reintento
         ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
 
@@ -296,6 +299,7 @@ def main():
     channel = connection.channel()
     channel.queue_declare(queue=QUEUE_NAME)
     channel.basic_qos(prefetch_count=1)
+    #Va a consumir esa cola, cuando llega el mensaje llama a callback y no se confirma el mensaje automaticamente
     channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')

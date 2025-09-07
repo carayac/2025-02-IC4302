@@ -26,7 +26,7 @@ def obtener_count(url_base, db, term, retstart, retmax):
     except:
         print(f"Error consultando API")
     data = response.text  # datos en formato xml
-    datosFormatted = ET.fromstring(data)
+    datosFormatted = ET.fromstring(data) # Se formatean a string
     # Guardamos Count
     return int(datosFormatted.find(".//Count").text)
 
@@ -43,7 +43,7 @@ def obtener_ids(url_base, db, term, retstart, retmax):
     datosFormatted = ET.fromstring(data)
     # Guardamos los datos
     lista_ids = []
-    for elem in datosFormatted.findall(".//Id"):
+    for elem in datosFormatted.findall(".//Id"): # Buscamos todos los Id
         lista_ids.append(elem.text)
     return lista_ids
 
@@ -117,8 +117,8 @@ def conectar_rabbitmq():
 
 def enviar_rabbitmq(job_id, channel, queue_name):
     try:
-        msg = str(job_id)
-        channel.basic_publish(exchange='', routing_key=queue_name, body=msg)
+        msg = str(job_id) # Se construye el mensaje
+        channel.basic_publish(exchange='', routing_key=queue_name, body=msg) # Se envía el mensaje
     except Exception as e:
         print(f"Error enviando job-id por RabbitMQ: {e}")
     time.sleep(1)
@@ -127,7 +127,7 @@ def enviar_rabbitmq(job_id, channel, queue_name):
 def crear_job(lista_ids):
     """Crea un job con un id único y estado inicial"""
     return {
-        "id": uuid.uuid4(),
+        "id": uuid.uuid4(), # Genera un ID único
         "estado": "pending",
         "lista_ids": lista_ids,
         "omitido": [],
