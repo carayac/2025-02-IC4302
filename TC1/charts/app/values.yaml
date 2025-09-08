@@ -2,5 +2,5 @@ config:
   flask:
     enabled: true
     name: flasktest
-    replicas: 10
-    image: carayacn/postgresql-memcached
+    replicas: 1
+    image: carayacn/elasticsearch

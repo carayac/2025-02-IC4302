@@ -41,6 +41,8 @@ spec:
                   optional: false
             - name: ELASTIC_USER
               value: "elastic"
+            - name: ES_PORT
+              value: "9200"
             - name: ELASTIC_PASS
               valueFrom:
                 secretKeyRef:
