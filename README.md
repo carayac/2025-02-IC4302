@@ -7,25 +7,15 @@ El cambio de imagen se realiza modificando el archivo `values.yaml` en la secci�
 
 ## Imágenes Disponibles
 
-###  ChromaDB
-- usuario/chroma
-- usuario/chroma-memcached
-- usuario/chroma-redis
+## Imágenes Disponibles
 
-###  Elasticsearch
-- usuario/elasticsearch
-- usuario/elasticsearch-memcached
-- usuario/elasticsearch-redis
+| Servicio       | Imagen Base         | Memcached           | Redis             |
+|----------------|------------------|-------------------|-----------------|
+| **ChromaDB**    | usuario/chroma     | usuario/chroma-memcached | usuario/chroma-redis |
+| **Elasticsearch** | usuario/elasticsearch | usuario/elasticsearch-memcached | usuario/elasticsearch-redis |
+| **MariaDB**     | usuario/mariadb    | usuario/mariadb-memcached | usuario/mariadb-redis |
+| **PostgreSQL**  | usuario/postgresql | usuario/postgresql-memcached | usuario/postgresql-redis |
 
-### MariaDB
-- usuario/mariadb
-- usuario/mariadb-memcached
-- usuario/mariadb-redis
-
-### PostgreSQL
-- usuario/postgresql
-- usuario/postgresql-memcached
-- usuario/postgresql-redis
 
 > **Nota:** Reemplaza `usuario` por tu nombre de usuario en DockerHub (ejemplo: `mydockeruser/mariadb`).
 
