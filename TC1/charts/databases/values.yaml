@@ -20,12 +20,14 @@ mariadb:
       enabled: true
       namespace: "monitoring"
 
+
 elasticsearch:
   metrics:
     enabled: true 
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
+
 
 elastic:
   enabled: true
@@ -51,6 +53,7 @@ prometheus-elasticsearch-exporter:
     enabled: true
     namespace: monitoring
 
+
 redis:
   enabled: true
   metrics:
@@ -59,6 +62,7 @@ redis:
       enabled: true
       namespace: "monitoring"
 
+
 memcached:
   enabled: true
   metrics:
@@ -66,6 +70,7 @@ memcached:
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
+
 
 chromadb:
   allowReset: false
@@ -96,6 +101,7 @@ chromadb:
     collection_cache_limit_bytes: 1000000000 # defaults to 1GB. TODO: this must also observe limits if defined
   auth: # not working in 1.0.x
     enabled: false
+
 
 vespa:
   enabled: true
@@ -141,4 +147,35 @@ vespa:
   tolerations: []
   affinity: {}
 
+
+postgresql:
+  enabled: true
+  architecture: replication
+  auth:
+    postgresPassword: "root123"     
+    username: "app_user"            
+    password: "app_password"
+    database: "ic4302_db"
+  primary:
+    service:
+      type: ClusterIP
+      ports:
+        postgresql: 5432
+    persistence:
+      enabled: true
+      size: 8Gi           
+      accessModes:
+        - ReadWriteOnce
+  readReplicas:
+    replicaCount: 1
+    persistence:
+      enabled: true
+      size: 8Gi
+      accessModes:
+        - ReadWriteOnce
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: "monitoring"
 
