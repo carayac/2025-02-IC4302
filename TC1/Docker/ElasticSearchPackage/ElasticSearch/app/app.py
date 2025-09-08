@@ -18,7 +18,7 @@ def testConnection():
                                                  basic_auth=[ES_USER, ES_PASSWORD]) #connection basic with user and password
         return "Elasticsearch connection successful",200
     except Exception as e:
-        return f"Error connecting to Elasticsearch: {e}",400
+        return f"Error: {e}",400
 
 #health check endpoint
 @app.route('/health', methods=['GET'])

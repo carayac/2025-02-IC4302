@@ -15,6 +15,12 @@ docker build -t "$Username/flask-example" .
 # Subir la imagen
 docker push "$Username/flask-example"
 
+#-------------------------INICIO DATASEEDER ----------------------------
+Set-Location ../DataSeeder
+docker build -t "$Username/dataseeder" .
+docker push "$Username/dataseeder"
+#-------------------------FIN DATASEEDER ----------------------------
+
 #-------------------------CHROMADB ----------------------------
 # Ir a la carpeta general ChromaDB
 Set-Location ../ChromaDBPackage
