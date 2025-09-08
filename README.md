@@ -1,25 +1,62 @@
-# 2025-02-IC4302
+# Documentación de Imágenes y Configuración en `values.yaml`
 
-Repositorio privado para el curso **IC4302**.
+Este proyecto soporta diferentes imágenes de base de datos y variantes con Memcached o Redis como mecanismos de cache.  
+El cambio de imagen se realiza modificando el archivo `values.yaml` en la sección correspondiente al despliegue de la API.
 
-## Integrantes
+---
 
-| Carné       | Nombre completo                   | Branch            |
-|-------------|-----------------------------------|-------------------|
-| 2024089174  | Carol Araya Conejo                | 2024089174        |
-| 2023332718  | Priscilla Romero Barquero         | 2023332718        |
-| 2024145198  | Helena María Vargas Quirós        | 2024145198        |
-| 2024174489  | Daniel Arce Campos                | 2024174489        |
-| 2021052665  | Christopher Jiménez Gutiérrez     | 2021052665        |
+## Imágenes Disponibles
 
-### Branch adicional
-- **proyecto-opcional** → Rama para el desarrollo del proyecto opcional.
-###### Branch derivadas del pr0yecto opcional
-- **web-spider** → RRama para el desarrollo del componente web-spider.
-- **p0-sparkJob** → Rama para el desarrollo del componente sparkJob.
-- **po-downloader** → Rama para el desarrollo del componente downloader.
+###  ChromaDB
+- usuario/chroma
+- usuario/chroma-memcached
+- usuario/chroma-redis
 
-## Profesor
+###  Elasticsearch
+- usuario/elasticsearch
+- usuario/elasticsearch-memcached
+- usuario/elasticsearch-redis
 
-**Ing. Gerardo Nereo Campos Araya**  
- 
+### MariaDB
+- usuario/mariadb
+- usuario/mariadb-memcached
+- usuario/mariadb-redis
+
+### PostgreSQL
+- usuario/postgresql
+- usuario/postgresql-memcached
+- usuario/postgresql-redis
+
+> **Nota:** Reemplaza `usuario` por tu nombre de usuario en DockerHub (ejemplo: `mydockeruser/mariadb`).
+
+---
+
+## Configuración en `values.yaml`
+
+En el archivo `values.yaml`, se define la imagen que utilizará el despliegue.  
+La sección típica es la siguiente:
+
+```yaml
+config:
+  flask:
+    enabled: true
+    name: flasktest
+    replicas: 10
+    image: usuario/imagen
+```
+
+### Ejemplo: Usar ChromaDB con Memcached
+```yaml
+config:
+  flask:
+    enabled: true
+    name: flasktest
+    replicas: 10
+    image: usuario/chroma-memcached
+```
+---
+
+---
+
+## Recomendacion
+- Mantener consistencia en los nombres: `servicio-cache` (`-memcached`, `-redis`).
