@@ -25,6 +25,31 @@ spec:
               value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
             - name: CHROMA_ENDPOINT
               value: "http://databases-chromadb:8000"
+            - name: MARIADB
+              value: "databases-mariadb"
+            - name: MARIADB_TABLE
+              value: "objects"
+            - name: MARIADB_DB
+              value: "control"
+            - name: MARIADB_USER
+              value: "root"
+            - name: MARIADB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: databases-mariadb
+                  key: mariadb-root-password
+                  optional: false
+            - name: ELASTIC_USER
+              value: "elastic"
+            - name: ELASTIC_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: ic4302-es-elastic-user
+                  key: elastic
+                  optional: false
+            - name: ELASTIC
+              value: "ic4302-es-http"
+            
 ---
 apiVersion: v1
 kind: Service

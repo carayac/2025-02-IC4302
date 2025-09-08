@@ -3,4 +3,4 @@ config:
     enabled: true
     name: flasktest
     replicas: 10
-    image: carayacn/chroma-memcached
+    image: carayacn/postgresql-memcached
