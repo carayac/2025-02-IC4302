@@ -227,11 +227,7 @@ Para optimizar las consultas, se crean índices en claves foráneas y relaciones
 
 ---
 
-# 6. Conclusión
 
-1. Este dataset sirvió como recurso de prueba para el proyecto debido a su diversidad de atributos, lo cual permitió validar distintos procesos de manejo y análisis de información.  
-2. Gracias a la variedad de datos incluidos, fue posible simular escenarios realistas y robustos dentro del entorno de desarrollo.
-3. 
 
 # Endpoints de prueba 
 Base URL: http://localhost:30080/
@@ -328,3 +324,9 @@ Notas:
 # Recomendaciones
 1. Mantener consistencia en los nombres de las imagenes a utilizar: `servicio-cache` (`-memcached`, `-redis`).
 2. Utiliza variables de entorno que permitan las parametrizacion de los datos necesarios para las bases de datos
+
+# Conclusión
+
+1. Este dataset sirvió como recurso de prueba para el proyecto debido a su diversidad de atributos, lo cual permitió validar distintos procesos de manejo y análisis de información.  
+2. Gracias a la variedad de datos incluidos, fue posible simular escenarios realistas y robustos dentro del entorno de desarrollo.
+3. 
