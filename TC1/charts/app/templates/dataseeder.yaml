@@ -49,4 +49,17 @@ spec:
                   optional: false
             - name: ELASTIC
               value: "ic4302-es-http"
+
+            - name: POSTGRES
+              value: "databases-postgresql"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "control"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: databases-postgresql
+                  key: postgres-password
+                  optional: false
 {{ end }}
