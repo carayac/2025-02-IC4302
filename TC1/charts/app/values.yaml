@@ -1,5 +1,5 @@
 config:
-  flask:
+  flask: # Principal configuration for Flask app representing the app
     enabled: true
     name: flasktest
     replicas: 1
