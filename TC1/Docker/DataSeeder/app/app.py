@@ -181,24 +181,53 @@ def insert_data_postgres(df):
         pg_pool.putconn(conn)
 
 #-------------------------------------Maria DB------------------------------------- 
+mariadb_pool = None
 
-# Crear pool de conexiones MariaDB
-try:
-    mariadb_pool = pooling.MySQLConnectionPool(
-        pool_name="mariadb_pool",
-        pool_size=5,
-        host=MARIADB,
-        user=MARIADB_USER,
-        password=MARIADB_PASS,
-        database=MARIADB_DB,
-        charset='utf8mb4',          
-        collation='utf8mb4_general_ci', 
-        autocommit=True
-    )
-    print("Pool de conexiones MariaDB creado")
-except Exception as e:
-    print(f"Error creando pool MariaDB: {e}")
-    sys.exit(1)
+# Crear conexion MariaDB
+def conection_mariadb():
+    global mariadb_pool
+    try:
+        # Conexión inicial sin base seleccionada
+        conn = mysql.connector.connect(
+            host=MARIADB,
+            user=MARIADB_USER,
+            password=MARIADB_PASS,
+            charset="utf8mb4",
+            collation="utf8mb4_general_ci"
+        )
+        cur = conn.cursor()
+        # Crear la base de datos con charset y collation explícitos
+        cur.execute(f"""
+            CREATE DATABASE IF NOT EXISTS {MARIADB_DB}
+            DEFAULT CHARACTER SET utf8mb4
+            DEFAULT COLLATE utf8mb4_general_ci;
+        """)
+        conn.commit()
+        cur.close()
+        conn.close()
+        print(f"Base de datos {MARIADB_DB} creada o ya existente.")
+    except Exception as e:
+        print(f"Error creando la base de datos: {e}")
+        sys.exit(1)
+
+    # Crear pool de conexiones 
+    try:
+        mariadb_pool = pooling.MySQLConnectionPool(
+            pool_name="mariadb_pool",
+            pool_size=5,
+            host=MARIADB,
+            user=MARIADB_USER,
+            password=MARIADB_PASS,
+            database=MARIADB_DB,
+            charset='utf8mb4',
+            collation='utf8mb4_general_ci',
+            autocommit=True
+        )
+        print("Pool de conexiones MariaDB creado")
+    except Exception as e:
+        print(f"Error creando pool MariaDB: {e}")
+        sys.exit(1)
+
 
 def execute_MariaDB_from_file():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -308,7 +337,7 @@ def insert_data_mariadb(df):
 
 try:
     es = Elasticsearch(
-        hosts=[{"host": ELASTIC, "port": ES_PORT, "scheme": "http"}],
+        hosts=[{"host": ELASTIC, "port": int(ES_PORT), "scheme": "http"}], 
         basic_auth=(ELASTIC_USER, ELASTIC_PASS),
         verify_certs=False
     )
@@ -385,6 +414,8 @@ def insert_data_elastic(df):
 
 if __name__ == "__main__":    
     try:
+        # Crear base de datos MariaDB si no existe
+        conection_mariadb()
         # Ejecutar schema 
         if not execute_postgress_from_file():
             print("No se pudieron crear las tablas en PostgreSQL")
