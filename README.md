@@ -233,8 +233,98 @@ Para optimizar las consultas, se crean índices en claves foráneas y relaciones
 2. Gracias a la variedad de datos incluidos, fue posible simular escenarios realistas y robustos dentro del entorno de desarrollo.
 3. 
 
+# Endpoints de prueba 
+Base URL: http://localhost:30080/
+
+Esta API permite consultar información sobre animales y sus características.
+
+---
+
+## Endpoints
+
+### 1. Health Check
+
+**GET** /health
+
+Verifica que el servicio está activo y funcionando.
+
+**Request:**
+GET http://localhost:30080/health
+
+**Response:**
+{
+  "status": "healthy"
+}
+
+Código de estado: 200 OK
+
+---
+
+### 2. Listar Animales
+
+**GET** /animales
+
+Devuelve los primeros 50 animales registrados en la base de datos.
+
+**Request:**
+GET http://localhost:30080/animales
+
+**Response exitoso (200 OK):**
+[
+  {"id": 1, "nombre": "Tigre"},
+  {"id": 2, "nombre": "León"},
+  ...
+]
+
+**Response de error (500 Internal Server Error):**
+{
+  "error": "No se pudo conectar a la base de datos"
+}
+
+Notas:
+- Utiliza un pool de conexiones a PostgreSQL.
+- Se asegura de cerrar el cursor y devolver la conexión al pool.
+
+---
+
+### 3. Top 5 Animales por Velocidad
+
+**GET** /top-velocidad
+
+Devuelve los 5 animales con mayor velocidad máxima registrada.
+
+**Request:**
+GET http://localhost:30080/top-velocidad
+
+**Response exitoso (200 OK):**
+[
+  {"nombre": "Guepardo", "velocidad_max_kmh": 120},
+  {"nombre": "Antílope", "velocidad_max_kmh": 90},
+  ...
+]
+
+**Response de error (500 Internal Server Error):**
+{
+  "error": "No se pudo conectar a la base de datos"
+}
+
+Notas:
+- Ordena los animales por la columna velocidad_max_kmh en forma descendente.
+- Ignora valores vacíos con NULLIF(i.velocidad_max_kmh, '').
+- Usa pool de conexiones y manejo seguro de cursors.
+
+---
+
+## Resumen de Endpoints
+
+| Endpoint         | Método | Descripción                                | Response Ejemplo                      | Código Estado |
+|-----------------|--------|--------------------------------------------|--------------------------------------|---------------|
+| /health         | GET    | Verifica que el servicio está activo       | {"status": "healthy"}              | 200           |
+| /animales       | GET    | Lista los primeros 50 animales             | [{"id":1,"nombre":"Tigre"},...]  | 200 / 500     |
+| /top-velocidad  | GET    | Devuelve los 5 animales más rápidos        | [{"nombre":"Guepardo","velocidad_max_kmh":120},...] | 200 / 500 |
 
 ---
 
 # Recomendaciones
 1. Mantener consistencia en los nombres de las imagenes a utilizar: `servicio-cache` (`-memcached`, `-redis`).
+2. Utiliza variables de entorno que permitan las parametrizacion de los datos necesarios para las bases de datos
