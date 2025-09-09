@@ -8,6 +8,8 @@ import psycopg2.pool
 import sys
 import mysql.connector
 from mysql.connector import pooling
+from elasticsearch import Elasticsearch, helpers
+
 
 # Variables de entorno
 POSTGRES = getenv("POSTGRES")
@@ -20,6 +22,12 @@ MARIADB_USER = os.getenv("MARIADB_USER")
 MARIADB_PASS = os.getenv("MARIADB_PASS")
 MARIADB_DB = os.getenv("MARIADB_DB")
 
+ELASTIC = getenv("ELASTIC")        
+ELASTIC_USER = getenv("ELASTIC_USER")
+ELASTIC_PASS = getenv("ELASTIC_PASS")
+ES_PORT = getenv("ES_PORT", "9200")
+
+
 
 print(f"POSTGRES: {POSTGRES}")
 print(f"POSTGRES_USER: {POSTGRES_USER}")
@@ -30,6 +38,11 @@ print(f"MARIADB: {MARIADB}")
 print(f"MARIADB_USER: {MARIADB_USER}")
 print(f"MARIADB_DB: {MARIADB_DB}")
 print(f"MARIADB_PASS: {MARIADB_PASS}")
+
+print(f"ELASTIC: {ELASTIC}")
+print(f"ELASTIC_USER: {ELASTIC_USER}")
+print(f"ELASTIC_PASS: {ELASTIC_PASS}")
+print(f"ES_PORT: {ES_PORT}")
 
 def load_dataset():
     try:
@@ -291,10 +304,84 @@ def insert_data_mariadb(df):
         cur.close()
         conn.close()
 
+#-------------------------------------Elastic Search-------------------------------------
 
+try:
+    es = Elasticsearch(
+        hosts=[{"host": ELASTIC, "port": ES_PORT, "scheme": "http"}],
+        basic_auth=(ELASTIC_USER, ELASTIC_PASS),
+        verify_certs=False
+    )
+    if es.ping():
+        print("Conexión a ElasticSearch exitosa")
+    else:
+        print("No se pudo conectar a ElasticSearch")
+except Exception as e:
+    print(f"Error conectando a ElasticSearch: {e}")
+    sys.exit(1)
 
+def create_index_elastic():
+    index_name = "animals"
+    if not es.indices.exists(index=index_name):
+        es.indices.create(index=index_name, body={
+            "mappings": {
+                "properties": {
+                    "name": {"type": "text"},
+                    "height_cm": {"type": "keyword"},
+                    "weight_kg": {"type": "keyword"},
+                    "color": {"type": "text"},
+                    "lifespan_years": {"type": "keyword"},
+                    "diet": {"type": "keyword"},
+                    "habitat": {"type": "text"},
+                    "predators": {"type": "text"},
+                    "average_speed_kmh": {"type": "keyword"},
+                    "countries_found": {"type": "text"},
+                    "conservation_status": {"type": "keyword"},
+                    "family": {"type": "keyword"},
+                    "gestation_period_days": {"type": "keyword"},
+                    "top_speed_kmh": {"type": "keyword"},
+                    "social_structure": {"type": "text"},
+                    "offspring_per_birth": {"type": "keyword"}
+                }
+            }
+        })
+        print("Índice animal' creado en ElasticSearch")
+    else:
+        print("Índice animals ya existe en ElasticSearch")
 
-    
+def insert_data_elastic(df):
+    actions = []
+    for _, row in df.iterrows():
+        doc = {
+            "_index": "animals",
+            "_source": {
+                "name": row["Animal"],
+                "height_cm": row["Height (cm)"],
+                "weight_kg": row["Weight (kg)"],
+                "color": row["Color"],
+                "lifespan_years": row["Lifespan (years)"],
+                "diet": row["Diet"],
+                "habitat": row["Habitat"],
+                "predators": row["Predators"],
+                "average_speed_kmh": row["Average Speed (km/h)"],
+                "countries_found": row["Countries Found"],
+                "conservation_status": row["Conservation Status"],
+                "family": row["Family"],
+                "gestation_period_days": row["Gestation Period (days)"],
+                "top_speed_kmh": row["Top Speed (km/h)"],
+                "social_structure": row["Social Structure"],
+                "offspring_per_birth": row["Offspring per Birth"]
+            }
+        }
+        actions.append(doc)
+
+    try:
+        helpers.bulk(es, actions)
+        print(f"{len(actions)} documentos insertados en ElasticSearch")
+        return True
+    except Exception as e:
+        print(f"Error insertando en ElasticSearch: {e}")
+        return False
 
 if __name__ == "__main__":    
     try:
@@ -306,13 +393,17 @@ if __name__ == "__main__":
         elif not execute_MariaDB_from_file():
             print("No se pudieron crear las tablas en MariaDB")
             sys.exit(1)
+
+        elif not create_index_elastic():
+            print("No se pudo crear el índice en ElasticSearch")
+            sys.exit(1)
         
         # Cargar dataset
         df = load_dataset()
         
         # Insertar datos
-        if insert_data_postgres(df) and insert_data_mariadb(df):
-            print("DataSeeder completado exitosamente en PostgreSQL y MariaDB")
+        if insert_data_postgres(df) and insert_data_mariadb(df) and insert_data_elastic(df):
+            print("DataSeeder completado exitosamente en PostgreSQL, MariaDB y ElasticSearch")
         else:
             print("Error insertando datos")
             sys.exit(1)

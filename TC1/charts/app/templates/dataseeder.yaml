@@ -48,23 +48,23 @@ spec:
                 key: mariadb-root-password
                 optional: false
 
-          #- name: PROMETHEUSENDPOINT
-            #value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
-          #- name: CHROMA_ENDPOINT
-            #value: "http://databases-chromadb:8000"
+          - name: PROMETHEUSENDPOINT
+            value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
+          - name: CHROMA_ENDPOINT
+            value: "http://databases-chromadb:8000"
 
-          #- name: ELASTIC_USER
-            #value: "elastic"
-          #- name: ES_PORT
-            #value: "9200"
-          #- name: ELASTIC_PASS
-            #valueFrom:
-              #secretKeyRef:
-                #name: ic4302-es-elastic-user
-                #key: elastic
-                #optional: false
-          #- name: ELASTIC
-            #value: "ic4302-es-http"
+          - name: ELASTIC_USER
+            value: "elastic"
+          - name: ES_PORT
+            value: "9200"
+          - name: ELASTIC_PASS
+            valueFrom:
+              secretKeyRef:
+                name: ic4302-es-elastic-user
+                key: elastic
+                optional: false
+          - name: ELASTIC
+            value: "ic4302-es-http"
                 
 
 {{ end }}
