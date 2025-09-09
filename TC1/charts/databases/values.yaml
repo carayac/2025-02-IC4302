@@ -1,5 +1,5 @@
 mariadb:
-  enabled: true
+  enabled: false
   auth: #Convertir en variables de entorno
     rootPassword: "root123"
     database: "ic4302_db"
@@ -30,7 +30,7 @@ elasticsearch:
 
 
 elastic:
-  enabled: true
+  enabled: false
   version: 8.6.1
   replicas: 3 #minimo 3 datanodes
   masterReplicas: 1
@@ -55,7 +55,7 @@ prometheus-elasticsearch-exporter:
 
 
 redis:
-  enabled: true
+  enabled: false
   metrics:
     enabled: true
     serviceMonitor:
@@ -64,7 +64,7 @@ redis:
 
 
 memcached:
-  enabled: true
+  enabled: false
   metrics:
     enabled: true
     serviceMonitor:
@@ -73,6 +73,7 @@ memcached:
 
 
 chromadb:
+  enabled: false
   allowReset: false
   isPersistent: true
   persistDirectory: /data
@@ -104,7 +105,7 @@ chromadb:
 
 
 vespa:
-  enabled: true
+  enabled: false
   image:
     registry: docker.io
     repository: vespaengine/vespa
