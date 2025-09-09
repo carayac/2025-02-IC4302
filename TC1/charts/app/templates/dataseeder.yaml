@@ -11,7 +11,7 @@ spec:
       labels:
         app: {{ .Values.config.dataseeder.name }}
     spec:
-      restartPolicy: OnFailure
+      restartPolicy: Never
       containers:
       - name: {{ .Values.config.dataseeder.name }}
         image: {{ .Values.config.dataseeder.image }}
@@ -19,47 +19,52 @@ spec:
           - "python"
           - "app.py"
         env:
-            - name: PROMETHEUSENDPOINT
-              value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
-            - name: CHROMA_ENDPOINT
-              value: "http://databases-chromadb:8000"
-            - name: MARIADB
-              value: "databases-mariadb"
-            - name: MARIADB_TABLE
-              value: "objects"
-            - name: MARIADB_DB
-              value: "control"
-            - name: MARIADB_USER
-              value: "root"
-            - name: MARIADB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: databases-mariadb
-                  key: mariadb-root-password
-                  optional: false
-            - name: ELASTIC_USER
-              value: "elastic"
-            - name: ES_PORT
-              value: "9200"
-            - name: ELASTIC_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: ic4302-es-elastic-user
-                  key: elastic
-                  optional: false
-            - name: ELASTIC
-              value: "ic4302-es-http"
+          - name: POSTGRES
+            value: "databases-postgresql-primary"  # ← Cambiar de "databases-postgresql", es correcto?
+          - name: POSTGRES_USER
+            value: "postgres"
+          - name: POSTGRES_DB
+            value: "postgres"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: databases-postgresql
+                key: postgres-password
+                optional: false
 
-            - name: POSTGRES
-              value: "databases-postgresql"
-            - name: POSTGRES_USER
-              value: "postgres"
-            - name: POSTGRES_DB
-              value: "control"
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: databases-postgresql
-                  key: postgres-password
-                  optional: false
+
+          - name: MARIADB
+            value: "databases-mariadb"
+          - name: MARIADB_TABLE
+            value: "objects"
+          - name: MARIADB_DB
+            value: "my_database"
+          - name: MARIADB_USER
+            value: "root"
+          - name: MARIADB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: databases-mariadb
+                key: mariadb-root-password
+                optional: false
+
+          #- name: PROMETHEUSENDPOINT
+            #value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
+          #- name: CHROMA_ENDPOINT
+            #value: "http://databases-chromadb:8000"
+
+          #- name: ELASTIC_USER
+            #value: "elastic"
+          #- name: ES_PORT
+            #value: "9200"
+          #- name: ELASTIC_PASS
+            #valueFrom:
+              #secretKeyRef:
+                #name: ic4302-es-elastic-user
+                #key: elastic
+                #optional: false
+          #- name: ELASTIC
+            #value: "ic4302-es-http"
+                
+
 {{ end }}

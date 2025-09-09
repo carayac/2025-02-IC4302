@@ -1,2 +1,4 @@
 pandas
-chromadb
+psycopg2-binary
+kagglehub
+mysql-connector-python
