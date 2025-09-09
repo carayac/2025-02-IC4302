@@ -93,7 +93,7 @@ chromadb:
     accessModes: [ "ReadWriteOnce" ]
     retentionPolicyOnDelete: "Delete"
   telemetry:
-    enabled: false
+    enabled: true
     endpoint: ""
     serviceName: "chroma"
   maintenance:
