@@ -51,6 +51,10 @@ spec:
                   optional: false
             - name: ELASTIC
               value: "ic4302-es-http"
+            - name: MEMCACHED_HOST
+              value: "databases-memcached"
+            - name: MEMCACHED_PORT
+              value: "11211"
             
 ---
 apiVersion: v1
