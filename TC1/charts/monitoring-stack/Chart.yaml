@@ -33,3 +33,7 @@ dependencies:
     version: "8.3.1"
     repository: https://charts.bitnami.com/bitnami
     alias: prometheus
+  - name: kube-prometheus-stack
+    version: "68.4.0"
+    repository: https://prometheus-community.github.io/helm-charts #Agregamos para serviceMonitor de elastic y vespa
+    alias: prometheus-stack
