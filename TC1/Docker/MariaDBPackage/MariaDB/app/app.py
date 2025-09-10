@@ -63,17 +63,19 @@ def release_connection(conn):
     if conn:
         conn.close()
 
-@app.route("/familias", methods=["GET"])
-def get_familias():
+
+# list animals 
+@app.route("/animales", methods=["GET"])
+def get_animales():
     conn = get_connection()
     try:
         if conn is None:
             return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
         cur = conn.cursor()
         try:
-            cur.execute("SELECT id, nombre_familia FROM familia LIMIT 50;")
+            cur.execute("SELECT id, nombre FROM animal LIMIT 50;")
             rows = cur.fetchall()
-            return jsonify([{"id": r[0], "nombre_familia": r[1]} for r in rows])
+            return jsonify([{"id": r[0], "nombre": r[1]} for r in rows])
         finally:
             cur.close()
     except Exception as e:
@@ -81,8 +83,9 @@ def get_familias():
     finally:
         release_connection(conn)
 
-@app.route("/dietas", methods=["GET"])
-def get_dietas():
+# list colors with animals 
+@app.route("/colores", methods=["GET"])
+def get_colores():
     conn = get_connection()
     try:
         if conn is None:
@@ -90,13 +93,12 @@ def get_dietas():
         cur = conn.cursor()
         try:
             cur.execute("""
-                SELECT d.tipo_dieta, GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ', ') AS animales
-                FROM dieta d
-                LEFT JOIN animal a ON d.id = a.dieta_id
-                GROUP BY d.tipo_dieta;
+                SELECT a.color, GROUP_CONCAT(DISTINCT a.nombre SEPARATOR ', ') AS animales
+                FROM animal a
+                GROUP BY a.color;
             """)
             rows = cur.fetchall()
-            return jsonify([{"tipo_dieta": r[0], "animales": r[1]} for r in rows])
+            return jsonify([{"animals": r[1], "color": r[0]} for r in rows])
         finally:
             cur.close()
     except Exception as e:
@@ -104,7 +106,7 @@ def get_dietas():
     finally:
         release_connection(conn)
 
-#HEALTH CHECK ENDPOINT
+# HEALTH CHECK ENDPOINT
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy'}), 200
