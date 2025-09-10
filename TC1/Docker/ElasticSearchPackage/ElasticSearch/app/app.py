@@ -39,45 +39,6 @@ def get_animales():
     return jsonify(animals)
 
 
-# List all diets
-@app.route("/dietas", methods=["GET"])
-def get_dietas():
-    conn = get_connection()
-    res = conn.search(
-        index=INDEX_NAME,
-        size=0,
-        aggs={"dietas": {"terms": {"field": "diet"}}}
-    )
-    diets = [{"tipo_dieta": b["key"], "count": b["doc_count"]} for b in res["aggregations"]["dietas"]["buckets"]]
-    return jsonify(diets)
-
-
-# List all habitats
-@app.route("/habitats", methods=["GET"])
-def get_habitats():
-    conn = get_connection()
-    res = conn.search(
-        index=INDEX_NAME,
-        size=0,
-        aggs={"habitats": {"terms": {"field": "habitat"}}}
-    )
-    habitats = [{"nombre_habitat": b["key"], "count": b["doc_count"]} for b in res["aggregations"]["habitats"]["buckets"]]
-    return jsonify(habitats)
-
-
-# List familias
-@app.route("/familias", methods=["GET"])
-def get_familias():
-    conn = get_connection()
-    res = conn.search(
-        index=INDEX_NAME,
-        size=0,
-        aggs={"familias": {"terms": {"field": "family"}}}
-    )
-    familias = [{"nombre_familia": b["key"], "count": b["doc_count"]} for b in res["aggregations"]["familias"]["buckets"]]
-    return jsonify(familias)
-
-
 # ANIMAL WITH HIGHEST SPEED
 @app.route("/top-velocidad", methods=["GET"])
 def top_velocidad():

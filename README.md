@@ -283,31 +283,27 @@ Notas:
 
 ---
 
-### 3. Top 5 Animales por Velocidad
+### 3. Animales listados por su color
 
-**GET** /top-velocidad
+**GET** /colores
 
-Devuelve los 5 animales con mayor velocidad máxima registrada.
+Devuelve los animales organizados por sus colores.
 
 **Request:**
-GET http://localhost:30080/top-velocidad
+GET http://localhost:30080/colores
 
 **Response exitoso (200 OK):**
 [
-  {"nombre": "Guepardo", "velocidad_max_kmh": 120},
-  {"nombre": "Antílope", "velocidad_max_kmh": 90},
-  ...
+   {
+        "animals": "Uakari",
+        "color": "Bald, Red"
+   }
 ]
 
 **Response de error (500 Internal Server Error):**
 {
   "error": "No se pudo conectar a la base de datos"
 }
-
-Notas:
-- Ordena los animales por la columna velocidad_max_kmh en forma descendente.
-- Ignora valores vacíos con NULLIF(i.velocidad_max_kmh, '').
-- Usa pool de conexiones y manejo seguro de cursors.
 
 ---
 
@@ -317,7 +313,7 @@ Notas:
 |-----------------|--------|--------------------------------------------|--------------------------------------|---------------|
 | /health         | GET    | Verifica que el servicio está activo       | {"status": "healthy"}              | 200           |
 | /animales       | GET    | Lista los primeros 50 animales             | [{"id":1,"nombre":"Tigre"},...]  | 200 / 500     |
-| /top-velocidad  | GET    | Devuelve los 5 animales más rápidos        | [{"nombre":"Guepardo","velocidad_max_kmh":120},...] | 200 / 500 |
+| /colores        | GET    | Lista los colores y los animales           | [{"animals":"Guepardo","color":"grey"},...] | 200 / 500 |
 
 ---
 

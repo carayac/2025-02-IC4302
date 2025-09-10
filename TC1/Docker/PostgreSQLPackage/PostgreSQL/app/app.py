@@ -64,26 +64,29 @@ def get_animales():
     finally:
         release_connection(conn)
 
-
-
-#ANIMAL WITH HIGHEST SPEED
-@app.route("/top-velocidad", methods=["GET"])
-def top_velocidad():
+#list colors with animals
+@app.route("/colores", methods=["GET"])
+def get_colores():
     conn = get_connection()
     try:
+        if conn is None:
+            return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
         cur = conn.cursor()
-        cur.execute("""
-            SELECT a.nombre, i.velocidad_max_kmh
-            FROM animal a
-            JOIN info_extra i ON a.id = i.animal_id
-            ORDER BY NULLIF(i.velocidad_max_kmh, '')::INT DESC
-            LIMIT 5;
-        """)
-        rows = cur.fetchall()
-        cur.close()
-        return jsonify([{"nombre": r[0], "velocidad_max_kmh": r[1]} for r in rows])
+        try:
+            cur.execute("""
+                SELECT a.color, STRING_AGG(DISTINCT a.nombre, ', ') AS animales
+                FROM animal a
+                GROUP BY a.color;
+            """)
+            rows = cur.fetchall()
+            return jsonify([{"animals": r[1], "color": r[0]} for r in rows])
+        finally:
+            cur.close()
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     finally:
         release_connection(conn)
+
 
 
 

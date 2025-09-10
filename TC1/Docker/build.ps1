@@ -20,7 +20,7 @@ Set-Location ../DataSeeder
 docker build -t "$Username/dataseeder" .
 docker push "$Username/dataseeder"
 #-------------------------FIN DATASEEDER ----------------------------
-<# 
+
 #-------------------------CHROMADB ----------------------------
 # Ir a la carpeta general ChromaDB
 Set-Location ../ChromaDBPackage
@@ -86,17 +86,17 @@ Set-Location ../MariaDB-Redis
 docker build -t "$Username/mariadb-redis" .
 docker push "$Username/mariadb-redis"
 #-------------------------FIN MARIA DB ----------------------------
- #>
+
 #-------------------------INICIO POSTGRESQL ----------------------------
 
 # Ir a la carpeta general PostgreSQL
-Set-Location ../PostgreSQLPackage
+Set-Location ../../PostgreSQLPackage
 #PostgreSQL
 Set-Location ./PostgreSQL
 docker build -t "$Username/postgresql" .
 docker push "$Username/postgresql"
 
-<# #PostgreSQL-Memcached
+#PostgreSQL-Memcached
 Set-Location ../PostgreSQL-Memcached
 docker build -t "$Username/postgresql-memcached" .
 docker push "$Username/postgresql-memcached"
@@ -105,7 +105,7 @@ docker push "$Username/postgresql-memcached"
 Set-Location ../PostgreSQL-Redis
 docker build -t "$Username/postgresql-redis" .
 docker push "$Username/postgresql-redis"
-#-------------------------FIN POSTGRESQL ---------------------------- #>
+#-------------------------FIN POSTGRESQL ----------------------------
 
 
 # Volver a la carpeta inicial

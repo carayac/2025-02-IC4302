@@ -4,42 +4,41 @@ import chromadb
 
 app = Flask(__name__)
 
-CHROMA_URL = os.getenv("CHROMA_URL", "http://databases-chromadb:8000")
+CHROMA_HOST = os.getenv("CHROMA_HOST", "databases-chromadb")
+CHROMA_PORT = int(os.getenv("CHROMA_PORT", 8000))
 
-@app.route("/", methods=['GET'])
-def hello_world():
-    DATA=os.getenv('PROMETHEUSENDPOINT')
-    return "<p>Hello, "+ DATA +"World!</p>"
-
+# Health check endpoint
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy'}), 200
 
-@app.route("/chromadb", methods=['GET'])
-def chroma():
-    client = chromadb.HttpClient(
-    host="databases-chromadb",  # nombre del servicio Kubernetes
-    port=8000
-    )
-    # Crear colección de prueba
-    collection = client.get_or_create_collection(name="coleccion_prueba2")
-    return jsonify({"coleccion": collection.name})
+# List animals
+@app.route("/animales", methods=["GET"])
+def get_animales():
+    try:
+        client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+        collection = client.get_or_create_collection(name="animales")
+        # Get first 50 items
+        items = collection.get(limit=50)
+        # items['ids'] contiene los nombres o IDs de los vectores almacenados
+        animales = [{"id": idx+1, "nombre": name} for idx, name in enumerate(items['ids'])]
+        return jsonify(animales)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route("/colecciones", methods=['GET'])
-def listar_colecciones():
-    client = chromadb.HttpClient(
-        host="databases-chromadb",
-        port=8000
-    )
-
-    # Obtener todas las colecciones
-    colecciones = client.list_collections()
-
-    # Extraer solo los nombres
-    nombres = [c.name for c in colecciones]
-
-    return jsonify({"colecciones": nombres})
-
+# TOP 5 ANIMAL WITH HIGHEST SPEED
+@app.route("/top-velocidad", methods=["GET"])
+def top_velocidad():
+    try:
+        client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+        collection = client.get_or_create_collection(name="animales_velocidad")
+        # Get top 5 items sorted by velocidad_max_kmh descending
+        items = collection.get(limit=5, sort_by="velocidad_max_kmh", ascending=False)
+        top = [{"nombre": items['ids'][i], "velocidad_max_kmh": items['metadatas'][i]['velocidad_max_kmh']} 
+               for i in range(len(items['ids']))]
+        return jsonify(top)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host='localhost', port=5000)
+    app.run(host='0.0.0.0', port=5000)
