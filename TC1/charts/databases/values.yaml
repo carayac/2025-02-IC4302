@@ -73,7 +73,7 @@ memcached:
 
 
 chromadb:
-  enabled: false
+  enabled: true
   allowReset: false
   isPersistent: true
   persistDirectory: /data

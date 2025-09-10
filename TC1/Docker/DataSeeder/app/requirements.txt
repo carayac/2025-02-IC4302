@@ -3,3 +3,5 @@ psycopg2-binary
 kagglehub
 mysql-connector-python
 elasticsearch
+chromadb
+sentence-transformers
