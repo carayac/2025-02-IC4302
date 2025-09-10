@@ -38,7 +38,7 @@ spec:
           - name: MARIADB_TABLE
             value: "objects"
           - name: MARIADB_DB
-            value: "my_database"
+            value: "control"
           - name: MARIADB_USER
             value: "root"
           - name: MARIADB_PASS
