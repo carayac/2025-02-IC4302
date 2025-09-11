@@ -3,7 +3,7 @@ config:
     enabled: true
     name: flasktest
     replicas: 1
-    image: prosoli/mariadb
+    image: prosoli/postgresql-memcached
   dataseeder: # Added configuration for DataSeeder
     enabled: true
     name: dataseeder
