@@ -21,10 +21,10 @@ def get_connection():
         conn = Elasticsearch(
             [f"http://{ES_HOST}:{ES_PORT}"],
             basic_auth=(ES_USER, ES_PASSWORD)
-        )
-        if not conn.ping():
+        ) # Crear conexión a Elasticsearch
+        if not conn.ping(): #chequear si la conexión es exitosa
             raise Exception("No se pudo conectar a Elasticsearch")
-        return conn
+        return conn # Devolver la conexión
     except Exception as e:
         print(f"Error creando conexión Elasticsearch: {e}")
         sys.exit(1)
@@ -33,26 +33,55 @@ def get_connection():
 # List all the animals
 @app.route("/animales", methods=["GET"])
 def get_animales():
-    conn = get_connection()
-    res = conn.search(index=INDEX_NAME, size=50, query={"match_all": {}})
-    animals = [{"id": hit["_id"], "nombre": hit["_source"]["name"]} for hit in res["hits"]["hits"]]
-    return jsonify(animals)
+    conn = get_connection() # Obtener conexión a Elasticsearch
+    try:
+        res = conn.search(index=INDEX_NAME, size=50, query={"match_all": {}})
+        animals = [{"id": hit["_id"], "nombre": hit["_source"]["name"]} for hit in res["hits"]["hits"]]
+        return jsonify(animals)# Devolver la lista de animales
+    except Exception as e:
+        if e.info and 'index_not_found_exception' in e.info['error']['type']:
+            return jsonify({"error": "Debe cargar la base de datos"}), 404
+        return jsonify({"error": str(e)}), 500
 
-
-# ANIMAL WITH HIGHEST SPEED
-@app.route("/top-velocidad", methods=["GET"])
-def top_velocidad():
-    conn = get_connection()
-    res = conn.search(
-        index=INDEX_NAME,
-        size=5,
-        sort=[{"top_speed_kmh": {"order": "desc"}}],
-        query={"exists": {"field": "top_speed_kmh"}}
-    )
-    top = [{"nombre": hit["_source"]["name"], "velocidad_max_kmh": hit["_source"]["top_speed_kmh"]}
-           for hit in res["hits"]["hits"]]
-    return jsonify(top)
-
+@app.route("/colores", methods=["GET"])
+def get_colores():
+    conn = get_connection() # Obtener conexión a Elasticsearch
+    query = { # Consulta de agregación para obtener colores y sus animales
+        "size": 0,  # No necesitamos documentos, solo agregaciones
+        "aggs": {
+            "por_color": {
+                "terms": {
+                    "field": "color.keyword",
+                    "size": 1000  # máximo número de colores
+                },
+                "aggs": {
+                    "animales_unicos": {
+                        "terms": {
+                            "field": "name.keyword",
+                            "size": 1000  # máximo número de animales por color
+                        }
+                    }
+                }
+            }
+        }
+    }
+    # Realizar la búsqueda con agregaciones
+    try:
+        res = conn.search(index="animals", body=query)
+        # Procesar los resultados
+        result = []
+        for bucket in res["aggregations"]["por_color"]["buckets"]:
+            color = bucket["key"]
+            animales = [a["key"] for a in bucket["animales_unicos"]["buckets"]]
+            result.append({
+                "color": color,
+                "animals": animales
+            })
+        return jsonify(result) # Devolver la lista de colores con sus animales
+    except Exception as e:
+        if e.info and 'index_not_found_exception' in e.info['error']['type']:
+            return jsonify({"error": "Debe cargar la base de datos"}), 404
+        return jsonify({"error": str(e)}), 500
 
 # Health check endpoint
 @app.route("/health", methods=["GET"])

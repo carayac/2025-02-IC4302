@@ -3,9 +3,17 @@ config:
     enabled: true
     name: flasktest
     replicas: 1
+<<<<<<< Updated upstream
     image: prosoli/postgresql-memcached
+=======
+    image: carayacn/elasticsearch
+>>>>>>> Stashed changes
   dataseeder: # Added configuration for DataSeeder
     enabled: true
     name: dataseeder
     replicas: 1
+<<<<<<< Updated upstream
     image: prosoli/dataseeder # To charge with data the database
+=======
+    image: carayacn/dataseeder # To charge with data the database
+>>>>>>> Stashed changes
