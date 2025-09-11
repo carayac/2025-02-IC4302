@@ -356,10 +356,10 @@ def create_index_elastic():
         es.indices.create(index=index_name, body={
             "mappings": {
                 "properties": {
-                    "name": {"type": "text"},
+                    "name": {"type": "keyword"},
                     "height_cm": {"type": "keyword"},
                     "weight_kg": {"type": "keyword"},
-                    "color": {"type": "text"},
+                    "color": {"type": "keyword"},
                     "lifespan_years": {"type": "keyword"},
                     "diet": {"type": "keyword"},
                     "habitat": {"type": "text"},
@@ -375,9 +375,11 @@ def create_index_elastic():
                 }
             }
         })
-        print("Índice animal' creado en ElasticSearch")
+        print("Índice animal creado en ElasticSearch")
+        return True
     else:
         print("Índice animals ya existe en ElasticSearch")
+        return True
 
 def insert_data_elastic(df):
     actions = []
