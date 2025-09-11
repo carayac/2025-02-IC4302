@@ -88,8 +88,6 @@ def get_colores():
         release_connection(conn)
 
 
-
-
 #HEALTH CHECK ENDPOINT
 @app.route('/health', methods=['GET'])
 def health_check():

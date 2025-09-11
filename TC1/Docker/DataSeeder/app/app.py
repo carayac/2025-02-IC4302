@@ -334,23 +334,24 @@ def insert_data_mariadb(df):
         conn.close()
 
 #-------------------------------------Elastic Search-------------------------------------
+# Crear conexión Elasticsearch
+def get_connectionElastic():
+    try:
+        conn = Elasticsearch(
+            [f"http://{ELASTIC}:{ES_PORT}"],
+            basic_auth=(ELASTIC_USER, ELASTIC_PASS)
+        )
+        if not conn.ping():
+            raise Exception("No se pudo conectar a Elasticsearch")
+        return conn
+    except Exception as e:
+        print(f"Error creando conexión Elasticsearch: {e}")
+        sys.exit(1)
 
-try:
-    es = Elasticsearch(
-        hosts=[{"host": ELASTIC, "port": int(ES_PORT), "scheme": "http"}], 
-        basic_auth=(ELASTIC_USER, ELASTIC_PASS),
-        verify_certs=False
-    )
-    if es.ping():
-        print("Conexión a ElasticSearch exitosa")
-    else:
-        print("No se pudo conectar a ElasticSearch")
-except Exception as e:
-    print(f"Error conectando a ElasticSearch: {e}")
-    sys.exit(1)
 
 def create_index_elastic():
     index_name = "animals"
+    es = get_connectionElastic()
     if not es.indices.exists(index=index_name):
         es.indices.create(index=index_name, body={
             "mappings": {
@@ -380,6 +381,7 @@ def create_index_elastic():
 
 def insert_data_elastic(df):
     actions = []
+    es = get_connectionElastic()
     for _, row in df.iterrows():
         doc = {
             "_index": "animals",
