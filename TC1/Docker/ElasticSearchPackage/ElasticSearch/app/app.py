@@ -45,43 +45,47 @@ def get_animales():
 
 @app.route("/colores", methods=["GET"])
 def get_colores():
-    conn = get_connection() # Obtener conexión a Elasticsearch
-    query = { # Consulta de agregación para obtener colores y sus animales
-        "size": 0,  # No necesitamos documentos, solo agregaciones
+    conn = get_connection()  # Obtener conexión a Elasticsearch
+    #query to aggregate animals by color and get their names
+    query = {
+        "size": 0,
         "aggs": {
             "por_color": {
-                "terms": {
-                    "field": "color.keyword",
-                    "size": 1000  # máximo número de colores
-                },
-                "aggs": {
-                    "animales_unicos": {
-                        "terms": {
-                            "field": "name.keyword",
-                            "size": 1000  # máximo número de animales por color
-                        }
-                    }
+            "terms": {
+                "field": "color",
+                "size": 100
+            },
+            "aggs": {
+                "nombres_animales": {
+                "top_hits": {
+                    "_source": ["name"],
+                    "size": 100
                 }
+                }
+            }
             }
         }
     }
-    # Realizar la búsqueda con agregaciones
-    try:
+
+    try: # Execute the search query
         res = conn.search(index="animals", body=query)
-        # Procesar los resultados
+
         result = []
-        for bucket in res["aggregations"]["por_color"]["buckets"]:
+        for bucket in res["aggregations"]["por_color"]["buckets"]: # Process each color bucket
             color = bucket["key"]
-            animales = [a["key"] for a in bucket["animales_unicos"]["buckets"]]
-            result.append({
+            animales = [hit["_source"]["name"] for hit in bucket["nombres_animales"]["hits"]["hits"]]
+            result.append({ # Append color and animal names to the result
                 "color": color,
                 "animals": animales
             })
-        return jsonify(result) # Devolver la lista de colores con sus animales
+        return jsonify(result) # Return the aggregated result
+
     except Exception as e:
-        if e.info and 'index_not_found_exception' in e.info['error']['type']:
+        if getattr(e, "info", None) and 'index_not_found_exception' in e.info.get('error', {}).get('type', ''):
             return jsonify({"error": "Debe cargar la base de datos"}), 404
         return jsonify({"error": str(e)}), 500
+
+
 
 # Health check endpoint
 @app.route("/health", methods=["GET"])
