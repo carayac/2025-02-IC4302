@@ -16,12 +16,18 @@ spec:
       spec:
         containers:
         - name: elasticsearch
+          env:
+          - name: ES_JAVA_OPTS
+            value: "-Xms512m -Xmx512m"  #Menor consumo de ram al iniciar elastic
           resources:
             requests:
-              memory: 2Gi
-              cpu: 1
+              #memory: 2Gi
+              memory: 700Mi
+              #cpu: 1
+              cpu: 500m
             limits:
-              memory: 2Gi
+              #memory: 2Gi
+              memory: 1500Mi
     config:
       node.store.allow_mmap: false
       node.roles: ["master"]
@@ -31,12 +37,18 @@ spec:
       spec:
         containers:
         - name: elasticsearch
+          env:
+          - name: ES_JAVA_OPTS
+            value: "-Xms512m -Xmx512m" #Menor consumo de ram
           resources:
             requests:
-              memory: 2Gi
-              cpu: 1
+              #memory: 2Gi
+              memory: 700Mi
+              #cpu: 1
+              cpu: 500m
             limits:
-              memory: 2Gi
+              #memory: 2Gi
+              memory: 1500Mi
     config:
       node.store.allow_mmap: false
       node.roles: ["data"]
