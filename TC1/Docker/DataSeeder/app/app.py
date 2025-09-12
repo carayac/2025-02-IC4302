@@ -11,6 +11,9 @@ from mysql.connector import pooling
 from elasticsearch import Elasticsearch, helpers
 import chromadb
 from chromadb.utils import embedding_functions
+from sentence_transformers import SentenceTransformer
+import requests
+
 
 # Variables de entorno
 POSTGRES = getenv("POSTGRES")
@@ -32,7 +35,8 @@ CHROMA_ENDPOINT = getenv("CHROMA_ENDPOINT", "http://localhost:8000")
 CHROMA_COLLECTION = getenv("CHROMA_COLLECTION", "animals")
 CHROMA_EMBED_MODEL = getenv("CHROMA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
-
+VESPA_ENDPOINT = getenv("VESPA_ENDPOINT", "http://localhost:8080")
+VESPA_COLLECTION = getenv("VESPA_COLLECTION", "animals")
 
 
 print(f"POSTGRES: {POSTGRES}")
@@ -53,6 +57,9 @@ print(f"ES_PORT: {ES_PORT}")
 print(f"CHROMA_ENDPOINT: {CHROMA_ENDPOINT}")
 print(f"CHROMA_COLLECTION: {CHROMA_COLLECTION}")
 print(f"CHROMA_EMBED_MODEL: {CHROMA_EMBED_MODEL}")
+
+print(f"VESPA_ENDPOINT: {VESPA_ENDPOINT}")
+print(f"VESPA_COLLECTION: {VESPA_COLLECTION}")
 
 def load_dataset():
     try:
@@ -504,6 +511,165 @@ def upsert_data_chroma(df, batch_size=100):
         print(f"Error insertando en Chroma: {e}")
         return False
 
+#-------------------------------------Vespa-------------------------------------
+
+
+vespa_app = None
+sentence_model = None
+
+def init_vespa():
+    global vespa_app, sentence_model
+    try:
+        # Inicializar modelo de embeddings (igual que ChromaDB)
+        sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
+        print("Modelo sentence-transformers cargado para Vespa")
+        
+        # Verificar que Vespa esté disponible
+        health_url = f"{VESPA_ENDPOINT}/ApplicationStatus"
+        response = requests.get(health_url, timeout=10)
+        
+        if response.status_code == 200:
+            print(f"Vespa está disponible en: {VESPA_ENDPOINT}")
+            vespa_app = {
+                "endpoint": VESPA_ENDPOINT,
+                "collection": VESPA_COLLECTION
+            }
+            return True
+        else:
+            print(f"Vespa no está disponible. Status: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"Error inicializando Vespa: {e}")
+        return False
+
+def generate_embedding_text_vespa(row):
+    """Genera texto para embedding IDÉNTICO a ChromaDB"""
+    return (
+        f"Animal: {row['Animal']}. Color: {row['Color']}. "
+        f"Dieta: {row['Diet']}. Familia: {row['Family']}. "
+        f"Hábitat: {row['Habitat']}. Predadores: {row['Predators']}. "
+        f"Altura(cm): {row['Height (cm)']}, Peso(kg): {row['Weight (kg)']}. "
+        f"Vida(años): {row['Lifespan (years)']}. "
+        f"Velocidad prom(km/h): {row['Average Speed (km/h)']}, "
+        f"Velocidad máx(km/h): {row['Top Speed (km/h)']}. "
+        f"Países: {row['Countries Found']}. Conservación: {row['Conservation Status']}. "
+        f"Estructura social: {row['Social Structure']}. "
+        f"Gestación(días): {row['Gestation Period (days)']}. "
+        f"Crias por parto: {row['Offspring per Birth']}."
+    )
+
+def insert_data_vespa(df, batch_size=100):
+    if vespa_app is None or sentence_model is None:
+        print("Vespa no inicializada")
+        return False
+    
+    try:
+        feed_url = f"{vespa_app['endpoint']}/document/v1/{vespa_app['collection']}/animal"
+        
+        success_count = 0
+        ids, docs, metas = [], [], []
+        
+        for i, row in df.iterrows():
+            # Generar texto IGUAL que ChromaDB
+            doc_text = generate_embedding_text_vespa(row)
+            
+            # Generar embedding con sentence-transformers (IGUAL que ChromaDB)
+            embedding = sentence_model.encode(doc_text).tolist()
+            
+            # Preparar metadatos IGUALES a ChromaDB
+            meta = {
+                "name": row["Animal"],
+                "color": row["Color"],
+                "diet": row["Diet"],
+                "family": row["Family"],
+                "habitat": row["Habitat"],
+                "predators": row["Predators"],
+                "height_cm": str(row["Height (cm)"]),
+                "weight_kg": str(row["Weight (kg)"]),
+                "lifespan_years": str(row["Lifespan (years)"]),
+                "avg_speed_kmh": str(row["Average Speed (km/h)"]),
+                "top_speed_kmh": str(row["Top Speed (km/h)"]),
+                "countries_found": row["Countries Found"],
+                "conservation_status": row["Conservation Status"],
+                "social_structure": row["Social Structure"],
+                "gestation_days": str(row["Gestation Period (days)"]),
+                "offspring_per_birth": str(row["Offspring per Birth"])
+            }
+            
+            ids.append(f"animal-{i}")
+            docs.append(doc_text)
+            metas.append(meta)
+            
+            # Procesar en lotes como ChromaDB
+            if len(ids) >= batch_size:
+                if send_batch_to_vespa(feed_url, ids, docs, metas, [embedding] * len(ids)):
+                    success_count += len(ids)
+                ids, docs, metas = [], [], []
+                
+        # Procesar último lote
+        if ids:
+            embeddings_batch = []
+            for doc in docs:
+                emb = sentence_model.encode(doc).tolist()
+                embeddings_batch.append(emb)
+            
+            if send_batch_to_vespa(feed_url, ids, docs, metas, embeddings_batch):
+                success_count += len(ids)
+
+        print(f"Documentos insertados exitosamente en Vespa: {success_count}/{len(df)}")
+        return success_count > 0
+        
+    except Exception as e:
+        print(f"Error insertando en Vespa: {e}")
+        return False
+
+def send_batch_to_vespa(feed_url, ids, docs, metas, embeddings):
+    """Envía un lote de documentos a Vespa"""
+    try:
+        for i in range(len(ids)):
+            doc = {
+                "fields": {
+                    "name": metas[i]["name"],
+                    "color": metas[i]["color"],
+                    "diet": metas[i]["diet"],
+                    "family": metas[i]["family"],
+                    "habitat": metas[i]["habitat"],
+                    "predators": metas[i]["predators"],
+                    "height_cm": float(metas[i]["height_cm"]) if metas[i]["height_cm"] != 'nan' else 0.0,
+                    "weight_kg": float(metas[i]["weight_kg"]) if metas[i]["weight_kg"] != 'nan' else 0.0,
+                    "lifespan_years": int(float(metas[i]["lifespan_years"])) if metas[i]["lifespan_years"] != 'nan' else 0,
+                    "avg_speed_kmh": float(metas[i]["avg_speed_kmh"]) if metas[i]["avg_speed_kmh"] != 'nan' else 0.0,
+                    "top_speed_kmh": float(metas[i]["top_speed_kmh"]) if metas[i]["top_speed_kmh"] != 'nan' else 0.0,
+                    "countries_found": metas[i]["countries_found"],
+                    "conservation_status": metas[i]["conservation_status"],
+                    "social_structure": metas[i]["social_structure"],
+                    "gestation_days": int(float(metas[i]["gestation_days"])) if metas[i]["gestation_days"] != 'nan' else 0,
+                    "offspring_per_birth": float(metas[i]["offspring_per_birth"]) if metas[i]["offspring_per_birth"] != 'nan' else 0.0,
+                    "description": docs[i],
+                    "embedding": {"values": embeddings[i]}
+                }
+            }
+            
+            # Enviar documento individual
+            doc_url = f"{feed_url}/{ids[i]}"
+            response = requests.post(
+                doc_url,
+                json=doc,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            
+            if response.status_code not in [200, 201]:
+                print(f"Error insertando documento {ids[i]}: {response.status_code}")
+                return False
+                
+        return True
+        
+    except Exception as e:
+        print(f"Error enviando lote a Vespa: {e}")
+        return False
+    
 
 if __name__ == "__main__":    
     try:
@@ -525,13 +691,18 @@ if __name__ == "__main__":
         elif not init_chroma():
             print("No se pudo inicializar ChromaDB")
             sys.exit(1)
+
+        elif not init_vespa():
+            print("No se pudo inicializar Vespa")
+            sys.exit(1)
         
         # Cargar dataset
         df = load_dataset()
         
         # Insertar datos
-        if insert_data_postgres(df) and insert_data_mariadb(df) and insert_data_elastic(df) and upsert_data_chroma(df):
-            print("DataSeeder completado exitosamente en PostgreSQL, MariaDB, ElasticSearch y ChromaDB")
+        if (insert_data_postgres(df) and insert_data_mariadb(df) 
+        and insert_data_elastic(df) and upsert_data_chroma(df) and insert_data_vespa(df)):
+            print("DataSeeder completado exitosamente en todas las bases")
         else:
             print("Error insertando datos")
             sys.exit(1)
