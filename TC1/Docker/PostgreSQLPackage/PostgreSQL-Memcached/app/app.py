@@ -135,7 +135,7 @@ def get_colores():
 
             #Guarda en la caché despues de haber consultado BD
             cache_set(cache_key, colores, CACHE_TTL_SECONDS)
-            return jsonify({"source": "db", "data": colores})
+            return jsonify({"source": "db", "data": colores})   # Devolver la lista de colores con sus animales
         
         finally:
             cur.close()

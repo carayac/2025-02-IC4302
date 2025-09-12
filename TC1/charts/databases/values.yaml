@@ -63,7 +63,7 @@ redis:
 
 
 memcached:
-  enabled: false
+  enabled: true
   metrics:
     enabled: true
     serviceMonitor:
