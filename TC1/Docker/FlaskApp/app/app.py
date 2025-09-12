@@ -1,8 +1,19 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import os
-import chromadb
+from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_client import Counter, Histogram
+
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)
+
+
+# Creación de distintas métricas
+peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['method', 'endpoint'])
+cache_hit = Histogram('promedio_tiempo_constlta', 'Total Cache Hit', ['method', 'endpoint'])
+cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['method', 'endpoint'])
+cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['method', 'endpoint'])
+
 
 CHROMA_URL = os.getenv("CHROMA_URL", "http://databases-chromadb:8000")
 
