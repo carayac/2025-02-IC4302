@@ -28,8 +28,7 @@ ELASTIC_USER = getenv("ELASTIC_USER")
 ELASTIC_PASS = getenv("ELASTIC_PASS")
 ES_PORT = getenv("ES_PORT", "9200")
 
-CHROMA_HOST = getenv("CHROMA_HOST")
-CHROMA_PORT = int(getenv("CHROMA_PORT", "8000"))
+CHROMA_ENDPOINT = getenv("CHROMA_ENDPOINT", "http://localhost:8000")
 CHROMA_COLLECTION = getenv("CHROMA_COLLECTION", "animals")
 CHROMA_EMBED_MODEL = getenv("CHROMA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
@@ -51,8 +50,7 @@ print(f"ELASTIC_USER: {ELASTIC_USER}")
 print(f"ELASTIC_PASS: {ELASTIC_PASS}")
 print(f"ES_PORT: {ES_PORT}")
 
-print(f"CHROMA_HOST: {CHROMA_HOST}")
-print(f"CHROMA_PORT: {CHROMA_PORT}")
+print(f"CHROMA_ENDPOINT: {CHROMA_ENDPOINT}")
 print(f"CHROMA_COLLECTION: {CHROMA_COLLECTION}")
 print(f"CHROMA_EMBED_MODEL: {CHROMA_EMBED_MODEL}")
 
@@ -69,6 +67,7 @@ def load_dataset():
         print(f"Error cargando dataset: {e}")
         raise
 
+#---------------------------------------PostgreSQL-------------------------------------
 # Crear pool de conexiones PostgreSQL
 try:
     pg_pool = psycopg2.pool.SimpleConnectionPool(
@@ -434,7 +433,7 @@ chroma_collection = None
 def init_chroma():
     global chroma_collection
     try:
-        client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+        client = chromadb.HttpClient(host=CHROMA_ENDPOINT)
         embed_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name=CHROMA_EMBED_MODEL
         )
@@ -504,6 +503,7 @@ def upsert_data_chroma(df, batch_size=100):
     except Exception as e:
         print(f"Error insertando en Chroma: {e}")
         return False
+
 
 if __name__ == "__main__":    
     try:

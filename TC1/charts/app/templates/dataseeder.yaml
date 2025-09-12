@@ -66,10 +66,8 @@ spec:
           - name: ELASTIC
             value: "ic4302-es-http"
 
-          - name: CHROMA_HOST
-            value: "databases-chromadb"
-          - name: CHROMA_PORT
-            value: "8000"
+          - name: CHROMA_ENDPOINT
+            value: "http://databases-chromadb:8000"
           - name: CHROMA_COLLECTION
             value: "animals"
           - name: CHROMA_EMBED_MODEL
