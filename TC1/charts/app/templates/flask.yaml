@@ -51,6 +51,22 @@ spec:
                   optional: false
             - name: ELASTIC
               value: "ic4302-es-http"
+            - name: MEMCACHED_HOST
+              value: "databases-memcached"
+            - name: MEMCACHED_PORT
+              value: "11211"
+            - name: POSTGRES
+              value: "databases-postgresql-primary"  # ← Cambiar de "databases-postgresql", es correcto?
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: databases-postgresql
+                  key: postgres-password
+                  optional: false
             
 ---
 apiVersion: v1

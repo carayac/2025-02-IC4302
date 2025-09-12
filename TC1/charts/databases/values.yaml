@@ -32,8 +32,7 @@ elasticsearch:
 elastic:
   enabled: true
   version: 8.6.1
-  replicas: 3 #minimo 3 datanodes
-  masterReplicas: 1
+  replicas: 1 #minimo 3 datanodes
   name: ic4302
 kibana:
   version: 8.6.1
@@ -55,7 +54,7 @@ prometheus-elasticsearch-exporter:
 
 
 redis:
-  enabled: true
+  enabled: false
   metrics:
     enabled: true
     serviceMonitor:
@@ -73,6 +72,7 @@ memcached:
 
 
 chromadb:
+  enabled: true
   allowReset: false
   isPersistent: true
   persistDirectory: /data
@@ -104,7 +104,7 @@ chromadb:
 
 
 vespa:
-  enabled: true
+  enabled: false
   image:
     registry: docker.io
     repository: vespaengine/vespa

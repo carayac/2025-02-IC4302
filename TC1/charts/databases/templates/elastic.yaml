@@ -10,22 +10,7 @@ spec:
       selfSignedCertificate:
         disabled: true
   nodeSets:
-  - name: master
-    count: {{ .Values.elastic.masterReplicas }}
-    podTemplate:
-      spec:
-        containers:
-        - name: elasticsearch
-          resources:
-            requests:
-              memory: 2Gi
-              cpu: 1
-            limits:
-              memory: 2Gi
-    config:
-      node.store.allow_mmap: false
-      node.roles: ["master"]
-  - name: data-node
+  - name: default
     count: {{ .Values.elastic.replicas }}
     podTemplate:
       spec:
@@ -39,5 +24,4 @@ spec:
               memory: 2Gi
     config:
       node.store.allow_mmap: false
-      node.roles: ["data"]
 {{ end }}

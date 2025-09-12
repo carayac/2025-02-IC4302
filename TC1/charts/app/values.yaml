@@ -1,11 +1,14 @@
 config:
-  flask:
-    enabled: true
-    name: flasktest
-    replicas: 1
-    image: carayacn/elasticsearch
-  dataseeder: # Added configuration for DataSeeder
-    enabled: true
-    name: dataseeder
-    replicas: 1
-    image: carayacn/dataseeder # To charge with data the database
+    flask: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: flasktest
+        replicas: 1
+        image: prosoli/elasticsearch-memcached
+
+    dataseeder: # Added configuration for DataSeeder
+        enabled: true
+        name: dataseeder
+        replicas: 1
+        image: prosoli/dataseeder # To charge with data the database
+
+
