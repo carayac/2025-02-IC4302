@@ -96,22 +96,22 @@ def get_colores():
 
     #En caso de caché miss, abre conexion con bd y consulta
     conn = get_connection() # Obtener conexión a Elasticsearch
-    query = { # Consulta de agregación para obtener colores y sus animales
-        "size": 0,  # No necesitamos documentos, solo agregaciones
+    query = {
+        "size": 0,
         "aggs": {
             "por_color": {
-                "terms": {
-                    "field": "color.keyword",
-                    "size": 1000  # máximo número de colores
-                },
-                "aggs": {
-                    "animales_unicos": {
-                        "terms": {
-                            "field": "name.keyword",
-                            "size": 1000  # máximo número de animales por color
-                        }
-                    }
+            "terms": {
+                "field": "color",
+                "size": 100
+            },
+            "aggs": {
+                "nombres_animales": {
+                "top_hits": {
+                    "_source": ["name"],
+                    "size": 100
                 }
+                }
+            }
             }
         }
     }
@@ -122,7 +122,7 @@ def get_colores():
         result = []
         for bucket in res["aggregations"]["por_color"]["buckets"]:
             color = bucket["key"]
-            animales = [a["key"] for a in bucket["animales_unicos"]["buckets"]]
+            animales = [hit["_source"]["name"] for hit in bucket["nombres_animales"]["hits"]["hits"]]
             result.append({
                 "color": color,
                 "animals": animales
@@ -133,7 +133,7 @@ def get_colores():
         return jsonify({"source": "db", "data": result}) # Devolver la lista de colores con sus animales
 
     except Exception as e:
-        if e.info and 'index_not_found_exception' in e.info['error']['type']:
+        if getattr(e, "info", None) and 'index_not_found_exception' in e.info.get('error', {}).get('type', ''):
             return jsonify({"error": "Debe cargar la base de datos"}), 404
         return jsonify({"error": str(e)}), 500
 
