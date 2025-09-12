@@ -3,3 +3,5 @@ psycopg2-binary
 kagglehub
 mysql-connector-python
 elasticsearch==8.13.0
+chromadb
+sentence-transformers

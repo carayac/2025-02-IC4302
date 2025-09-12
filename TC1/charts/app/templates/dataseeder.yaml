@@ -65,6 +65,13 @@ spec:
                 optional: false
           - name: ELASTIC
             value: "ic4302-es-http"
+
+          - name: CHROMA_ENDPOINT
+            value: "http://databases-chromadb:8000"
+          - name: CHROMA_COLLECTION
+            value: "animals"
+          - name: CHROMA_EMBED_MODEL
+            value: "sentence-transformers/all-MiniLM-L6-v2"
                 
 
 {{ end }}

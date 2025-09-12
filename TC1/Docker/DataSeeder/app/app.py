@@ -9,7 +9,8 @@ import sys
 import mysql.connector
 from mysql.connector import pooling
 from elasticsearch import Elasticsearch, helpers
-
+import chromadb
+from chromadb.utils import embedding_functions
 
 # Variables de entorno
 POSTGRES = getenv("POSTGRES")
@@ -26,6 +27,11 @@ ELASTIC = getenv("ELASTIC")
 ELASTIC_USER = getenv("ELASTIC_USER")
 ELASTIC_PASS = getenv("ELASTIC_PASS")
 ES_PORT = getenv("ES_PORT", "9200")
+
+CHROMA_ENDPOINT = getenv("CHROMA_ENDPOINT", "http://localhost:8000")
+CHROMA_COLLECTION = getenv("CHROMA_COLLECTION", "animals")
+CHROMA_EMBED_MODEL = getenv("CHROMA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+
 
 
 
@@ -44,6 +50,10 @@ print(f"ELASTIC_USER: {ELASTIC_USER}")
 print(f"ELASTIC_PASS: {ELASTIC_PASS}")
 print(f"ES_PORT: {ES_PORT}")
 
+print(f"CHROMA_ENDPOINT: {CHROMA_ENDPOINT}")
+print(f"CHROMA_COLLECTION: {CHROMA_COLLECTION}")
+print(f"CHROMA_EMBED_MODEL: {CHROMA_EMBED_MODEL}")
+
 def load_dataset():
     try:
         df = kagglehub.load_dataset(
@@ -57,6 +67,7 @@ def load_dataset():
         print(f"Error cargando dataset: {e}")
         raise
 
+#---------------------------------------PostgreSQL-------------------------------------
 # Crear pool de conexiones PostgreSQL
 try:
     pg_pool = psycopg2.pool.SimpleConnectionPool(
@@ -356,10 +367,10 @@ def create_index_elastic():
         es.indices.create(index=index_name, body={
             "mappings": {
                 "properties": {
-                    "name": {"type": "text"},
+                    "name": {"type": "keyword"},
                     "height_cm": {"type": "keyword"},
                     "weight_kg": {"type": "keyword"},
-                    "color": {"type": "text"},
+                    "color": {"type": "keyword"},
                     "lifespan_years": {"type": "keyword"},
                     "diet": {"type": "keyword"},
                     "habitat": {"type": "text"},
@@ -375,9 +386,11 @@ def create_index_elastic():
                 }
             }
         })
-        print("Índice animal' creado en ElasticSearch")
+        print("Índice animal creado en ElasticSearch")
+        return True
     else:
         print("Índice animals ya existe en ElasticSearch")
+        return True
 
 def insert_data_elastic(df):
     actions = []
@@ -414,6 +427,84 @@ def insert_data_elastic(df):
         print(f"Error insertando en ElasticSearch: {e}")
         return False
 
+#-------------------------------------ChromaDB-------------------------------------
+chroma_collection = None
+
+def init_chroma():
+    global chroma_collection
+    try:
+        client = chromadb.HttpClient(host=CHROMA_ENDPOINT)
+        embed_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name=CHROMA_EMBED_MODEL
+        )
+        chroma_collection = client.get_or_create_collection(
+            name=CHROMA_COLLECTION,
+            embedding_function=embed_fn,
+            metadata={"hnsw:space": "cosine"}
+        )
+        print(f"Colección Chroma lista: {CHROMA_COLLECTION}")
+        return True
+    except Exception as e:
+        print(f"Error inicializando Chroma: {e}")
+        return False
+
+def upsert_data_chroma(df, batch_size=100):
+    if chroma_collection is None:
+        print("Colección Chroma no inicializada")
+        return False
+    try:
+        # Prepara documentos y metadatos
+        ids, docs, metas = [], [], []
+        for i, row in df.iterrows():
+            doc = (
+                f"Animal: {row['Animal']}. Color: {row['Color']}. "
+                f"Dieta: {row['Diet']}. Familia: {row['Family']}. "
+                f"Hábitat: {row['Habitat']}. Predadores: {row['Predators']}. "
+                f"Altura(cm): {row['Height (cm)']}, Peso(kg): {row['Weight (kg)']}. "
+                f"Vida(años): {row['Lifespan (years)']}. "
+                f"Velocidad prom(km/h): {row['Average Speed (km/h)']}, "
+                f"Velocidad máx(km/h): {row['Top Speed (km/h)']}. "
+                f"Países: {row['Countries Found']}. Conservación: {row['Conservation Status']}. "
+                f"Estructura social: {row['Social Structure']}. "
+                f"Gestación(días): {row['Gestation Period (days)']}. "
+                f"Crias por parto: {row['Offspring per Birth']}."
+            )
+            meta = {
+                "name": row["Animal"],
+                "color": row["Color"],
+                "diet": row["Diet"],
+                "family": row["Family"],
+                "habitat": row["Habitat"],
+                "predators": row["Predators"],
+                "height_cm": str(row["Height (cm)"]),
+                "weight_kg": str(row["Weight (kg)"]),
+                "lifespan_years": str(row["Lifespan (years)"]),
+                "avg_speed_kmh": str(row["Average Speed (km/h)"]),
+                "top_speed_kmh": str(row["Top Speed (km/h)"]),
+                "countries_found": row["Countries Found"],
+                "conservation_status": row["Conservation Status"],
+                "social_structure": row["Social Structure"],
+                "gestation_days": str(row["Gestation Period (days)"]),
+                "offspring_per_birth": str(row["Offspring per Birth"])
+            }
+            ids.append(f"animal-{i}")
+            docs.append(doc)
+            metas.append(meta)
+
+            if len(ids) >= batch_size:
+                chroma_collection.upsert(ids=ids, documents=docs, metadatas=metas)
+                ids, docs, metas = [], [], []
+
+        if ids:
+            chroma_collection.upsert(ids=ids, documents=docs, metadatas=metas)
+
+        print("Documentos upsert en Chroma")
+        return True
+    except Exception as e:
+        print(f"Error insertando en Chroma: {e}")
+        return False
+
+
 if __name__ == "__main__":    
     try:
         # Crear base de datos MariaDB si no existe
@@ -430,13 +521,17 @@ if __name__ == "__main__":
         elif not create_index_elastic():
             print("No se pudo crear el índice en ElasticSearch")
             sys.exit(1)
+
+        elif not init_chroma():
+            print("No se pudo inicializar ChromaDB")
+            sys.exit(1)
         
         # Cargar dataset
         df = load_dataset()
         
         # Insertar datos
-        if insert_data_postgres(df) and insert_data_mariadb(df) and insert_data_elastic(df):
-            print("DataSeeder completado exitosamente en PostgreSQL, MariaDB y ElasticSearch")
+        if insert_data_postgres(df) and insert_data_mariadb(df) and insert_data_elastic(df) and upsert_data_chroma(df):
+            print("DataSeeder completado exitosamente en PostgreSQL, MariaDB, ElasticSearch y ChromaDB")
         else:
             print("Error insertando datos")
             sys.exit(1)
