@@ -15,7 +15,15 @@ cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['method', 'endpoint']
 cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['method', 'endpoint'])
 
 
-CHROMA_URL = os.getenv("CHROMA_URL", "http://databases-chromadb:8000")
+CROMA_MEMCACHED = "http://croma-memcached:5000"
+CROMA_REDIS     = "http://croma-redis:5000"
+ELASTICSEARCH_MEMCACHED = "http://elasticsearch-memcached:5000"
+ELASTICSEARCH_REDIS     = "http://elasticsearch-redis:5000"
+MARIADB_MEMCACHED = "http://mariadb-memcached:5000"
+MARIADB_REDIS     = "http://mariadb-redis:5000"
+POSTGRESQL_MEMCACHED = "http://mariadb-memcached:5000"
+POSTGRESQL_REDIS     = "http://mariadb-redis:5000"
+
 
 @app.route("/")
 def hello_world():
