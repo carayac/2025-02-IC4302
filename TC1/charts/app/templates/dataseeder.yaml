@@ -50,8 +50,8 @@ spec:
 
           - name: PROMETHEUSENDPOINT
             value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
-          - name: CHROMA_ENDPOINT
-            value: "http://databases-chromadb:8000"
+          #- name: CHROMA_ENDPOINT
+          #  value: "http://databases-chromadb:8000"
 
           - name: ELASTIC_USER
             value: "elastic"

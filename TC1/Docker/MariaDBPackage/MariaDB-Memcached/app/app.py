@@ -3,7 +3,8 @@ import mysql.connector
 from mysql.connector import pooling, connect
 from os import getenv
 import sys
-import os
+import os, json
+from pymemcache.client.base import Client
 
 # Load environment variables
 MARIADB = os.getenv("MARIADB")
@@ -12,6 +13,30 @@ MARIADB_PASS = os.getenv("MARIADB_PASS")
 MARIADB_DB = os.getenv("MARIADB_DB")
 
 app = Flask(__name__)
+
+#Variables para memcached
+MEMCACHED_HOST = os.getenv("MEMCACHED_HOST", "localhost")
+MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT", "11211"))
+CACHE_TTL_SECONDS = 60
+
+memcached = Client(("databases-memcached", 11211))
+
+
+def cache_get(key):
+    try:
+        raw = memcached.get(key)
+        if not raw:
+            return None
+        
+        return json.loads(raw.decode("utf-8"))
+    except Exception:
+        return None
+
+def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
+    try:
+        memcached.set(key, json.dumps(value), expire=ttl)
+    except Exception:
+        pass
 
 mariadb_pool = None
 
@@ -67,6 +92,15 @@ def release_connection(conn):
 # list animals 
 @app.route("/animales", methods=["GET"])
 def get_animales():
+
+    cache_key = "animales-nombre"
+
+    #Busca en caché
+    cached = cache_get(cache_key)
+    if cached is not None:
+            return jsonify({"source": "cache", "data": cached}) #Caché Hit
+
+    #En caso de caché miss, abre conexion con bd y consulta
     conn = get_connection()
     try:
         if conn is None:
@@ -75,7 +109,12 @@ def get_animales():
         try:
             cur.execute("SELECT id, nombre FROM animal LIMIT 50;")
             rows = cur.fetchall()
-            return jsonify([{"id": r[0], "nombre": r[1]} for r in rows])
+            animales = [{"id": r[0], "nombre": r[1]} for r in rows]
+
+            #Guarda en la caché despues de haber consultado BD
+            cache_set(cache_key, animales, CACHE_TTL_SECONDS)
+            return jsonify({"source": "db", "data": animales})
+            
         finally:
             cur.close()
     except Exception as e:
@@ -86,6 +125,15 @@ def get_animales():
 # list colors with animals 
 @app.route("/colores", methods=["GET"])
 def get_colores():
+
+    cache_key = "animales-colores"
+
+    #Busca en caché
+    cached = cache_get(cache_key)
+    if cached is not None:
+            return jsonify({"source": "cache", "data": cached}) #Caché Hit
+
+    #En caso de caché miss, abre conexion con bd y consulta
     conn = get_connection()
     try:
         if conn is None:
@@ -98,7 +146,12 @@ def get_colores():
                 GROUP BY a.color;
             """)
             rows = cur.fetchall()
-            return jsonify([{"animals": r[1], "color": r[0]} for r in rows])
+            colores = [{"animals": r[1], "color": r[0]} for r in rows]
+
+            #Guarda en la caché despues de haber consultado BD
+            cache_set(cache_key, colores, CACHE_TTL_SECONDS)
+            return jsonify({"source": "db", "data": colores})   # Devolver la lista de colores con sus animales
+
         finally:
             cur.close()
     except Exception as e:
