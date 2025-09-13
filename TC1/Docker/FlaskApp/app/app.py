@@ -6,40 +6,39 @@ app = Flask(__name__)
 
 # Creación de distintas métricas
 peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['bd', 'cache'])
-promedio_tiempo = Histogram('promedio_tiempo_constlta', 'Total Cache Hit', ['bd', 'cache'])
+promedio_tiempo = Histogram('promedio_tiempo_consulta', 'Tiempo promedio', ['bd', 'cache'])
 cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['bd', 'cache'])
 cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
 
-BD = ""
-CACHE = ""
 
+def configurar_metricas(bd_type, cache_type):
 #Promedio de latencia
 #Se inicia cronometro justo antes de la peticion para calcular latencia
-@app.before_request
-def configurar_metricas():
-    request.start_time = time.time()
-
-    #determinar bd y tipo cache
-    request.bd_type = BD 
-    request.cache_type = CACHE
+    @app.before_request
+    def iniciar_tiempo():
+        request.start_time = time.time()
+        request.bd_type = bd_type
+        request.cache_type = cache_type
 
 #Se calcula el tiempo justo despues de la peticion
 #luego se hace la suma de http
-@app.after_request
-def registrar_metricas(response):
-    tiempo = time.time() - request.start_time
-    
-    promedio_tiempo.labels(bd=request.bd_type, cache=request.cache_type).observe(tiempo)
-    peticiones_http.labels(bd=request.bd_type, cache=request.cache_type).inc()
-    
-    return response
+    @app.after_request
+    def peticiones_tiempo(response):
+        tiempo = time.time() - request.start_time
+        
+        promedio_tiempo.labels(bd=request.bd_type, cache=request.cache_type).observe(tiempo)
+        peticiones_http.labels(bd=request.bd_type, cache=request.cache_type).inc()
+        
+        return response
+
+    return app
 
 # Endpoint para métricas de Prometheus
 @app.route('/metrics')
 def metrics():
     return generate_latest(), 200, {'Content-Type': 'text/plain'}
 
-# Funcion para obtener las metricas
+# Obtener las metricas
 def get_metrics():
     return {
         'peticiones_http': peticiones_http,

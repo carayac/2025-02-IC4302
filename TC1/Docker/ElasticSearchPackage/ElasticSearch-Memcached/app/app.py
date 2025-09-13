@@ -5,6 +5,21 @@ import sys
 import os, json
 from pymemcache.client.base import Client
 
+#Metricas
+import sys
+sys.path.append('../../../FlaskApp/app') 
+from app import app, get_metrics, configurar_metricas 
+
+app = configurar_metricas(bd_type="elasticsearch", cache_type="memcached")  
+
+# Obtener las métricas
+metrics = get_metrics()
+peticiones_http = metrics['peticiones_http']
+promedio_tiempo = metrics['promedio_tiempo']
+cache_hit = metrics['cache_hit']
+cache_miss = metrics['cache_miss']
+
+
 app = Flask(__name__)
 
 
@@ -30,10 +45,13 @@ def cache_get(key):
     try:
         raw = memcached.get(key)
         if not raw:
+            cache_miss.labels(bd="elasticsearch", cache="memcached").inc() #Metrica de cache miss
             return None
         
+        cache_hit.labels(bd="elasticsearch", cache="memcached").inc() #Metrica de cache hit
         return json.loads(raw.decode("utf-8"))
     except Exception:
+        cache_miss.labels(bd="elasticsearch", cache="memcached").inc() #Metrica de cache miss
         return None
 
 def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
