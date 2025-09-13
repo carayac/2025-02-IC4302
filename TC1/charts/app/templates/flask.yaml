@@ -67,6 +67,11 @@ spec:
                   name: databases-postgresql
                   key: postgres-password
                   optional: false
+
+            - name: VESPA_ENDPOINT
+              value: "http://vespa:8081"
+            - name: VESPA_COLLECTION
+              value: "animales"
             
 ---
 apiVersion: v1
@@ -83,3 +88,4 @@ spec:
       targetPort: 5000
       nodePort: 30080
 {{ end }}
+

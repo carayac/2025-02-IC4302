@@ -73,10 +73,11 @@ spec:
           - name: CHROMA_EMBED_MODEL
             value: "sentence-transformers/all-MiniLM-L6-v2"
 
+
           - name: VESPA_ENDPOINT
-            value: "http://databases-vespa:8081"
+            value: "http://vespa:8081"
           - name: VESPA_COLLECTION
-            value: "animals"
+            value: "animales"
                 
 
 {{ end }}

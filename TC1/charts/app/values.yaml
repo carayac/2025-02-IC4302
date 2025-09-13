@@ -3,12 +3,12 @@ config:
         enabled: true
         name: flasktest
         replicas: 1
-        image: prosoli/chroma-memcached
+        image: darcecampos/vespa
 
     dataseeder: # Added configuration for DataSeeder
         enabled: true
         name: dataseeder
         replicas: 1
-        image: prosoli/dataseeder # To charge with data the database
+        image: darcecampos/dataseeder # To charge with data the database
 
 
