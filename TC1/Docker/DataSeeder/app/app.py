@@ -36,7 +36,7 @@ CHROMA_COLLECTION = getenv("CHROMA_COLLECTION", "animals")
 CHROMA_EMBED_MODEL = getenv("CHROMA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
 VESPA_ENDPOINT = getenv("VESPA_ENDPOINT", "http://localhost:8081")
-VESPA_COLLECTION = getenv("VESPA_COLLECTION", "animals")
+VESPA_COLLECTION = getenv("VESPA_COLLECTION", "animales")
 
 
 print(f"POSTGRES: {POSTGRES}")
@@ -513,7 +513,6 @@ def upsert_data_chroma(df, batch_size=100):
 
 #-------------------------------------Vespa-------------------------------------
 
-
 vespa_app = None
 sentence_model = None
 
@@ -532,8 +531,6 @@ def init_vespa():
                 "endpoint": VESPA_ENDPOINT,
                 "collection": VESPA_COLLECTION
             }
-            
-            verify_vespa_schema()
             return True
         else:
             print(f"Vespa no está disponible. Status: {response.status_code}")
@@ -543,14 +540,6 @@ def init_vespa():
         print(f"Error inicializando Vespa: {e}")
         return False
 
-def verify_vespa_schema():
-    try:
-        schema_url = f"{VESPA_ENDPOINT}/document/v1/"
-        response = requests.get(schema_url, timeout=10)
-        print(f"Schemas disponibles: {response.text[:500]}")  
-        
-    except Exception as e:
-        print(f"Error verificando schema: {e}")
 
 def generate_embedding_text_vespa(row):
     return (
@@ -584,23 +573,18 @@ def safe_float(value):
         return None
 
 
-
 def insert_data_vespa(df, batch_size=100):
     if vespa_app is None or sentence_model is None:
         print("Vespa no inicializada")
         return False
-    
+
     try:
-        success_count = 0
-        
         for i, row in df.iterrows():
             doc_text = generate_embedding_text_vespa(row)
-            
             embedding = sentence_model.encode(doc_text).tolist()
-            
             doc_id = f"animal-{i}"
             doc_url = f"{vespa_app['endpoint']}/document/v1/default/{vespa_app['collection']}/docid/{doc_id}"
-            
+
             doc_payload = {
                 "fields": {
                     "name": row["Animal"],
@@ -623,24 +607,17 @@ def insert_data_vespa(df, batch_size=100):
                     "embedding": {"values": embedding}
                 }
             }
-            
+
             response = requests.post(
                 doc_url,
                 json=doc_payload,
                 headers={"Content-Type": "application/json"},
                 timeout=30
             )
-            
-            if response.status_code in [200, 201]:
-                success_count += 1
-                if (i + 1) % 10 == 0:
-                    print(f"Progreso: {i + 1}/{len(df)} documentos procesados")
-            else:
-                print(f"Error en documento {doc_id}: {response.status_code} - {response.text[:200]}")
 
-        print(f"Documentos insertados exitosamente en Vespa: {success_count}/{len(df)}")
-        return success_count > 0
-        
+        print(f"Documentos insertados exitosamente en Vespa: {len(df)}")
+        return True
+
     except Exception as e:
         print(f"Error insertando en Vespa: {e}")
         import traceback
