@@ -1,5 +1,5 @@
 mariadb:
-  enabled: true
+  enabled: false
   auth: #Convertir en variables de entorno
     rootPassword: "root123"
     database: "ic4302_db"
@@ -30,7 +30,7 @@ elasticsearch:
 
 
 elastic:
-  enabled: true
+  enabled: false
   version: 8.6.1
   replicas: 1 #minimo 3 datanodes
   name: ic4302
@@ -63,7 +63,7 @@ redis:
 
 
 memcached:
-  enabled: false
+  enabled: true
   metrics:
     enabled: true
     serviceMonitor:
@@ -104,7 +104,7 @@ chromadb:
 
 
 vespa:
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: vespaengine/vespa
@@ -122,7 +122,7 @@ vespa:
         targetPort: 8081
   env:
     - name: VESPA_CONFIGSERVERS
-      value: "databases-vespa-0.databases-vespa.default.svc.cluster.local"
+      value: "vespa-0.vespa.{{ .Release.Namespace }}.svc.cluster.local"
   persistence:
     enabled: true
     size: 20Gi                 
