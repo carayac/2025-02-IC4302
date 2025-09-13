@@ -38,8 +38,34 @@ data:
   animales.sd: |-
     schema animales {
       document animales {
-        field id type string { indexing: summary | attribute }
-        field title type string { indexing: index | summary }
+        field name type string { indexing: summary | attribute }
+        field color type string { indexing: summary | attribute }
+        field diet type string { indexing: summary | attribute }
+        field family type string { indexing: summary | attribute }
+        field habitat type string { indexing: summary | attribute }
+        field predators type string { indexing: summary | attribute }
+        field height_cm type float { indexing: summary | attribute }
+        field weight_kg type float { indexing: summary | attribute }
+        field lifespan_years type float { indexing: summary | attribute }
+        field avg_speed_kmh type float { indexing: summary | attribute }
+        field top_speed_kmh type float { indexing: summary | attribute }
+        field countries_found type string { indexing: summary | attribute }
+        field conservation_status type string { indexing: summary | attribute }
+        field social_structure type string { indexing: summary | attribute }
+        field gestation_days type float { indexing: summary | attribute }
+        field offspring_per_birth type float { indexing: summary | attribute }
+        field description type string { indexing: summary | index }
+        field embedding type tensor<float>(x[384]) { 
+          indexing: summary | attribute 
+          attribute {
+            distance-metric: euclidean
+          }
+        }
       }
-      fieldset default { fields: title }
+      fieldset default { fields: name, description }
+      rank-profile default {
+        first-phase {
+          expression: closeness(field, embedding)
+        }
+      }
     }
