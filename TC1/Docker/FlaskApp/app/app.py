@@ -10,6 +10,9 @@ promedio_tiempo = Histogram('promedio_tiempo_constlta', 'Total Cache Hit', ['bd'
 cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['bd', 'cache'])
 cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
 
+BD = ""
+CACHE = ""
+
 #Promedio de latencia
 #Se inicia cronometro justo antes de la peticion para calcular latencia
 @app.before_request
@@ -36,3 +39,11 @@ def registrar_metricas(response):
 def metrics():
     return generate_latest(), 200, {'Content-Type': 'text/plain'}
 
+# Funcion para obtener las metricas
+def get_metrics():
+    return {
+        'peticiones_http': peticiones_http,
+        'promedio_tiempo': promedio_tiempo,
+        'cache_hit': cache_hit,
+        'cache_miss': cache_miss
+    }
