@@ -15,7 +15,10 @@ cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
 
 
 #Suma peticiones http
-
+@app.after_request
+def diferencia_tiempo(response):
+    peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['bd', 'cache']).inc()
+    return response
 
 
 #Promedio de latencia
@@ -27,6 +30,8 @@ def iniciar_cronometro():
 #Se calcula el tiempo justo despues de la peticion
 @app.after_request
 def diferencia_tiempo(response):
-    tiempo = time.time() - request.start_time
+    tiempo = time.time() - request.start_time #tiempo tardado
+    promedio_tiempo = Histogram('promedio_tiempo_constlta', 'Total Cache Hit', ['bd', 'cache']).observe(tiempo)
     return response
+
 
