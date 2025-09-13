@@ -9,11 +9,8 @@ docker login
 # Ir a la carpeta FlaskApp
 Set-Location FlaskApp
 
-# Construir la imagen
-docker build -t "$Username/flask-example" .
-
-# Subir la imagen
-docker push "$Username/flask-example"
+docker build -t "$Username/flask-metrics" .
+docker push "$Username/flask-metrics"
 
 #-------------------------INICIO DATASEEDER ----------------------------
 Set-Location ../DataSeeder
