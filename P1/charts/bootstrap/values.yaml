@@ -1,0 +1,10 @@
+config:
+  docker_registry: carayacn # docker registry replace with your own username
+  backend:
+    replicas: 1
+    name: backend
+    image: backend_ui_memcached # backend image name, you have to replace the image by backend_ui if you want to use the backend without memcached
+  frontend:
+    replicas: 1
+    name: frontend #this is the service name of frontend which represents the web application and the user interface
+    image: frontend

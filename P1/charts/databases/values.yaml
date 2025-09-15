@@ -1,0 +1,24 @@
+elastic:
+  enabled: true
+  version: 8.6.1
+  replicas: 1
+  name: ic4302
+kibana:
+  enabled: true
+  version: 8.6.1
+  replicas: 1
+  name: ic4302
+mariadb:
+  enabled: true
+rabbitmq:
+  enabled: true
+memcached:
+  enabled: true
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: "monitoring"
+
+  # Keep this line if you are using Mac OS
+  # platform: linux/arm64
