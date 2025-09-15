@@ -14,52 +14,43 @@ from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
 import requests
 
+#Variables de entorno, enable en el deployment.yaml
+POSTGRES_ENABLE = os.getenv("POSTGRES_ENABLE", "true").lower() == "true"
+MARIADB_ENABLE = os.getenv("MARIADB_ENABLE", "true").lower() == "true"
+ELASTICSEARCH_ENABLE = os.getenv("ELASTICSEARCH_ENABLE", "true").lower() == "true"
+VESPA_ENABLE = os.getenv("VESPA_ENABLE", "true").lower() == "true"
+CHROMADB_ENABLE = os.getenv("CHROMADB_ENABLE", "true").lower() == "true"
 
-# Variables de entorno
-POSTGRES = getenv("POSTGRES")
-POSTGRES_USER = getenv("POSTGRES_USER")
-POSTGRES_PASSWORD = getenv("POSTGRES_PASSWORD")
-POSTGRES_DB = getenv("POSTGRES_DB")
+if POSTGRES_ENABLE:
+    # Variables de entorno
+    POSTGRES = getenv("POSTGRES")
+    POSTGRES_USER = getenv("POSTGRES_USER")
+    POSTGRES_PASSWORD = getenv("POSTGRES_PASSWORD")
+    POSTGRES_DB = getenv("POSTGRES_DB")
 
-MARIADB = os.getenv("MARIADB")
-MARIADB_USER = os.getenv("MARIADB_USER")
-MARIADB_PASS = os.getenv("MARIADB_PASS")
-MARIADB_DB = os.getenv("MARIADB_DB")
+if MARIADB_ENABLE:
+    # Variables de entorno
+    MARIADB = getenv("MARIADB")
+    MARIADB_USER = getenv("MARIADB_USER")
+    MARIADB_PASS = getenv("MARIADB_PASS")
+    MARIADB_DB = getenv("MARIADB_DB")
 
-ELASTIC = getenv("ELASTIC")        
-ELASTIC_USER = getenv("ELASTIC_USER")
-ELASTIC_PASS = getenv("ELASTIC_PASS")
-ES_PORT = getenv("ES_PORT", "9200")
+if ELASTICSEARCH_ENABLE:
+    # Variables de entorno
+    ELASTIC = getenv("ELASTIC")        
+    ELASTIC_USER = getenv("ELASTIC_USER")
+    ELASTIC_PASS = getenv("ELASTIC_PASS")
+    ES_PORT = getenv("ES_PORT", "9200")
 
-CHROMA_ENDPOINT = getenv("CHROMA_ENDPOINT", "http://localhost:8000")
-CHROMA_COLLECTION = getenv("CHROMA_COLLECTION", "animals")
-CHROMA_EMBED_MODEL = getenv("CHROMA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+if CHROMADB_ENABLE:
+    CHROMA_ENDPOINT = getenv("CHROMA_ENDPOINT", "http://localhost:8000")
+    CHROMA_COLLECTION = getenv("CHROMA_COLLECTION", "animals")
+    CHROMA_EMBED_MODEL = getenv("CHROMA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
-VESPA_ENDPOINT = getenv("VESPA_ENDPOINT", "http://localhost:8081")
-VESPA_COLLECTION = getenv("VESPA_COLLECTION", "animales")
+if VESPA_ENABLE:
+    VESPA_ENDPOINT = getenv("VESPA_ENDPOINT", "http://localhost:8081")
+    VESPA_COLLECTION = getenv("VESPA_COLLECTION", "animales")
 
-
-print(f"POSTGRES: {POSTGRES}")
-print(f"POSTGRES_USER: {POSTGRES_USER}")
-print(f"POSTGRES_DB: {POSTGRES_DB}")
-print(f"POSTGRES_PASSWORD: {POSTGRES_PASSWORD}")
-
-print(f"MARIADB: {MARIADB}")
-print(f"MARIADB_USER: {MARIADB_USER}")
-print(f"MARIADB_DB: {MARIADB_DB}")
-print(f"MARIADB_PASS: {MARIADB_PASS}")
-
-print(f"ELASTIC: {ELASTIC}")
-print(f"ELASTIC_USER: {ELASTIC_USER}")
-print(f"ELASTIC_PASS: {ELASTIC_PASS}")
-print(f"ES_PORT: {ES_PORT}")
-
-print(f"CHROMA_ENDPOINT: {CHROMA_ENDPOINT}")
-print(f"CHROMA_COLLECTION: {CHROMA_COLLECTION}")
-print(f"CHROMA_EMBED_MODEL: {CHROMA_EMBED_MODEL}")
-
-print(f"VESPA_ENDPOINT: {VESPA_ENDPOINT}")
-print(f"VESPA_COLLECTION: {VESPA_COLLECTION}")
 
 def load_dataset():
     try:
@@ -75,20 +66,21 @@ def load_dataset():
         raise
 
 #---------------------------------------PostgreSQL-------------------------------------
-# Crear pool de conexiones PostgreSQL
-try:
-    pg_pool = psycopg2.pool.SimpleConnectionPool(
-        minconn=1,
-        maxconn=5,
-        host=POSTGRES,
-        user=POSTGRES_USER,
-        password=POSTGRES_PASSWORD,
-        database=POSTGRES_DB
-    )
-    print("Pool de conexiones PostgreSQL creado")
-except Exception as e:
-    print(f"Error creando pool PostgreSQL: {e}")
-    sys.exit(1)
+if POSTGRES_ENABLE:
+    # Crear pool de conexiones PostgreSQL
+    try:
+        pg_pool = psycopg2.pool.SimpleConnectionPool(
+            minconn=1,
+            maxconn=5,
+            host=POSTGRES,
+            user=POSTGRES_USER,
+            password=POSTGRES_PASSWORD,
+            database=POSTGRES_DB
+        )
+        print("Pool de conexiones PostgreSQL creado")
+    except Exception as e:
+        print(f"Error creando pool PostgreSQL: {e}")
+        sys.exit(1)
 
 def execute_postgress_from_file():    
     # Construir la ruta al archivo
@@ -627,39 +619,67 @@ def insert_data_vespa(df, batch_size=100):
 
 if __name__ == "__main__":    
     try:
-        # Crear base de datos MariaDB si no existe
-        conection_mariadb()
+        if MARIADB_ENABLE :
+            # Crear base de datos MariaDB si no existe
+            conection_mariadb()
         # Ejecutar schema 
-        if not execute_postgress_from_file():
-            print("No se pudieron crear las tablas en PostgreSQL")
-            sys.exit(1)
+        if POSTGRES_ENABLE:
+            if not execute_postgress_from_file():
+                print("No se pudieron crear las tablas en PostgreSQL")
+                sys.exit(1)
+        if MARIADB_ENABLE:
+            if not execute_MariaDB_from_file():
+                print("No se pudieron crear las tablas en MariaDB")
+                sys.exit(1)
+        if ELASTICSEARCH_ENABLE:
+            if not create_index_elastic():
+                print("No se pudo crear el índice en ElasticSearch")
+                sys.exit(1)
 
-        elif not execute_MariaDB_from_file():
-            print("No se pudieron crear las tablas en MariaDB")
-            sys.exit(1)
+        if CHROMADB_ENABLE:
+            if not init_chroma():
+                print("No se pudo inicializar ChromaDB")
+                sys.exit(1)
 
-        elif not create_index_elastic():
-            print("No se pudo crear el índice en ElasticSearch")
-            sys.exit(1)
-
-        elif not init_chroma():
-            print("No se pudo inicializar ChromaDB")
-            sys.exit(1)
-
-        elif not init_vespa():
-            print("No se pudo inicializar Vespa")
-            sys.exit(1)
+        if VESPA_ENABLE:
+            if not init_vespa():
+                print("No se pudo inicializar Vespa")
+                sys.exit(1)
         
         # Cargar dataset
         df = load_dataset()
         
         # Insertar datos
-        if (insert_data_postgres(df) and insert_data_mariadb(df) 
-        and insert_data_elastic(df) and upsert_data_chroma(df) and insert_data_vespa(df)):
-            print("DataSeeder completado exitosamente en todas las bases")
-        else:
-            print("Error insertando datos")
-            sys.exit(1)
+        if POSTGRES_ENABLE:
+            if not insert_data_postgres(df):
+                print("No se pudo cargar PostgreSQL")
+                sys.exit(1)
+        if MARIADB_ENABLE:
+            if not insert_data_mariadb(df):
+                print("No se pudo cargar MariaDB")
+                sys.exit(1)
+        if ELASTICSEARCH_ENABLE:
+            if not insert_data_elastic(df):
+                print("No se pudo cargar ElasticSearch")
+                sys.exit(1)
+
+        if CHROMADB_ENABLE:
+            if not upsert_data_chroma(df):
+                print("No se pudo cargar ChromaDB")
+                sys.exit(1)
+
+        if VESPA_ENABLE:
+            if not insert_data_vespa(df):
+                print("No se pudo cargar Vespa")
+                sys.exit(1)
+
+        print("DataSeeder completado exitosamente en todas las bases")
+        # if (insert_data_postgres(df) and insert_data_mariadb(df) 
+        # and insert_data_elastic(df) and upsert_data_chroma(df) and insert_data_vespa(df)):
+        #     print("DataSeeder completado exitosamente en todas las bases")
+        # else:
+        #     print("Error insertando datos")
+        #     sys.exit(1)
             
     except Exception as e:
         print(f"Error general: {e}")
