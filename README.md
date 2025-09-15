@@ -241,3 +241,9 @@ Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucio
 2. Gracias a la variedad de datos incluidos, fue posible simular escenarios realistas y robustos dentro del entorno de desarrollo.
 3. Implementar Memcached es realmente sencillo de implementar y permite que el tiempo de respuesta sea bastante reducido gracias al almacenamiento en memoria.
 4. La implementación de nuevas bases de datos permitió conocer diferentes maneras de poder acceder a ellas y de configurarlas implementando los requisitos que cada una de ellas solicitaban.  Todo estó permitió el fortalecimeinto de habilidades dentro de las personas del equipo con herramientas antes desconocidas.
+
+
+# Referencias
+https://pymemcache.readthedocs.io/en/latest/getting_started.html  
+https://github.com/vespa-engine/sample-apps/tree/master/examples/agentic-streamlit-chatbot/advanced_app/app  
+
