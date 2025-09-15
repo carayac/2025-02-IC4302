@@ -107,6 +107,27 @@ docker build -t "$Username/postgresql-redis" .
 docker push "$Username/postgresql-redis"
 #-------------------------FIN POSTGRESQL ----------------------------
 
+#-------------------------INICIO VESPA AI ----------------------------
+
+# Ir a la carpeta general VespaAIPackage
+Set-Location ../../VespaAIPackage
+
+# VespaAI
+Set-Location ./VespaAI
+docker build -t "$Username/vespaai" .
+docker push "$Username/vespaai"
+
+# VespaAI-Memcached
+Set-Location ../VespaAI-Memcached
+docker build -t "$Username/vespaai-memcached" .
+docker push "$Username/vespaai-memcached"
+
+# VespaAI-Redis
+Set-Location ../VespaAI-Redis
+docker build -t "$Username/vespaai-redis" .
+docker push "$Username/vespaai-redis"
+
+#-------------------------FIN VESPA AI ----------------------------
 
 # Volver a la carpeta inicial
 Set-Location ../..

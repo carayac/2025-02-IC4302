@@ -9,40 +9,48 @@ import sys
 import mysql.connector
 from mysql.connector import pooling
 from elasticsearch import Elasticsearch, helpers
+import chromadb
+from chromadb.utils import embedding_functions
+from sentence_transformers import SentenceTransformer
+import requests
 
+#Variables de entorno, enable en el deployment.yaml
+POSTGRES_ENABLE = os.getenv("POSTGRES_ENABLE", "true").lower() == "true"
+MARIADB_ENABLE = os.getenv("MARIADB_ENABLE", "true").lower() == "true"
+ELASTICSEARCH_ENABLE = os.getenv("ELASTICSEARCH_ENABLE", "true").lower() == "true"
+VESPA_ENABLE = os.getenv("VESPA_ENABLE", "true").lower() == "true"
+CHROMADB_ENABLE = os.getenv("CHROMADB_ENABLE", "true").lower() == "true"
 
-# Variables de entorno
-POSTGRES = getenv("POSTGRES")
-POSTGRES_USER = getenv("POSTGRES_USER")
-POSTGRES_PASSWORD = getenv("POSTGRES_PASSWORD")
-POSTGRES_DB = getenv("POSTGRES_DB")
+if POSTGRES_ENABLE:
+    # Variables de entorno
+    POSTGRES = getenv("POSTGRES")
+    POSTGRES_USER = getenv("POSTGRES_USER")
+    POSTGRES_PASSWORD = getenv("POSTGRES_PASSWORD")
+    POSTGRES_DB = getenv("POSTGRES_DB")
 
-MARIADB = os.getenv("MARIADB")
-MARIADB_USER = os.getenv("MARIADB_USER")
-MARIADB_PASS = os.getenv("MARIADB_PASS")
-MARIADB_DB = os.getenv("MARIADB_DB")
+if MARIADB_ENABLE:
+    # Variables de entorno
+    MARIADB = getenv("MARIADB")
+    MARIADB_USER = getenv("MARIADB_USER")
+    MARIADB_PASS = getenv("MARIADB_PASS")
+    MARIADB_DB = getenv("MARIADB_DB")
 
-ELASTIC = getenv("ELASTIC")        
-ELASTIC_USER = getenv("ELASTIC_USER")
-ELASTIC_PASS = getenv("ELASTIC_PASS")
-ES_PORT = getenv("ES_PORT", "9200")
+if ELASTICSEARCH_ENABLE:
+    # Variables de entorno
+    ELASTIC = getenv("ELASTIC")        
+    ELASTIC_USER = getenv("ELASTIC_USER")
+    ELASTIC_PASS = getenv("ELASTIC_PASS")
+    ES_PORT = getenv("ES_PORT", "9200")
 
+if CHROMADB_ENABLE:
+    CHROMA_ENDPOINT = getenv("CHROMA_ENDPOINT", "http://localhost:8000")
+    CHROMA_COLLECTION = getenv("CHROMA_COLLECTION", "animals")
+    CHROMA_EMBED_MODEL = getenv("CHROMA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
+if VESPA_ENABLE:
+    VESPA_ENDPOINT = getenv("VESPA_ENDPOINT", "http://localhost:8081")
+    VESPA_COLLECTION = getenv("VESPA_COLLECTION", "animales")
 
-print(f"POSTGRES: {POSTGRES}")
-print(f"POSTGRES_USER: {POSTGRES_USER}")
-print(f"POSTGRES_DB: {POSTGRES_DB}")
-print(f"POSTGRES_PASSWORD: {POSTGRES_PASSWORD}")
-
-print(f"MARIADB: {MARIADB}")
-print(f"MARIADB_USER: {MARIADB_USER}")
-print(f"MARIADB_DB: {MARIADB_DB}")
-print(f"MARIADB_PASS: {MARIADB_PASS}")
-
-print(f"ELASTIC: {ELASTIC}")
-print(f"ELASTIC_USER: {ELASTIC_USER}")
-print(f"ELASTIC_PASS: {ELASTIC_PASS}")
-print(f"ES_PORT: {ES_PORT}")
 
 def load_dataset():
     try:
@@ -57,20 +65,22 @@ def load_dataset():
         print(f"Error cargando dataset: {e}")
         raise
 
-# Crear pool de conexiones PostgreSQL
-try:
-    pg_pool = psycopg2.pool.SimpleConnectionPool(
-        minconn=1,
-        maxconn=5,
-        host=POSTGRES,
-        user=POSTGRES_USER,
-        password=POSTGRES_PASSWORD,
-        database=POSTGRES_DB
-    )
-    print("Pool de conexiones PostgreSQL creado")
-except Exception as e:
-    print(f"Error creando pool PostgreSQL: {e}")
-    sys.exit(1)
+#---------------------------------------PostgreSQL-------------------------------------
+if POSTGRES_ENABLE:
+    # Crear pool de conexiones PostgreSQL
+    try:
+        pg_pool = psycopg2.pool.SimpleConnectionPool(
+            minconn=1,
+            maxconn=5,
+            host=POSTGRES,
+            user=POSTGRES_USER,
+            password=POSTGRES_PASSWORD,
+            database=POSTGRES_DB
+        )
+        print("Pool de conexiones PostgreSQL creado")
+    except Exception as e:
+        print(f"Error creando pool PostgreSQL: {e}")
+        sys.exit(1)
 
 def execute_postgress_from_file():    
     # Construir la ruta al archivo
@@ -416,32 +426,260 @@ def insert_data_elastic(df):
         print(f"Error insertando en ElasticSearch: {e}")
         return False
 
+#-------------------------------------ChromaDB-------------------------------------
+chroma_collection = None
+
+def init_chroma():
+    global chroma_collection
+    try:
+        client = chromadb.HttpClient(host=CHROMA_ENDPOINT)
+        embed_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name=CHROMA_EMBED_MODEL
+        )
+        chroma_collection = client.get_or_create_collection(
+            name=CHROMA_COLLECTION,
+            embedding_function=embed_fn,
+            metadata={"hnsw:space": "cosine"}
+        )
+        print(f"Colección Chroma lista: {CHROMA_COLLECTION}")
+        return True
+    except Exception as e:
+        print(f"Error inicializando Chroma: {e}")
+        return False
+
+def upsert_data_chroma(df, batch_size=100):
+    if chroma_collection is None:
+        print("Colección Chroma no inicializada")
+        return False
+    try:
+        # Prepara documentos y metadatos
+        ids, docs, metas = [], [], []
+        for i, row in df.iterrows():
+            doc = (
+                f"Animal: {row['Animal']}. Color: {row['Color']}. "
+                f"Dieta: {row['Diet']}. Familia: {row['Family']}. "
+                f"Hábitat: {row['Habitat']}. Predadores: {row['Predators']}. "
+                f"Altura(cm): {row['Height (cm)']}, Peso(kg): {row['Weight (kg)']}. "
+                f"Vida(años): {row['Lifespan (years)']}. "
+                f"Velocidad prom(km/h): {row['Average Speed (km/h)']}, "
+                f"Velocidad máx(km/h): {row['Top Speed (km/h)']}. "
+                f"Países: {row['Countries Found']}. Conservación: {row['Conservation Status']}. "
+                f"Estructura social: {row['Social Structure']}. "
+                f"Gestación(días): {row['Gestation Period (days)']}. "
+                f"Crias por parto: {row['Offspring per Birth']}."
+            )
+            meta = {
+                "name": row["Animal"],
+                "color": row["Color"],
+                "diet": row["Diet"],
+                "family": row["Family"],
+                "habitat": row["Habitat"],
+                "predators": row["Predators"],
+                "height_cm": str(row["Height (cm)"]),
+                "weight_kg": str(row["Weight (kg)"]),
+                "lifespan_years": str(row["Lifespan (years)"]),
+                "avg_speed_kmh": str(row["Average Speed (km/h)"]),
+                "top_speed_kmh": str(row["Top Speed (km/h)"]),
+                "countries_found": row["Countries Found"],
+                "conservation_status": row["Conservation Status"],
+                "social_structure": row["Social Structure"],
+                "gestation_days": str(row["Gestation Period (days)"]),
+                "offspring_per_birth": str(row["Offspring per Birth"])
+            }
+            ids.append(f"animal-{i}")
+            docs.append(doc)
+            metas.append(meta)
+
+            if len(ids) >= batch_size:
+                chroma_collection.upsert(ids=ids, documents=docs, metadatas=metas)
+                ids, docs, metas = [], [], []
+
+        if ids:
+            chroma_collection.upsert(ids=ids, documents=docs, metadatas=metas)
+
+        print("Documentos upsert en Chroma")
+        return True
+    except Exception as e:
+        print(f"Error insertando en Chroma: {e}")
+        return False
+
+#-------------------------------------Vespa-------------------------------------
+
+vespa_app = None
+sentence_model = None
+
+def init_vespa():
+    global vespa_app, sentence_model
+    try:
+        sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
+        print("Modelo sentence-transformers cargado para Vespa")
+        
+        health_url = f"{VESPA_ENDPOINT}/ApplicationStatus"
+        response = requests.get(health_url, timeout=10)
+        
+        if response.status_code == 200:
+            print(f"Vespa está disponible en: {VESPA_ENDPOINT}")
+            vespa_app = {
+                "endpoint": VESPA_ENDPOINT,
+                "collection": VESPA_COLLECTION
+            }
+            return True
+        else:
+            print(f"Vespa no está disponible. Status: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"Error inicializando Vespa: {e}")
+        return False
+
+
+def generate_embedding_text_vespa(row):
+    return (
+        f"Animal: {row['Animal']}. Color: {row['Color']}. "
+        f"Dieta: {row['Diet']}. Familia: {row['Family']}. "
+        f"Hábitat: {row['Habitat']}. Predadores: {row['Predators']}. "
+        f"Altura(cm): {row['Height (cm)']}, Peso(kg): {row['Weight (kg)']}. "
+        f"Vida(años): {row['Lifespan (years)']}. "
+        f"Velocidad prom(km/h): {row['Average Speed (km/h)']}, "
+        f"Velocidad máx(km/h): {row['Top Speed (km/h)']}. "
+        f"Países: {row['Countries Found']}. Conservación: {row['Conservation Status']}. "
+        f"Estructura social: {row['Social Structure']}. "
+        f"Gestación(días): {row['Gestation Period (days)']}. "
+        f"Crias por parto: {row['Offspring per Birth']}."
+    )
+
+def safe_float(value):
+    try:
+        if isinstance(value, str):
+            if '-' in value:
+                parts = value.split('-')
+                nums = [float(p) for p in parts if p.replace('.', '', 1).isdigit()]
+                if len(nums) == 2:
+                    return sum(nums) / 2
+                else:
+                    return None
+            if value.replace('.', '', 1).isdigit():
+                return float(value)
+        return float(value)
+    except Exception:
+        return None
+
+
+def insert_data_vespa(df, batch_size=100):
+    if vespa_app is None or sentence_model is None:
+        print("Vespa no inicializada")
+        return False
+
+    try:
+        for i, row in df.iterrows():
+            doc_text = generate_embedding_text_vespa(row)
+            embedding = sentence_model.encode(doc_text).tolist()
+            doc_id = f"animal-{i}"
+            doc_url = f"{vespa_app['endpoint']}/document/v1/default/{vespa_app['collection']}/docid/{doc_id}"
+
+            doc_payload = {
+                "fields": {
+                    "name": row["Animal"],
+                    "color": row["Color"],
+                    "diet": row["Diet"],
+                    "family": row["Family"],
+                    "habitat": row["Habitat"],
+                    "predators": row["Predators"],
+                    "height_cm": safe_float(row["Height (cm)"]) or 0.0,
+                    "weight_kg": safe_float(row["Weight (kg)"]) or 0.0,
+                    "lifespan_years": safe_float(row["Lifespan (years)"]) or 0.0,
+                    "avg_speed_kmh": safe_float(row["Average Speed (km/h)"]) or 0.0,
+                    "top_speed_kmh": safe_float(row["Top Speed (km/h)"]) or 0.0,
+                    "countries_found": row["Countries Found"],
+                    "conservation_status": row["Conservation Status"],
+                    "social_structure": row["Social Structure"],
+                    "gestation_days": safe_float(row["Gestation Period (days)"]) or 0.0,
+                    "offspring_per_birth": safe_float(row["Offspring per Birth"]) or 0.0,
+                    "description": doc_text,
+                    "embedding": {"values": embedding}
+                }
+            }
+
+            response = requests.post(
+                doc_url,
+                json=doc_payload,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+
+        print(f"Documentos insertados exitosamente en Vespa: {len(df)}")
+        return True
+
+    except Exception as e:
+        print(f"Error insertando en Vespa: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+    
+
 if __name__ == "__main__":    
     try:
-        # Crear base de datos MariaDB si no existe
-        conection_mariadb()
+        if MARIADB_ENABLE :
+            # Crear base de datos MariaDB si no existe
+            conection_mariadb()
         # Ejecutar schema 
-        if not execute_postgress_from_file():
-            print("No se pudieron crear las tablas en PostgreSQL")
-            sys.exit(1)
+        if POSTGRES_ENABLE:
+            if not execute_postgress_from_file():
+                print("No se pudieron crear las tablas en PostgreSQL")
+                sys.exit(1)
+        if MARIADB_ENABLE:
+            if not execute_MariaDB_from_file():
+                print("No se pudieron crear las tablas en MariaDB")
+                sys.exit(1)
+        if ELASTICSEARCH_ENABLE:
+            if not create_index_elastic():
+                print("No se pudo crear el índice en ElasticSearch")
+                sys.exit(1)
 
-        elif not execute_MariaDB_from_file():
-            print("No se pudieron crear las tablas en MariaDB")
-            sys.exit(1)
+        if CHROMADB_ENABLE:
+            if not init_chroma():
+                print("No se pudo inicializar ChromaDB")
+                sys.exit(1)
 
-        elif not create_index_elastic():
-            print("No se pudo crear el índice en ElasticSearch")
-            sys.exit(1)
+        if VESPA_ENABLE:
+            if not init_vespa():
+                print("No se pudo inicializar Vespa")
+                sys.exit(1)
         
         # Cargar dataset
         df = load_dataset()
         
         # Insertar datos
-        if insert_data_postgres(df) and insert_data_mariadb(df) and insert_data_elastic(df):
-            print("DataSeeder completado exitosamente en PostgreSQL, MariaDB y ElasticSearch")
-        else:
-            print("Error insertando datos")
-            sys.exit(1)
+        if POSTGRES_ENABLE:
+            if not insert_data_postgres(df):
+                print("No se pudo cargar PostgreSQL")
+                sys.exit(1)
+        if MARIADB_ENABLE:
+            if not insert_data_mariadb(df):
+                print("No se pudo cargar MariaDB")
+                sys.exit(1)
+        if ELASTICSEARCH_ENABLE:
+            if not insert_data_elastic(df):
+                print("No se pudo cargar ElasticSearch")
+                sys.exit(1)
+
+        if CHROMADB_ENABLE:
+            if not upsert_data_chroma(df):
+                print("No se pudo cargar ChromaDB")
+                sys.exit(1)
+
+        if VESPA_ENABLE:
+            if not insert_data_vespa(df):
+                print("No se pudo cargar Vespa")
+                sys.exit(1)
+
+        print("DataSeeder completado exitosamente en todas las bases")
+        # if (insert_data_postgres(df) and insert_data_mariadb(df) 
+        # and insert_data_elastic(df) and upsert_data_chroma(df) and insert_data_vespa(df)):
+        #     print("DataSeeder completado exitosamente en todas las bases")
+        # else:
+        #     print("Error insertando datos")
+        #     sys.exit(1)
             
     except Exception as e:
         print(f"Error general: {e}")
