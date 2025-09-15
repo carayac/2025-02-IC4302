@@ -4,6 +4,76 @@
 **Semestre:** Segundo Semestre 2025  
 **Institución:** Tecnológico de Costa Rica – Escuela de Ingeniería en Computación  
 
+
+# Instrucciones de Ejecución
+  
+<details>
+  <summary>Desplegar información</summary>  
+  
+### 4.1 Requisitos Previos
+- Cuenta en Docker Hub
+- Docker y Docker Compose  
+- Kubernetes (Minikube o Docker Desktop)  
+- Helm Charts instalados  
+- Git
+- Lens
+
+### 4.2 Instalación de Componentes  
+
+
+#### 1. Descargue el repositorio de la tarea corta en su computadora 
+  
+   ```bash
+   git clone <URL_REPO>
+   ```
+
+Después ingrese a la carpeta del repositorio por medio de la terminal bash:  
+
+   ```
+cd 2025-02-IC4302
+   ```
+  
+#### 2. Construya la imagenes de docker
+Para poder realizar la construcción de las imágenes Docker. debe ingresar a la carpeta **docker** desde una terminal Bash y ejecutar el siguiente comando: 
+
+ ```
+./build.sh usuario 
+ ```  
+  
+> NOTA: 
+> Sustituya la palabra ususario con su usario de Docker Hub
+
+#### 3. Configure el registro de  las imágenes para el chart
+En su proyecto, ingrese a la carpeta de charts **-->** app **-->** templates **-->** values.yaml y reemplace el la imagen por su usuario correspondiente en docker hub, además reemplace el nombre de la imagen que desee probar segun las imagenes especificadas en la seccion *Imagenes Disponibles*:  
+  
+ ```
+config:
+  image: usuario/imagen
+
+config:
+  usuario/dataseeder
+ ```
+
+#### 4. Instale el Helm Chart del proyecto  
+
+En su proyecto, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./install.sh
+ ```
+
+#### 5. Desinstalación del Helm Chart del proyecto
+
+En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./uninstall.sh
+ ```
+> NOTA: 
+> Si no necesita la instalación, ignore este paso
+
+</details>
+
 # Configuracion de las herramientas
 
 # Maria DB
