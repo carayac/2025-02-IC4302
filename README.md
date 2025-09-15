@@ -77,12 +77,60 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 # Configuracion de las herramientas
 
 # Maria DB
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
 # PostgreSQL
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+
 # Elasticsearch
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+
 # Redis y Memcached
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+
 # Prometheus y Grafana
 
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+
 # API Flask
+
+<details>
+  <summary>Desplegar información</summary>  
+
+
 El presente componente representa los endpoints que permiten hacer pruebas de consultas a las diferentes bases de datos a las cuales se les aplica obsevabilidad.
 ## Documentación de Imágenes y Configuración en `values.yaml`
 
@@ -292,9 +340,18 @@ Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucio
         vespaEnable: false
         chromaDBEnable: false
 ```
+</details>
+
 
 ---
 # Pruebas de cargas
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
 
 
 # Recomendaciones
@@ -314,4 +371,9 @@ Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucio
 # Referencias
 https://pymemcache.readthedocs.io/en/latest/getting_started.html  
 https://github.com/vespa-engine/sample-apps/tree/master/examples/agentic-streamlit-chatbot/advanced_app/app  
-
+https://docs.trychroma.com/
+https://www.elastic.co/docs/reference/elasticsearch/clients/python
+https://www.postgresql.org/docs/current/
+https://flask.palletsprojects.com/en/stable/
+https://helm.sh/docs/
+https://docs.docker.com/reference/cli/docker/image/
