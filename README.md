@@ -1,13 +1,175 @@
-# Documentación de Imágenes y Configuración en `values.yaml`
+# IC4302 - Tarea Corta: Observability
+
+**Curso:** Bases de Datos II (IC4302)  
+**Semestre:** Segundo Semestre 2025  
+**Institución:** Tecnológico de Costa Rica – Escuela de Ingeniería en Computación  
+
+
+# Instrucciones de Ejecución
+  
+<details>
+  <summary>Desplegar información</summary>  
+  
+### 4.1 Requisitos Previos
+- Cuenta en Docker Hub
+- Docker y Docker Compose  
+- Kubernetes (Minikube o Docker Desktop)  
+- Helm Charts instalados  
+- Git
+- Lens
+
+### 4.2 Instalación de Componentes  
+
+
+#### 1. Descargue el repositorio de la tarea corta en su computadora 
+  
+   ```bash
+   git clone <URL_REPO>
+   ```
+
+Después ingrese a la carpeta del repositorio por medio de la terminal bash:  
+
+   ```
+cd 2025-02-IC4302
+   ```
+  
+#### 2. Construya la imagenes de docker
+Para poder realizar la construcción de las imágenes Docker. debe ingresar a la carpeta **docker** desde una terminal Bash y ejecutar el siguiente comando: 
+
+ ```
+./build.sh usuario 
+ ```  
+  
+> NOTA: 
+> Sustituya la palabra ususario con su usario de Docker Hub
+
+#### 3. Configure el registro de  las imágenes para el chart
+En su proyecto, ingrese a la carpeta de charts **-->** app **-->** templates **-->** values.yaml y reemplace el la imagen por su usuario correspondiente en docker hub, además reemplace el nombre de la imagen que desee probar segun las imagenes especificadas en la seccion *Imagenes Disponibles*:  
+  
+ ```
+config:
+  image: usuario/imagen
+
+config:
+  usuario/dataseeder
+ ```
+
+#### 3.2 Configure la carga y uso de las bases de datos
+
+En caso de desear la ejecucion de solamente una base en especifico, ingrese a charts **-->** databases **-->** values.yaml en la cual usted podra modificar los campos enbale true = ejecutar base de datos, false = no ejecutar la base de datos.
+```yaml
+  elastic:
+    enabled: false #Coloque segun su prefertencia
+    version: 8.6.1
+    replicas: 1 #minimo 3 datanodes
+    name: ic4302
+```
+##### Configuracion de la carga de datos
+
+Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucion se establece un mecanismo similar al anterior en el cual dentro de charts **-->** app **-->** `values.yaml` podra colocar en `true` las bbases que se desear cargar. 
+
+> [!IMPORTANT]  
+> La duracion de construccion de la imagen dataseeder puede tardar unos minutos.
+
+```yaml
+    dataseeder: # Added configuration for DataSeeder
+        enabled: true
+        name: dataseeder
+        replicas: 1
+        image: darcecampos/dataseeder # To charge with data the database
+        postgresEnable: true
+        mariaDBEnable: false
+        elasticSearchEnable: false
+        vespaEnable: false
+        chromaDBEnable: false
+```
+
+#### 4. Instale el Helm Chart del proyecto  
+
+En su proyecto, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./install.sh
+ ```
+
+#### 5. Desinstalación del Helm Chart del proyecto
+
+En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./uninstall.sh
+ ```
+> NOTA: 
+> Si no necesita la instalación, ignore este paso
+
+</details>
+
+# Configuracion de las herramientas
+
+# Maria DB
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+# PostgreSQL
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+
+# Elasticsearch
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+
+# Redis y Memcached
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+
+# Prometheus y Grafana
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
+
+# API Flask
+
+<details>
+  <summary>Desplegar información</summary>  
+
+
+El presente componente representa los endpoints que permiten hacer pruebas de consultas a las diferentes bases de datos a las cuales se les aplica obsevabilidad.
+## Documentación de Imágenes y Configuración en `values.yaml`
 
 Este proyecto soporta diferentes imágenes de base de datos y variantes con Memcached o Redis como mecanismos de cache.  
 El cambio de imagen se realiza modificando el archivo `values.yaml` en la sección correspondiente al despliegue de la API.
 
 ---
 
-## Imágenes Disponibles
-
-## Imágenes Disponibles
+### Imágenes Disponibles
 
 | Servicio       | Imagen Base         | Memcached           | Redis             |
 |----------------|------------------|-------------------|-----------------|
@@ -15,9 +177,10 @@ El cambio de imagen se realiza modificando el archivo `values.yaml` en la secci�
 | **Elasticsearch** | usuario/elasticsearch | usuario/elasticsearch-memcached | usuario/elasticsearch-redis |
 | **MariaDB**     | usuario/mariadb    | usuario/mariadb-memcached | usuario/mariadb-redis |
 | **PostgreSQL**  | usuario/postgresql | usuario/postgresql-memcached | usuario/postgresql-redis |
+| **Vespa.ai**  | usuario/vespa | usuario/vespa-memcached | usuario/vespa-redis |
 
 
-> **Nota:** Reemplaza `usuario` por tu nombre de usuario en DockerHub (ejemplo: `mydockeruser/mariadb`).
+> **Nota:** Reemplace `usuario` por tu nombre de usuario en DockerHub (ejemplo: `mydockeruser/mariadb`).
 
 ---
 
@@ -55,16 +218,16 @@ Fuente original: [Animal Information Dataset - Kaggle](https://www.kaggle.com/da
 
 ---
 
-## 1. Descripción General
+## Descripción General
 
 El dataset reúne un conjunto de características asociadas a distintos animales, como su altura, peso, dieta, hábitat, depredadores, estado de conservación, entre otros.  
-Este recurso fue empleado como **dataset de prueba** para validar funcionalidades en el proyecto, ya que contiene datos variados que permiten realizar consultas, análisis y visualizaciones desde distintos enfoques.
+Este recurso fue empleado como dataset de prueba para validar funcionalidades en el proyecto, ya que contiene datos variados que permiten realizar consultas, análisis y visualizaciones desde distintos enfoques.
 
 ---
 
 ## Estructura del Dataset
 
-El dataset está compuesto por diversas columnas (atributos) que describen a cada animal. A continuación se detalla el **glosario columna por columna**:
+El dataset está compuesto por diversas columnas (atributos) que describen a cada animal. A continuación se detalla el glosario columna por columna:
 
 | Columna                  | Descripción                                                                 |
 |---------------------------|-----------------------------------------------------------------------------|
@@ -94,136 +257,7 @@ La implementación sigue un modelo relacional normalizado, con separación de en
 
 ---
 
-## Tablas Principales
-
-### Tabla `animal`
-Contiene los datos básicos de cada animal.
-
-| Columna                | Tipo  | Descripción |
-|-------------------------|-------|-------------|
-| `id`                   | INT (PK, AI) | Identificador único del animal. |
-| `nombre`               | TEXT  | Nombre del animal. |
-| `altura_cm`            | TEXT  | Altura del animal en centímetros (puede ser rango). |
-| `peso_kg`              | TEXT  | Peso del animal en kilogramos (puede ser rango). |
-| `color`                | TEXT  | Colores característicos. |
-| `esperanza_vida_años`  | TEXT  | Promedio de vida en años. |
-| `dieta_id`             | INT (FK) | Referencia a la tabla `dieta`. |
-| `familia_id`           | INT (FK) | Referencia a la tabla `familia`. |
-
----
-
-### Tabla `dieta`
-Define los diferentes tipos de dietas (Carnívoro, Herbívoro, Omnívoro, etc.).
-
-| Columna      | Tipo  | Descripción |
-|--------------|-------|-------------|
-| `id`         | INT (PK, AI) | Identificador único. |
-| `tipo_dieta` | TEXT (UNIQUE) | Tipo de dieta. |
-
----
-
-### Tabla `familia`
-Almacena la clasificación taxonómica a nivel de familia.
-
-| Columna         | Tipo  | Descripción |
-|-----------------|-------|-------------|
-| `id`            | INT (PK, AI) | Identificador único. |
-| `nombre_familia`| TEXT (UNIQUE) | Nombre de la familia taxonómica. |
-
----
-
-### Tabla `habitat`
-Define los diferentes hábitats donde los animales pueden encontrarse.
-
-| Columna          | Tipo  | Descripción |
-|------------------|-------|-------------|
-| `id`             | INT (PK, AI) | Identificador único. |
-| `nombre_habitat` | TEXT (UNIQUE) | Nombre del hábitat. |
-
-Relación con `animal`: muchos a muchos, gestionado mediante la tabla `animal_habitat`.
-
----
-
-### Tabla `predador`
-Lista de depredadores que pueden tener los animales.
-
-| Columna            | Tipo  | Descripción |
-|--------------------|-------|-------------|
-| `id`               | INT (PK, AI) | Identificador único. |
-| `nombre_predador`  | TEXT (UNIQUE) | Nombre del depredador. |
-
-Relación con `animal`: muchos a muchos, gestionado mediante la tabla `animal_predador`.
-
----
-
-##  Tablas Relacionales (Muchos a Muchos)
-
-### Tabla `animal_habitat`
-Asocia a cada animal con uno o más hábitats.
-
-| Columna      | Tipo | Descripción |
-|--------------|------|-------------|
-| `animal_id`  | INT (FK) | Referencia a `animal`. |
-| `habitat_id` | INT (FK) | Referencia a `habitat`. |
-
-Clave primaria compuesta: `(animal_id, habitat_id)`  
-Incluye `ON DELETE CASCADE` para mantener integridad referencial.
-
----
-
-### Tabla `animal_predador`
-Relaciona a los animales con sus depredadores.
-
-| Columna       | Tipo | Descripción |
-|---------------|------|-------------|
-| `animal_id`   | INT (FK) | Referencia a `animal`. |
-| `predador_id` | INT (FK) | Referencia a `predador`. |
-
-Clave primaria compuesta: `(animal_id, predador_id)`  
-Incluye `ON DELETE CASCADE`.
-
----
-
-## Tabla de Información Adicional
-
-### Tabla `info_extra`
-Guarda atributos complementarios de cada animal.
-
-| Columna              | Tipo  | Descripción |
-|-----------------------|-------|-------------|
-| `animal_id`           | INT (PK, FK) | Referencia a `animal`. |
-| `velocidad_prom_kmh`  | TEXT  | Velocidad promedio (km/h). |
-| `velocidad_max_kmh`   | TEXT  | Velocidad máxima (km/h). |
-| `paises_encontrado`   | TEXT  | Países/regiones donde se encuentra. |
-| `estado_conservacion` | TEXT  | Estado de conservación (ejemplo: En peligro). |
-| `gestacion_dias`      | TEXT  | Período de gestación en días. |
-| `estructura_social`   | TEXT  | Tipo de estructura social (ejemplo: solitario, grupo). |
-| `crias_por_parto`     | TEXT  | Número de crías típicas por parto. |
-
----
-
-## Índices
-
-Para optimizar las consultas, se crean índices en claves foráneas y relaciones:
-
-- `idx_animal_dieta` → sobre `animal(dieta_id)`  
-- `idx_animal_familia` → sobre `animal(familia_id)`  
-- `idx_animal_habitat_animal` → sobre `animal_habitat(animal_id)`  
-- `idx_animal_habitat_habitat` → sobre `animal_habitat(habitat_id)`  
-- `idx_animal_predador_animal` → sobre `animal_predador(animal_id)`  
-- `idx_animal_predador_predador` → sobre `animal_predador(predador_id)`  
-
----
-
-## Modelo Relacional (Resumen)
-
-- Un animal pertenece a una dieta y una familia.  
-- Un animal puede habitar en uno o varios hábitats.  
-- Un animal puede tener uno o varios depredadores.  
-- Un animal tiene información adicional única en `info_extra`.  
-
----
-
+![alt text](DiagramaSQL.jpg)
 
 ---
 
@@ -315,14 +349,45 @@ GET http://localhost:30080/colores
 | /animales       | GET    | Lista los primeros 50 animales             | [{"id":1,"nombre":"Tigre"},...]  | 200 / 500     |
 | /colores        | GET    | Lista los colores y los animales           | [{"animals":"Guepardo","color":"grey"},...] | 200 / 500 |
 
+## Llenado de las bases de datos a utilizar
+Con la finalidad de generar el llenado de las bases de datos, el software ofrece un componente de tipo job, el cual representa el dataseeder, basado en la imagen que llenas las bases de datos. Este proceso se ejecuta al instante de realizar la instalacion.
+
+
+
+</details>
+
+
 ---
+# Pruebas de cargas
+
+<details>
+  <summary>Desplegar información</summary> 
+
+  AQUI INFO
+
+</details> 
+
 
 # Recomendaciones
 1. Mantener consistencia en los nombres de las imagenes a utilizar: `servicio-cache` (`-memcached`, `-redis`).
-2. Utiliza variables de entorno que permitan las parametrizacion de los datos necesarios para las bases de datos
+2. Utiliza variables de entorno que permitan las parametrizacion de los datos necesarios para las bases de datos.
+3. Dedicar tiempo a entender la funcionalidad de implementar algunas bases de datos con varias replicas y sus nodos master, y comoe estos reaccionan ante fallos y disponibilidad de datos.
+4. Establecer un buen lapso de TTL (tiempo de expiracion en caché) que esté adaptado a su modelo y así garantizar consistencia en lo que se almacena en Memcached y lo que está en la base de datos.
 
-# Conclusión
+# Conclusiones
 
 1. Este dataset sirvió como recurso de prueba para el proyecto debido a su diversidad de atributos, lo cual permitió validar distintos procesos de manejo y análisis de información.  
 2. Gracias a la variedad de datos incluidos, fue posible simular escenarios realistas y robustos dentro del entorno de desarrollo.
-3. 
+3. Implementar Memcached es realmente sencillo de implementar y permite que el tiempo de respuesta sea bastante reducido gracias al almacenamiento en memoria.
+4. La implementación de nuevas bases de datos permitió conocer diferentes maneras de poder acceder a ellas y de configurarlas implementando los requisitos que cada una de ellas solicitaban.  Todo estó permitió el fortalecimeinto de habilidades dentro de las personas del equipo con herramientas antes desconocidas.
+
+
+# Referencias
+https://pymemcache.readthedocs.io/en/latest/getting_started.html  
+https://github.com/vespa-engine/sample-apps/tree/master/examples/agentic-streamlit-chatbot/advanced_app/app  
+https://docs.trychroma.com/
+https://www.elastic.co/docs/reference/elasticsearch/clients/python
+https://www.postgresql.org/docs/current/
+https://flask.palletsprojects.com/en/stable/
+https://helm.sh/docs/
+https://docs.docker.com/reference/cli/docker/image/

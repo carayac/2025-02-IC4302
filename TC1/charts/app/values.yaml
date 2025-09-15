@@ -10,5 +10,3 @@ config:
         name: dataseeder
         replicas: 1
         image: prosoli/dataseeder # To charge with data the database
-
-
