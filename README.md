@@ -79,7 +79,7 @@ Este recurso fue empleado como dataset de prueba para validar funcionalidades en
 
 ## Estructura del Dataset
 
-El dataset está compuesto por diversas columnas (atributos) que describen a cada animal. A continuación se detalla el **glosario columna por columna**:
+El dataset está compuesto por diversas columnas (atributos) que describen a cada animal. A continuación se detalla el glosario columna por columna:
 
 | Columna                  | Descripción                                                                 |
 |---------------------------|-----------------------------------------------------------------------------|
@@ -204,10 +204,13 @@ GET http://localhost:30080/colores
 | /colores        | GET    | Lista los colores y los animales           | [{"animals":"Guepardo","color":"grey"},...] | 200 / 500 |
 
 ## Llenado de las bases de datos a utilizar
-Con la finalida de generar el llenado de las bases de datos, el software ofrece un componente de tipo job, el cual representa el dataseeder, basado en la imagen que llenas las bases de datos. Este proceso se ejecuta al instante de realizar la instalacion.
+Con la finalidad de generar el llenado de las bases de datos, el software ofrece un componente de tipo job, el cual representa el dataseeder, basado en la imagen que llenas las bases de datos. Este proceso se ejecuta al instante de realizar la instalacion.
 
 #### Definicion de bases de datos a cargar
-Con la finalidad de evitar el llenaod de bases de datos que no estan en ejecucion se establece un mecanismo en el cual dentro de `values.yaml` podra colocar en `true` las bbases que se desear cargar.
+Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucion se establece un mecanismo en el cual dentro de `values.yaml` podra colocar en `true` las bbases que se desear cargar. 
+
+> [!IMPORTANT]  
+> La duracion de construccion de la imagen dataseeder puede tardar unos minutos.
 
 ```yaml
     dataseeder: # Added configuration for DataSeeder
