@@ -319,10 +319,13 @@ GET http://localhost:30080/colores
 
 # Recomendaciones
 1. Mantener consistencia en los nombres de las imagenes a utilizar: `servicio-cache` (`-memcached`, `-redis`).
-2. Utiliza variables de entorno que permitan las parametrizacion de los datos necesarios para las bases de datos
+2. Utiliza variables de entorno que permitan las parametrizacion de los datos necesarios para las bases de datos.
+3. Dedicar tiempo a entender la funcionalidad de implementar algunas bases de datos con varias replicas y sus nodos master, y comoe estos reaccionan ante fallos y disponibilidad de datos.
+4. Establecer un buen lapso de TTL (tiempo de expiracion en caché) que esté adaptado a su modelo y así garantizar consistencia en lo que se almacena en Memcached y lo que está en la base de datos.
 
 # Conclusión
 
 1. Este dataset sirvió como recurso de prueba para el proyecto debido a su diversidad de atributos, lo cual permitió validar distintos procesos de manejo y análisis de información.  
 2. Gracias a la variedad de datos incluidos, fue posible simular escenarios realistas y robustos dentro del entorno de desarrollo.
-3. 
+3. Implementar Memcached es realmente sencillo de implementar y permite que el tiempo de respuesta sea bastante reducido gracias al almacenamiento en memoria.
+4. La implementación de nuevas bases de datos permitió conocer diferentes maneras de poder acceder a ellas y de configurarlas implementando los requisitos que cada una de ellas solicitaban.  Todo estó permitió el fortalecimeinto de habilidades dentro de las personas del equipo con herramientas antes desconocidas.
