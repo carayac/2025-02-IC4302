@@ -54,6 +54,36 @@ config:
   usuario/dataseeder
  ```
 
+#### 3.2 Configure la carga y uso de las bases de datos
+
+En caso de desear la ejecucion de solamente una base en especifico, ingrese a charts **-->** databases **-->** values.yaml en la cual usted podra modificar los campos enbale true = ejecutar base de datos, false = no ejecutar la base de datos.
+```yaml
+  elastic:
+    enabled: false #Coloque segun su prefertencia
+    version: 8.6.1
+    replicas: 1 #minimo 3 datanodes
+    name: ic4302
+```
+##### Configuracion de la carga de datos
+
+Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucion se establece un mecanismo similar al anterior en el cual dentro de charts **-->** app **-->** `values.yaml` podra colocar en `true` las bbases que se desear cargar. 
+
+> [!IMPORTANT]  
+> La duracion de construccion de la imagen dataseeder puede tardar unos minutos.
+
+```yaml
+    dataseeder: # Added configuration for DataSeeder
+        enabled: true
+        name: dataseeder
+        replicas: 1
+        image: darcecampos/dataseeder # To charge with data the database
+        postgresEnable: true
+        mariaDBEnable: false
+        elasticSearchEnable: false
+        vespaEnable: false
+        chromaDBEnable: false
+```
+
 #### 4. Instale el Helm Chart del proyecto  
 
 En su proyecto, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
@@ -322,24 +352,8 @@ GET http://localhost:30080/colores
 ## Llenado de las bases de datos a utilizar
 Con la finalidad de generar el llenado de las bases de datos, el software ofrece un componente de tipo job, el cual representa el dataseeder, basado en la imagen que llenas las bases de datos. Este proceso se ejecuta al instante de realizar la instalacion.
 
-#### Definicion de bases de datos a cargar
-Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucion se establece un mecanismo en el cual dentro de `values.yaml` podra colocar en `true` las bbases que se desear cargar. 
 
-> [!IMPORTANT]  
-> La duracion de construccion de la imagen dataseeder puede tardar unos minutos.
 
-```yaml
-    dataseeder: # Added configuration for DataSeeder
-        enabled: true
-        name: dataseeder
-        replicas: 1
-        image: darcecampos/dataseeder # To charge with data the database
-        postgresEnable: true
-        mariaDBEnable: false
-        elasticSearchEnable: false
-        vespaEnable: false
-        chromaDBEnable: false
-```
 </details>
 
 
