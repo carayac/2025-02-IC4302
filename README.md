@@ -179,9 +179,7 @@ La implementación sigue un modelo relacional normalizado, con separación de en
 
 ---
 
-  PONER DIAGRAMA MARIA
-
-
+![alt text](DiagramaSQL.jpg)
 
 ---
 
