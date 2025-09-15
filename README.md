@@ -209,7 +209,18 @@ Con la finalida de generar el llenado de las bases de datos, el software ofrece 
 #### Definicion de bases de datos a cargar
 Con la finalidad de evitar el llenaod de bases de datos que no estan en ejecucion se establece un mecanismo en el cual dentro de `values.yaml` podra colocar en `true` las bbases que se desear cargar.
 
-
+```yaml
+    dataseeder: # Added configuration for DataSeeder
+        enabled: true
+        name: dataseeder
+        replicas: 1
+        image: darcecampos/dataseeder # To charge with data the database
+        postgresEnable: true
+        mariaDBEnable: false
+        elasticSearchEnable: false
+        vespaEnable: false
+        chromaDBEnable: false
+```
 
 ---
 # Pruebas de cargas

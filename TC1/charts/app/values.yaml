@@ -10,5 +10,10 @@ config:
         name: dataseeder
         replicas: 1
         image: darcecampos/dataseeder # To charge with data the database
+        postgresEnable: true
+        mariaDBEnable: false
+        elasticSearchEnable: false
+        vespaEnable: false
+        chromaDBEnable: false
 
 
