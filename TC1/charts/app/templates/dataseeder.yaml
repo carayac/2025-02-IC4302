@@ -19,8 +19,9 @@ spec:
           - "python"
           - "app.py"
         env:
+          {{- if .Values.config.dataseeder.postgresEnable }}
           - name: POSTGRES
-            value: "databases-postgresql-primary"  # ← Cambiar de "databases-postgresql", es correcto?
+            value: "databases-postgresql-primary"
           - name: POSTGRES_USER
             value: "postgres"
           - name: POSTGRES_DB
@@ -31,6 +32,9 @@ spec:
                 name: databases-postgresql
                 key: postgres-password
                 optional: false
+          {{- end }}
+
+          {{- if .Values.config.dataseeder.mariaDBEnable }}
           - name: MARIADB
             value: "databases-mariadb"
           - name: MARIADB_TABLE
@@ -45,12 +49,12 @@ spec:
                 name: databases-mariadb
                 key: mariadb-root-password
                 optional: false
+          {{- end }}
 
           - name: PROMETHEUSENDPOINT
             value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
-          #- name: CHROMA_ENDPOINT
-          #  value: "http://databases-chromadb:8000"
 
+          {{- if .Values.config.dataseeder.elasticSearchEnable }}
           - name: ELASTIC_USER
             value: "elastic"
           - name: ES_PORT
@@ -63,19 +67,23 @@ spec:
                 optional: false
           - name: ELASTIC
             value: "ic4302-es-http"
+          {{- end }}
 
+          {{- if .Values.config.dataseeder.chromaDBEnable }}
           - name: CHROMA_ENDPOINT
             value: "http://databases-chromadb:8000"
           - name: CHROMA_COLLECTION
             value: "animals"
           - name: CHROMA_EMBED_MODEL
             value: "sentence-transformers/all-MiniLM-L6-v2"
+          {{- end }}
 
-
+          {{- if .Values.config.dataseeder.vespaEnable }}
           - name: VESPA_ENDPOINT
             value: "http://vespa:8081"
           - name: VESPA_COLLECTION
             value: "animales"
+          {{- end }}
 
           - name: POSTGRES_ENABLE
             value: "{{ .Values.config.dataseeder.postgresEnable }}"
@@ -87,6 +95,4 @@ spec:
             value: "{{ .Values.config.dataseeder.vespaEnable }}"
           - name: CHROMADB_ENABLE
             value: "{{ .Values.config.dataseeder.chromaDBEnable }}"
-                
-
 {{ end }}
