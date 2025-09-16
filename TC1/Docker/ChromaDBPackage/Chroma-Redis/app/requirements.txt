@@ -1,2 +1,3 @@
 flask
 chromadb
+prometheus_client
