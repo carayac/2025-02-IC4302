@@ -3,12 +3,67 @@ config:
         enabled: true
         name: flasktest
         replicas: 1
-        image: prosoli/elasticsearch-memcached
+        image: helena0504/flask-example
+
+    elasicsearch: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: elasticsearch
+        replicas: 1
+        image: helena0504/elasticsearch
+    
+    elasticsearch-memcached: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: elasticsearch-memcached
+        replicas: 1
+        image: helena0504/elasticsearch-memcached
+    
+    elasticsearch-redis: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: elasticseacrh-redis
+        replicas: 1
+        image: helena0504/elasticsearch-redis
+
+    mariadb: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: mariadb
+        replicas: 1
+        image: helena0504/mariadb
+
+    mariadb-memcached: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: mariadb-memcached
+        replicas: 1
+        image: helena0504/mariadb-memcached
+
+    mariadb-redis: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: mariadb-redis
+        replicas: 1
+        image: helena0504/mariadb-redis
+
+    postgresql: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: postgresql
+        replicas: 1
+        image: helena0504/postgresql
+
+    postgresql-memcached: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: postgresql-memcached
+        replicas: 1
+        image: helena0504/postgresql-memcached
+
+    postgresql-redis: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: postgresql-redis
+        replicas: 1
+        image: helena0504/postgresql-redis
+
 
     dataseeder: # Added configuration for DataSeeder
         enabled: true
         name: dataseeder
         replicas: 1
-        image: prosoli/dataseeder # To charge with data the database
+        image: helena0504/dataseeder # To charge with data the database
 
 
