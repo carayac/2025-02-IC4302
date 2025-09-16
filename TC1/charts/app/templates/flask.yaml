@@ -1,24 +1,26 @@
-{{- if .Values.config.flask.enabled }}
+{{- range $key, $app := .Values.config }}
+{{- if $app.enabled }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.config.flask.name }}
+  name: {{ $app.name }}
   labels:
-    app: {{ .Values.config.flask.name }}
+    app: {{ $app.name }}
 spec:
-  replicas: {{ .Values.config.flask.replicas }}
+  replicas: {{ $app.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.config.flask.name }}
+      app: {{ $app.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.config.flask.name }}
+        app: {{ $app.name }}
     spec:
       containers:
-      - name: {{ .Values.config.flask.name }}
-        image: {{ .Values.config.flask.image }}
-        command: ["python", "app.py"]  # 👈 Esto fuerza el comportamiento correcto
+      - name: {{ $app.name }}
+        image: {{ $app.image }}
+        command: ["python", "app.py"]  # Si es Flask
         ports:
           - containerPort: 5000
         env:
