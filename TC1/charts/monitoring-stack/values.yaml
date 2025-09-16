@@ -1,3 +1,5 @@
+global:
+  imagePullSecrets: []
 grafana:
   namespaceOverride: monitoring
   operator:
