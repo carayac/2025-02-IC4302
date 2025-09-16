@@ -21,58 +21,88 @@ spec:
         ports:
         - containerPort: 5000
         env:
-            - name: PROMETHEUSENDPOINT
-              value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
-            - name: CHROMA_ENDPOINT
-              value: "http://databases-chromadb:8000"
-            - name: MARIADB
-              value: "databases-mariadb"
-            - name: MARIADB_TABLE
-              value: "objects"
-            - name: MARIADB_DB
-              value: "control"
-            - name: MARIADB_USER
-              value: "root"
-            - name: MARIADB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: databases-mariadb
-                  key: mariadb-root-password
-                  optional: false
-            - name: ELASTIC_USER
-              value: "elastic"
-            - name: ES_PORT
-              value: "9200"
-            - name: ELASTIC_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: ic4302-es-elastic-user
-                  key: elastic
-                  optional: false
-            - name: ELASTIC
-              value: "ic4302-es-http"
-            - name: MEMCACHED_HOST
-              value: "databases-memcached"
-            - name: MEMCACHED_PORT
-              value: "11211"
-            - name: POSTGRES
-              value: "databases-postgresql-primary"  # ← Cambiar de "databases-postgresql", es correcto?
-            - name: POSTGRES_USER
-              value: "postgres"
-            - name: POSTGRES_DB
-              value: "postgres"
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: databases-postgresql
-                  key: postgres-password
-                  optional: false
+          - name: PROMETHEUSENDPOINT
+            value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
 
-            - name: VESPA_ENDPOINT
-              value: "http://vespa:8081"
-            - name: VESPA_COLLECTION
-              value: "animales"
-            
+          {{- if .Values.config.flask.chromaDBEnable }}
+          - name: CHROMA_ENDPOINT
+            value: "http://databases-chromadb:8000"
+          {{- end }}
+
+          {{- if .Values.config.flask.mariaDBEnable }}
+          - name: MARIADB
+            value: "databases-mariadb"
+          - name: MARIADB_TABLE
+            value: "objects"
+          - name: MARIADB_DB
+            value: "control"
+          - name: MARIADB_USER
+            value: "root"
+          - name: MARIADB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: databases-mariadb
+                key: mariadb-root-password
+                optional: false
+          {{- end }}
+
+          {{- if .Values.config.flask.elasticSearchEnable }}
+          - name: ELASTIC_USER
+            value: "elastic"
+          - name: ES_PORT
+            value: "9200"
+          - name: ELASTIC_PASS
+            valueFrom:
+              secretKeyRef:
+                name: ic4302-es-elastic-user
+                key: elastic
+                optional: false
+          - name: ELASTIC
+            value: "ic4302-es-http"
+          {{- end }}
+
+          {{- if .Values.config.flask.memcachedEnable }}
+          - name: MEMCACHED_HOST
+            value: "databases-memcached"
+          - name: MEMCACHED_PORT
+            value: "11211"
+          {{- end }}
+
+          {{- if .Values.config.flask.postgresEnable }}
+          - name: POSTGRES
+            value: "databases-postgresql-primary"
+          - name: POSTGRES_USER
+            value: "postgres"
+          - name: POSTGRES_DB
+            value: "postgres"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: databases-postgresql
+                key: postgres-password
+                optional: false
+          {{- end }}
+
+          {{- if .Values.config.flask.vespaEnable }}
+          - name: VESPA_ENDPOINT
+            value: "http://vespa:8081"
+          - name: VESPA_COLLECTION
+            value: "animales"
+          {{- end }}
+
+          - name: POSTGRES_ENABLE
+            value: "{{ .Values.config.flask.postgresEnable }}"
+          - name: MARIADB_ENABLE
+            value: "{{ .Values.config.flask.mariaDBEnable }}"
+          - name: ELASTICSEARCH_ENABLE
+            value: "{{ .Values.config.flask.elasticSearchEnable }}"
+          - name: VESPA_ENABLE
+            value: "{{ .Values.config.flask.vespaEnable }}"
+          - name: CHROMADB_ENABLE
+            value: "{{ .Values.config.flask.chromaDBEnable }}"
+          - name: MEMCACHED_ENABLE
+            value: "{{ .Values.config.flask.memcachedEnable }}"
+
 ---
 apiVersion: v1
 kind: Service
@@ -88,4 +118,3 @@ spec:
       targetPort: 5000
       nodePort: 30080
 {{ end }}
-
