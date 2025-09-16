@@ -13,7 +13,7 @@ cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['bd', 'cache'])
 cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
 
 BD_TYPE = "elasticsearch"
-CACHE_TYPE = "redis"  # aunque aún no usamos Redis para caching
+CACHE_TYPE = "redis"  
 
 @app.before_request
 def iniciar_tiempo():
