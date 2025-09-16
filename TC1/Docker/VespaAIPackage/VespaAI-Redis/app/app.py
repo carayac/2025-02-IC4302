@@ -1,6 +1,5 @@
 from flask import Flask, jsonify
 import os
-from vespa.application import Vespa
 
 app = Flask(__name__)
 

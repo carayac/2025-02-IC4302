@@ -23,7 +23,7 @@ mariadb:
 
 elasticsearch:
   metrics:
-    enabled: true 
+    enabled: false 
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
@@ -63,7 +63,7 @@ redis:
 
 
 memcached:
-  enabled: true
+  enabled: false
   metrics:
     enabled: true
     serviceMonitor:
@@ -72,7 +72,7 @@ memcached:
 
 
 chromadb:
-  enabled: true
+  enabled: false
   allowReset: false
   isPersistent: true
   persistDirectory: /data
@@ -108,7 +108,7 @@ vespa:
   image:
     registry: docker.io
     repository: vespaengine/vespa
-    tag: "8.575.21"           
+    tag: "8.575.21"    
     pullPolicy: IfNotPresent
   replicas: 1
   service:
@@ -149,7 +149,7 @@ vespa:
 
 
 postgresql:
-  enabled: true
+  enabled: false
   architecture: replication
   auth:
     postgresPassword: "root123"     
