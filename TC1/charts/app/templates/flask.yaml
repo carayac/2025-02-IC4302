@@ -1,4 +1,5 @@
-{{ if .Values.config.flask.enabled }}
+{{- if .Values.config.flask.enabled }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,8 +19,9 @@ spec:
       containers:
       - name: {{ .Values.config.flask.name }}
         image: {{ .Values.config.flask.image }}
+        command: ["python", "app.py"]
         ports:
-        - containerPort: 5000
+          - containerPort: 5000
         env:
           - name: PROMETHEUSENDPOINT
             value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
@@ -90,6 +92,7 @@ spec:
             value: "animales"
           {{- end }}
 
+          # Flags para métricas
           - name: POSTGRES_ENABLE
             value: "{{ .Values.config.flask.postgresEnable }}"
           - name: MARIADB_ENABLE
@@ -102,19 +105,22 @@ spec:
             value: "{{ .Values.config.flask.chromaDBEnable }}"
           - name: MEMCACHED_ENABLE
             value: "{{ .Values.config.flask.memcachedEnable }}"
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.config.flask.name }}
+  labels:
+    app: {{ .Values.config.flask.name }}
+    service: {{ .Values.config.flask.name }}
 spec:
   type: NodePort
   selector:
     app: {{ .Values.config.flask.name }}
   ports:
-    - protocol: TCP
+    - name: metrics
+      protocol: TCP
       port: 5000
       targetPort: 5000
       nodePort: 30080
-{{ end }}
+{{- end }}
