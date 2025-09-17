@@ -1,5 +1,6 @@
 {{- range $key, $app := .Values.config }}
-{{- if $app.enabled }}
+  {{- if $app.enabled }}
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -74,18 +75,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.config.flask.name }}
+  name: {{ $app.name }}
   labels:
-    app: {{ .Values.config.flask.name }}
-    service: {{ .Values.config.flask.name }} 
+    app: {{ $app.name }}
+    service: {{ $app.name }}
 spec:
-  type: ClusterIP  
+  type: NodePort
   selector:
-    app: {{ .Values.config.flask.name }}
+    app: {{ $app.name }}
   ports:
-    - name: metrics  
+    - name: metrics
       protocol: TCP
       port: 5000
       targetPort: 5000
+      nodePort: 30080 
 
-{{ end }}
+ {{- end }}
+{{- end }}
