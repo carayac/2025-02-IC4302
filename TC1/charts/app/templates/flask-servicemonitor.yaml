@@ -1,17 +1,16 @@
-{{- range $key, $app := .Values.config }}
-{{- if $app.enabled }}
+{{- if .Values.config.flask.enabled }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ $app.name }}-monitor
+  name: {{ .Values.config.flask.name }}-monitor
   namespace: monitoring
   labels:
     release: prometheus
 spec:
   selector:
     matchLabels:
-      app: {{ $app.name }}
+      app: {{ .Values.config.flask.name }}
   namespaceSelector:
     matchNames:
       - default
@@ -19,5 +18,4 @@ spec:
     - port: "metrics"
       path: /metrics
       interval: 15s
-{{- end }}
 {{- end }}
