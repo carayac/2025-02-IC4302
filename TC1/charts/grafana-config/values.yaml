@@ -8,15 +8,15 @@ dashboards:
   redis:
     name: redis
     file: redis.json
-    enable: true
+    enable: false
   mariadb:
     name: mariadb
     file: mariadb.json
-    enable: true
+    enable: false
   mongodb:
     name: mongodb
     file: mongodb.json
-    enable: true
+    enable: false
   memcached:
     name: memcached
     file: memcached.json
@@ -24,12 +24,12 @@ dashboards:
   postgresql:
     name: postgresql
     file: postgresql.json
-    enable: true
+    enable: false
   chroma:
     name: chroma
     file: chroma.json
-    enable: true
+    enable: false
   vespa:
     name: vespa
     file: vespa.json
-    enable: true
+    enable: false
