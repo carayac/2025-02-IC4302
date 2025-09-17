@@ -2,3 +2,4 @@ flask
 chromadb
 pymemcache
 sentence-transformers
+prometheus_client
