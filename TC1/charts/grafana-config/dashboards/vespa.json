@@ -1,5 +1,5 @@
 {
-  "title": "Elasticsearch Metrics",
+  "title": "VespaAI Metrics",
   "templating": {
     "list": [
       {
@@ -16,7 +16,7 @@
       "title": "Total Peticiones HTTP",
       "targets": [
         {
-          "expr": "sum by (cache) (total_peticiones_http{bd=\"elasticsearch\"})",
+          "expr": "sum by (cache) (total_peticiones_http{bd=\"vespaai\"})",
           "legendFormat": "{{cache}}"
         }
       ],
@@ -27,7 +27,7 @@
       "title": "Latencia Promedio",
       "targets": [
         {
-          "expr": "rate(promedio_tiempo_consulta_sum{bd=\"elasticsearch\"}[1m]) / rate(promedio_tiempo_consulta_count{bd=\"elasticsearch\"}[1m])",
+          "expr": "rate(promedio_tiempo_consulta_sum{bd=\"vespaai\"}[1m]) / rate(promedio_tiempo_consulta_count{bd=\"vespaai\"}[1m])",
           "legendFormat": "{{cache}}"
         }
       ],
@@ -38,7 +38,7 @@
       "title": "Cache Hits",
       "targets": [
         {
-          "expr": "sum(total_cache_hit{bd=\"elasticsearch\"})",
+          "expr": "sum(total_cache_hit{bd=\"vespaai\"})",
           "legendFormat": "Hits"
         }
       ],
@@ -49,7 +49,7 @@
       "title": "Cache Misses",
       "targets": [
         {
-          "expr": "sum(total_cache_miss{bd=\"elasticsearch\"})",
+          "expr": "sum(total_cache_miss{bd=\"vespaai\"})",
           "legendFormat": "Misses"
         }
       ],
@@ -60,7 +60,7 @@
       "title": "Estado del Servicio",
       "targets": [
         {
-          "expr": "up{job=\"elasticsearch\"}",
+          "expr": "up{job=\"vespaai\"}",
           "legendFormat": "Estado"
         }
       ],
@@ -68,5 +68,4 @@
     }
   ]
 }
-
 
