@@ -43,8 +43,6 @@ MARIADB_USER = os.getenv("MARIADB_USER")
 MARIADB_PASS = os.getenv("MARIADB_PASS")
 MARIADB_DB = os.getenv("MARIADB_DB")
 
-app = Flask(__name__)
-
 #Variables para memcached
 MEMCACHED_HOST = os.getenv("MEMCACHED_HOST", "localhost")
 MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT", "11211"))

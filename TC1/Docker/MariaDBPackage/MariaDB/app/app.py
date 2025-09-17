@@ -41,7 +41,6 @@ MARIADB_USER = os.getenv("MARIADB_USER")
 MARIADB_PASS = os.getenv("MARIADB_PASS")
 MARIADB_DB = os.getenv("MARIADB_DB")
 
-app = Flask(__name__)
 
 mariadb_pool = None
 
