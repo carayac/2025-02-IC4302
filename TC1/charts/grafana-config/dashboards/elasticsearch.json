@@ -1,44 +1,41 @@
 {
-  "title": "Flask + Elasticsearch Metrics",
+  "title": "Elasticsearch Metrics",
   "templating": {
     "list": [
       {
         "name": "DS_PROMETHEUS",
         "type": "datasource",
         "pluginId": "prometheus",
-        "label": "Prometheus",
-        "query": "prometheus"
+        "label": "Prometheus"
       }
     ]
   },
   "panels": [
     {
       "type": "graph",
-      "title": "Total Peticiones HTTP (bd=elasticsearch)",
+      "title": "Total Peticiones HTTP",
       "targets": [
         {
-          "expr": "sum(total_peticiones_http{bd=\"elasticsearch\"})",
-          "legendFormat": "Total",
-          "interval": ""
+          "expr": "sum by (cache) (total_peticiones_http{bd=\"elasticsearch\"})",
+          "legendFormat": "{{cache}}"
         }
       ],
       "datasource": "${DS_PROMETHEUS}"
     },
     {
       "type": "graph",
-      "title": "Latencia Promedio (bd=elasticsearch)",
+      "title": "Latencia Promedio",
       "targets": [
         {
           "expr": "rate(promedio_tiempo_consulta_sum{bd=\"elasticsearch\"}[1m]) / rate(promedio_tiempo_consulta_count{bd=\"elasticsearch\"}[1m])",
-          "legendFormat": "Promedio",
-          "interval": ""
+          "legendFormat": "{{cache}}"
         }
       ],
       "datasource": "${DS_PROMETHEUS}"
     },
     {
       "type": "singlestat",
-      "title": "Cache Hits (bd=elasticsearch)",
+      "title": "Cache Hits",
       "targets": [
         {
           "expr": "sum(total_cache_hit{bd=\"elasticsearch\"})",
@@ -49,7 +46,7 @@
     },
     {
       "type": "singlestat",
-      "title": "Cache Misses (bd=elasticsearch)",
+      "title": "Cache Misses",
       "targets": [
         {
           "expr": "sum(total_cache_miss{bd=\"elasticsearch\"})",

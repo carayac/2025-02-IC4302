@@ -5,6 +5,24 @@ config:
         replicas: 1
         image: helena0504/flask-example
 
+    chroma: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: chroma
+        replicas: 1
+        image: helena0504/chroma
+    
+    chroma-memcached: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: chroma-memcached
+        replicas: 1
+        image: helena0504/chroma-memcached
+    
+    chroma-redis: # Principal configuration for Flask app representing the app
+        enabled: true
+        name: chroma-redis
+        replicas: 1
+        image: helena0504/chroma-redis
+
     elasicsearch: # Principal configuration for Flask app representing the app
         enabled: true
         name: elasticsearch
