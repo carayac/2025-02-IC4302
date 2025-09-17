@@ -12,7 +12,7 @@ promedio_tiempo = Histogram('promedio_tiempo_consulta', 'Tiempo promedio de cons
 cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['bd', 'cache'])
 cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
 
-BD_TYPE = "postgresql"
+BD_TYPE = "vespaai"
 CACHE_TYPE = "none"
 
 @app.before_request
