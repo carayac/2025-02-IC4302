@@ -60,7 +60,7 @@
       "title": "Estado del Servicio",
       "targets": [
         {
-          "expr": "up{job=\"postgresql\"}",
+          "expr": "up{job=\"flasktest\"}",
           "legendFormat": "Estado"
         }
       ],

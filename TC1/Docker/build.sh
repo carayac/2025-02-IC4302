@@ -39,14 +39,14 @@ docker login
 
 #------------------------- ELASTICSEARCH ----------------------------
 cd ElasticSearchPackage/Elasticsearch
-docker build -t "$USERNAME/elasticsearch" .
-docker push "$USERNAME/elasticsearch"
+#docker build -t "$USERNAME/elasticsearch" .
+#docker push "$USERNAME/elasticsearch"
 cd ../ElasticSearch-Memcached
 docker build -t "$USERNAME/elasticsearch-memcached" .
 docker push "$USERNAME/elasticsearch-memcached"
-cd ../ElasticSearch-Redis
-docker build -t "$USERNAME/elasticsearch-redis" .
-docker push "$USERNAME/elasticsearch-redis"
+#cd ../ElasticSearch-Redis
+#docker build -t "$USERNAME/elasticsearch-redis" .
+#docker push "$USERNAME/elasticsearch-redis"
 cd ../..
 
 #------------------------- MARIA DB ----------------------------
@@ -85,4 +85,4 @@ cd ../..
 # docker push "$USERNAME/vespaai-redis"
 # cd ../..
 
-# echo "Todas las imágenes fueron construidas y subidas correctamente."
+echo "Todas las imágenes fueron construidas y subidas correctamente."
