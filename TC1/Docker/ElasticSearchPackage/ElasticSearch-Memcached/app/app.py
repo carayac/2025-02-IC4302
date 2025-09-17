@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from elasticsearch import Elasticsearch
 from pymemcache.client.base import Client
 from os import getenv
+import os
 import json
 import sys
 import time

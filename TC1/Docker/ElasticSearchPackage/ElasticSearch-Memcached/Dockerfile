@@ -15,4 +15,4 @@ COPY app/. .
 EXPOSE 5000
 
 # Comando para iniciar Flask
-CMD ["python", "app.py"]
+CMD ["flask", "--app", "app", "run", "--host=0.0.0.0", "--port=5000"]
