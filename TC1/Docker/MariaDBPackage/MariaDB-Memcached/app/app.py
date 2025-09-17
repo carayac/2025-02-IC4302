@@ -1,10 +1,41 @@
-from flask import Flask, jsonify
 import mysql.connector
 from mysql.connector import pooling, connect
 from os import getenv
 import sys
 import os, json
 from pymemcache.client.base import Client
+from flask import Flask, jsonify, request
+import time
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+
+app = Flask(__name__)
+
+# --- MÉTRICAS ---
+peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['bd', 'cache'])
+promedio_tiempo = Histogram('promedio_tiempo_consulta', 'Tiempo promedio de consultas', ['bd', 'cache'])
+cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['bd', 'cache'])
+cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
+
+BD_TYPE = "mariadb"
+CACHE_TYPE = "memcached"
+
+@app.before_request
+def iniciar_tiempo():
+    request.start_time = time.time()
+    request.bd_type = BD_TYPE
+    request.cache_type = CACHE_TYPE
+
+@app.after_request
+def medir_peticiones(response):
+    tiempo = time.time() - request.start_time
+    promedio_tiempo.labels(bd=request.bd_type, cache=request.cache_type).observe(tiempo)
+    peticiones_http.labels(bd=request.bd_type, cache=request.cache_type).inc()
+    return response
+
+@app.route("/metrics")
+def metrics():
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+
 
 # Load environment variables
 MARIADB = os.getenv("MARIADB")
@@ -26,10 +57,13 @@ def cache_get(key):
     try:
         raw = memcached.get(key)
         if not raw:
+            cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
             return None
         
+        cache_hit.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
         return json.loads(raw.decode("utf-8"))
     except Exception:
+        cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
         return None
 
 def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
