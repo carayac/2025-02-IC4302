@@ -3,10 +3,10 @@ config:
         enabled: true
         name: flasktest
         replicas: 1
-        image: darcecampos/vespa
-        vespaEnable: true
+        image: helena0504/elasticsearch-memcached
+        vespaEnable: false
         mariaDBEnable: false
-        elasticSearchEnable: false
+        elasticSearchEnable: true
         chromaDBEnable: false
         postgresEnable: false
 
@@ -14,9 +14,9 @@ config:
         enabled: true
         name: dataseeder
         replicas: 1
-        image: darcecampos/dataseeder # To charge with data the database
-        vespaEnable: true
+        image: helena0504/dataseeder # To charge with data the database
+        vespaEnable: false
         mariaDBEnable: false
-        elasticSearchEnable: false
+        elasticSearchEnable: true
         chromaDBEnable: false
         postgresEnable: false
