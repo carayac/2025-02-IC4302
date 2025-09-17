@@ -3,15 +3,15 @@ config:
         enabled: true
         name: flasktest
         replicas: 1
-        image: darcecampos/vespa
+        image: chrisjimenez/vespa
 
     dataseeder: # Added configuration for DataSeeder
         enabled: true
         name: dataseeder
         replicas: 1
-        image: darcecampos/dataseeder # To charge with data the database
-        postgresEnable: true
-        mariaDBEnable: false
+        image: chrisjimenez/dataseeder # To charge with data the database
+        postgresEnable: false
+        mariaDBEnable: true
         elasticSearchEnable: false
         vespaEnable: false
         chromaDBEnable: false

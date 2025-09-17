@@ -1,5 +1,5 @@
 mariadb:
-  enabled: false
+  enabled: true
   auth: #Convertir en variables de entorno
     rootPassword: "root123"
     database: "ic4302_db"
@@ -23,7 +23,7 @@ mariadb:
 
 elasticsearch:
   metrics:
-    enabled: true 
+    enabled: false 
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
@@ -63,7 +63,7 @@ redis:
 
 
 memcached:
-  enabled: true
+  enabled: false
   metrics:
     enabled: true
     serviceMonitor:
@@ -72,7 +72,7 @@ memcached:
 
 
 chromadb:
-  enabled: true
+  enabled: false
   allowReset: false
   isPersistent: true
   persistDirectory: /data
@@ -104,7 +104,7 @@ chromadb:
 
 
 vespa:
-  enabled: true
+  enabled: false
   image:
     registry: docker.io
     repository: vespaengine/vespa
@@ -149,7 +149,7 @@ vespa:
 
 
 postgresql:
-  enabled: true
+  enabled: false
   architecture: replication
   auth:
     postgresPassword: "root123"     

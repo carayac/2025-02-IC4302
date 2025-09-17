@@ -1,0 +1,1516 @@
+RUN	DatabaseSimulation	databasesimulation	1757976142381	 	3.10.5
+USER	Health Check	START	1757976143580
+USER	Animales en MariaDB con Redis	START	1757976143580
+USER	Health Check	START	1757976143580
+USER	Animales en PostgreSQL	START	1757976143580
+USER	Health Check	START	1757976143580
+USER	Health Check	START	1757976143580
+USER	Animales en MariaDB	START	1757976143582
+USER	Animales en Postgres con Memcached	START	1757976143583
+USER	Animales en PostgreSQL	START	1757976143583
+USER	Animales en MariaDB	START	1757976143583
+USER	Animales en Elasticsearch	START	1757976143585
+USER	Animales en MariaDB con Redis	START	1757976143585
+USER	Animales en Elasticsearch	START	1757976143585
+USER	Animales en Postgres con Memcached	START	1757976143586
+USER	Health Check	START	1757976143587
+REQUEST		Health endpoint	1757976143569	1757976143584	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Health endpoint	1757976143569	1757976143586	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976143569	1757976143584	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Health endpoint	1757976143569	1757976143584	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976143582	1757976143588	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976143580	1757976143585	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Health endpoint	1757976143569	1757976143585	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976143569	1757976143586	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976143570	1757976143590	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976143609
+USER	Health Check	END	1757976143609
+USER	Animales en PostgreSQL	END	1757976143609
+USER	Health Check	END	1757976143609
+USER	Health Check	END	1757976143609
+USER	Health Check	END	1757976143610
+REQUEST		MariaDB Query	1757976143581	1757976143610	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976143610
+USER	Animales en MariaDB	END	1757976143610
+REQUEST		Elastic Query	1757976143585	1757976143610	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976143610
+USER	Animales en MariaDB	END	1757976143610
+USER	Animales en Elasticsearch	END	1757976143610
+REQUEST		Health endpoint	1757976143586	1757976143610	KO	j.n.ConnectException: Connection refused: no further information
+USER	Health Check	END	1757976143611
+REQUEST		MariaDB Redis	1757976143585	1757976143611	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976143584	1757976143611	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976143585	1757976143612	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976143612
+USER	Animales en Elasticsearch	END	1757976143612
+USER	Animales en Postgres con Memcached	END	1757976143612
+USER	Animales en Elasticsearch	START	1757976143657
+USER	Animales en PostgreSQL	START	1757976143658
+USER	Animales en MariaDB	START	1757976143658
+USER	Animales en Postgres con Memcached	START	1757976143658
+USER	Animales en MariaDB con Redis	START	1757976143659
+REQUEST		Postgres Query	1757976143657	1757976143659	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976143660
+REQUEST		Elastic Query	1757976143657	1757976143660	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976143661
+REQUEST		Postgres Memcached	1757976143658	1757976143661	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976143661
+REQUEST		MariaDB Query	1757976143657	1757976143661	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976143662
+REQUEST		MariaDB Redis	1757976143658	1757976143662	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976143662
+USER	Animales en Elasticsearch	START	1757976143735
+USER	Animales en PostgreSQL	START	1757976143735
+USER	Animales en MariaDB	START	1757976143736
+USER	Animales en Postgres con Memcached	START	1757976143736
+USER	Animales en MariaDB con Redis	START	1757976143737
+REQUEST		Postgres Query	1757976143734	1757976143737	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976143737
+REQUEST		Elastic Query	1757976143734	1757976143739	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976143734	1757976143739	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976143739
+USER	Animales en MariaDB	END	1757976143739
+REQUEST		Postgres Memcached	1757976143736	1757976143739	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976143736	1757976143739	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976143739
+USER	Animales en MariaDB con Redis	END	1757976143739
+USER	Animales en MariaDB	START	1757976143816
+USER	Animales en MariaDB con Redis	START	1757976143818
+REQUEST		MariaDB Query	1757976143815	1757976143819	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976143820
+REQUEST		MariaDB Redis	1757976143818	1757976143821	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976143821
+USER	Animales en Elasticsearch	START	1757976143829
+USER	Animales en PostgreSQL	START	1757976143829
+USER	Animales en Postgres con Memcached	START	1757976143830
+REQUEST		Elastic Query	1757976143828	1757976143832	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976143833
+REQUEST		Postgres Memcached	1757976143830	1757976143833	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976143833
+REQUEST		Postgres Query	1757976143828	1757976143844	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976143845
+USER	Animales en MariaDB	START	1757976143899
+USER	Animales en MariaDB con Redis	START	1757976143901
+REQUEST		MariaDB Query	1757976143898	1757976143902	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976143902
+REQUEST		MariaDB Redis	1757976143900	1757976143903	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976143903
+USER	Animales en PostgreSQL	START	1757976143906
+USER	Animales en Elasticsearch	START	1757976143906
+USER	Animales en Postgres con Memcached	START	1757976143907
+REQUEST		Postgres Query	1757976143906	1757976143907	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976143908
+REQUEST		Elastic Query	1757976143906	1757976143909	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976143909
+REQUEST		Postgres Memcached	1757976143907	1757976143910	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976143910
+USER	Animales en MariaDB	START	1757976143983
+USER	Animales en PostgreSQL	START	1757976143985
+USER	Animales en Elasticsearch	START	1757976143985
+REQUEST		Postgres Query	1757976143984	1757976143986	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	START	1757976143986
+USER	Animales en PostgreSQL	END	1757976143986
+REQUEST		MariaDB Query	1757976143982	1757976143986	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	START	1757976143986
+USER	Animales en MariaDB	END	1757976143986
+REQUEST		Elastic Query	1757976143984	1757976143987	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976143987
+REQUEST		MariaDB Redis	1757976143985	1757976143988	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976143988
+REQUEST		Postgres Memcached	1757976143986	1757976143988	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976143988
+USER	Animales en MariaDB	START	1757976144079
+USER	Animales en PostgreSQL	START	1757976144079
+USER	Animales en Elasticsearch	START	1757976144079
+USER	Animales en Postgres con Memcached	START	1757976144080
+USER	Animales en MariaDB con Redis	START	1757976144080
+REQUEST		Postgres Query	1757976144078	1757976144080	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144080
+REQUEST		Elastic Query	1757976144078	1757976144082	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976144078	1757976144082	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144082
+USER	Animales en MariaDB	END	1757976144082
+REQUEST		Postgres Memcached	1757976144079	1757976144082	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976144079	1757976144082	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144082
+USER	Animales en MariaDB con Redis	END	1757976144082
+USER	Animales en MariaDB	START	1757976144155
+USER	Animales en PostgreSQL	START	1757976144155
+USER	Animales en Elasticsearch	START	1757976144155
+USER	Animales en Postgres con Memcached	START	1757976144156
+USER	Animales en MariaDB con Redis	START	1757976144156
+REQUEST		Postgres Query	1757976144154	1757976144157	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144157
+REQUEST		Elastic Query	1757976144154	1757976144158	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976144154	1757976144158	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144158
+REQUEST		Postgres Memcached	1757976144156	1757976144158	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976144158
+REQUEST		MariaDB Redis	1757976144156	1757976144158	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144158
+USER	Animales en MariaDB con Redis	END	1757976144159
+USER	Animales en PostgreSQL	START	1757976144233
+USER	Animales en MariaDB	START	1757976144233
+REQUEST		Postgres Query	1757976144233	1757976144235	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144235
+USER	Animales en MariaDB con Redis	START	1757976144235
+REQUEST		MariaDB Query	1757976144233	1757976144236	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976144236
+REQUEST		MariaDB Redis	1757976144235	1757976144237	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976144237
+USER	Animales en Elasticsearch	START	1757976144248
+USER	Animales en Postgres con Memcached	START	1757976144249
+REQUEST		Elastic Query	1757976144248	1757976144252	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144252
+REQUEST		Postgres Memcached	1757976144248	1757976144252	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144252
+USER	Animales en Elasticsearch	START	1757976144326
+USER	Animales en MariaDB	START	1757976144326
+USER	Animales en PostgreSQL	START	1757976144326
+USER	Animales en Postgres con Memcached	START	1757976144327
+USER	Animales en MariaDB con Redis	START	1757976144327
+REQUEST		Postgres Query	1757976144326	1757976144328	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144328
+REQUEST		MariaDB Query	1757976144326	1757976144330	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976144326	1757976144329	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144330
+USER	Animales en MariaDB	END	1757976144330
+REQUEST		MariaDB Redis	1757976144327	1757976144330	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976144327	1757976144330	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144330
+USER	Animales en MariaDB con Redis	END	1757976144330
+USER	Animales en Elasticsearch	START	1757976144404
+USER	Animales en PostgreSQL	START	1757976144404
+USER	Animales en MariaDB	START	1757976144404
+USER	Animales en MariaDB con Redis	START	1757976144405
+REQUEST		Postgres Query	1757976144403	1757976144405	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144405
+USER	Animales en Postgres con Memcached	START	1757976144405
+REQUEST		Elastic Query	1757976144403	1757976144406	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144406
+REQUEST		MariaDB Query	1757976144403	1757976144407	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976144407
+REQUEST		MariaDB Redis	1757976144404	1757976144407	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976144407
+REQUEST		Postgres Memcached	1757976144405	1757976144407	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144407
+USER	Animales en PostgreSQL	START	1757976144497
+USER	Animales en Elasticsearch	START	1757976144497
+USER	Animales en MariaDB	START	1757976144497
+USER	Animales en Postgres con Memcached	START	1757976144498
+USER	Animales en MariaDB con Redis	START	1757976144498
+REQUEST		Postgres Query	1757976144496	1757976144499	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144499
+REQUEST		MariaDB Query	1757976144496	1757976144500	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976144496	1757976144500	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144500
+USER	Animales en MariaDB	END	1757976144500
+REQUEST		MariaDB Redis	1757976144498	1757976144500	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976144497	1757976144500	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144500
+USER	Animales en MariaDB con Redis	END	1757976144500
+USER	Animales en Elasticsearch	START	1757976144575
+USER	Animales en MariaDB	START	1757976144575
+USER	Animales en PostgreSQL	START	1757976144575
+USER	Animales en MariaDB con Redis	START	1757976144576
+REQUEST		Elastic Query	1757976144574	1757976144576	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976144574	1757976144576	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144577
+USER	Animales en Elasticsearch	END	1757976144577
+REQUEST		MariaDB Query	1757976144574	1757976144578	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976144578
+REQUEST		MariaDB Redis	1757976144576	1757976144578	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976144579
+USER	Animales en Postgres con Memcached	START	1757976144590
+REQUEST		Postgres Memcached	1757976144590	1757976144592	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144592
+USER	Animales en MariaDB	START	1757976144669
+USER	Animales en PostgreSQL	START	1757976144669
+USER	Animales en Elasticsearch	START	1757976144669
+USER	Animales en MariaDB con Redis	START	1757976144670
+REQUEST		Postgres Query	1757976144669	1757976144670	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144671
+USER	Animales en Postgres con Memcached	START	1757976144671
+REQUEST		Elastic Query	1757976144669	1757976144671	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976144669	1757976144671	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144672
+USER	Animales en MariaDB	END	1757976144672
+REQUEST		MariaDB Redis	1757976144669	1757976144672	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976144672
+REQUEST		Postgres Memcached	1757976144671	1757976144673	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144673
+USER	Animales en MariaDB	START	1757976144763
+USER	Animales en PostgreSQL	START	1757976144763
+USER	Animales en Elasticsearch	START	1757976144763
+USER	Animales en MariaDB con Redis	START	1757976144763
+USER	Animales en Postgres con Memcached	START	1757976144763
+REQUEST		Postgres Query	1757976144762	1757976144764	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144764
+REQUEST		MariaDB Query	1757976144762	1757976144765	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976144762	1757976144765	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144765
+USER	Animales en MariaDB	END	1757976144765
+REQUEST		Postgres Memcached	1757976144763	1757976144765	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976144763	1757976144765	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976144765
+USER	Animales en Postgres con Memcached	END	1757976144765
+USER	Animales en MariaDB	START	1757976144856
+USER	Animales en Elasticsearch	START	1757976144856
+USER	Animales en PostgreSQL	START	1757976144856
+USER	Animales en MariaDB con Redis	START	1757976144856
+USER	Animales en Postgres con Memcached	START	1757976144856
+REQUEST		Postgres Query	1757976144855	1757976144857	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144857
+REQUEST		Elastic Query	1757976144855	1757976144859	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976144855	1757976144859	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144859
+USER	Animales en MariaDB	END	1757976144859
+REQUEST		Postgres Memcached	1757976144856	1757976144859	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976144856	1757976144859	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144859
+USER	Animales en MariaDB con Redis	END	1757976144859
+USER	Animales en Elasticsearch	START	1757976144948
+USER	Animales en PostgreSQL	START	1757976144948
+USER	Animales en MariaDB	START	1757976144948
+USER	Animales en Postgres con Memcached	START	1757976144949
+USER	Animales en MariaDB con Redis	START	1757976144949
+REQUEST		Postgres Query	1757976144948	1757976144950	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976144950
+REQUEST		Elastic Query	1757976144948	1757976144951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976144948	1757976144951	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976144951
+USER	Animales en MariaDB	END	1757976144951
+REQUEST		MariaDB Redis	1757976144949	1757976144951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976144949	1757976144951	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976144952
+USER	Animales en MariaDB con Redis	END	1757976144952
+USER	Animales en MariaDB	START	1757976145041
+USER	Animales en PostgreSQL	START	1757976145041
+USER	Animales en Elasticsearch	START	1757976145041
+USER	Animales en Postgres con Memcached	START	1757976145041
+USER	Animales en MariaDB con Redis	START	1757976145041
+REQUEST		Postgres Query	1757976145040	1757976145042	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976145042
+REQUEST		Elastic Query	1757976145040	1757976145043	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976145040	1757976145043	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976145043
+USER	Animales en Elasticsearch	END	1757976145043
+REQUEST		MariaDB Redis	1757976145041	1757976145043	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976145041	1757976145043	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976145043
+USER	Animales en MariaDB con Redis	END	1757976145043
+USER	Animales en Elasticsearch	START	1757976145134
+USER	Animales en PostgreSQL	START	1757976145134
+USER	Animales en MariaDB	START	1757976145134
+USER	Animales en Postgres con Memcached	START	1757976145134
+USER	Animales en MariaDB con Redis	START	1757976145134
+REQUEST		Postgres Query	1757976145133	1757976145135	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976145135
+REQUEST		MariaDB Query	1757976145133	1757976145136	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976145133	1757976145136	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976145136
+USER	Animales en Elasticsearch	END	1757976145136
+REQUEST		MariaDB Redis	1757976145134	1757976145136	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976145134	1757976145136	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976145136
+USER	Animales en Postgres con Memcached	END	1757976145136
+USER	Animales en PostgreSQL	START	1757976145211
+USER	Animales en MariaDB	START	1757976145211
+USER	Animales en MariaDB con Redis	START	1757976145212
+REQUEST		Postgres Query	1757976145211	1757976145213	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976145213
+REQUEST		MariaDB Query	1757976145211	1757976145214	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976145214
+REQUEST		MariaDB Redis	1757976145212	1757976145214	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976145214
+USER	Animales en Elasticsearch	START	1757976145227
+USER	Animales en Postgres con Memcached	START	1757976145227
+REQUEST		Elastic Query	1757976145226	1757976145230	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976145230
+REQUEST		Postgres Memcached	1757976145227	1757976145230	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976145230
+USER	Animales en Elasticsearch	START	1757976145305
+USER	Animales en PostgreSQL	START	1757976145305
+USER	Animales en MariaDB	START	1757976145305
+USER	Animales en MariaDB con Redis	START	1757976145305
+REQUEST		Elastic Query	1757976145304	1757976145306	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976145304	1757976145306	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976145306
+USER	Animales en PostgreSQL	END	1757976145306
+REQUEST		MariaDB Query	1757976145304	1757976145307	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976145307
+REQUEST		MariaDB Redis	1757976145305	1757976145307	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976145307
+USER	Animales en Postgres con Memcached	START	1757976145320
+REQUEST		Postgres Memcached	1757976145319	1757976145322	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976145323
+USER	Animales en PostgreSQL	START	1757976145397
+USER	Animales en MariaDB	START	1757976145397
+USER	Animales en Elasticsearch	START	1757976145397
+USER	Animales en MariaDB con Redis	START	1757976145398
+REQUEST		Postgres Query	1757976145397	1757976145399	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976145399
+USER	Animales en Postgres con Memcached	START	1757976145399
+REQUEST		Elastic Query	1757976145397	1757976145400	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976145400
+REQUEST		MariaDB Query	1757976145397	1757976145400	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976145400
+REQUEST		MariaDB Redis	1757976145398	1757976145401	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976145401
+REQUEST		Postgres Memcached	1757976145399	1757976145401	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976145401
+USER	Animales en Elasticsearch	START	1757976145492
+USER	Animales en MariaDB	START	1757976145492
+USER	Animales en PostgreSQL	START	1757976145492
+USER	Animales en Postgres con Memcached	START	1757976145493
+USER	Animales en MariaDB con Redis	START	1757976145493
+REQUEST		Postgres Query	1757976145491	1757976145493	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976145494
+REQUEST		MariaDB Query	1757976145491	1757976145494	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976145491	1757976145494	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976145495
+USER	Animales en Elasticsearch	END	1757976145495
+REQUEST		Postgres Memcached	1757976145492	1757976145495	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976145492	1757976145495	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976145495
+USER	Animales en Postgres con Memcached	END	1757976145495
+USER	Animales en MariaDB con Redis	START	1757976145586
+USER	Animales en Elasticsearch	START	1757976145586
+USER	Animales en MariaDB	START	1757976145586
+USER	Animales en Postgres con Memcached	START	1757976145586
+REQUEST		Elastic Query	1757976145585	1757976145587	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976145585	1757976145587	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976145585	1757976145587	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976145585	1757976145587	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976145588
+USER	Animales en MariaDB con Redis	END	1757976145588
+USER	Animales en Elasticsearch	END	1757976145588
+USER	Animales en MariaDB	END	1757976145588
+USER	Animales en PostgreSQL	START	1757976145588
+REQUEST		Postgres Query	1757976145588	1757976145590	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976145590
+USER	Animales en Postgres con Memcached	START	1757976145678
+USER	Animales en MariaDB con Redis	START	1757976145678
+USER	Animales en MariaDB	START	1757976145678
+USER	Animales en Elasticsearch	START	1757976145678
+USER	Animales en PostgreSQL	START	1757976145678
+REQUEST		Postgres Query	1757976145677	1757976145679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976145677	1757976145679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976145677	1757976145679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976145677	1757976145679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976145677	1757976145679	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976145679
+USER	Animales en MariaDB con Redis	END	1757976145679
+USER	Animales en Postgres con Memcached	END	1757976145679
+USER	Animales en MariaDB	END	1757976145679
+USER	Animales en Elasticsearch	END	1757976145679
+USER	Animales en MariaDB	START	1757976145755
+USER	Animales en MariaDB con Redis	START	1757976145755
+USER	Animales en Postgres con Memcached	START	1757976145755
+USER	Animales en Elasticsearch	START	1757976145755
+USER	Animales en PostgreSQL	START	1757976145755
+REQUEST		Postgres Query	1757976145754	1757976145756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976145754	1757976145756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976145754	1757976145756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976145754	1757976145756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976145754	1757976145756	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976145757
+USER	Animales en MariaDB	END	1757976145757
+USER	Animales en Postgres con Memcached	END	1757976145757
+USER	Animales en Elasticsearch	END	1757976145757
+USER	Animales en PostgreSQL	END	1757976145757
+USER	Animales en MariaDB	START	1757976145848
+USER	Animales en MariaDB con Redis	START	1757976145848
+USER	Animales en Postgres con Memcached	START	1757976145848
+USER	Animales en Elasticsearch	START	1757976145848
+USER	Animales en PostgreSQL	START	1757976145849
+REQUEST		Elastic Query	1757976145848	1757976145849	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976145847	1757976145849	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976145847	1757976145849	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976145847	1757976145849	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976145850
+USER	Animales en MariaDB con Redis	END	1757976145850
+USER	Animales en Elasticsearch	END	1757976145850
+USER	Animales en MariaDB	END	1757976145850
+REQUEST		Postgres Query	1757976145847	1757976145850	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976145850
+USER	Animales en MariaDB con Redis	START	1757976145941
+USER	Animales en Postgres con Memcached	START	1757976145941
+USER	Animales en MariaDB	START	1757976145941
+USER	Animales en PostgreSQL	START	1757976145941
+USER	Animales en Elasticsearch	START	1757976145941
+REQUEST		Postgres Query	1757976145940	1757976145942	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976145940	1757976145942	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976145940	1757976145942	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976145940	1757976145942	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976145940	1757976145942	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976145942
+USER	Animales en PostgreSQL	END	1757976145942
+USER	Animales en Elasticsearch	END	1757976145943
+USER	Animales en MariaDB con Redis	END	1757976145943
+USER	Animales en MariaDB	END	1757976145943
+USER	Animales en MariaDB con Redis	START	1757976146034
+USER	Animales en MariaDB	START	1757976146034
+USER	Animales en Elasticsearch	START	1757976146034
+USER	Animales en PostgreSQL	START	1757976146034
+USER	Animales en Postgres con Memcached	START	1757976146034
+REQUEST		MariaDB Redis	1757976146034	1757976146036	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146034	1757976146036	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976146034	1757976146036	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976146034	1757976146036	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976146034	1757976146036	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976146036
+USER	Animales en MariaDB con Redis	END	1757976146036
+USER	Animales en PostgreSQL	END	1757976146036
+USER	Animales en Postgres con Memcached	END	1757976146036
+USER	Animales en Elasticsearch	END	1757976146036
+USER	Animales en MariaDB	START	1757976146127
+USER	Animales en Elasticsearch	START	1757976146127
+USER	Animales en PostgreSQL	START	1757976146127
+USER	Animales en MariaDB con Redis	START	1757976146127
+USER	Animales en Postgres con Memcached	START	1757976146127
+REQUEST		Elastic Query	1757976146127	1757976146129	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146127	1757976146128	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146127	1757976146128	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976146127	1757976146128	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976146127	1757976146129	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976146129
+USER	Animales en MariaDB con Redis	END	1757976146129
+USER	Animales en MariaDB	END	1757976146129
+USER	Animales en Elasticsearch	END	1757976146129
+USER	Animales en PostgreSQL	END	1757976146129
+USER	Animales en Postgres con Memcached	START	1757976146220
+USER	Animales en Elasticsearch	START	1757976146220
+USER	Animales en MariaDB con Redis	START	1757976146220
+USER	Animales en MariaDB	START	1757976146220
+USER	Animales en PostgreSQL	START	1757976146220
+REQUEST		MariaDB Query	1757976146220	1757976146221	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976146220	1757976146221	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146220	1757976146221	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146220	1757976146221	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976146220	1757976146221	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976146222
+USER	Animales en MariaDB	END	1757976146222
+USER	Animales en PostgreSQL	END	1757976146222
+USER	Animales en Elasticsearch	END	1757976146222
+USER	Animales en MariaDB con Redis	END	1757976146222
+USER	Animales en Postgres con Memcached	START	1757976146314
+USER	Animales en Elasticsearch	START	1757976146314
+USER	Animales en PostgreSQL	START	1757976146314
+USER	Animales en MariaDB	START	1757976146314
+USER	Animales en MariaDB con Redis	START	1757976146314
+REQUEST		Postgres Query	1757976146313	1757976146315	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146313	1757976146315	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976146313	1757976146315	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146313	1757976146315	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976146313	1757976146315	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976146315
+USER	Animales en MariaDB	END	1757976146315
+USER	Animales en PostgreSQL	END	1757976146315
+USER	Animales en Elasticsearch	END	1757976146315
+USER	Animales en MariaDB con Redis	END	1757976146315
+USER	Animales en Elasticsearch	START	1757976146406
+USER	Animales en MariaDB	START	1757976146406
+USER	Animales en Postgres con Memcached	START	1757976146406
+USER	Animales en PostgreSQL	START	1757976146406
+USER	Animales en MariaDB con Redis	START	1757976146406
+REQUEST		Postgres Query	1757976146405	1757976146407	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146405	1757976146407	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146405	1757976146407	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976146405	1757976146407	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976146405	1757976146407	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976146408
+USER	Animales en MariaDB con Redis	END	1757976146408
+USER	Animales en Postgres con Memcached	END	1757976146408
+USER	Animales en PostgreSQL	END	1757976146408
+USER	Animales en MariaDB	END	1757976146408
+USER	Animales en MariaDB	START	1757976146484
+USER	Animales en MariaDB con Redis	START	1757976146484
+USER	Animales en PostgreSQL	START	1757976146484
+USER	Animales en Postgres con Memcached	START	1757976146484
+USER	Animales en Elasticsearch	START	1757976146484
+REQUEST		Elastic Query	1757976146483	1757976146485	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976146483	1757976146485	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976146483	1757976146485	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146483	1757976146485	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976146485
+USER	Animales en PostgreSQL	END	1757976146485
+USER	Animales en MariaDB	END	1757976146485
+USER	Animales en MariaDB con Redis	END	1757976146485
+REQUEST		Postgres Memcached	1757976146483	1757976146486	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976146486
+USER	Animales en MariaDB con Redis	START	1757976146576
+USER	Animales en PostgreSQL	START	1757976146576
+USER	Animales en Postgres con Memcached	START	1757976146576
+USER	Animales en MariaDB	START	1757976146576
+USER	Animales en Elasticsearch	START	1757976146576
+REQUEST		Elastic Query	1757976146576	1757976146577	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976146576	1757976146577	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976146576	1757976146577	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146576	1757976146577	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146576	1757976146577	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976146578
+USER	Animales en PostgreSQL	END	1757976146578
+USER	Animales en MariaDB	END	1757976146578
+USER	Animales en Elasticsearch	END	1757976146578
+USER	Animales en Postgres con Memcached	END	1757976146578
+USER	Animales en Elasticsearch	START	1757976146669
+USER	Animales en MariaDB con Redis	START	1757976146669
+USER	Animales en MariaDB	START	1757976146669
+USER	Animales en PostgreSQL	START	1757976146669
+USER	Animales en Postgres con Memcached	START	1757976146669
+REQUEST		MariaDB Query	1757976146668	1757976146670	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976146668	1757976146670	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146668	1757976146670	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146668	1757976146670	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976146668	1757976146670	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976146671
+USER	Animales en MariaDB	END	1757976146671
+USER	Animales en PostgreSQL	END	1757976146671
+USER	Animales en MariaDB con Redis	END	1757976146671
+USER	Animales en Elasticsearch	END	1757976146671
+USER	Animales en MariaDB con Redis	START	1757976146761
+USER	Animales en Postgres con Memcached	START	1757976146761
+USER	Animales en MariaDB	START	1757976146761
+USER	Animales en Elasticsearch	START	1757976146761
+USER	Animales en PostgreSQL	START	1757976146761
+REQUEST		Postgres Query	1757976146760	1757976146763	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146760	1757976146763	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976146760	1757976146763	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146760	1757976146763	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976146760	1757976146763	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976146763
+USER	Animales en PostgreSQL	END	1757976146763
+USER	Animales en Postgres con Memcached	END	1757976146763
+USER	Animales en Elasticsearch	END	1757976146763
+USER	Animales en MariaDB	END	1757976146763
+USER	Animales en Postgres con Memcached	START	1757976146853
+USER	Animales en MariaDB	START	1757976146853
+USER	Animales en MariaDB con Redis	START	1757976146853
+USER	Animales en Elasticsearch	START	1757976146853
+USER	Animales en PostgreSQL	START	1757976146854
+REQUEST		Elastic Query	1757976146853	1757976146855	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976146853	1757976146855	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976146853	1757976146855	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976146855
+USER	Animales en MariaDB	END	1757976146855
+USER	Animales en PostgreSQL	END	1757976146855
+REQUEST		Postgres Memcached	1757976146853	1757976146855	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146853	1757976146855	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976146855
+USER	Animales en Postgres con Memcached	END	1757976146855
+USER	Animales en Elasticsearch	START	1757976146948
+USER	Animales en MariaDB	START	1757976146948
+USER	Animales en Postgres con Memcached	START	1757976146948
+USER	Animales en MariaDB con Redis	START	1757976146948
+USER	Animales en PostgreSQL	START	1757976146948
+REQUEST		MariaDB Query	1757976146947	1757976146949	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976146947	1757976146949	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976146947	1757976146949	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976146947	1757976146949	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976146947	1757976146949	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976146949
+USER	Animales en MariaDB	END	1757976146949
+USER	Animales en Elasticsearch	END	1757976146949
+USER	Animales en PostgreSQL	END	1757976146949
+USER	Animales en MariaDB con Redis	END	1757976146949
+USER	Animales en MariaDB	START	1757976147041
+USER	Animales en MariaDB con Redis	START	1757976147041
+USER	Animales en Elasticsearch	START	1757976147041
+USER	Animales en PostgreSQL	START	1757976147041
+USER	Animales en Postgres con Memcached	START	1757976147041
+REQUEST		Elastic Query	1757976147040	1757976147042	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147040	1757976147042	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976147040	1757976147042	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147040	1757976147042	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976147040	1757976147042	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976147042
+USER	Animales en MariaDB con Redis	END	1757976147042
+USER	Animales en MariaDB	END	1757976147043
+USER	Animales en Elasticsearch	END	1757976147043
+USER	Animales en Postgres con Memcached	END	1757976147043
+USER	Animales en MariaDB con Redis	START	1757976147119
+USER	Animales en MariaDB	START	1757976147119
+USER	Animales en PostgreSQL	START	1757976147119
+USER	Animales en Elasticsearch	START	1757976147119
+REQUEST		MariaDB Redis	1757976147119	1757976147120	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147119	1757976147120	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976147119	1757976147120	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147119	1757976147121	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976147121
+USER	Animales en MariaDB con Redis	END	1757976147121
+USER	Animales en MariaDB	END	1757976147121
+USER	Animales en PostgreSQL	END	1757976147121
+USER	Animales en Postgres con Memcached	START	1757976147134
+REQUEST		Postgres Memcached	1757976147134	1757976147136	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976147136
+USER	Animales en MariaDB con Redis	START	1757976147212
+USER	Animales en Postgres con Memcached	START	1757976147212
+USER	Animales en Elasticsearch	START	1757976147212
+USER	Animales en MariaDB	START	1757976147212
+USER	Animales en PostgreSQL	START	1757976147212
+REQUEST		Postgres Query	1757976147211	1757976147213	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976147211	1757976147213	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147211	1757976147213	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147211	1757976147213	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976147211	1757976147213	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976147213
+USER	Animales en MariaDB	END	1757976147213
+USER	Animales en Postgres con Memcached	END	1757976147213
+USER	Animales en Elasticsearch	END	1757976147213
+USER	Animales en MariaDB con Redis	END	1757976147213
+USER	Animales en Postgres con Memcached	START	1757976147304
+USER	Animales en MariaDB	START	1757976147304
+USER	Animales en PostgreSQL	START	1757976147304
+USER	Animales en MariaDB con Redis	START	1757976147304
+USER	Animales en Elasticsearch	START	1757976147304
+REQUEST		MariaDB Redis	1757976147303	1757976147305	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147303	1757976147305	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976147303	1757976147305	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147303	1757976147305	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147303	1757976147305	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976147306
+USER	Animales en Postgres con Memcached	END	1757976147306
+USER	Animales en Elasticsearch	END	1757976147306
+USER	Animales en MariaDB con Redis	END	1757976147306
+USER	Animales en MariaDB	END	1757976147306
+USER	Animales en Postgres con Memcached	START	1757976147398
+USER	Animales en MariaDB	START	1757976147398
+USER	Animales en MariaDB con Redis	START	1757976147398
+USER	Animales en Elasticsearch	START	1757976147398
+USER	Animales en PostgreSQL	START	1757976147398
+REQUEST		MariaDB Query	1757976147397	1757976147400	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147397	1757976147400	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147397	1757976147400	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976147397	1757976147400	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147397	1757976147400	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976147400
+USER	Animales en Postgres con Memcached	END	1757976147400
+USER	Animales en Elasticsearch	END	1757976147400
+USER	Animales en PostgreSQL	END	1757976147400
+USER	Animales en MariaDB	END	1757976147400
+USER	Animales en Elasticsearch	START	1757976147491
+USER	Animales en MariaDB con Redis	START	1757976147491
+USER	Animales en PostgreSQL	START	1757976147491
+USER	Animales en Postgres con Memcached	START	1757976147491
+USER	Animales en MariaDB	START	1757976147491
+REQUEST		MariaDB Query	1757976147491	1757976147492	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147491	1757976147492	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147491	1757976147492	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147491	1757976147492	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976147491	1757976147492	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976147493
+USER	Animales en PostgreSQL	END	1757976147493
+USER	Animales en MariaDB con Redis	END	1757976147493
+USER	Animales en MariaDB	END	1757976147493
+USER	Animales en Elasticsearch	END	1757976147493
+USER	Animales en PostgreSQL	START	1757976147584
+USER	Animales en MariaDB con Redis	START	1757976147584
+USER	Animales en Postgres con Memcached	START	1757976147584
+USER	Animales en Elasticsearch	START	1757976147584
+USER	Animales en MariaDB	START	1757976147585
+REQUEST		Postgres Query	1757976147584	1757976147586	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147584	1757976147586	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976147584	1757976147586	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147584	1757976147586	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976147584	1757976147586	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976147586
+USER	Animales en Elasticsearch	END	1757976147586
+USER	Animales en PostgreSQL	END	1757976147586
+USER	Animales en MariaDB con Redis	END	1757976147586
+USER	Animales en MariaDB	END	1757976147586
+USER	Animales en Postgres con Memcached	START	1757976147677
+USER	Animales en PostgreSQL	START	1757976147677
+USER	Animales en MariaDB	START	1757976147677
+USER	Animales en Elasticsearch	START	1757976147677
+USER	Animales en MariaDB con Redis	START	1757976147678
+REQUEST		MariaDB Redis	1757976147677	1757976147679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147677	1757976147679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147677	1757976147679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147677	1757976147679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976147677	1757976147679	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976147679
+USER	Animales en Postgres con Memcached	END	1757976147679
+USER	Animales en Elasticsearch	END	1757976147679
+USER	Animales en PostgreSQL	END	1757976147679
+USER	Animales en MariaDB con Redis	END	1757976147679
+USER	Animales en Elasticsearch	START	1757976147755
+USER	Animales en MariaDB con Redis	START	1757976147755
+USER	Animales en Postgres con Memcached	START	1757976147755
+USER	Animales en PostgreSQL	START	1757976147755
+USER	Animales en MariaDB	START	1757976147755
+REQUEST		Elastic Query	1757976147755	1757976147756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147755	1757976147756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976147755	1757976147756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147755	1757976147756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976147755	1757976147756	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976147757
+USER	Animales en PostgreSQL	END	1757976147757
+USER	Animales en MariaDB con Redis	END	1757976147757
+USER	Animales en MariaDB	END	1757976147757
+USER	Animales en Elasticsearch	END	1757976147757
+USER	Animales en MariaDB con Redis	START	1757976147847
+USER	Animales en MariaDB	START	1757976147847
+USER	Animales en Postgres con Memcached	START	1757976147847
+USER	Animales en Elasticsearch	START	1757976147847
+USER	Animales en PostgreSQL	START	1757976147847
+REQUEST		Postgres Memcached	1757976147846	1757976147848	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147846	1757976147848	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147846	1757976147848	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976147846	1757976147848	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976147849
+REQUEST		MariaDB Query	1757976147846	1757976147849	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976147849
+USER	Animales en PostgreSQL	END	1757976147849
+USER	Animales en Elasticsearch	END	1757976147849
+USER	Animales en MariaDB	END	1757976147849
+USER	Animales en Postgres con Memcached	START	1757976147940
+USER	Animales en MariaDB	START	1757976147940
+USER	Animales en PostgreSQL	START	1757976147940
+USER	Animales en Elasticsearch	START	1757976147940
+USER	Animales en MariaDB con Redis	START	1757976147940
+REQUEST		MariaDB Query	1757976147939	1757976147941	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976147939	1757976147941	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976147939	1757976147941	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976147939	1757976147941	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976147939	1757976147941	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976147941
+USER	Animales en MariaDB con Redis	END	1757976147941
+USER	Animales en Postgres con Memcached	END	1757976147941
+USER	Animales en Elasticsearch	END	1757976147941
+USER	Animales en PostgreSQL	END	1757976147941
+USER	Animales en PostgreSQL	START	1757976148032
+USER	Animales en Postgres con Memcached	START	1757976148032
+USER	Animales en Elasticsearch	START	1757976148032
+USER	Animales en MariaDB	START	1757976148032
+USER	Animales en MariaDB con Redis	START	1757976148032
+REQUEST		Elastic Query	1757976148032	1757976148033	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976148032	1757976148033	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976148032	1757976148034	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976148032	1757976148034	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976148032	1757976148034	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976148034
+USER	Animales en MariaDB con Redis	END	1757976148034
+USER	Animales en MariaDB	END	1757976148034
+USER	Animales en Postgres con Memcached	END	1757976148034
+USER	Animales en PostgreSQL	END	1757976148034
+USER	Animales en Elasticsearch	START	1757976148124
+USER	Animales en MariaDB con Redis	START	1757976148124
+USER	Animales en PostgreSQL	START	1757976148124
+USER	Animales en Postgres con Memcached	START	1757976148124
+USER	Animales en MariaDB	START	1757976148124
+REQUEST		Postgres Query	1757976148124	1757976148126	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976148124	1757976148126	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976148124	1757976148126	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976148124	1757976148126	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976148124	1757976148126	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148126
+USER	Animales en Elasticsearch	END	1757976148126
+USER	Animales en PostgreSQL	END	1757976148126
+USER	Animales en MariaDB con Redis	END	1757976148126
+USER	Animales en Postgres con Memcached	END	1757976148126
+USER	Animales en Postgres con Memcached	START	1757976148218
+USER	Animales en MariaDB con Redis	START	1757976148218
+USER	Animales en Elasticsearch	START	1757976148218
+USER	Animales en PostgreSQL	START	1757976148218
+USER	Animales en MariaDB	START	1757976148218
+REQUEST		MariaDB Redis	1757976148217	1757976148219	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976148217	1757976148219	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976148217	1757976148219	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976148217	1757976148219	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976148217	1757976148219	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148219
+USER	Animales en MariaDB con Redis	END	1757976148219
+USER	Animales en Postgres con Memcached	END	1757976148219
+USER	Animales en Elasticsearch	END	1757976148219
+USER	Animales en PostgreSQL	END	1757976148219
+USER	Animales en Postgres con Memcached	START	1757976148311
+USER	Animales en Elasticsearch	START	1757976148311
+USER	Animales en PostgreSQL	START	1757976148311
+USER	Animales en MariaDB con Redis	START	1757976148311
+USER	Animales en MariaDB	START	1757976148311
+REQUEST		Postgres Query	1757976148310	1757976148312	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976148310	1757976148312	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976148310	1757976148312	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976148310	1757976148312	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976148310	1757976148312	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976148312
+USER	Animales en Elasticsearch	END	1757976148312
+USER	Animales en PostgreSQL	END	1757976148312
+USER	Animales en MariaDB con Redis	END	1757976148312
+USER	Animales en MariaDB	END	1757976148312
+USER	Animales en MariaDB con Redis	START	1757976148404
+USER	Animales en MariaDB	START	1757976148404
+USER	Animales en Elasticsearch	START	1757976148404
+USER	Animales en PostgreSQL	START	1757976148404
+USER	Animales en Postgres con Memcached	START	1757976148405
+REQUEST		Elastic Query	1757976148404	1757976148406	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976148404	1757976148406	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976148404	1757976148406	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976148404	1757976148406	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976148406
+USER	Animales en Postgres con Memcached	END	1757976148406
+USER	Animales en MariaDB con Redis	END	1757976148406
+USER	Animales en PostgreSQL	END	1757976148406
+REQUEST		MariaDB Query	1757976148404	1757976148406	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148406
+USER	Animales en MariaDB con Redis	START	1757976148498
+USER	Animales en Postgres con Memcached	START	1757976148498
+USER	Animales en Elasticsearch	START	1757976148498
+USER	Animales en PostgreSQL	START	1757976148499
+USER	Animales en MariaDB	START	1757976148499
+REQUEST		MariaDB Redis	1757976148498	1757976148500	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976148498	1757976148500	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976148498	1757976148500	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976148500
+USER	Animales en Elasticsearch	END	1757976148500
+USER	Animales en PostgreSQL	END	1757976148500
+REQUEST		Postgres Memcached	1757976148497	1757976148501	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976148501
+REQUEST		MariaDB Query	1757976148499	1757976148501	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148501
+USER	Animales en Elasticsearch	START	1757976148574
+USER	Animales en PostgreSQL	START	1757976148574
+USER	Animales en MariaDB con Redis	START	1757976148574
+USER	Animales en MariaDB	START	1757976148574
+USER	Animales en Postgres con Memcached	START	1757976148574
+REQUEST		MariaDB Redis	1757976148573	1757976148575	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976148573	1757976148575	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976148573	1757976148575	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976148575
+USER	Animales en Elasticsearch	END	1757976148575
+USER	Animales en PostgreSQL	END	1757976148575
+REQUEST		MariaDB Query	1757976148573	1757976148576	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148577
+REQUEST		Postgres Memcached	1757976148574	1757976148577	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976148577
+USER	Animales en Elasticsearch	START	1757976148667
+USER	Animales en PostgreSQL	START	1757976148667
+USER	Animales en MariaDB con Redis	START	1757976148667
+USER	Animales en MariaDB	START	1757976148667
+USER	Animales en Postgres con Memcached	START	1757976148668
+REQUEST		MariaDB Redis	1757976148666	1757976148668	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976148666	1757976148668	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976148666	1757976148668	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976148669
+USER	Animales en Elasticsearch	END	1757976148669
+USER	Animales en MariaDB con Redis	END	1757976148669
+REQUEST		MariaDB Query	1757976148666	1757976148669	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148669
+REQUEST		Postgres Memcached	1757976148667	1757976148669	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976148670
+USER	Animales en PostgreSQL	START	1757976148760
+USER	Animales en Elasticsearch	START	1757976148760
+USER	Animales en MariaDB con Redis	START	1757976148760
+REQUEST		Postgres Query	1757976148759	1757976148761	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976148759	1757976148761	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976148762
+USER	Animales en MariaDB con Redis	END	1757976148762
+REQUEST		Elastic Query	1757976148759	1757976148761	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	START	1757976148762
+USER	Animales en Elasticsearch	END	1757976148762
+USER	Animales en Postgres con Memcached	START	1757976148763
+REQUEST		MariaDB Query	1757976148759	1757976148764	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148764
+REQUEST		Postgres Memcached	1757976148762	1757976148764	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976148765
+USER	Animales en MariaDB con Redis	START	1757976148853
+USER	Animales en MariaDB	START	1757976148853
+USER	Animales en PostgreSQL	START	1757976148853
+USER	Animales en Elasticsearch	START	1757976148853
+USER	Animales en Postgres con Memcached	START	1757976148854
+REQUEST		Postgres Query	1757976148853	1757976148854	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976148853	1757976148854	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976148853	1757976148854	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976148855
+USER	Animales en MariaDB con Redis	END	1757976148855
+USER	Animales en Elasticsearch	END	1757976148855
+REQUEST		MariaDB Query	1757976148853	1757976148856	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148856
+REQUEST		Postgres Memcached	1757976148854	1757976148856	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976148856
+USER	Animales en MariaDB	START	1757976148945
+USER	Animales en Elasticsearch	START	1757976148945
+USER	Animales en MariaDB con Redis	START	1757976148945
+USER	Animales en PostgreSQL	START	1757976148945
+USER	Animales en Postgres con Memcached	START	1757976148946
+REQUEST		MariaDB Redis	1757976148945	1757976148946	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976148945	1757976148946	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976148945	1757976148946	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976148947
+USER	Animales en MariaDB con Redis	END	1757976148947
+USER	Animales en PostgreSQL	END	1757976148947
+REQUEST		MariaDB Query	1757976148945	1757976148947	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976148947
+REQUEST		Postgres Memcached	1757976148946	1757976148948	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976148948
+USER	Animales en Elasticsearch	START	1757976149039
+USER	Animales en MariaDB	START	1757976149039
+USER	Animales en PostgreSQL	START	1757976149039
+USER	Animales en Postgres con Memcached	START	1757976149040
+USER	Animales en MariaDB con Redis	START	1757976149040
+REQUEST		Postgres Query	1757976149038	1757976149040	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149038	1757976149040	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976149041
+REQUEST		MariaDB Redis	1757976149038	1757976149041	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976149041
+USER	Animales en MariaDB con Redis	END	1757976149041
+REQUEST		MariaDB Query	1757976149038	1757976149041	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976149041
+REQUEST		Postgres Memcached	1757976149039	1757976149041	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976149041
+USER	Animales en MariaDB	START	1757976149132
+USER	Animales en PostgreSQL	START	1757976149132
+USER	Animales en MariaDB con Redis	START	1757976149132
+USER	Animales en Elasticsearch	START	1757976149132
+USER	Animales en Postgres con Memcached	START	1757976149133
+REQUEST		Postgres Query	1757976149132	1757976149133	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976149132	1757976149133	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149132	1757976149133	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976149133
+USER	Animales en PostgreSQL	END	1757976149133
+USER	Animales en MariaDB con Redis	END	1757976149133
+REQUEST		MariaDB Query	1757976149132	1757976149134	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976149134
+REQUEST		Postgres Memcached	1757976149132	1757976149134	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976149135
+USER	Animales en MariaDB	START	1757976149224
+USER	Animales en Elasticsearch	START	1757976149224
+USER	Animales en MariaDB con Redis	START	1757976149224
+USER	Animales en PostgreSQL	START	1757976149224
+USER	Animales en Postgres con Memcached	START	1757976149225
+REQUEST		Postgres Query	1757976149224	1757976149225	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149224	1757976149225	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976149225
+USER	Animales en Elasticsearch	END	1757976149226
+REQUEST		MariaDB Redis	1757976149224	1757976149226	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976149226
+REQUEST		MariaDB Query	1757976149224	1757976149226	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976149226
+REQUEST		Postgres Memcached	1757976149224	1757976149227	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976149227
+USER	Animales en MariaDB con Redis	START	1757976149302
+USER	Animales en Elasticsearch	START	1757976149302
+USER	Animales en PostgreSQL	START	1757976149302
+USER	Animales en MariaDB	START	1757976149302
+USER	Animales en Postgres con Memcached	START	1757976149302
+REQUEST		MariaDB Redis	1757976149301	1757976149303	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149301	1757976149303	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976149301	1757976149303	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976149303
+USER	Animales en MariaDB con Redis	END	1757976149303
+USER	Animales en PostgreSQL	END	1757976149303
+REQUEST		MariaDB Query	1757976149301	1757976149304	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976149304
+REQUEST		Postgres Memcached	1757976149302	1757976149304	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976149304
+USER	Animales en MariaDB con Redis	START	1757976149395
+USER	Animales en PostgreSQL	START	1757976149395
+USER	Animales en MariaDB	START	1757976149395
+USER	Animales en Elasticsearch	START	1757976149395
+USER	Animales en Postgres con Memcached	START	1757976149396
+REQUEST		Postgres Query	1757976149395	1757976149396	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976149395	1757976149396	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149395	1757976149396	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976149397
+USER	Animales en MariaDB con Redis	END	1757976149397
+USER	Animales en PostgreSQL	END	1757976149397
+REQUEST		MariaDB Query	1757976149395	1757976149397	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976149397
+REQUEST		Postgres Memcached	1757976149396	1757976149397	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976149397
+USER	Animales en MariaDB	START	1757976149487
+USER	Animales en Elasticsearch	START	1757976149487
+USER	Animales en PostgreSQL	START	1757976149487
+USER	Animales en Postgres con Memcached	START	1757976149488
+USER	Animales en MariaDB con Redis	START	1757976149488
+REQUEST		Elastic Query	1757976149487	1757976149488	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976149487	1757976149488	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976149489
+USER	Animales en PostgreSQL	END	1757976149489
+REQUEST		MariaDB Query	1757976149487	1757976149489	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976149487	1757976149489	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976149489
+USER	Animales en MariaDB	END	1757976149489
+REQUEST		Postgres Memcached	1757976149487	1757976149489	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976149489
+USER	Animales en Postgres con Memcached	START	1757976149579
+USER	Animales en PostgreSQL	START	1757976149579
+USER	Animales en MariaDB	START	1757976149579
+USER	Animales en Elasticsearch	START	1757976149579
+USER	Animales en MariaDB con Redis	START	1757976149579
+REQUEST		MariaDB Query	1757976149578	1757976149580	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149578	1757976149580	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976149578	1757976149580	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976149578	1757976149580	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976149578	1757976149580	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976149580
+USER	Animales en Postgres con Memcached	END	1757976149581
+USER	Animales en MariaDB	END	1757976149581
+USER	Animales en PostgreSQL	END	1757976149581
+USER	Animales en MariaDB con Redis	END	1757976149581
+USER	Animales en Postgres con Memcached	START	1757976149672
+USER	Animales en Elasticsearch	START	1757976149672
+USER	Animales en MariaDB	START	1757976149672
+USER	Animales en MariaDB con Redis	START	1757976149672
+USER	Animales en PostgreSQL	START	1757976149672
+REQUEST		Postgres Query	1757976149671	1757976149673	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149671	1757976149673	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976149671	1757976149673	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976149671	1757976149673	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976149671	1757976149673	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976149673
+USER	Animales en MariaDB con Redis	END	1757976149673
+USER	Animales en MariaDB	END	1757976149673
+USER	Animales en Postgres con Memcached	END	1757976149673
+USER	Animales en Elasticsearch	END	1757976149673
+USER	Animales en Elasticsearch	START	1757976149765
+USER	Animales en MariaDB	START	1757976149765
+USER	Animales en MariaDB con Redis	START	1757976149765
+USER	Animales en Postgres con Memcached	START	1757976149765
+USER	Animales en PostgreSQL	START	1757976149765
+REQUEST		MariaDB Query	1757976149764	1757976149767	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976149764	1757976149767	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149764	1757976149767	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976149764	1757976149767	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976149764	1757976149767	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976149767
+USER	Animales en MariaDB con Redis	END	1757976149767
+USER	Animales en Elasticsearch	END	1757976149767
+USER	Animales en PostgreSQL	END	1757976149767
+USER	Animales en MariaDB	END	1757976149767
+USER	Animales en MariaDB	START	1757976149857
+USER	Animales en Postgres con Memcached	START	1757976149857
+USER	Animales en MariaDB con Redis	START	1757976149857
+USER	Animales en PostgreSQL	START	1757976149857
+USER	Animales en Elasticsearch	START	1757976149857
+REQUEST		MariaDB Query	1757976149857	1757976149858	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976149857	1757976149858	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976149857	1757976149858	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976149857	1757976149858	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976149859
+USER	Animales en Postgres con Memcached	END	1757976149859
+USER	Animales en MariaDB	END	1757976149859
+USER	Animales en PostgreSQL	END	1757976149859
+REQUEST		Elastic Query	1757976149857	1757976149859	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976149859
+USER	Animales en MariaDB con Redis	START	1757976149950
+USER	Animales en PostgreSQL	START	1757976149950
+USER	Animales en Postgres con Memcached	START	1757976149950
+USER	Animales en MariaDB	START	1757976149950
+USER	Animales en Elasticsearch	START	1757976149950
+REQUEST		Postgres Memcached	1757976149949	1757976149951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976149949	1757976149951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976149949	1757976149951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976149949	1757976149951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976149949	1757976149951	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976149951
+USER	Animales en Postgres con Memcached	END	1757976149951
+USER	Animales en MariaDB	END	1757976149951
+USER	Animales en PostgreSQL	END	1757976149951
+USER	Animales en MariaDB con Redis	END	1757976149951
+USER	Animales en Postgres con Memcached	START	1757976150029
+USER	Animales en Elasticsearch	START	1757976150029
+USER	Animales en MariaDB con Redis	START	1757976150029
+USER	Animales en MariaDB	START	1757976150029
+USER	Animales en PostgreSQL	START	1757976150029
+REQUEST		MariaDB Redis	1757976150028	1757976150030	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150028	1757976150030	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976150028	1757976150030	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976150028	1757976150030	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976150028	1757976150030	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976150030
+USER	Animales en MariaDB con Redis	END	1757976150030
+USER	Animales en MariaDB	END	1757976150030
+USER	Animales en Elasticsearch	END	1757976150030
+USER	Animales en PostgreSQL	END	1757976150030
+USER	Animales en Elasticsearch	START	1757976150121
+USER	Animales en Postgres con Memcached	START	1757976150121
+USER	Animales en MariaDB	START	1757976150121
+USER	Animales en PostgreSQL	START	1757976150121
+USER	Animales en MariaDB con Redis	START	1757976150121
+REQUEST		MariaDB Query	1757976150121	1757976150123	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976150121	1757976150123	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150121	1757976150123	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976150121	1757976150123	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976150121	1757976150123	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976150123
+USER	Animales en MariaDB con Redis	END	1757976150123
+USER	Animales en PostgreSQL	END	1757976150123
+USER	Animales en Postgres con Memcached	END	1757976150123
+USER	Animales en Elasticsearch	END	1757976150123
+USER	Animales en Postgres con Memcached	START	1757976150214
+USER	Animales en MariaDB	START	1757976150214
+USER	Animales en Elasticsearch	START	1757976150214
+USER	Animales en PostgreSQL	START	1757976150214
+USER	Animales en MariaDB con Redis	START	1757976150214
+REQUEST		Postgres Query	1757976150213	1757976150215	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976150213	1757976150215	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150213	1757976150215	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976150213	1757976150215	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976150213	1757976150215	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976150215
+USER	Animales en Postgres con Memcached	END	1757976150215
+USER	Animales en PostgreSQL	END	1757976150215
+USER	Animales en Elasticsearch	END	1757976150215
+USER	Animales en MariaDB	END	1757976150215
+USER	Animales en Elasticsearch	START	1757976150306
+USER	Animales en MariaDB con Redis	START	1757976150306
+USER	Animales en MariaDB	START	1757976150306
+USER	Animales en PostgreSQL	START	1757976150306
+USER	Animales en Postgres con Memcached	START	1757976150306
+REQUEST		MariaDB Redis	1757976150305	1757976150307	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150305	1757976150307	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976150305	1757976150307	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976150305	1757976150307	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976150305	1757976150307	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976150307
+USER	Animales en PostgreSQL	END	1757976150307
+USER	Animales en MariaDB con Redis	END	1757976150307
+USER	Animales en Postgres con Memcached	END	1757976150307
+USER	Animales en MariaDB	END	1757976150307
+USER	Animales en Postgres con Memcached	START	1757976150400
+USER	Animales en PostgreSQL	START	1757976150400
+USER	Animales en MariaDB	START	1757976150400
+USER	Animales en Elasticsearch	START	1757976150400
+USER	Animales en MariaDB con Redis	START	1757976150400
+REQUEST		MariaDB Redis	1757976150399	1757976150401	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976150399	1757976150401	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976150399	1757976150401	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150399	1757976150401	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976150399	1757976150401	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976150401
+USER	Animales en MariaDB	END	1757976150401
+USER	Animales en Elasticsearch	END	1757976150401
+USER	Animales en PostgreSQL	END	1757976150401
+USER	Animales en Postgres con Memcached	END	1757976150401
+USER	Animales en Elasticsearch	START	1757976150493
+USER	Animales en PostgreSQL	START	1757976150493
+USER	Animales en MariaDB	START	1757976150493
+USER	Animales en MariaDB con Redis	START	1757976150493
+USER	Animales en Postgres con Memcached	START	1757976150493
+REQUEST		Postgres Memcached	1757976150492	1757976150496	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976150492	1757976150496	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150492	1757976150496	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976150492	1757976150496	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976150492	1757976150496	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976150497
+USER	Animales en MariaDB con Redis	END	1757976150497
+USER	Animales en Elasticsearch	END	1757976150497
+USER	Animales en MariaDB	END	1757976150497
+USER	Animales en PostgreSQL	END	1757976150497
+USER	Animales en PostgreSQL	START	1757976150585
+USER	Animales en MariaDB con Redis	START	1757976150585
+USER	Animales en Elasticsearch	START	1757976150585
+USER	Animales en MariaDB	START	1757976150585
+USER	Animales en Postgres con Memcached	START	1757976150585
+REQUEST		MariaDB Query	1757976150584	1757976150586	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150584	1757976150586	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976150584	1757976150586	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976150586
+USER	Animales en Elasticsearch	END	1757976150586
+USER	Animales en MariaDB con Redis	END	1757976150586
+REQUEST		Postgres Query	1757976150584	1757976150587	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976150587
+REQUEST		Postgres Memcached	1757976150585	1757976150587	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976150587
+USER	Animales en MariaDB con Redis	START	1757976150678
+USER	Animales en PostgreSQL	START	1757976150678
+USER	Animales en Elasticsearch	START	1757976150678
+USER	Animales en MariaDB	START	1757976150678
+USER	Animales en Postgres con Memcached	START	1757976150679
+REQUEST		MariaDB Redis	1757976150678	1757976150679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150678	1757976150679	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976150678	1757976150679	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976150679
+USER	Animales en Elasticsearch	END	1757976150679
+USER	Animales en MariaDB con Redis	END	1757976150679
+REQUEST		Postgres Query	1757976150678	1757976150680	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976150680
+REQUEST		Postgres Memcached	1757976150678	1757976150680	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976150680
+USER	Animales en MariaDB con Redis	START	1757976150755
+USER	Animales en Elasticsearch	START	1757976150755
+USER	Animales en PostgreSQL	START	1757976150755
+USER	Animales en MariaDB	START	1757976150755
+USER	Animales en Postgres con Memcached	START	1757976150756
+REQUEST		MariaDB Query	1757976150755	1757976150756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976150755	1757976150756	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150755	1757976150756	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976150757
+USER	Animales en MariaDB	END	1757976150757
+USER	Animales en Elasticsearch	END	1757976150757
+REQUEST		Postgres Query	1757976150755	1757976150757	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976150757
+REQUEST		Postgres Memcached	1757976150756	1757976150757	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976150758
+USER	Animales en Elasticsearch	START	1757976150850
+USER	Animales en MariaDB con Redis	START	1757976150850
+USER	Animales en MariaDB	START	1757976150850
+USER	Animales en PostgreSQL	START	1757976150850
+USER	Animales en Postgres con Memcached	START	1757976150851
+REQUEST		MariaDB Query	1757976150850	1757976150851	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976150850	1757976150851	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150850	1757976150851	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976150851
+USER	Animales en MariaDB con Redis	END	1757976150851
+USER	Animales en Elasticsearch	END	1757976150851
+REQUEST		Postgres Query	1757976150850	1757976150852	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976150852
+REQUEST		Postgres Memcached	1757976150850	1757976150852	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976150852
+USER	Animales en MariaDB con Redis	START	1757976150944
+USER	Animales en PostgreSQL	START	1757976150944
+USER	Animales en Elasticsearch	START	1757976150944
+USER	Animales en MariaDB	START	1757976150944
+USER	Animales en Postgres con Memcached	START	1757976150944
+REQUEST		MariaDB Query	1757976150943	1757976150945	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976150943	1757976150945	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976150943	1757976150945	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976150946
+USER	Animales en MariaDB	END	1757976150946
+USER	Animales en Elasticsearch	END	1757976150946
+REQUEST		Postgres Query	1757976150943	1757976150947	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976150947
+REQUEST		Postgres Memcached	1757976150944	1757976150948	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976150948
+USER	Animales en Elasticsearch	START	1757976151036
+USER	Animales en MariaDB	START	1757976151037
+USER	Animales en PostgreSQL	START	1757976151038
+USER	Animales en MariaDB con Redis	START	1757976151039
+REQUEST		MariaDB Query	1757976151035	1757976151040	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151035	1757976151040	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976151041
+USER	Animales en Elasticsearch	END	1757976151041
+REQUEST		MariaDB Redis	1757976151035	1757976151046	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976151046
+USER	Animales en Postgres con Memcached	START	1757976151046
+REQUEST		Postgres Query	1757976151035	1757976151049	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976151049
+REQUEST		Postgres Memcached	1757976151045	1757976151049	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976151050
+USER	Animales en MariaDB con Redis	START	1757976151129
+USER	Animales en PostgreSQL	START	1757976151129
+USER	Animales en MariaDB	START	1757976151129
+USER	Animales en Elasticsearch	START	1757976151129
+USER	Animales en Postgres con Memcached	START	1757976151130
+REQUEST		MariaDB Query	1757976151129	1757976151130	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151129	1757976151130	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976151129	1757976151130	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976151131
+USER	Animales en MariaDB	END	1757976151131
+USER	Animales en MariaDB con Redis	END	1757976151131
+REQUEST		Postgres Query	1757976151129	1757976151131	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976151131
+REQUEST		Postgres Memcached	1757976151130	1757976151131	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976151131
+USER	Animales en PostgreSQL	START	1757976151222
+USER	Animales en MariaDB con Redis	START	1757976151222
+USER	Animales en Elasticsearch	START	1757976151222
+USER	Animales en MariaDB	START	1757976151222
+USER	Animales en Postgres con Memcached	START	1757976151223
+REQUEST		MariaDB Query	1757976151222	1757976151223	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976151222	1757976151223	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151222	1757976151223	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976151224
+USER	Animales en Elasticsearch	END	1757976151224
+USER	Animales en MariaDB	END	1757976151224
+REQUEST		Postgres Query	1757976151222	1757976151224	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976151224
+REQUEST		Postgres Memcached	1757976151223	1757976151224	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976151225
+USER	Animales en MariaDB	START	1757976151314
+USER	Animales en MariaDB con Redis	START	1757976151314
+USER	Animales en Elasticsearch	START	1757976151314
+USER	Animales en PostgreSQL	START	1757976151314
+USER	Animales en Postgres con Memcached	START	1757976151315
+REQUEST		MariaDB Query	1757976151314	1757976151315	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976151314	1757976151315	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151314	1757976151315	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976151315
+USER	Animales en MariaDB con Redis	END	1757976151316
+USER	Animales en Elasticsearch	END	1757976151316
+REQUEST		Postgres Query	1757976151314	1757976151316	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976151316
+REQUEST		Postgres Memcached	1757976151315	1757976151316	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976151316
+USER	Animales en PostgreSQL	START	1757976151391
+USER	Animales en Elasticsearch	START	1757976151391
+REQUEST		Elastic Query	1757976151391	1757976151392	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976151392
+USER	Animales en Postgres con Memcached	START	1757976151392
+REQUEST		Postgres Query	1757976151391	1757976151392	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976151392
+REQUEST		Postgres Memcached	1757976151392	1757976151393	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976151393
+USER	Animales en MariaDB	START	1757976151406
+USER	Animales en MariaDB con Redis	START	1757976151406
+REQUEST		MariaDB Redis	1757976151405	1757976151406	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976151405	1757976151406	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976151406
+USER	Animales en MariaDB	END	1757976151406
+USER	Animales en PostgreSQL	START	1757976151484
+USER	Animales en Elasticsearch	START	1757976151484
+USER	Animales en MariaDB con Redis	START	1757976151484
+USER	Animales en MariaDB	START	1757976151484
+REQUEST		MariaDB Query	1757976151484	1757976151485	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976151484	1757976151485	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976151484	1757976151485	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151484	1757976151485	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976151485
+USER	Animales en Elasticsearch	END	1757976151485
+USER	Animales en MariaDB	END	1757976151485
+USER	Animales en MariaDB con Redis	END	1757976151485
+USER	Animales en Postgres con Memcached	START	1757976151500
+REQUEST		Postgres Memcached	1757976151500	1757976151501	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976151502
+USER	Animales en MariaDB con Redis	START	1757976151578
+USER	Animales en MariaDB	START	1757976151578
+USER	Animales en Elasticsearch	START	1757976151578
+USER	Animales en PostgreSQL	START	1757976151578
+USER	Animales en Postgres con Memcached	START	1757976151578
+REQUEST		MariaDB Query	1757976151578	1757976151579	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151578	1757976151579	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976151578	1757976151579	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976151578	1757976151579	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976151578	1757976151580	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976151580
+USER	Animales en PostgreSQL	END	1757976151580
+USER	Animales en MariaDB	END	1757976151580
+USER	Animales en Elasticsearch	END	1757976151580
+USER	Animales en Postgres con Memcached	END	1757976151580
+USER	Animales en MariaDB	START	1757976151671
+USER	Animales en PostgreSQL	START	1757976151671
+USER	Animales en MariaDB con Redis	START	1757976151671
+USER	Animales en Elasticsearch	START	1757976151671
+USER	Animales en Postgres con Memcached	START	1757976151671
+REQUEST		Elastic Query	1757976151670	1757976151672	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976151670	1757976151672	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976151670	1757976151672	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976151670	1757976151672	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976151670	1757976151672	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976151672
+USER	Animales en Elasticsearch	END	1757976151672
+USER	Animales en PostgreSQL	END	1757976151672
+USER	Animales en Postgres con Memcached	END	1757976151672
+USER	Animales en MariaDB con Redis	END	1757976151672
+USER	Animales en MariaDB con Redis	START	1757976151764
+USER	Animales en PostgreSQL	START	1757976151764
+USER	Animales en MariaDB	START	1757976151764
+USER	Animales en Postgres con Memcached	START	1757976151764
+USER	Animales en Elasticsearch	START	1757976151764
+REQUEST		MariaDB Redis	1757976151763	1757976151765	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976151763	1757976151765	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976151763	1757976151765	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151763	1757976151765	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976151763	1757976151765	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976151765
+USER	Animales en Postgres con Memcached	END	1757976151765
+USER	Animales en Elasticsearch	END	1757976151765
+USER	Animales en MariaDB con Redis	END	1757976151765
+USER	Animales en PostgreSQL	END	1757976151765
+USER	Animales en MariaDB con Redis	START	1757976151858
+USER	Animales en Elasticsearch	START	1757976151858
+USER	Animales en PostgreSQL	START	1757976151858
+USER	Animales en Postgres con Memcached	START	1757976151858
+REQUEST		Postgres Query	1757976151857	1757976151859	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976151857	1757976151859	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151857	1757976151859	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB con Redis	END	1757976151859
+USER	Animales en PostgreSQL	END	1757976151859
+USER	Animales en Elasticsearch	END	1757976151859
+USER	Animales en MariaDB	START	1757976151859
+REQUEST		Postgres Memcached	1757976151857	1757976151859	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976151859
+REQUEST		MariaDB Query	1757976151858	1757976151860	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976151860
+USER	Animales en Postgres con Memcached	START	1757976151950
+USER	Animales en MariaDB con Redis	START	1757976151950
+USER	Animales en PostgreSQL	START	1757976151950
+USER	Animales en Elasticsearch	START	1757976151950
+USER	Animales en MariaDB	START	1757976151950
+REQUEST		MariaDB Redis	1757976151950	1757976151951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976151950	1757976151951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976151950	1757976151951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976151950	1757976151951	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976151950	1757976151951	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976151952
+USER	Animales en MariaDB	END	1757976151952
+USER	Animales en MariaDB con Redis	END	1757976151952
+USER	Animales en Postgres con Memcached	END	1757976151952
+USER	Animales en PostgreSQL	END	1757976151952
+USER	Animales en MariaDB con Redis	START	1757976152028
+USER	Animales en Elasticsearch	START	1757976152028
+USER	Animales en Postgres con Memcached	START	1757976152028
+USER	Animales en MariaDB	START	1757976152028
+USER	Animales en PostgreSQL	START	1757976152028
+REQUEST		Elastic Query	1757976152028	1757976152030	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976152028	1757976152030	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976152028	1757976152030	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976152028	1757976152030	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976152028	1757976152030	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Postgres con Memcached	END	1757976152030
+USER	Animales en Elasticsearch	END	1757976152030
+USER	Animales en MariaDB	END	1757976152030
+USER	Animales en MariaDB con Redis	END	1757976152030
+USER	Animales en PostgreSQL	END	1757976152030
+USER	Animales en Elasticsearch	START	1757976152121
+USER	Animales en Postgres con Memcached	START	1757976152121
+USER	Animales en PostgreSQL	START	1757976152121
+USER	Animales en MariaDB con Redis	START	1757976152121
+USER	Animales en MariaDB	START	1757976152121
+REQUEST		MariaDB Query	1757976152121	1757976152122	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976152121	1757976152122	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976152121	1757976152122	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976152121	1757976152122	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976152121	1757976152122	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976152122
+USER	Animales en MariaDB con Redis	END	1757976152122
+USER	Animales en Postgres con Memcached	END	1757976152122
+USER	Animales en MariaDB	END	1757976152122
+USER	Animales en Elasticsearch	END	1757976152122
+USER	Animales en MariaDB	START	1757976152217
+USER	Animales en MariaDB con Redis	START	1757976152217
+USER	Animales en PostgreSQL	START	1757976152217
+USER	Animales en Postgres con Memcached	START	1757976152217
+USER	Animales en Elasticsearch	START	1757976152217
+REQUEST		MariaDB Query	1757976152213	1757976152218	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976152217	1757976152218	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976152213	1757976152218	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976152213	1757976152218	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976152213	1757976152218	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en MariaDB	END	1757976152219
+USER	Animales en MariaDB con Redis	END	1757976152219
+USER	Animales en Postgres con Memcached	END	1757976152219
+USER	Animales en Elasticsearch	END	1757976152219
+USER	Animales en PostgreSQL	END	1757976152219
+USER	Animales en Elasticsearch	START	1757976152308
+USER	Animales en PostgreSQL	START	1757976152308
+USER	Animales en MariaDB	START	1757976152308
+USER	Animales en Postgres con Memcached	START	1757976152308
+USER	Animales en MariaDB con Redis	START	1757976152308
+REQUEST		Postgres Query	1757976152308	1757976152309	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976152308	1757976152309	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Query	1757976152308	1757976152309	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976152308	1757976152309	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976152308	1757976152309	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en PostgreSQL	END	1757976152310
+USER	Animales en MariaDB con Redis	END	1757976152310
+USER	Animales en MariaDB	END	1757976152310
+USER	Animales en Postgres con Memcached	END	1757976152310
+USER	Animales en Elasticsearch	END	1757976152310
+USER	Animales en PostgreSQL	START	1757976152401
+USER	Animales en MariaDB	START	1757976152401
+USER	Animales en Elasticsearch	START	1757976152401
+USER	Animales en Postgres con Memcached	START	1757976152401
+USER	Animales en MariaDB con Redis	START	1757976152401
+REQUEST		MariaDB Query	1757976152401	1757976152402	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		MariaDB Redis	1757976152401	1757976152402	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Memcached	1757976152401	1757976152402	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Postgres Query	1757976152401	1757976152402	KO	j.n.ConnectException: Connection refused: no further information
+REQUEST		Elastic Query	1757976152401	1757976152402	KO	j.n.ConnectException: Connection refused: no further information
+USER	Animales en Elasticsearch	END	1757976152402
+USER	Animales en PostgreSQL	END	1757976152402
+USER	Animales en Postgres con Memcached	END	1757976152402
+USER	Animales en MariaDB con Redis	END	1757976152403
+USER	Animales en MariaDB	END	1757976152403

@@ -2,14 +2,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <!-- Identificación del proyecto -->
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>ic4302.prob</groupId>
   <artifactId>gatling-tests</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <!-- Propiedades -->
+
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,9 +18,9 @@
     <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
   </properties>
 
-  <!-- Dependencias -->
+
   <dependencies>
-    <!-- Dependencia de Gatling con gráficos -->
+
     <dependency>
       <groupId>io.gatling.highcharts</groupId>
       <artifactId>gatling-charts-highcharts</artifactId>
@@ -29,10 +29,10 @@
     </dependency>
   </dependencies>
 
-  <!-- Plugins de build -->
+  
   <build>
     <plugins>
-      <!-- Compilador de Java -->
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -42,7 +42,7 @@
         </configuration>
       </plugin>
 
-      <!-- Plugin de Gatling -->
+ 
       <plugin>
         <groupId>io.gatling</groupId>
         <artifactId>gatling-maven-plugin</artifactId>
@@ -55,7 +55,7 @@
           </execution>
         </executions>
         <configuration>
-          <!-- Carpeta donde estarán tus simulaciones -->
+          
           <simulationsFolder>src/test/java/simulations</simulationsFolder>
         </configuration>
       </plugin>
