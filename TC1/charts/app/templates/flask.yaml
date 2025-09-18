@@ -71,6 +71,13 @@ spec:
             value: "11211"
           {{- end }}
 
+          {{- if .Values.config.flask.redisEnable }}
+          - name: REDIS_HOST
+            value: "databases-redis"
+          - name: REDIS_PORT
+            value: "6379"
+          {{- end }}
+
           {{- if .Values.config.flask.postgresEnable }}
           - name: POSTGRES
             value: "databases-postgresql-primary"
@@ -106,6 +113,8 @@ spec:
             value: "{{ .Values.config.flask.chromaDBEnable }}"
           - name: MEMCACHED_ENABLE
             value: "{{ .Values.config.flask.memcachedEnable }}"
+          - name: REDIS_ENABLE
+            value: "{{ .Values.config.flask.redisEnable }}"
 ---
 apiVersion: v1
 kind: Service
