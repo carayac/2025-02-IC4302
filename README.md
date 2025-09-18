@@ -593,35 +593,81 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
 <details>
   <summary>Elasticsearch</summary> 
 
-#### MariaDB
+#### Elasticsearch
 ##### Prueba 1: Elasticsearch Sin Caché - Endpoint /animales
 
 ###### Configuración
 
+  Configuración de Caché: Sin caché
+
+  Endpoint Probado: /colores
+
+  Usuarios Concurrentes: 100
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
+
 ###### Resultados
+
 
 ##### Prueba 2: Elasticsearch Con Redis - Endpoint /animales
 
 ###### Configuración
+  Configuración de Caché: Con caché Redis
+
+  Endpoint Probado: /animales
+
+  Usuarios Concurrentes: 100
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
 
 ##### Prueba 3: Elasticsearch Con Memcached - Endpoint /animales
 
 ###### Configuración
+  Configuración de Caché: Con caché Memcached
+
+  Endpoint Probado: /animales
+
+  Usuarios Concurrentes: 100
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
 
 ##### Prueba 4: Elasticsearch Con Redis - Endpoint /colores
 
 ###### Configuración
+  Configuración de Caché: Con caché Redis
+
+  Endpoint Probado: /colores
+
+  Usuarios Concurrentes: 100
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
 
 ##### Prueba 5: Elasticsearch Con Memcached - Endpoint /colores
 
 ###### Configuración
+  Configuración de Caché: Con caché Memcached
 
+  Endpoint Probado: /colores
+
+  Usuarios Concurrentes: 100
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 ###### Resultados
 
 </details> 
