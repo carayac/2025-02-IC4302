@@ -18,4 +18,4 @@ dependencies:
   repository: https://unoplat.github.io/vespa-helm-charts
   version: 0.2.3
 digest: sha256:854d1cb460a5a6665a996980c2a8cfdce46dbdba6bf95054b959c91f4a1cfac2
-generated: "2025-09-17T14:01:38.5224441-06:00"
+generated: "2025-09-18T11:24:47.6309734-06:00"
