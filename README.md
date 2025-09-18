@@ -482,16 +482,17 @@ Pasos para correr las pruebas de carga:
 2. Gatling corre el archivo src/test/java/simulations/GatlingTest.Java; al principio del archivo se pueden encontrar las siguientes variables:
    
    int users = 100;
+   
    int time = 900;
 
    Estas se pueden modificar con la cantidad de usuarios con los que se desea hacer la carga y la duración de la prueba en segundos que se desea.
    
-3. En la terminal bash acceder a la carpeta TC1 dentro del repositorio:
+4. En la terminal bash acceder a la carpeta TC1 dentro del repositorio:
       ```
       cd 2025-02-IC4302/TC1
       ```
-4. Correr el comando "mvn gatling:test", esto ejecuta las pruebas y da actualizaciones en vivo en la terminal.
-5. Al finalizar la prueba, se guarda el resultado en target/gatling/<nombre de la prueba y fecha/index.html
+5. Correr el comando "mvn gatling:test", esto ejecuta las pruebas y da actualizaciones en vivo en la terminal.
+6. Al finalizar la prueba, se guarda el resultado en target/gatling/<nombre de la prueba y fecha/index.html
    Se puede abrir en internet y ver los datos de la prueba de carga. 
 
    
