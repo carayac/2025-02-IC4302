@@ -610,7 +610,9 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
 
 ###### Resultados
 ```cmd
-                              505 (OK=505    KO=0     )
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=505    KO=0     )
 > min response time                                      8 (OK=8      KO=-     )
 > max response time                                    527 (OK=527    KO=-     )
 > mean response time                                    16 (OK=16     KO=-     )
