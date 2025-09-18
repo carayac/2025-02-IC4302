@@ -602,7 +602,7 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
 
   Endpoint Probado: /animales
 
-  Usuarios Concurrentes: 100
+  Usuarios Concurrentes: 500
 
   Duración: 900 segundos (15 minutos)
 
