@@ -111,7 +111,88 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 <details>
   <summary>Desplegar información</summary> 
 
-  AQUI INFO
+Para Maria DB se utiliza la versión Open Source de MySQL. Esta configuración cumple con los requisitos solicitandos con:  
+- **Alta disponibilidad** mediante un clúster con un *primary* y dos *replicas*.  
+- **Persistencia de datos** con volúmenes de almacenamiento tanto para el nodo primario como para las replicas, estos con 8Gi de tamaño para el volumen.
+Al realizar estas modificaciones aseguramos **escalabilidad** al incrementar las replicas que de igual manera puede aumentarse segun la carga de lectura.  También se asegura la **alta disponibilidad** en caso de que el nodo primario falle, una réplica puede mantener el servicio.
+
+ ```yaml
+  primary:
+    persistence:
+      enabled: true
+      size: 8Gi
+  secondary: #Minimo 2 replicas
+    persistence:
+      replicas: 2 
+      enabled: true
+      size: 8Gi
+``` 
+- El **Monitoreo** se realiza mediante la exposición de métricas de Prometheus habilitando la exportación de métricas desde Maria DB y la integración con el operador en Prometheus.  
+ ```yaml
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+ ```
+
+### Mapeo de las bases documentales 
+ ```json
+{
+  "animals": {
+    "mappings": {
+      "properties": {
+        "average_speed_kmh": {
+          "type": "keyword"
+        },
+        "color": {
+          "type": "keyword"
+        },
+        "conservation_status": {
+          "type": "keyword"
+        },
+        "countries_found": {
+          "type": "text"
+        },
+        "diet": {
+          "type": "keyword"
+        },
+        "family": {
+          "type": "keyword"
+        },
+        "gestation_period_days": {
+          "type": "keyword"
+        },
+        "habitat": {
+          "type": "text"
+        },
+        "height_cm": {
+          "type": "keyword"
+        },
+        "lifespan_years": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "offspring_per_birth": {
+          "type": "keyword"
+        },
+        "predators": {
+          "type": "text"
+        },
+        "social_structure": {
+          "type": "text"
+        },
+        "top_speed_kmh": {
+          "type": "keyword"
+        },
+        "weight_kg": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+ ```
 
 </details> 
 
@@ -120,7 +201,28 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 <details>
   <summary>Desplegar información</summary> 
 
-  AQUI INFO
+Para la configuración de esta base de datos se habilita almacenamiento persistente para el nodo primario y un tamaño de 8Gi para el volumen de este.  También se habilita una unica replica con el mismo tamaño que el nodo primario.  
+Al realizar estas modificaciones aseguramos **escalabilidad** al incrementar las replicas que de igual manera puede aumentarse segun la carga de lectura.  También se asegura la **alta disponibilidad** en caso de que el nodo primario falle, una réplica puede mantener el servicio.  
+ ```yaml
+primary:
+    persistence:
+      enabled: true
+      size: 8Gi           
+  readReplicas:
+    replicaCount: 1
+    persistence:
+      enabled: true
+      size: 8Gi
+
+ ```
+
+- El **Monitoreo** se realiza mediante la exposición de métricas de Prometheus habilitando la exportación de métricas desde PostgreSQL y la integración con el operador en Prometheus.  
+ ```yaml
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+ ```
 
 </details> 
 
@@ -140,8 +242,16 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 <details>
   <summary>Desplegar información</summary> 
 
-  AQUI INFO
+### Memcached
+Para la realización de esta tarea se implementa Memcached, un sistema de caché en memoria distribuido, utilizado principalmente para acelerar el sistema al reducir la carga de la base de datos. Este también s eutiliza para exponer métricas de Memcached en formato Prometheus.
+ ```yaml
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+ ```
 
+Para la implementación de caché en todos los mos motores de bases de datos, se intenta recuperar el valor a partir de una clave, si este existe entonces sería un caché hit para que sea devuelto a la solicitud,  En caso de no encontrarse, se registra un caché miss y se procede a realizar la consulta directamente a la base de datos y posteriormente alamcena el resultado en Memcached.
 </details> 
 
 
