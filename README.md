@@ -569,4 +569,13 @@ https://helm.sh/docs/
 https://docs.docker.com/reference/cli/docker/image/
 https://requests.readthedocs.io/en/latest/
 https://docs.trychroma.com/docs/overview/introduction
+https://prometheus.io/docs/concepts/metric_types/
+https://prometheus.github.io/client_python/instrumenting/labels/
+https://prometheus.github.io/client_python/instrumenting/counter/
+https://prometheus.github.io/client_python/instrumenting/histogram/
+https://dkbalachandar.wordpress.com/2025/07/21/kubernetes-servicemonitor-explained-how-to-monitor-services-with-prometheus/
+https://flask.palletsprojects.com/en/stable/api/#flask.Flask.before_request
+https://flask.palletsprojects.com/en/stable/api/#flask.Flask.after_request
+https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/developer/getting-started.md#using-servicemonitors
+
 
