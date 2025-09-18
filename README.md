@@ -211,13 +211,34 @@ Para la implementación de caché en todos los mos motores de bases de datos, se
   Estas métricas las scrapea el operador de prometheus por medio de un service y un service monitor, donde será guardado en el scraping de prometheus.
   Si queremos ver si se encuentra el endpoint en la interfaz de prometheus, podemos hacer port-forward al poner los siguientes comandos en bash:
   ```
-  kubectl port-forward -n monitoring prometheus-monitoring-stack-prometheu-prometheus-0 9090:9090
+    kubectl port-forward -n monitoring prometheus-monitoring-stack-prometheu-prometheus-0 9090:9090
   ```
   Y luego podemos acceder a la interfaz en la siguiente dirección en nuestro navegador:
   ```
-  http://localhost:9090
+    http://localhost:9090
   ```
   Una vez dentro de la interfaz de prometheus, ingresamos a -> status -> targets, y buscamos el target que diga "flasktest". Si el scraping se hizo correctamente, aparecerá en estado "up".
+
+
+  Para ver los dashboards en grafana, primero debemos habilitar los dashboards que queremos ver en el proyecto en grafana.config -> values.yalm
+  ```yalm
+  dashboards:
+    elasticsearch:
+      name: elasticsearch
+      file: elasticsearch.json
+      enable: true
+  ```
+  Grafana está configurado para obtener como data source a prometheus. Para poder ver la interfaz de grafana, podemos hacer port-forward:
+  ```
+    kubectl port-forward pod/grafana-deployment-787b9688d8-dz29k 3000:3000 -n monitoring
+  ```
+  Y podemos acceder con las credenciales en:
+  ```
+    http://localhost:3000
+  ```
+  Credenciales: user -> admin, pass -> LTRnsh1AAWNZGA==
+
+  Una vez que ingresamos, buscamos la sección de dashboards. En la sección de dashboards ingresamos a "Monitoring", y ahí encontraremos el dashboard de la base de datos que queremos ver.
 
 </details> 
 
