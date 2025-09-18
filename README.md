@@ -373,6 +373,8 @@ Con la finalidad de generar el llenado de las bases de datos, el software ofrece
 2. Utiliza variables de entorno que permitan las parametrizacion de los datos necesarios para las bases de datos.
 3. Dedicar tiempo a entender la funcionalidad de implementar algunas bases de datos con varias replicas y sus nodos master, y comoe estos reaccionan ante fallos y disponibilidad de datos.
 4. Establecer un buen lapso de TTL (tiempo de expiracion en caché) que esté adaptado a su modelo y así garantizar consistencia en lo que se almacena en Memcached y lo que está en la base de datos.
+5. Unificar el formato de salida en los endpoints, a pesar de que cada base de datos maneje estructuras distintas, es importante que los endpoints devuelvan respuestas consistentes (por ejemplo, JSON con los mismos campos y nombres). Esto facilita la comparación de resultados y el análisis en pruebas de carga.
+6. Incluir flags que permitan habilitar o deshabilitar las variables de entorno de cada DB, de esta manera se puede ir probando el dataseeder completo sin tener que eliminar funciones y variables de otras bases que no están activas.
 
 # Conclusiones
 
@@ -380,6 +382,8 @@ Con la finalidad de generar el llenado de las bases de datos, el software ofrece
 2. Gracias a la variedad de datos incluidos, fue posible simular escenarios realistas y robustos dentro del entorno de desarrollo.
 3. Implementar Memcached es realmente sencillo de implementar y permite que el tiempo de respuesta sea bastante reducido gracias al almacenamiento en memoria.
 4. La implementación de nuevas bases de datos permitió conocer diferentes maneras de poder acceder a ellas y de configurarlas implementando los requisitos que cada una de ellas solicitaban.  Todo estó permitió el fortalecimeinto de habilidades dentro de las personas del equipo con herramientas antes desconocidas.
+5. El uso de endpoints unificados permitió abstraer las diferencias entre motores SQL y NoSQL, logrando que la API presentara los mismos rresultados.
+6. La configuración del dataseeder y bases de datos, con la posibilidad de activar o desactivarlas con sus respectivas variables de entorno, demostró ser útil para optimizar las pruebas y garantizar un desarrollo más controlado.
 
 
 # Referencias
