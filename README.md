@@ -600,7 +600,7 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
 
   Configuración de Caché: Sin caché
 
-  Endpoint Probado: /colores
+  Endpoint Probado: /animales
 
   Usuarios Concurrentes: 100
 
@@ -609,7 +609,28 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
   Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
+```cmd
+                              505 (OK=505    KO=0     )
+> min response time                                      8 (OK=8      KO=-     )
+> max response time                                    527 (OK=527    KO=-     )
+> mean response time                                    16 (OK=16     KO=-     )
+> std deviation                                         25 (OK=25     KO=-     )
+> response time 50th percentile                         13 (OK=13     KO=-     )
+> response time 75th percentile                         15 (OK=15     KO=-     )
+> response time 95th percentile                         24 (OK=24     KO=-     )
+> response time 99th percentile                         33 (OK=33     KO=-     )
+> mean requests/sec                                  0.562 (OK=0.562  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           505 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+```
 
+FOTO GRAFANAAA
+
+###### Conclusiones
 
 ##### Prueba 2: Elasticsearch Con Redis - Endpoint /animales
 
