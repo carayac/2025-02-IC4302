@@ -530,7 +530,209 @@ Pasos para correr las pruebas de carga:
 6. Al finalizar la prueba, se guarda el resultado en target/gatling/<nombre de la prueba y fecha/index.html
    Se puede abrir en internet y ver los datos de la prueba de carga. 
 
-   
+---
+
+## Pruebas de cargar realizadas
+En el presente apartado se desarrollan los tests realizados por cada motor de bases de datos.
+
+### Configuracion del entorno de pruebas
+#### Motores de bases de datos evaluados
+- MariaDB
+- PostgreSQL
+- Elasticsearch
+- ChromaDB
+- Vespa.ia
+
+#### Configuraciones de Cache por motor
+- Sin caché
+- Con Redis
+- Con Memcached
+
+#### Endpoints Evaluados
+- GET /animales
+- GET /colores
+
+### Pruebas por Motor de Base de Datos
+
+<details>
+  <summary>Maria DB</summary> 
+
+#### MariaDB
+##### Prueba 1: MariaDB Sin Caché - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 2: MariaDB Con Redis - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 3: MariaDB Con Memcached - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 4: MariaDB Con Redis - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 5: MariaDB Con Memcached - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+</details> 
+
+<details>
+  <summary>Elasticsearch</summary> 
+
+#### MariaDB
+##### Prueba 1: Elasticsearch Sin Caché - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 2: Elasticsearch Con Redis - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 3: Elasticsearch Con Memcached - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 4: Elasticsearch Con Redis - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 5: Elasticsearch Con Memcached - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+</details> 
+
+<details>
+  <summary>PostgreSQL</summary> 
+
+#### MariaDB
+##### Prueba 1: PostgreSQL Sin Caché - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 2: PostgreSQL Con Redis - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 3: PostgreSQL Con Memcached - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 4: PostgreSQL Con Redis - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 5: PostgreSQL Con Memcached - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+</details> 
+
+<details>
+  <summary>ChromaDB</summary> 
+
+#### MariaDB
+##### Prueba 1: ChromaDB Sin Caché - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 2: ChromaDB Con Redis - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 3: ChromaDB Con Memcached - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 4: ChromaDB Con Redis - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 5: ChromaDB Con Memcached - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+</details> 
+
+<details>
+  <summary>Vespa.ai</summary> 
+
+#### MariaDB
+##### Prueba 1: Vespa.ai Sin Caché - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 2: Vespa.ai Con Redis - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 3: Vespa.ai Con Memcached - Endpoint /animales
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 4: Vespa.ai Con Redis - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+##### Prueba 5: Vespa.ai Con Memcached - Endpoint /colores
+
+###### Configuración
+
+###### Resultados
+
+</details> 
 
 </details> 
 
