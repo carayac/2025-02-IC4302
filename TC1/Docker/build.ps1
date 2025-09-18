@@ -16,9 +16,9 @@ docker build -t "$Username/flask-example" .
 docker push "$Username/flask-example"
 
 # #-------------------------INICIO DATASEEDER ----------------------------
-# Set-Location ../DataSeeder
-# docker build -t "$Username/dataseeder" .
-# docker push "$Username/dataseeder"
+Set-Location ../DataSeeder
+docker build -t "$Username/dataseeder" .
+docker push "$Username/dataseeder"
 # #-------------------------FIN DATASEEDER ----------------------------
 
 #-------------------------CHROMADB ----------------------------
