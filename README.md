@@ -203,7 +203,21 @@ Para la implementación de caché en todos los mos motores de bases de datos, se
 <details>
   <summary>Desplegar información</summary> 
 
-  AQUI INFO
+  Con la finalidad de obtener las métricas específicas de las bases de datos, diferenciando entre el uso de cachés, ya sea memcached o redis, se crearon métricas personalizadas con labels que permite recolectar la información marcando estas diferencias. 
+  ```
+  peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['bd', 'cache'])
+  promedio_tiempo = Histogram('promedio_tiempo_consulta', 'Tiempo promedio de consultas', ['bd', 'cache'])
+  ```
+  Estas métricas las scrapea el operador de prometheus por medio de un service y un service monitor, donde será guardado en el scraping de prometheus.
+  Si queremos ver si se encuentra el endpoint en la interfaz de prometheus, podemos hacer port-forward al poner los siguientes comandos en bash:
+  ```
+  kubectl port-forward -n monitoring prometheus-monitoring-stack-prometheu-prometheus-0 9090:9090
+  ```
+  Y luego podemos acceder a la interfaz en la siguiente dirección en nuestro navegador:
+  ```
+  http://localhost:9090
+  ```
+  Una vez dentro de la interfaz de prometheus, ingresamos a -> status -> targets, y buscamos el target que diga "flasktest". Si el scraping se hizo correctamente, aparecerá en estado "up".
 
 </details> 
 
