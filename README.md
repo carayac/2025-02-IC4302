@@ -382,7 +382,7 @@ Con la finalidad de generar el llenado de las bases de datos, el software ofrece
 2. Gracias a la variedad de datos incluidos, fue posible simular escenarios realistas y robustos dentro del entorno de desarrollo.
 3. Implementar Memcached es realmente sencillo de implementar y permite que el tiempo de respuesta sea bastante reducido gracias al almacenamiento en memoria.
 4. La implementación de nuevas bases de datos permitió conocer diferentes maneras de poder acceder a ellas y de configurarlas implementando los requisitos que cada una de ellas solicitaban.  Todo estó permitió el fortalecimeinto de habilidades dentro de las personas del equipo con herramientas antes desconocidas.
-5. El uso de endpoints unificados permitió abstraer las diferencias entre motores SQL y NoSQL, logrando que la API presentara los mismos rresultados.
+5. El uso de endpoints unificados permitió abstraer las diferencias entre motores SQL y NoSQL, logrando que la API presentara los mismos resultados.
 6. La configuración del dataseeder y bases de datos, con la posibilidad de activar o desactivarlas con sus respectivas variables de entorno, demostró ser útil para optimizar las pruebas y garantizar un desarrollo más controlado.
 
 
@@ -393,5 +393,8 @@ https://docs.trychroma.com/
 https://www.elastic.co/docs/reference/elasticsearch/clients/python
 https://www.postgresql.org/docs/current/
 https://flask.palletsprojects.com/en/stable/
+https://www.sbert.net/index.html
 https://helm.sh/docs/
 https://docs.docker.com/reference/cli/docker/image/
+https://requests.readthedocs.io/en/latest/
+https://docs.trychroma.com/docs/overview/introduction
