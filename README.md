@@ -135,64 +135,7 @@ Al realizar estas modificaciones aseguramos **escalabilidad** al incrementar las
       enabled: true
  ```
 
-### Mapeo de las bases documentales 
- ```json
-{
-  "animals": {
-    "mappings": {
-      "properties": {
-        "average_speed_kmh": {
-          "type": "keyword"
-        },
-        "color": {
-          "type": "keyword"
-        },
-        "conservation_status": {
-          "type": "keyword"
-        },
-        "countries_found": {
-          "type": "text"
-        },
-        "diet": {
-          "type": "keyword"
-        },
-        "family": {
-          "type": "keyword"
-        },
-        "gestation_period_days": {
-          "type": "keyword"
-        },
-        "habitat": {
-          "type": "text"
-        },
-        "height_cm": {
-          "type": "keyword"
-        },
-        "lifespan_years": {
-          "type": "keyword"
-        },
-        "name": {
-          "type": "keyword"
-        },
-        "offspring_per_birth": {
-          "type": "keyword"
-        },
-        "predators": {
-          "type": "text"
-        },
-        "social_structure": {
-          "type": "text"
-        },
-        "top_speed_kmh": {
-          "type": "keyword"
-        },
-        "weight_kg": {
-          "type": "keyword"
-        }
-      }
-    }
-  }
- ```
+
 
 </details> 
 
@@ -371,7 +314,64 @@ La implementación sigue un modelo relacional normalizado, con separación de en
 
 ---
 
-
+### Mapeo de las bases documentales 
+ ```json
+{
+  "animals": {
+    "mappings": {
+      "properties": {
+        "average_speed_kmh": {
+          "type": "keyword"
+        },
+        "color": {
+          "type": "keyword"
+        },
+        "conservation_status": {
+          "type": "keyword"
+        },
+        "countries_found": {
+          "type": "text"
+        },
+        "diet": {
+          "type": "keyword"
+        },
+        "family": {
+          "type": "keyword"
+        },
+        "gestation_period_days": {
+          "type": "keyword"
+        },
+        "habitat": {
+          "type": "text"
+        },
+        "height_cm": {
+          "type": "keyword"
+        },
+        "lifespan_years": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "offspring_per_birth": {
+          "type": "keyword"
+        },
+        "predators": {
+          "type": "text"
+        },
+        "social_structure": {
+          "type": "text"
+        },
+        "top_speed_kmh": {
+          "type": "keyword"
+        },
+        "weight_kg": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+ ```
 
 # Endpoints de prueba 
 Base URL: http://localhost:30080/
