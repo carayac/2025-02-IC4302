@@ -7,7 +7,7 @@ import java.time.Duration;
 
 public class GatlingTest extends Simulation {
     int users = 100;
-    int time = 900; #tiempo en segundos
+    int time = 900; //tiempo en segundos
 
     HttpProtocolBuilder httpProtocol = http
         .baseUrl("http://localhost:30080") // 
