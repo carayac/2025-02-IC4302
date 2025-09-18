@@ -1,8 +1,40 @@
-from flask import Flask, jsonify
 import psycopg2
 import psycopg2.pool
 from os import getenv
+import os, json
 import sys
+import redis
+from flask import Flask, jsonify, request
+import time
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+
+app = Flask(__name__)
+
+# --- MÉTRICAS ---
+peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['bd', 'cache'])
+promedio_tiempo = Histogram('promedio_tiempo_consulta', 'Tiempo promedio de consultas', ['bd', 'cache'])
+cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['bd', 'cache'])
+cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
+
+BD_TYPE = "postgresql"
+CACHE_TYPE = "redis"
+
+@app.before_request
+def iniciar_tiempo():
+    request.start_time = time.time()
+    request.bd_type = BD_TYPE
+    request.cache_type = CACHE_TYPE
+
+@app.after_request
+def medir_peticiones(response):
+    tiempo = time.time() - request.start_time
+    promedio_tiempo.labels(bd=request.bd_type, cache=request.cache_type).observe(tiempo)
+    peticiones_http.labels(bd=request.bd_type, cache=request.cache_type).inc()
+    return response
+
+@app.route("/metrics")
+def metrics():
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 # Load environment variables
 POSTGRES = getenv("POSTGRES")
@@ -10,12 +42,36 @@ POSTGRES_USER = getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = getenv("POSTGRES_PASSWORD")
 POSTGRES_DB = getenv("POSTGRES_DB")
 
-app = Flask(__name__)
+# Variables para Redis
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+CACHE_TTL_SECONDS = 60
 
-#DATABASE CONNECTION
+redis_client = redis.Redis(host="databases-redis", port=6379, decode_responses=True)
+
+# Funciones de caché
+def cache_get(key):
+    try:
+        raw = redis_client.get(key)
+        if not raw:
+            cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+            return None
+
+        cache_hit.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return json.loads(raw)
+    except Exception:
+        cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return None
+
+def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
+    try:
+        redis_client.setex(key, ttl, json.dumps(value))
+    except Exception:
+        pass
+
+# Pool de conexiones PostgreSQL
 pg_pool = None
 
-# Initialize connection pool
 def init_pool():
     global pg_pool
     try:
@@ -32,22 +88,26 @@ def init_pool():
         print(f"Error creando pool PostgreSQL: {e}")
         sys.exit(1)
 
-# Get a connection from the pool
 def get_connection():
     global pg_pool
     if not pg_pool:
         init_pool()
     return pg_pool.getconn()
 
-# Release a connection back to the pool
 def release_connection(conn):
     global pg_pool
     if pg_pool and conn:
         pg_pool.putconn(conn)
 
-#list animals
+# list animals
 @app.route("/animales", methods=["GET"])
 def get_animales():
+    cache_key = "animales-nombre"
+
+    cached = cache_get(cache_key)
+    if cached is not None:
+        return jsonify({"source": "cache", "data": cached})
+
     conn = get_connection()
     try:
         if conn is None:
@@ -56,7 +116,10 @@ def get_animales():
         try:
             cur.execute("SELECT id, nombre FROM animal LIMIT 50;")
             rows = cur.fetchall()
-            return jsonify([{"id": r[0], "nombre": r[1]} for r in rows])
+            animales = [{"id": r[0], "nombre": r[1]} for r in rows]
+
+            cache_set(cache_key, animales, CACHE_TTL_SECONDS)
+            return jsonify({"source": "db", "data": animales})
         finally:
             cur.close()
     except Exception as e:
@@ -64,30 +127,39 @@ def get_animales():
     finally:
         release_connection(conn)
 
+# list colors with animals
+@app.route("/colores", methods=["GET"])
+def get_colores():
+    cache_key = "animales-colores"
 
+    cached = cache_get(cache_key)
+    if cached is not None:
+        return jsonify({"source": "cache", "data": cached})
 
-#ANIMAL WITH HIGHEST SPEED
-@app.route("/top-velocidad", methods=["GET"])
-def top_velocidad():
     conn = get_connection()
     try:
+        if conn is None:
+            return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
         cur = conn.cursor()
-        cur.execute("""
-            SELECT a.nombre, i.velocidad_max_kmh
-            FROM animal a
-            JOIN info_extra i ON a.id = i.animal_id
-            ORDER BY NULLIF(i.velocidad_max_kmh, '')::INT DESC
-            LIMIT 5;
-        """)
-        rows = cur.fetchall()
-        cur.close()
-        return jsonify([{"nombre": r[0], "velocidad_max_kmh": r[1]} for r in rows])
+        try:
+            cur.execute("""
+                SELECT a.color, STRING_AGG(DISTINCT a.nombre, ', ') AS animales
+                FROM animal a
+                GROUP BY a.color;
+            """)
+            rows = cur.fetchall()
+            colores = [{"animals": r[1], "color": r[0]} for r in rows]
+
+            cache_set(cache_key, colores, CACHE_TTL_SECONDS)
+            return jsonify({"source": "db", "data": colores})
+        finally:
+            cur.close()
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     finally:
         release_connection(conn)
 
-
-
-#HEALTH CHECK ENDPOINT
+# Health check
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy'}), 200
