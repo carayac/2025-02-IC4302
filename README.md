@@ -473,7 +473,28 @@ Con la finalidad de generar el llenado de las bases de datos, el software ofrece
 <details>
   <summary>Desplegar información</summary> 
 
-  AQUI INFO
+Se implementan pruebas de carga mediante la herramienta de código abierto Gatling. La misma se se integra en la tarea mediante plugins compilados por Maven, definidos en el archivo "pom.xml". 
+
+Pasos para correr las pruebas de carga:
+
+1. Si no tiene en su equipo Maven, instalarlo y añadirlo a variables de entorno, se puede seguir el siguiente ejemplo: https://www.youtube.com/watch?v=rl5-yyrmp-0
+   
+2. Gatling corre el archivo src/test/java/simulations/GatlingTest.Java; al principio del archivo se pueden encontrar las siguientes variables:
+   
+   int users = 100;
+   int time = 900;
+
+   Estas se pueden modificar con la cantidad de usuarios con los que se desea hacer la carga y la duración de la prueba en segundos que se desea.
+   
+3. En la terminal bash acceder a la carpeta TC1 dentro del repositorio:
+      ```
+      cd 2025-02-IC4302/TC1
+      ```
+4. Correr el comando "mvn gatling:test", esto ejecuta las pruebas y da actualizaciones en vivo en la terminal.
+5. Al finalizar la prueba, se guarda el resultado en target/gatling/<nombre de la prueba y fecha/index.html
+   Se puede abrir en internet y ver los datos de la prueba de carga. 
+
+   
 
 </details> 
 
