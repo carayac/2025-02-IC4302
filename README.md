@@ -542,6 +542,8 @@ Pasos para correr las pruebas de carga:
 4. Establecer un buen lapso de TTL (tiempo de expiracion en caché) que esté adaptado a su modelo y así garantizar consistencia en lo que se almacena en Memcached y lo que está en la base de datos.
 5. Unificar el formato de salida en los endpoints, a pesar de que cada base de datos maneje estructuras distintas, es importante que los endpoints devuelvan respuestas consistentes (por ejemplo, JSON con los mismos campos y nombres). Esto facilita la comparación de resultados y el análisis en pruebas de carga.
 6. Incluir flags que permitan habilitar o deshabilitar las variables de entorno de cada DB, de esta manera se puede ir probando el dataseeder completo sin tener que eliminar funciones y variables de otras bases que no están activas.
+7. Es importante seleccionar métricas relevantes para scrapear y mostrar en grafana, ya que esta es la manera más optimizada de recolectar información para una mejor observabilidad sin crear ruido de métricas innecesarias.
+8. Se debe mantener la consistencia en la configuración de los service y service monitors para evitar problemas y fallos a la hora de scrapear las métricas con prometheus. 
 
 # Conclusiones
 
@@ -551,6 +553,8 @@ Pasos para correr las pruebas de carga:
 4. La implementación de nuevas bases de datos permitió conocer diferentes maneras de poder acceder a ellas y de configurarlas implementando los requisitos que cada una de ellas solicitaban.  Todo estó permitió el fortalecimeinto de habilidades dentro de las personas del equipo con herramientas antes desconocidas.
 5. El uso de endpoints unificados permitió abstraer las diferencias entre motores SQL y NoSQL, logrando que la API presentara los mismos resultados.
 6. La configuración del dataseeder y bases de datos, con la posibilidad de activar o desactivarlas con sus respectivas variables de entorno, demostró ser útil para optimizar las pruebas y garantizar un desarrollo más controlado.
+7. Las métricas personalizadas dieron una visión clara de cómo los usuarios interactúan con la aplicación y qué tan eficiente es el uso de caché en cada base de datos.
+8. Grafana es un muy buen complemento de prometheus, ya que convierte métricas en paneles intuitivos e interactivos, que facilitan la comprensión de las métricas.
 
 
 # Referencias
@@ -565,3 +569,4 @@ https://helm.sh/docs/
 https://docs.docker.com/reference/cli/docker/image/
 https://requests.readthedocs.io/en/latest/
 https://docs.trychroma.com/docs/overview/introduction
+
