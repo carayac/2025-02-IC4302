@@ -3,7 +3,7 @@ config:
         enabled: true
         name: flasktest
         replicas: 10 #coloquen 10 replicas para la prueba de carga, se debe tener en cuenta la capacidad
-        image: helena0504/elasticsearch
+        image: carayacn/elasticsearch
         vespaEnable: false
         mariaDBEnable: false
         elasticSearchEnable: true
@@ -11,10 +11,10 @@ config:
         postgresEnable: false
 
     dataseeder: # Added configuration for DataSeeder
-        enabled: false
+        enabled: true
         name: dataseeder
         replicas: 1
-        image: helena0504/dataseeder # To charge with data the database
+        image: carayacn/dataseeder # To charge with data the database
         vespaEnable: false
         mariaDBEnable: false
         elasticSearchEnable: true
