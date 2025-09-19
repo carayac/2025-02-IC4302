@@ -6745,7 +6745,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "ElasticSearch",
+  "title": "ElasticSearch Sistema",
   "version": 106,
   "description": "ElasticSearch cluster stats"
 }
