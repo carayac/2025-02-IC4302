@@ -84,6 +84,90 @@
         "graphMode": "area",
         "justifyMode": "auto"
       }
+    },
+    {
+      "type": "graph",
+      "title": "Uso de CPU (%)",
+      "gridPos": {"x": 0, "y": 18, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_cpu_usage_percent{bd=\"chromadb\"}",
+          "legendFormat": "CPU"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Uso de Memoria (%)",
+      "gridPos": {"x": 12, "y": 18, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_memory_usage_percent{bd=\"chromadb\"}",
+          "legendFormat": "Memoria"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Uso de Disco (%)",
+      "gridPos": {"x": 0, "y": 26, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_disk_usage_percent{bd=\"chromadb\"}",
+          "legendFormat": "Disco"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Tráfico de Red - Enviados",
+      "gridPos": {"x": 12, "y": 26, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "rate(system_network_sent_bytes{bd=\"chromadb\"}[1m])",
+          "legendFormat": "Enviados"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Tráfico de Red - Recibidos",
+      "gridPos": {"x": 0, "y": 34, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "rate(system_network_received_bytes{bd=\"chromadb\"}[1m])",
+          "legendFormat": "Recibidos"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "stat",
+      "title": "Conexiones Abiertas",
+      "gridPos": {"x": 12, "y": 34, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_open_connections{bd=\"chromadb\"}",
+          "legendFormat": "Conexiones"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}",
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      }
     }
   ]
 }

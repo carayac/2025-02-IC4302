@@ -3,3 +3,4 @@ chromadb
 sentence-transformers
 redis
 prometheus_client
+psutil

@@ -1,3 +1,4 @@
 flask
 elasticsearch==8.13.0
 prometheus_client
+psutil

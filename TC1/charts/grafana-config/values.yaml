@@ -45,3 +45,7 @@ dashboards:
     name: vespa
     file: vespa.json
     enable: true
+  vespabd:
+    name: vespabd
+    file: vespabd.json
+    enable: true

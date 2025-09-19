@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: elasticsearch-exporter
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    any: true  # Esto permite descubrir servicios en TODOS los namespaces
+  selector:
+    matchLabels:
+      app: prometheus-elasticsearch-exporter
+  endpoints:
+    - port: metrics  
+      interval: 30s
+      path: /metrics

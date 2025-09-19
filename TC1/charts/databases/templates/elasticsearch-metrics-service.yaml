@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-exporter
+  namespace: default
+spec:
+  selector:
+    app: prometheus-elasticsearch-exporter
+  ports:
+    - name: metrics
+      port: 9114    
+      targetPort: 9114

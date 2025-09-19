@@ -2,3 +2,4 @@ flask
 chromadb
 sentence-transformers
 prometheus_client
+psutil

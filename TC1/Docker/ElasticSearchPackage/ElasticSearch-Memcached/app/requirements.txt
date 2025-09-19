@@ -2,3 +2,4 @@ flask
 elasticsearch==8.13.0
 pymemcache
 prometheus_client
+psutil

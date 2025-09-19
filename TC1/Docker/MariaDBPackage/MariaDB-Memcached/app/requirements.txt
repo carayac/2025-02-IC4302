@@ -2,3 +2,4 @@ flask
 pymemcache
 mysql-connector-python
 prometheus_client
+psutil

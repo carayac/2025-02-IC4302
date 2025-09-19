@@ -6,19 +6,62 @@ import json
 import sys
 import time
 import redis
+import psutil
+import threading, time
+from prometheus_client import Gauge
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 
-# ------------------ Config Flask ------------------
 app = Flask(__name__)
-
-# ------------------ Métricas Prometheus ------------------
-peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['bd', 'cache'])
-promedio_tiempo = Histogram('promedio_tiempo_consulta', 'Tiempo promedio', ['bd', 'cache'])
-cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['bd', 'cache'])
-cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
 
 BD_TYPE = "elasticsearch"
 CACHE_TYPE = "redis"
+
+# --- MÉTRICAS HTTP / CACHE ---
+peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['bd', 'cache'])
+promedio_tiempo = Histogram('promedio_tiempo_consulta', 'Tiempo promedio de consultas', ['bd', 'cache'])
+cache_hit = Counter('total_cache_hit', 'Total Cache Hit', ['bd', 'cache'])
+cache_miss = Counter('total_cache_miss', 'Total Cache Miss', ['bd', 'cache'])
+
+# --- MÉTRICAS DE SISTEMA ---
+cpu_usage = Gauge('system_cpu_usage_percent', 'Uso de CPU (%)', ['bd', 'cache'])
+mem_usage = Gauge('system_memory_usage_percent', 'Uso de Memoria (%)', ['bd', 'cache'])
+disk_usage = Gauge('system_disk_usage_percent', 'Uso de Disco (%)', ['bd', 'cache'])
+net_sent = Gauge('system_network_sent_bytes', 'Bytes enviados por red', ['bd', 'cache'])
+net_recv = Gauge('system_network_received_bytes', 'Bytes recibidos por red', ['bd', 'cache'])
+open_conns = Gauge('system_open_connections', 'Conexiones de red abiertas', ['bd', 'cache'])
+file_descriptors = Gauge('system_file_descriptors', 'Descriptores de archivos abiertos', ['bd', 'cache'])
+iops = Gauge('system_iops', 'IOPS simuladas', ['bd', 'cache'])
+queries_per_sec = Gauge('vespa_queries_per_second', 'Consultas por segundo', ['bd', 'cache'])
+query_response_time = Gauge('vespa_query_response_time_seconds', 'Tiempo de respuesta promedio de consultas', ['bd', 'cache'])
+thread_pool_active = Gauge('vespa_thread_pool_active', 'Threads activos en el pool', ['bd', 'cache'])
+
+def actualizar_metricas_sistema(intervalo=5):
+    while True:
+        # Actualizar métricas con labels (solo bd y cache)
+        cpu_usage.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(psutil.cpu_percent(interval=None))
+        mem_usage.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(psutil.virtual_memory().percent)
+        disk_usage.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(psutil.disk_usage('/').percent)
+        
+        net = psutil.net_io_counters()
+        net_sent.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(net.bytes_sent)
+        net_recv.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(net.bytes_recv)
+        
+        open_conns.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(len(psutil.net_connections()))
+        
+        try:
+            file_descriptors.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(psutil.Process().num_fds())
+        except:
+            file_descriptors.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(0)
+        
+        iops.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(0) 
+        queries_per_sec.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(0)  
+        query_response_time.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(0)  
+        thread_pool_active.labels(bd=BD_TYPE, cache=CACHE_TYPE).set(0)  
+        
+        time.sleep(intervalo)
+
+# Iniciar el thread de métricas del sistema
+threading.Thread(target=actualizar_metricas_sistema, daemon=True).start()
 
 @app.before_request
 def iniciar_tiempo():

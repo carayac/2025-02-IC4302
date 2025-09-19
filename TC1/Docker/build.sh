@@ -38,28 +38,28 @@ docker login
 # cd ../..
 
 #------------------------- ELASTICSEARCH ----------------------------
-cd ElasticSearchPackage/Elasticsearch
-docker build -t "$USERNAME/elasticsearch" .
-docker push "$USERNAME/elasticsearch"
+# cd ElasticSearchPackage/Elasticsearch
+# docker build -t "$USERNAME/elasticsearch" .
+# docker push "$USERNAME/elasticsearch"
 #cd ../ElasticSearch-Memcached
 #docker build -t "$USERNAME/elasticsearch-memcached" .
 #docker push "$USERNAME/elasticsearch-memcached"
 #cd ../ElasticSearch-Redis
 #docker build -t "$USERNAME/elasticsearch-redis" .
 #docker push "$USERNAME/elasticsearch-redis"
-cd ../..
+# cd ../..
 
 #------------------------- MARIA DB ----------------------------
-# cd MariaDBPackage/MariaDB
-# docker build -t "$USERNAME/mariadb" .
-# docker push "$USERNAME/mariadb"
+#  cd MariaDBPackage/MariaDB
+#  docker build -t "$USERNAME/mariadb" .
+#  docker push "$USERNAME/mariadb"
 # cd ../MariaDB-Memcached
 # docker build -t "$USERNAME/mariadb-memcached" .
 # docker push "$USERNAME/mariadb-memcached"
 # cd ../MariaDB-Redis
 # docker build -t "$USERNAME/mariadb-redis" .
 # docker push "$USERNAME/mariadb-redis"
-# cd ../..
+#  cd ../..
 
 # #------------------------- POSTGRESQL ----------------------------
 # cd PostgreSQLPackage/PostgreSQL
@@ -74,15 +74,15 @@ cd ../..
 # cd ../..
 
 # #------------------------- VESPA AI ----------------------------
-# cd VespaAIPackage/VespaAI
-# docker build -t "$USERNAME/vespaai" .
-# docker push "$USERNAME/vespaai"
+ cd VespaAIPackage/VespaAI
+ docker build -t "$USERNAME/vespaai" .
+ docker push "$USERNAME/vespaai"
 # cd ../VespaAI-Memcached
 # docker build -t "$USERNAME/vespaai-memcached" .
 # docker push "$USERNAME/vespaai-memcached"
 # cd ../VespaAI-Redis
 # docker build -t "$USERNAME/vespaai-redis" .
 # docker push "$USERNAME/vespaai-redis"
-# cd ../..
+ cd ../..
 
 echo "Todas las imágenes fueron construidas y subidas correctamente."

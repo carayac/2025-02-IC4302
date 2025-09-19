@@ -1,5 +1,5 @@
 mariadb:
-  enabled: false
+  enabled: true
   auth: #Convertir en variables de entorno
     rootPassword: "root123"
     database: "ic4302_db"
@@ -27,30 +27,32 @@ elasticsearch:
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
-
+      additionalLabels:
+        release: prometheus 
 
 elastic:
-  enabled: true
+  enabled: false
   version: 8.6.1
-  replicas: 1 #minimo 3 datanodes
+  replicas: 1
   name: ic4302
 kibana:
   version: 8.6.1
   replicas: 1
   name: ic4302
 prometheus-elasticsearch-exporter:
-  env:
-    ES_USERNAME: elastic
-  extraEnvSecrets:
-    ES_PASSWORD:
-      secret: ic4302-es-elastic-user
-      key: elastic
+  enabled: true 
   es:
-    uri: http://ic4302-es-http:9200
+    uri: http://ic4302-es-http.default.svc.cluster.local:9200 
+    basicAuth:
+      username: elastic
+      existingSecret: ic4302-es-elastic-user
+      passwordKey: elastic
     cluster_settings: true
   serviceMonitor:
     enabled: true
     namespace: monitoring
+    additionalLabels:
+      release: prometheus 
 
 
 redis:
@@ -104,7 +106,7 @@ chromadb:
 
 
 vespa:
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: vespaengine/vespa

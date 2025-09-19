@@ -1,3 +1,5 @@
+# monitoring-stack/values.yaml
+
 grafana:
   namespaceOverride: monitoring
   operator:
@@ -14,6 +16,7 @@ grafana:
     persistence:
       enabled: true
       size: 5Gi
+
 prometheus:
   namespaceOverride: monitoring
   prometheus:
@@ -24,4 +27,21 @@ prometheus:
   alertmanager:
     persistence:
       enabled: true
-      size: 5Gi  
+      size: 5Gi
+
+prometheus-elasticsearch-exporter:
+  enabled: true
+  namespaceOverride: monitoring
+  es:
+    uri: http://ic4302-es-http.default.svc.cluster.local:9200
+    basicAuth:
+      username: elastic  
+  existingSecret: ic4302-es-elastic-user
+  existingSecretPasswordKey: elastic  
+  extraArgs:
+    - --es.all
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+    additionalLabels:
+      release: prometheus
