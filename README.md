@@ -780,7 +780,7 @@ FOTO GRAFANAAA
 <details>
   <summary>ChromaDB</summary> 
 
-#### MariaDB
+#### Chroma
 ##### Prueba 1: ChromaDB Sin Caché - Endpoint /animales
 
 ###### Configuración
@@ -796,6 +796,35 @@ FOTO GRAFANAAA
 ##### Prueba 3: ChromaDB Con Memcached - Endpoint /animales
 
 ###### Configuración
+
+```cmd
+
+Simulation GatlingTest completed in 898 seconds
+Parsing log file(s)...
+Parsing log file(s) done in 0s.
+Generating reports...
+
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        500 (OK=493    KO=7     )
+> min response time                                      3 (OK=3      KO=1870  )
+> max response time                                   3636 (OK=143    KO=3636  )
+> mean response time                                    44 (OK=8      KO=2579  )
+> std deviation                                        308 (OK=9      KO=508   )
+> response time 50th percentile                          6 (OK=6      KO=2518  )
+> response time 75th percentile                          8 (OK=8      KO=2669  )
+> response time 95th percentile                         26 (OK=18     KO=3373  )
+> response time 99th percentile                       2209 (OK=41     KO=3583  )
+> mean requests/sec                                  0.557 (OK=0.549  KO=0.008 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           493 ( 99%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 7 (  1%)
+---- Errors --------------------------------------------------------------------
+> status.find.is(200), but actually found 500                         7 (100,0%)
+================================================================================
+```
 
 ###### Resultados
 
