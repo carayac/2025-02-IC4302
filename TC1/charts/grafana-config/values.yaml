@@ -5,13 +5,21 @@ dashboards:
     name: elasticsearch
     file: elasticsearch.json
     enable: true
+  elasticsearchBD:
+    name: elasticsearchBD
+    file: elasticsearchBD.json
+    enable: true
   redis:
     name: redis
     file: redis.json
-    enable: false
+    enable: true
   mariadb:
     name: mariadb
     file: mariadb.json
+    enable: true
+  mariadbBD:
+    name: mariadbBD
+    file: mariadbBD.json
     enable: true
   mongodb:
     name: mongodb
@@ -24,6 +32,10 @@ dashboards:
   postgresql:
     name: postgresql
     file: postgresql.json
+    enable: true
+  postgresqlBD:
+    name: postgresqlBD
+    file: postgresqlBD.json
     enable: true
   chroma:
     name: chroma

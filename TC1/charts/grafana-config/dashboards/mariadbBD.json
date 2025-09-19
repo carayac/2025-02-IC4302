@@ -1,0 +1,41 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Total Peticiones HTTP",
+      "datasource": "${DS_PROMETHEUS}",
+      "targets": [
+        {
+          "expr": "total_peticiones_http{bd=\"mariadb\"}",
+          "legendFormat": "{{cache}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {"x":0,"y":0,"w":12,"h":6}
+    },
+    {
+      "type": "graph",
+      "title": "Promedio Tiempo Consulta",
+      "datasource": "${DS_PROMETHEUS}",
+      "targets": [
+        {
+          "expr": "promedio_tiempo_consulta_bucket{bd=\"mariadb\"}",
+          "legendFormat": "{{cache}}",
+          "refId": "B"
+        }
+      ],
+      "gridPos": {"x":12,"y":0,"w":12,"h":6}
+    }
+  ],
+  "title": "Flask Metrics",
+  "tags": ["flask", "mariadb"]
+}
