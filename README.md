@@ -175,7 +175,53 @@ primary:
 <details>
   <summary>Desplegar información</summary> 
 
-  AQUI INFO
+Para la configuración de este clúster de Elasticsearch se estavblece un nodo máster encargado de la coordinación y gestión del clúster. Además, se configuró un conjunto de nodos de tipo data, con un mínimo de tres instancias las cuales son especificadas en el values.yaml, cada una con 2 Gi y 1 CPU asignados.    
+Al realizar estas modificaciones aseguramos **escalabilidad** al incrementar las replicas que de igual manera puede aumentarse segun la carga de lectura.  También se asegura la **alta disponibilidad** en caso de que el nodo primario falle, una réplica puede mantener el servicio.  
+ ```yaml
+nodeSets:
+  - name: master
+    count: 1
+    config:
+      node.roles: ["master"]
+        containers:
+        - name: elasticsearch
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 1
+            limits:
+              memory: 2Gi
+
+  - name: data
+    count: {{ .Values.elastic.replicas }}
+    config:
+    podTemplate:
+        containers:
+        - name: elasticsearch
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 1
+            limits:
+              memory: 2Gi
+ ```
+
+ ```yaml
+elastic:
+  enabled: false
+  version: 8.6.1
+  replicas: 3 #minimo 3 datanodes
+ ```
+
+- El **Monitoreo** se realiza mediante la exposición de métricas de Prometheus habilitando la exportación de métricas desde elastic y la integración con el operador en Prometheus.  
+ ```yaml
+elasticsearch:
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: true
+      namespace: "monitoring"
+ ```
 
 </details> 
 
