@@ -685,7 +685,7 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
   <summary>Elasticsearch</summary> 
 
 #### Elasticsearch
-##### Prueba 1: Elasticsearch Sin Caché 
+## Prueba 1: Elasticsearch Sin Caché 
 Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
 Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de los endpoints en cada iteración.
 
@@ -734,8 +734,9 @@ Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de l
 
 
 ###### Conclusiones
+Cuando probamos el sistema con 100 usuarios consultando /animales y /colores sin caché, todas las peticiones fueron exitosas, lo cual es muy bueno. La mayoría de las respuestas fueron rápidas (menos de 800 ms), pero algunas tardaron más (hasta 2426 ms). Esto nos enseña que el sistema funciona bien en la mayoría de los casos, pero que ciertas consultas pueden ser más lentas. Como aprendizaje, podemos pensar en usar caché para hacer que todas las respuestas sean más rápidas y consistentes.
 
-##### Prueba 2: Elasticsearch Con Redis 
+## Prueba 2: Elasticsearch Con Redis 
 
 ###### Configuración
 
@@ -781,9 +782,10 @@ Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de l
 
 
 ###### Conclusiones
+Al probar Redis, todas las peticiones también fueron exitosas, pero los tiempos de respuesta fueron más largos de lo esperado. Esto nos muestra que, aunque Redis está presente, necesitamos revisar cómo estamos usando el caché, cómo se generan las claves y cómo se consultan. Es un aprendizaje valioso: no basta con tener un caché, hay que configurarlo y usarlo correctamente para aprovecharlo.
 
 
-##### Prueba 3: Elasticsearch Con Memcached
+## Prueba 3: Elasticsearch Con Memcached
 
 ###### Configuración
 
@@ -827,10 +829,12 @@ Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de l
 ================================================================================
 ```
 <img width="1899" height="863" alt="P2" src="https://github.com/user-attachments/assets/50e49cd7-fd20-4d63-8355-a27de2f72177" />
+
 ##### Conclusiones
 
+Con Memcached, las respuestas fueron mucho más rápidas: la mayoría se resolvió en menos de 800 ms y la mediana fue de solo 9 ms. Esto nos enseña que un caché bien configurado puede acelerar significativamente las consultas. Hubo un pequeño fallo por timeout, lo que nos recuerda que siempre es bueno monitorear la red y la saturación, pero en general la prueba fue muy positiva.
 
-##### Prueba 4: Elasticsearch Con Redis
+## Prueba 4: Elasticsearch Con Redis
 Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
 Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
 Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
@@ -876,9 +880,9 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 <img width="1862" height="828" alt="Screenshot 2025-09-19 170331" src="https://github.com/user-attachments/assets/47b00b98-9436-44ca-84c9-44b6fc4b3b1d" />
 
 ##### Conclusiones
+En otra prueba con Redis, vimos que los tiempos de respuesta seguían siendo largos, aunque todas las peticiones fueron exitosas. Esto nos da un aprendizaje importante: debemos revisar la lógica de caché y cómo Redis maneja las consultas, y compararlo con otras opciones como Memcached, que en pruebas anteriores mostró mejor rendimiento. Lo bueno es que el sistema sigue funcionando correctamente y podemos aprender a optimizarlo.
 
-
-##### Prueba 5: Elasticsearch Con Memcached
+## Prueba 5: Elasticsearch Con Memcached
 
 ###### Configuración
 
@@ -899,36 +903,29 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
   
 ###### Resultados
 ```cmd
-
-Simulation GatlingTest completed in 898 seconds
-Parsing log file(s)...
-Parsing log file(s) done in 0s.
-Generating reports...
-
 ================================================================================
 ---- Global Information --------------------------------------------------------
-> request count                                        500 (OK=493    KO=7     )
-> min response time                                      3 (OK=3      KO=1870  )
-> max response time                                   3636 (OK=143    KO=3636  )
-> mean response time                                    44 (OK=8      KO=2579  )
-> std deviation                                        308 (OK=9      KO=508   )
-> response time 50th percentile                          6 (OK=6      KO=2518  )
-> response time 75th percentile                          8 (OK=8      KO=2669  )
-> response time 95th percentile                         26 (OK=18     KO=3373  )
-> response time 99th percentile                       2209 (OK=41     KO=3583  )
-> mean requests/sec                                  0.557 (OK=0.549  KO=0.008 )
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    934 (OK=934    KO=-     )
+> mean response time                                    24 (OK=24     KO=-     )
+> std deviation                                         74 (OK=74     KO=-     )
+> response time 50th percentile                         10 (OK=10     KO=-     )
+> response time 75th percentile                         15 (OK=15     KO=-     )
+> response time 95th percentile                         54 (OK=54     KO=-     )
+> response time 99th percentile                        439 (OK=439    KO=-     )
+> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
 ---- Response Time Distribution ------------------------------------------------
-> t < 800 ms                                           493 ( 99%)
-> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t < 800 ms                                          1452 (100%)
+> 800 ms <= t < 1200 ms                                  3 (  0%)
 > t >= 1200 ms                                           0 (  0%)
-> failed                                                 7 (  1%)
----- Errors --------------------------------------------------------------------
-> status.find.is(200), but actually found 500                         7 (100,0%)
+> failed                                                 0 (  0%)
 ================================================================================
 ```
 <img width="1852" height="830" alt="P3" src="https://github.com/user-attachments/assets/c9a371fa-d4a7-4ee6-a141-0b3e1a1be443" />
 
 ##### Conclusiones
+Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápidas (menos de 800 ms), con una mediana de 10 ms. Esto nos demuestra que un buen sistema de caché puede hacer que el usuario tenga una experiencia rápida y estable, incluso con mucha carga. Además, la estabilidad y la baja variabilidad nos enseñan que la implementación de Memcached es confiable y muy útil para entornos con muchos usuarios.
 
 </details> 
 
@@ -991,26 +988,7 @@ Generating reports...
 
 
 ###### Resultados
-```cmd
-================================================================================
----- Global Information --------------------------------------------------------
-> request count                                       1455 (OK=1455   KO=0     )
-> min response time                                      3 (OK=3      KO=-     )
-> max response time                                    934 (OK=934    KO=-     )
-> mean response time                                    24 (OK=24     KO=-     )
-> std deviation                                         74 (OK=74     KO=-     )
-> response time 50th percentile                         10 (OK=10     KO=-     )
-> response time 75th percentile                         15 (OK=15     KO=-     )
-> response time 95th percentile                         54 (OK=54     KO=-     )
-> response time 99th percentile                        439 (OK=439    KO=-     )
-> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
----- Response Time Distribution ------------------------------------------------
-> t < 800 ms                                          1452 (100%)
-> 800 ms <= t < 1200 ms                                  3 (  0%)
-> t >= 1200 ms                                           0 (  0%)
-> failed                                                 0 (  0%)
-================================================================================
-```
+
 
 ##### Prueba 4: ChromaDB Con Redis - Endpoint /colores
 
