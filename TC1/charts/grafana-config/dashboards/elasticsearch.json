@@ -16,7 +16,7 @@
       "title": "Total Peticiones HTTP",
       "targets": [
         {
-          "expr": "sum by (cache) (total_peticiones_http{bd=\"elasticsearch\"})",
+          "expr": "sum by (cache) (total_peticiones_http_total{bd=\"elasticsearch\"})",
           "legendFormat": "{{cache}}"
         }
       ],
@@ -38,7 +38,7 @@
       "title": "Cache Hits",
       "targets": [
         {
-          "expr": "sum(total_cache_hit{bd=\"elasticsearch\"})",
+          "expr": "sum(total_cache_hit_total{bd=\"elasticsearch\"})",
           "legendFormat": "Hits"
         }
       ],
@@ -49,7 +49,7 @@
       "title": "Cache Misses",
       "targets": [
         {
-          "expr": "sum(total_cache_miss{bd=\"elasticsearch\"})",
+          "expr": "sum(total_cache_miss_total{bd=\"elasticsearch\"})",
           "legendFormat": "Misses"
         }
       ],

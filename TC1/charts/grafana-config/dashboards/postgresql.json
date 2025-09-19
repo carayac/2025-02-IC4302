@@ -16,7 +16,7 @@
       "title": "Total Peticiones HTTP",
       "targets": [
         {
-          "expr": "sum by (cache) (total_peticiones_http{bd=\"postgresql\"})",
+          "expr": "sum by (cache) (total_peticiones_http_total{bd=\"postgresql\"})",
           "legendFormat": "{{cache}}"
         }
       ],
@@ -38,7 +38,7 @@
       "title": "Cache Hits",
       "targets": [
         {
-          "expr": "sum(total_cache_hit{bd=\"postgresql\"})",
+          "expr": "sum(total_cache_hit_total{bd=\"postgresql\"})",
           "legendFormat": "Hits"
         }
       ],
@@ -49,7 +49,7 @@
       "title": "Cache Misses",
       "targets": [
         {
-          "expr": "sum(total_cache_miss{bd=\"postgresql\"})",
+          "expr": "sum(total_cache_miss_total{bd=\"postgresql\"})",
           "legendFormat": "Misses"
         }
       ],
