@@ -1,6 +1,6 @@
 mariadb:
   enabled: true
-  auth: #Convertir en variables de entorno
+  auth:
     rootPassword: "root123"
     database: "ic4302_db"
     username: "app_user"
@@ -9,9 +9,8 @@ mariadb:
     persistence:
       enabled: true
       size: 8Gi
-  secondary: #Minimo 2 replicas
+  secondary:
     persistence:
-      replicas: 2 
       enabled: true
       size: 8Gi
   metrics:
@@ -19,7 +18,8 @@ mariadb:
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
-
+      additionalLabels:
+        release: prometheus
 
 elasticsearch:
   metrics:
