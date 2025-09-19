@@ -2,8 +2,8 @@ config:
     flask: # Principal configuration for Flask app representing the app
         enabled: true
         name: flasktest
-        replicas: 10 #coloquen 10 replicas para la prueba de carga, se debe tener en cuenta la capacidad
-        image: carayacn/elasticsearch
+        replicas: 1 #coloquen 10 replicas para la prueba de carga, se debe tener en cuenta la capacidad
+        image: helena0504/elasticsearch
         vespaEnable: false
         mariaDBEnable: false
         elasticSearchEnable: true
@@ -11,10 +11,10 @@ config:
         postgresEnable: false
 
     dataseeder: # Added configuration for DataSeeder
-        enabled: true
+        enabled: false
         name: dataseeder
         replicas: 1
-        image: carayacn/dataseeder # To charge with data the database
+        image: helena0504/dataseeder # To charge with data the database
         vespaEnable: false
         mariaDBEnable: false
         elasticSearchEnable: true
