@@ -49,10 +49,10 @@ def get_connection():
         conn = Elasticsearch(
             [f"http://{ES_HOST}:{ES_PORT}"],
             basic_auth=(ES_USER, ES_PASSWORD)
-        ) # Crear conexión a Elasticsearch
-        if not conn.ping(): #chequear si la conexión es exitosa
+        ) # crea la conexión a Elasticsearch
+        if not conn.ping(): #si la conexión es exitosa
             raise Exception("No se pudo conectar a Elasticsearch")
-        return conn # Devolver la conexión
+        return conn # devuelva la conexión creada
     except Exception as e:
         print(f"Error creando conexión Elasticsearch: {e}")
         sys.exit(1)
@@ -61,11 +61,11 @@ def get_connection():
 # List all the animals
 @app.route("/animales", methods=["GET"])
 def get_animales():
-    conn = get_connection() # Obtener conexión a Elasticsearch
+    conn = get_connection() # obtiene la conexión a Elasticsearch
     try:
         res = conn.search(index=INDEX_NAME, size=50, query={"match_all": {}})
         animals = [{"id": hit["_id"], "nombre": hit["_source"]["name"]} for hit in res["hits"]["hits"]]
-        return jsonify(animals)# Devolver la lista de animales
+        return jsonify(animals)# edvuelve la lista de animales
     except Exception as e:
         if e.info and 'index_not_found_exception' in e.info['error']['type']:
             return jsonify({"error": "Debe cargar la base de datos"}), 404
@@ -73,7 +73,7 @@ def get_animales():
 
 @app.route("/colores", methods=["GET"])
 def get_colores():
-    conn = get_connection()  # Obtener conexión a Elasticsearch
+    conn = get_connection()  # obtiene conexión a Elasticsearch
     #query to aggregate animals by color and get their names
     query = {
         "size": 0,
