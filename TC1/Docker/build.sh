@@ -39,11 +39,11 @@ docker login
 
 #------------------------- ELASTICSEARCH ----------------------------
 cd ElasticSearchPackage/Elasticsearch
-#docker build -t "$USERNAME/elasticsearch" .
-#docker push "$USERNAME/elasticsearch"
-cd ../ElasticSearch-Memcached
-docker build -t "$USERNAME/elasticsearch-memcached" .
-docker push "$USERNAME/elasticsearch-memcached"
+docker build -t "$USERNAME/elasticsearch" .
+docker push "$USERNAME/elasticsearch"
+#cd ../ElasticSearch-Memcached
+#docker build -t "$USERNAME/elasticsearch-memcached" .
+#docker push "$USERNAME/elasticsearch-memcached"
 #cd ../ElasticSearch-Redis
 #docker build -t "$USERNAME/elasticsearch-redis" .
 #docker push "$USERNAME/elasticsearch-redis"

@@ -54,7 +54,7 @@ prometheus-elasticsearch-exporter:
 
 
 redis:
-  enabled: false
+  enabled: true
   metrics:
     enabled: true
     serviceMonitor:

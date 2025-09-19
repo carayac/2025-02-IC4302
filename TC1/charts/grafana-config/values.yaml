@@ -12,7 +12,7 @@ dashboards:
   mariadb:
     name: mariadb
     file: mariadb.json
-    enable: false
+    enable: true
   mongodb:
     name: mongodb
     file: mongodb.json
@@ -24,12 +24,12 @@ dashboards:
   postgresql:
     name: postgresql
     file: postgresql.json
-    enable: false
+    enable: true
   chroma:
     name: chroma
     file: chroma.json
-    enable: false
+    enable: true
   vespa:
     name: vespa
     file: vespa.json
-    enable: false
+    enable: true

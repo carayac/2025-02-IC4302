@@ -3,7 +3,7 @@ config:
         enabled: true
         name: flasktest
         replicas: 10 #coloquen 10 replicas para la prueba de carga, se debe tener en cuenta la capacidad
-        image: helena0504/elasticsearch-memcached
+        image: helena0504/elasticsearch
         vespaEnable: false
         mariaDBEnable: false
         elasticSearchEnable: true

@@ -14,6 +14,7 @@
     {
       "type": "graph",
       "title": "Total Peticiones HTTP",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 10},
       "targets": [
         {
           "expr": "sum by (cache) (total_peticiones_http_total{bd=\"elasticsearch\"})",
@@ -25,6 +26,7 @@
     {
       "type": "graph",
       "title": "Latencia Promedio",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 10},
       "targets": [
         {
           "expr": "rate(promedio_tiempo_consulta_sum{bd=\"elasticsearch\"}[1m]) / rate(promedio_tiempo_consulta_count{bd=\"elasticsearch\"}[1m])",
@@ -34,39 +36,55 @@
       "datasource": "${DS_PROMETHEUS}"
     },
     {
-      "type": "singlestat",
+      "type": "stat",
       "title": "Cache Hits",
+      "gridPos": {"x": 0, "y": 10, "w": 12, "h": 8},
       "targets": [
         {
-          "expr": "sum(total_cache_hit_total{bd=\"elasticsearch\"})",
-          "legendFormat": "Hits"
+          "expr": "sum by (cache) (total_cache_hit_total{bd=\"elasticsearch\"})",
+          "legendFormat": "{{cache}}",
+          "format": "none"
         }
       ],
-      "datasource": "${DS_PROMETHEUS}"
+      "datasource": "${DS_PROMETHEUS}",
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
     },
     {
-      "type": "singlestat",
+      "type": "stat",
       "title": "Cache Misses",
+      "gridPos": {"x": 12, "y": 10, "w": 12, "h": 8},
       "targets": [
         {
-          "expr": "sum(total_cache_miss_total{bd=\"elasticsearch\"})",
-          "legendFormat": "Misses"
+          "expr": "sum by (cache) (total_cache_miss_total{bd=\"elasticsearch\"})",
+          "legendFormat": "{{cache}}",
+          "format": "none"
         }
       ],
-      "datasource": "${DS_PROMETHEUS}"
-    },
-    {
-      "type": "table",
-      "title": "Estado del Servicio",
-      "targets": [
-        {
-          "expr": "up{job=\"flasktest\"}",
-          "legendFormat": "Estado"
-        }
-      ],
-      "datasource": "${DS_PROMETHEUS}"
+      "datasource": "${DS_PROMETHEUS}",
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "orientation": "horizontal",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
     }
   ]
 }
-
 
