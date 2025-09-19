@@ -42,23 +42,10 @@
       "targets": [
         {
           "expr": "sum by (cache) (total_cache_hit_total{bd=\"elasticsearch\"})",
-          "legendFormat": "{{cache}}",
-          "format": "none"
+          "legendFormat": "{{cache}}"
         }
       ],
-      "datasource": "${DS_PROMETHEUS}",
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": ["lastNotNull"],
-          "fields": ""
-        },
-        "orientation": "horizontal",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
-      }
+      "datasource": "${DS_PROMETHEUS}"
     },
     {
       "type": "stat",
@@ -67,24 +54,108 @@
       "targets": [
         {
           "expr": "sum by (cache) (total_cache_miss_total{bd=\"elasticsearch\"})",
-          "legendFormat": "{{cache}}",
-          "format": "none"
+          "legendFormat": "{{cache}}"
         }
       ],
-      "datasource": "${DS_PROMETHEUS}",
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": ["lastNotNull"],
-          "fields": ""
-        },
-        "orientation": "horizontal",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
-      }
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Uso de CPU (%)",
+      "gridPos": {"x": 0, "y": 18, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_cpu_usage_percent",
+          "legendFormat": "CPU"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Uso de Memoria (%)",
+      "gridPos": {"x": 12, "y": 18, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_memory_usage_percent",
+          "legendFormat": "Memoria"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Uso de Disco (%)",
+      "gridPos": {"x": 0, "y": 26, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_disk_usage_percent",
+          "legendFormat": "Disco"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Tráfico de Red - Enviados",
+      "gridPos": {"x": 12, "y": 26, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "rate(system_network_sent_bytes[1m])",
+          "legendFormat": "Enviados"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Tráfico de Red - Recibidos",
+      "gridPos": {"x": 0, "y": 34, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "rate(system_network_received_bytes[1m])",
+          "legendFormat": "Recibidos"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "stat",
+      "title": "Conexiones Abiertas",
+      "gridPos": {"x": 12, "y": 34, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_open_connections",
+          "legendFormat": "Conexiones"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "stat",
+      "title": "Descriptores de Archivos",
+      "gridPos": {"x": 0, "y": 42, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_file_descriptors",
+          "legendFormat": "FDs"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "stat",
+      "title": "IOPS",
+      "gridPos": {"x": 12, "y": 42, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "system_iops",
+          "legendFormat": "IOPS"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
     }
   ]
 }
+
 
