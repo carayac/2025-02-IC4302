@@ -50,9 +50,9 @@ docker login
 # cd ../..
 
 #------------------------- MARIA DB ----------------------------
-#  cd MariaDBPackage/MariaDB
-#  docker build -t "$USERNAME/mariadb" .
-#  docker push "$USERNAME/mariadb"
+ cd MariaDBPackage/MariaDB
+ docker build -t "$USERNAME/mariadb" .
+ docker push "$USERNAME/mariadb"
 # cd ../MariaDB-Memcached
 # docker build -t "$USERNAME/mariadb-memcached" .
 # docker push "$USERNAME/mariadb-memcached"
@@ -74,9 +74,9 @@ docker login
 # cd ../..
 
 # #------------------------- VESPA AI ----------------------------
- cd VespaAIPackage/VespaAI
- docker build -t "$USERNAME/vespaai" .
- docker push "$USERNAME/vespaai"
+#  cd VespaAIPackage/VespaAI
+#  docker build -t "$USERNAME/vespaai" .
+#  docker push "$USERNAME/vespaai"
 # cd ../VespaAI-Memcached
 # docker build -t "$USERNAME/vespaai-memcached" .
 # docker push "$USERNAME/vespaai-memcached"

@@ -4,8 +4,8 @@ config:
         name: flasktest
         replicas: 1 #coloquen 10 replicas para la prueba de carga, se debe tener en cuenta la capacidad
         image: helena0504/vespaai
-        vespaEnable: true
-        mariaDBEnable: false
+        vespaEnable: false
+        mariaDBEnable: true
         elasticSearchEnable: false
         chromaDBEnable: false
         postgresEnable: false
@@ -15,8 +15,8 @@ config:
         name: dataseeder
         replicas: 1
         image: helena0504/dataseeder # To charge with data the database
-        vespaEnable: true
-        mariaDBEnable: false
+        vespaEnable: false
+        mariaDBEnable: true
         elasticSearchEnable: false
         chromaDBEnable: false
         postgresEnable: false
