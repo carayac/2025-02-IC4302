@@ -1,6 +1,6 @@
 mariadb:
   enabled: true
-  auth:
+  auth: 
     rootPassword: "root123"
     database: "ic4302_db"
     username: "app_user"
@@ -9,8 +9,9 @@ mariadb:
     persistence:
       enabled: true
       size: 8Gi
-  secondary:
+  secondary: 
     persistence:
+      replicas: 2 
       enabled: true
       size: 8Gi
   metrics:
@@ -18,8 +19,6 @@ mariadb:
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
-      additionalLabels:
-        release: prometheus
 
 elasticsearch:
   metrics:

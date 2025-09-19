@@ -1,5 +1,5 @@
 {
-  "title": "PostgreSQL Metrics",
+  "title": "PostgreSQL App Metrics",
   "templating": {
     "list": [
       {

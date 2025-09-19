@@ -1526,7 +1526,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Vespa Sistema",
+  "title": "Vespa Workload",
   "uid": "SUawqQoWk",
   "version": 2,
   "description": "Vespa engine dashboard"

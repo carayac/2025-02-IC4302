@@ -6,7 +6,7 @@ import io.gatling.javaapi.http.*;
 import java.time.Duration;
 
 public class GatlingTest extends Simulation {
-    int users = 500;
+    int users = 100;
     int time = 900; //tiempo en segundos
 
     HttpProtocolBuilder httpProtocol = http

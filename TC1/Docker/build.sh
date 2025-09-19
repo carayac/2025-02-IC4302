@@ -20,10 +20,10 @@ docker login
 # cd ..
 
 # #------------------------- DATASEEDER ----------------------------
-# cd DataSeeder
-# docker build -t "$USERNAME/dataseeder" .
-# docker push "$USERNAME/dataseeder"
-# cd ..
+cd DataSeeder
+docker build -t "$USERNAME/dataseeder" .
+docker push "$USERNAME/dataseeder"
+cd ..
 
 # #------------------------- CHROMADB ----------------------------
 # cd ChromaDBPackage/ChromaDB
@@ -53,13 +53,13 @@ docker login
  cd MariaDBPackage/MariaDB
  docker build -t "$USERNAME/mariadb" .
  docker push "$USERNAME/mariadb"
-# cd ../MariaDB-Memcached
-# docker build -t "$USERNAME/mariadb-memcached" .
-# docker push "$USERNAME/mariadb-memcached"
-# cd ../MariaDB-Redis
-# docker build -t "$USERNAME/mariadb-redis" .
-# docker push "$USERNAME/mariadb-redis"
-#  cd ../..
+cd ../MariaDB-Memcached
+docker build -t "$USERNAME/mariadb-memcached" .
+docker push "$USERNAME/mariadb-memcached"
+cd ../MariaDB-Redis
+docker build -t "$USERNAME/mariadb-redis" .
+docker push "$USERNAME/mariadb-redis"
+ cd ../..
 
 # #------------------------- POSTGRESQL ----------------------------
 # cd PostgreSQLPackage/PostgreSQL

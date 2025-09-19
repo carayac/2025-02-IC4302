@@ -8042,7 +8042,7 @@
     "type": "timepicker"
   },
   "timezone": "browser",
-  "title": "MariaDB Sistema",
+  "title": "MariaDB Workload",
   "uid": "pLr5jCJGz",
   "version": 48,
   "description": "MariaDB Workload metrics "

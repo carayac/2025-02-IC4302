@@ -1,5 +1,5 @@
 {
-  "title": "MariaDB Metrics",
+  "title": "MariaDB App Metrics",
   "templating": {
     "list": [
       {

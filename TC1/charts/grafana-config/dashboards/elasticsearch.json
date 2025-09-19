@@ -1,5 +1,5 @@
 {
-  "title": "Elasticsearch Metrics",
+  "title": "Elasticsearch App Metrics",
   "templating": {
     "list": [
       {

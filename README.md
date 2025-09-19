@@ -607,32 +607,107 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
 ##### Prueba 1: MariaDB Sin Caché - Endpoint /animales
 
 ###### Configuración
+  Configuración de Caché: Sin caché
+
+  Endpoint Probado: /animales
+
+  Usuarios Concurrentes: 500
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=5      KO=500   )
+> min response time                                     62 (OK=62     KO=1007  )
+> max response time                                  35484 (OK=80     KO=35484 )
+> mean response time                                  5051 (OK=71     KO=5101  )
+> std deviation                                       5537 (OK=6      KO=5542  )
+> response time 50th percentile                       1042 (OK=70     KO=1043  )
+> response time 75th percentile                       7152 (OK=75     KO=7152  )
+> response time 95th percentile                      19345 (OK=79     KO=19346 )
+> response time 99th percentile                      19534 (OK=80     KO=19535 )
+> mean requests/sec                                  0.559 (OK=0.006  KO=0.554 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                               500 ( 99%)
+---- Errors --------------------------------------------------------------------
+> j.i.IOException: Premature close                                  500 (100.0%)
+================================================================================
+```
 
 ##### Prueba 2: MariaDB Con Redis - Endpoint /animales
 
 ###### Configuración
+  Configuración de Caché: Con caché Redis
+
+  Endpoint Probado: /animales
+
+  Usuarios Concurrentes: 100
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
+```cmd
+```
 
 ##### Prueba 3: MariaDB Con Memcached - Endpoint /animales
 
 ###### Configuración
+  Configuración de Caché: Con caché Memcached
+
+  Endpoint Probado: /animales
+
+  Usuarios Concurrentes: 100
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
+```cmd
+```
 
 ##### Prueba 4: MariaDB Con Redis - Endpoint /colores
 
 ###### Configuración
+  Configuración de Caché: Con caché Redis
+
+  Endpoint Probado: /animales
+
+  Usuarios Concurrentes: 700
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
+```cmd
+```
 
 ##### Prueba 5: MariaDB Con Memcached - Endpoint /colores
 
 ###### Configuración
+  Configuración de Caché: Con caché Memcached
+
+  Endpoint Probado: /animales
+
+  Usuarios Concurrentes: 700
+
+  Duración: 900 segundos (15 minutos)
+
+  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
+```cmd
+```
 
 </details> 
 
