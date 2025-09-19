@@ -282,7 +282,7 @@ Para la implementación de caché en todos los mos motores de bases de datos, se
   ```
     http://localhost:3000
   ```
-  Credenciales: user -> admin, pass -> LTRnsh1AAWNZGA==
+  Credenciales: user -> admin, pass ->La encontraran en Secret -> grafana-admin-credentials -> GF_SECURITY_ADMIN_PASSWORD
 
   Una vez que ingresamos, buscamos la sección de dashboards. En la sección de dashboards ingresamos a "Monitoring", y ahí encontraremos el dashboard de la base de datos que queremos ver.
 
@@ -685,19 +685,28 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
   <summary>Elasticsearch</summary> 
 
 #### Elasticsearch
-##### Prueba 1: Elasticsearch Sin Caché - Endpoint /animales
+##### Prueba 1: Elasticsearch Sin Caché 
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de los endpoints en cada iteración.
 
 ###### Configuración
 
-  Configuración de Caché: Sin caché
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-  Endpoint Probado: /animales
+## Endpoints utilizados
+- `/animales`
+- `/colores`
 
-  Usuarios Concurrentes: 500
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
 ```cmd
@@ -705,84 +714,221 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
 ---- Global Information --------------------------------------------------------
 > request count                                        505 (OK=505    KO=0     )
 > min response time                                      8 (OK=8      KO=-     )
-> max response time                                    527 (OK=527    KO=-     )
-> mean response time                                    16 (OK=16     KO=-     )
-> std deviation                                         25 (OK=25     KO=-     )
-> response time 50th percentile                         13 (OK=13     KO=-     )
-> response time 75th percentile                         15 (OK=15     KO=-     )
-> response time 95th percentile                         24 (OK=24     KO=-     )
-> response time 99th percentile                         33 (OK=33     KO=-     )
-> mean requests/sec                                  0.562 (OK=0.562  KO=-     )
+> max response time                                   3116 (OK=3116   KO=-     )
+> mean response time                                   180 (OK=180    KO=-     )
+> std deviation                                        467 (OK=467    KO=-     )
+> response time 50th percentile                         22 (OK=22     KO=-     )
+> response time 75th percentile                         45 (OK=45     KO=-     )
+> response time 95th percentile                       1295 (OK=1295   KO=-     )
+> response time 99th percentile                       2426 (OK=2426   KO=-     )
+> mean requests/sec                                  0.567 (OK=0.567  KO=-     )
 ---- Response Time Distribution ------------------------------------------------
-> t < 800 ms                                           505 (100%)
-> 800 ms <= t < 1200 ms                                  0 (  0%)
-> t >= 1200 ms                                           0 (  0%)
+> t < 800 ms                                           462 ( 91%)
+> 800 ms <= t < 1200 ms                                 16 (  3%)
+> t >= 1200 ms                                          27 (  5%)
 > failed                                                 0 (  0%)
 ================================================================================
 ```
 
-FOTO GRAFANAAA
+<img width="1858" height="858" alt="P1" src="https://github.com/user-attachments/assets/645f6335-bd40-4051-8b6a-69bfab5a1641" />
+
 
 ###### Conclusiones
 
-##### Prueba 2: Elasticsearch Con Redis - Endpoint /animales
+##### Prueba 2: Elasticsearch Con Redis 
 
 ###### Configuración
-  Configuración de Caché: Con caché Redis
 
-  Endpoint Probado: /animales
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-  Usuarios Concurrentes: 100
+## Endpoints utilizados
+- `/animales`
+- `/colores`
 
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=505    KO=0     )
+> min response time                                    307 (OK=307    KO=-     )
+> max response time                                  12844 (OK=12844  KO=-     )
+> mean response time                                  8117 (OK=8117   KO=-     )
+> std deviation                                        867 (OK=867    KO=-     )
+> response time 50th percentile                       8085 (OK=8085   KO=-     )
+> response time 75th percentile                       8167 (OK=8167   KO=-     )
+> response time 95th percentile                       8606 (OK=8606   KO=-     )
+> response time 99th percentile                       9941 (OK=9941   KO=-     )
+> mean requests/sec                                  0.542 (OK=0.542  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                         500 ( 99%)
+> failed                                                 0 (  0%)
+================================================================================
+```
 
-##### Prueba 3: Elasticsearch Con Memcached - Endpoint /animales
+<img width="1864" height="772" alt="Screenshot 2025-09-19 163008" src="https://github.com/user-attachments/assets/23233cf6-9e11-4650-954c-3172cf29bb06" />
+
+
+###### Conclusiones
+
+
+##### Prueba 3: Elasticsearch Con Memcached
 
 ###### Configuración
-  Configuración de Caché: Con caché Memcached
 
-  Endpoint Probado: /animales
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-  Usuarios Concurrentes: 100
+## Endpoints utilizados
+- `/animales`
+- `/colores`
 
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=504    KO=1     )
+> min response time                                      3 (OK=3      KO=60009 )
+> max response time                                  60009 (OK=6013   KO=60009 )
+> mean response time                                   355 (OK=237    KO=60009 )
+> std deviation                                       2772 (OK=789    KO=0     )
+> response time 50th percentile                          9 (OK=9      KO=60009 )
+> response time 75th percentile                         51 (OK=50     KO=60009 )
+> response time 95th percentile                       1436 (OK=1377   KO=60009 )
+> response time 99th percentile                       4961 (OK=4950   KO=60009 )
+> mean requests/sec                                  0.504 (OK=0.503  KO=0.001 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           465 ( 92%)
+> 800 ms <= t < 1200 ms                                 11 (  2%)
+> t >= 1200 ms                                          28 (  6%)
+> failed                                                 1 (  0%)
+---- Errors --------------------------------------------------------------------
+> Request timeout to localhost/127.0.0.1:30080 after 60000 ms         1 (100.0%)
+================================================================================
+```
+<img width="1899" height="863" alt="P2" src="https://github.com/user-attachments/assets/50e49cd7-fd20-4d63-8355-a27de2f72177" />
+##### Conclusiones
 
-##### Prueba 4: Elasticsearch Con Redis - Endpoint /colores
+
+##### Prueba 4: Elasticsearch Con Redis
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
+Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
 
 ###### Configuración
-  Configuración de Caché: Con caché Redis
 
-  Endpoint Probado: /colores
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
 
-  Usuarios Concurrentes: 100
-
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                    202 (OK=202    KO=-     )
+> max response time                                  15666 (OK=15666  KO=-     )
+> mean response time                                  8171 (OK=8171   KO=-     )
+> std deviation                                        660 (OK=660    KO=-     )
+> response time 50th percentile                       8091 (OK=8091   KO=-     )
+> response time 75th percentile                       8169 (OK=8169   KO=-     )
+> response time 95th percentile                       8527 (OK=8527   KO=-     )
+> response time 99th percentile                      10380 (OK=10380  KO=-     )
+> mean requests/sec                                  1.573 (OK=1.573  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  0%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                        1450 (100%)
+> failed                                                 0 (  0%)
+================================================================================
+```
+<img width="1862" height="828" alt="Screenshot 2025-09-19 170331" src="https://github.com/user-attachments/assets/47b00b98-9436-44ca-84c9-44b6fc4b3b1d" />
 
-##### Prueba 5: Elasticsearch Con Memcached - Endpoint /colores
+##### Conclusiones
+
+
+##### Prueba 5: Elasticsearch Con Memcached
 
 ###### Configuración
-  Configuración de Caché: Con caché Memcached
 
-  Endpoint Probado: /colores
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
 
-  Usuarios Concurrentes: 100
-
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
+  
 ###### Resultados
+```cmd
+
+Simulation GatlingTest completed in 898 seconds
+Parsing log file(s)...
+Parsing log file(s) done in 0s.
+Generating reports...
+
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        500 (OK=493    KO=7     )
+> min response time                                      3 (OK=3      KO=1870  )
+> max response time                                   3636 (OK=143    KO=3636  )
+> mean response time                                    44 (OK=8      KO=2579  )
+> std deviation                                        308 (OK=9      KO=508   )
+> response time 50th percentile                          6 (OK=6      KO=2518  )
+> response time 75th percentile                          8 (OK=8      KO=2669  )
+> response time 95th percentile                         26 (OK=18     KO=3373  )
+> response time 99th percentile                       2209 (OK=41     KO=3583  )
+> mean requests/sec                                  0.557 (OK=0.549  KO=0.008 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           493 ( 99%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 7 (  1%)
+---- Errors --------------------------------------------------------------------
+> status.find.is(200), but actually found 500                         7 (100,0%)
+================================================================================
+```
+<img width="1852" height="830" alt="P3" src="https://github.com/user-attachments/assets/c9a371fa-d4a7-4ee6-a141-0b3e1a1be443" />
+
+##### Conclusiones
 
 </details> 
 
@@ -842,36 +988,29 @@ FOTO GRAFANAAA
 
 ###### Configuración
 
-```cmd
 
-Simulation GatlingTest completed in 898 seconds
-Parsing log file(s)...
-Parsing log file(s) done in 0s.
-Generating reports...
-
-================================================================================
----- Global Information --------------------------------------------------------
-> request count                                        500 (OK=493    KO=7     )
-> min response time                                      3 (OK=3      KO=1870  )
-> max response time                                   3636 (OK=143    KO=3636  )
-> mean response time                                    44 (OK=8      KO=2579  )
-> std deviation                                        308 (OK=9      KO=508   )
-> response time 50th percentile                          6 (OK=6      KO=2518  )
-> response time 75th percentile                          8 (OK=8      KO=2669  )
-> response time 95th percentile                         26 (OK=18     KO=3373  )
-> response time 99th percentile                       2209 (OK=41     KO=3583  )
-> mean requests/sec                                  0.557 (OK=0.549  KO=0.008 )
----- Response Time Distribution ------------------------------------------------
-> t < 800 ms                                           493 ( 99%)
-> 800 ms <= t < 1200 ms                                  0 (  0%)
-> t >= 1200 ms                                           0 (  0%)
-> failed                                                 7 (  1%)
----- Errors --------------------------------------------------------------------
-> status.find.is(200), but actually found 500                         7 (100,0%)
-================================================================================
-```
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    934 (OK=934    KO=-     )
+> mean response time                                    24 (OK=24     KO=-     )
+> std deviation                                         74 (OK=74     KO=-     )
+> response time 50th percentile                         10 (OK=10     KO=-     )
+> response time 75th percentile                         15 (OK=15     KO=-     )
+> response time 95th percentile                         54 (OK=54     KO=-     )
+> response time 99th percentile                        439 (OK=439    KO=-     )
+> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                          1452 (100%)
+> 800 ms <= t < 1200 ms                                  3 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+```
 
 ##### Prueba 4: ChromaDB Con Redis - Endpoint /colores
 
