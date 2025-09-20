@@ -1059,7 +1059,7 @@ Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de l
 ###### Conclusiones
 Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpoints /animales y /colores en Vespa AI sin caché, todas las peticiones fueron exitosas, lo cual es positivo. La mayoría de las respuestas fueron muy rápidas (menos de 20 ms en promedio) y ninguna superó los 800 ms, mostrando un rendimiento consistente. Esto nos enseña que el sistema responde de manera eficiente bajo carga sin necesidad de caché. Como aprendizaje, podemos considerar el uso de caché para reforzar aún más la estabilidad y asegurar tiempos de respuesta todavía más predecibles en escenarios de mayor concurrencia.
 
-## Prueba 2: Vespa AI Con Redis CAMBIAR¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
+## Prueba 2: Vespa AI Con Redis
 
 ###### Configuración
 
@@ -1083,30 +1083,31 @@ Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpo
 ```cmd
 ================================================================================
 ---- Global Information --------------------------------------------------------
-> request count                                        505 (OK=505    KO=0     )
-> min response time                                     25 (OK=25     KO=-     )
-> max response time                                  25058 (OK=25058  KO=-     )
-> mean response time                                  4116 (OK=4116   KO=-     )
-> std deviation                                       1668 (OK=1668   KO=-     )
-> response time 50th percentile                       4021 (OK=4021   KO=-     )
-> response time 75th percentile                       4028 (OK=4028   KO=-     )
-> response time 95th percentile                       4053 (OK=4053   KO=-     )
-> response time 99th percentile                       4186 (OK=4186   KO=-     )
-> mean requests/sec                                   0.56 (OK=0.56   KO=-     )
+> request count                                        505 (OK=504    KO=1     )
+> min response time                                     58 (OK=58     KO=60006 )
+> max response time                                  60006 (OK=57541  KO=60006 )
+> mean response time                                  9347 (OK=9247   KO=60006 )
+> std deviation                                      11800 (OK=11593  KO=0     )
+> response time 50th percentile                       4022 (OK=4022   KO=60006 )
+> response time 75th percentile                       5186 (OK=5175   KO=60006 )
+> response time 95th percentile                      36644 (OK=36469  KO=60006 )
+> response time 99th percentile                      55395 (OK=55368  KO=60006 )
+> mean requests/sec                                   0.56 (OK=0.559  KO=0.001 )
 ---- Response Time Distribution ------------------------------------------------
 > t < 800 ms                                             5 (  1%)
 > 800 ms <= t < 1200 ms                                  0 (  0%)
-> t >= 1200 ms                                         500 ( 99%)
-> failed                                                 0 (  0%)
+> t >= 1200 ms                                         499 ( 99%)
+> failed                                                 1 (  0%)
+---- Errors --------------------------------------------------------------------
+> Request timeout to localhost/127.0.0.1:30080 after 60000 ms         1 (100,0%)
 ================================================================================
 ```
 
-<img width="1331" height="638" alt="image" src="https://github.com/user-attachments/assets/ea7dbb89-4993-4d5d-8917-bfc6855acf4f" />
+<img width="1347" height="654" alt="image" src="https://github.com/user-attachments/assets/287097ed-dbe2-4ba0-93c1-0c17ee928960" />
 
 
 ###### Conclusiones
-Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpoints /animales y /colores en Vespa AI con Redis, todas las peticiones fueron exitosas, lo cual es positivo. Sin embargo, la mayoría de las respuestas fueron mucho más lentas que en la prueba sin caché: el tiempo promedio fue de más de 4 segundos y casi todas las consultas superaron los 1200 ms. Esto nos enseña que, en este escenario, el uso de Redis no mejoró el rendimiento, sino que introdujo una mayor latencia. Como aprendizaje, es importante revisar la configuración del caché y validar si realmente está siendo utilizado de manera efectiva, ya que en su estado actual afecta negativamente la velocidad de respuesta.
-
+Cuando probamos el sistema con 100 usuarios realizando 5 peticiones aleatorias a los endpoints /animales y /colores en Vespa AI con Redis, observamos que casi todas las solicitudes fueron exitosas (504 de 505), lo cual indica una estabilidad aceptable. Sin embargo, los tiempos de respuesta fueron significativamente altos: la media fue de aproximadamente 9,3 segundos y el 99% de las respuestas superaron los 36 segundos, con un caso extremo que alcanzó el timeout de 60 segundos. Solo el 1% de las peticiones respondió en menos de 800 ms. Esto indica que, aunque el sistema soporta la concurrencia, presenta problemas de rendimiento bajo carga elevada y algunos tiempos de espera extremos. Como aprendizaje, sería recomendable optimizar el uso de Redis y revisar la gestión de recursos en Vespa AI para reducir los picos de latencia y mejorar la consistencia en los tiempos de respuesta.
 
 ## Prueba 3: Vespa AI Con Memcached
 
