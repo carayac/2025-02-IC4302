@@ -604,80 +604,266 @@ En el presente apartado se desarrollan los tests realizados por cada motor de ba
   <summary>Maria DB</summary> 
 
 #### MariaDB
-##### Prueba 1: MariaDB Sin Caché - Endpoint /animales
+##### Prueba 1: MariaDB Sin Caché 
 
 ###### Configuración
-  Configuración de Caché: Sin caché
 
-  Endpoint Probado: /animales
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 500
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-  Usuarios Concurrentes: 500
+## Endpoints utilizados
+- `/animales`
+- `/colores`
 
-  Duración: 900 segundos (15 minutos)
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
-  Patrón de Carga: Ramp-up gradual de usuarios
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=5      KO=500   )
+> min response time                                      4 (OK=356    KO=4     )
+> max response time                                  21449 (OK=379    KO=21449 )
+> mean response time                                   562 (OK=362    KO=564   )
+> std deviation                                       1058 (OK=9      KO=1063  )
+> response time 50th percentile                        357 (OK=358    KO=152   )
+> response time 75th percentile                       1031 (OK=359    KO=1031  )
+> response time 95th percentile                       1044 (OK=375    KO=1044  )
+> response time 99th percentile                       1081 (OK=378    KO=1081  )
+> mean requests/sec                                  0.562 (OK=0.006  KO=0.556 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                               500 ( 99%)
+---- Errors --------------------------------------------------------------------
+> j.i.IOException: Premature close                                  500 (100.0%)
+================================================================================
+```
 
-##### Prueba 2: MariaDB Con Redis - Endpoint /animales
+<img width="1858" height="858" alt="Prueba1-MariaDB" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/Prueba1-MariaDB.png" />
+
+
+###### Conclusiones
+Podemos ver que al probar con la base de datos sin caché, hay distintas características que se pueden notar en el gráfico. Primero, se ve que el número de peticiones experimenta una subida lineal, conforme van llegando más peticiones de gatling. También se puede notar que la latencia es variable. Claramente, no hay datos de la caché. Es muy interesante ver como va variando el workload una vez que inician y terminan las consultas. Por ejemplo, el disco tiende a mantenerse estable, mientras que la CPU y la conexión a red no son estables, y tienen picos cuando aumentan o disminuyen las peticiones.
+
+
+
+##### Prueba 2: MariaDB Con Redis
 
 ###### Configuración
-  Configuración de Caché: Con caché Redis
 
-  Endpoint Probado: /animales
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 500
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-  Usuarios Concurrentes: 100
+## Endpoints utilizados
+- `/animales`
+- `/colores`
 
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=5      KO=500   )
+> min response time                                     48 (OK=48     KO=2007  )
+> max response time                                   6095 (OK=74     KO=6095  )
+> mean response time                                  2768 (OK=60     KO=2795  )
+> std deviation                                        792 (OK=11     KO=748   )
+> response time 50th percentile                       3024 (OK=61     KO=3025  )
+> response time 75th percentile                       3043 (OK=71     KO=3043  )
+> response time 95th percentile                       4064 (OK=73     KO=4064  )
+> response time 99th percentile                       5075 (OK=74     KO=5075  )
+> mean requests/sec                                   0.56 (OK=0.006  KO=0.555 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                               500 ( 99%)
+---- Errors --------------------------------------------------------------------
+> j.i.IOException: Premature close                                  500 (100.0%)
+================================================================================
 
-##### Prueba 3: MariaDB Con Memcached - Endpoint /animales
+```
+
+<img width="1858" height="858" alt="Prueba2-MariaDB" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/Prueba2-MariaDB.png" />
+
+
+###### Conclusiones
+En el caso de redis, podemos ver la subida de actividad, y luego una disminución. Durante la actividad, hubo mucho movimiento e CPU, memoria y tráfico de red, pero no tanto de disco. Podemos concluir que el disco no es muy usado durante estas pruebas, y que dependen más de CPU y memoria. Es decir, que será más rápido que acceder al disco.
+
+
+##### Prueba 3: MariaDB Con Memcached
 
 ###### Configuración
-  Configuración de Caché: Con caché Memcached
 
-  Endpoint Probado: /animales
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 500
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-  Usuarios Concurrentes: 100
+## Endpoints utilizados
+- `/animales`
+- `/colores`
 
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=5      KO=500   )
+> min response time                                      4 (OK=356    KO=4     )
+> max response time                                  21449 (OK=379    KO=21449 )
+> mean response time                                   562 (OK=362    KO=564   )
+> std deviation                                       1058 (OK=9      KO=1063  )
+> response time 50th percentile                        357 (OK=358    KO=152   )
+> response time 75th percentile                       1031 (OK=359    KO=1031  )
+> response time 95th percentile                       1044 (OK=375    KO=1044  )
+> response time 99th percentile                       1081 (OK=378    KO=1081  )
+> mean requests/sec                                  0.562 (OK=0.006  KO=0.556 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                               500 ( 99%)
+---- Errors --------------------------------------------------------------------
+> j.i.IOException: Premature close                                  500 (100.0%)
+================================================================================
+```
 
-##### Prueba 4: MariaDB Con Redis - Endpoint /colores
+<img width="1858" height="858" alt="Prueba3-MariaDB" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/Prueba3-MariaDB.png" />
+
+
+###### Conclusiones
+En el caso de Memcached, podemos ver que es curioso que hay picos mucho más grandes de latencia, pero la mayor parte del tiempo la latencia es baja. Esto se debe a que se ahorra tiempo cada vez que hay caché hit, pero a cambio pierde mucho tiempo cuando hay un caché miss. Podemos notar que hay mucho más uso de CPU, memoria, y tráfico de red. Mientras que el disco, siempre se mantiene estable. También podemos una diferencia en los file descriptors, que es ligeramente mayor.
+
+
+
+##### Prueba 4: MariaDB Con Redis
+
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
+Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
 
 ###### Configuración
-  Configuración de Caché: Con caché Redis
 
-  Endpoint Probado: /animales
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
 
-  Usuarios Concurrentes: 400
-
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=5      KO=500   )
+> min response time                                     46 (OK=46     KO=2009  )
+> max response time                                  16081 (OK=56     KO=16081 )
+> mean response time                                  2702 (OK=50     KO=2729  )
+> std deviation                                       1176 (OK=4      KO=1151  )
+> response time 50th percentile                       3024 (OK=50     KO=3025  )
+> response time 75th percentile                       3042 (OK=53     KO=3042  )
+> response time 95th percentile                       3080 (OK=55     KO=3080  )
+> response time 99th percentile                       3188 (OK=56     KO=3197  )
+> mean requests/sec                                   0.56 (OK=0.006  KO=0.555 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                               500 ( 99%)
+---- Errors --------------------------------------------------------------------
+> j.i.IOException: Premature close                                  500 (100.0%)
+================================================================================
+```
+<img width="1862" height="828" alt="Prueba4-MariaDB" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/Prueba4-MariaDB.png" />
 
-##### Prueba 5: MariaDB Con Memcached - Endpoint /colores
+##### Conclusiones
+
+Se puede ver, en este caso, donde hay claros picos de actividad y latencia, que son regulares debido a la naturaleza de la prueba. Hay una gran cantidad de cache miss, e incluso hay un salto en el uso de disco, que usualmente se mantiene es estable. El uso de CPU y de memoria fue significativo, y también se notaron saltos de red.
+
+
+##### Prueba 5: MariaDB Con Memcached
+
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
+Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
 
 ###### Configuración
-  Configuración de Caché: Con caché Memcached
 
-  Endpoint Probado: /animales
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
 
-  Usuarios Concurrentes: 400
-
-  Duración: 900 segundos (15 minutos)
-
-  Patrón de Carga: Ramp-up gradual de usuarios
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=5      KO=500   )
+> min response time                                      4 (OK=32     KO=4     )
+> max response time                                   1084 (OK=42     KO=1084  )
+> mean response time                                   588 (OK=38     KO=593   )
+> std deviation                                        503 (OK=4      KO=502   )
+> response time 50th percentile                       1014 (OK=40     KO=1014  )
+> response time 75th percentile                       1029 (OK=41     KO=1029  )
+> response time 95th percentile                       1042 (OK=42     KO=1042  )
+> response time 99th percentile                       1055 (OK=42     KO=1055  )
+> mean requests/sec                                  0.562 (OK=0.006  KO=0.556 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                               500 ( 99%)
+---- Errors --------------------------------------------------------------------
+> j.i.IOException: Premature close                                  500 (100.0%)
+================================================================================
+```
+<img width="1862" height="828" alt="Prueba5-MariaDB" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/Prueba5-MariaDB.png" />
+
+##### Conclusiones
+En este caso se ven muy claros picos de latencia, CPU, y memoria. Esto se debe a que la prueba fue programada con picos de actividad, claramente reflejados en los gráficos. El disco, como es lo usual, no fue muy utilizado y se mantuvo estable. Los file descriptor e IOPS también se mantuvieron estables, al igual que las conexiones abiertas.
 
 </details> 
 
