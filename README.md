@@ -1059,7 +1059,7 @@ Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de l
 ###### Conclusiones
 Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpoints /animales y /colores en Vespa AI sin caché, todas las peticiones fueron exitosas, lo cual es positivo. La mayoría de las respuestas fueron muy rápidas (menos de 20 ms en promedio) y ninguna superó los 800 ms, mostrando un rendimiento consistente. Esto nos enseña que el sistema responde de manera eficiente bajo carga sin necesidad de caché. Como aprendizaje, podemos considerar el uso de caché para reforzar aún más la estabilidad y asegurar tiempos de respuesta todavía más predecibles en escenarios de mayor concurrencia.
 
-## Prueba 2: Vespa AI Con Redis 
+## Prueba 2: Vespa AI Con Redis CAMBIAR¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡
 
 ###### Configuración
 
@@ -1108,7 +1108,7 @@ Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpo
 Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpoints /animales y /colores en Vespa AI con Redis, todas las peticiones fueron exitosas, lo cual es positivo. Sin embargo, la mayoría de las respuestas fueron mucho más lentas que en la prueba sin caché: el tiempo promedio fue de más de 4 segundos y casi todas las consultas superaron los 1200 ms. Esto nos enseña que, en este escenario, el uso de Redis no mejoró el rendimiento, sino que introdujo una mayor latencia. Como aprendizaje, es importante revisar la configuración del caché y validar si realmente está siendo utilizado de manera efectiva, ya que en su estado actual afecta negativamente la velocidad de respuesta.
 
 
-## Prueba 3: Elasticsearch Con Memcached
+## Prueba 3: Vespa AI Con Memcached
 
 ###### Configuración
 
@@ -1129,35 +1129,32 @@ Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpo
 - **Check:** Status HTTP 200
 
 ###### Resultados
-```cmd
-================================================================================
+```cmd================================================================================
 ---- Global Information --------------------------------------------------------
-> request count                                        505 (OK=504    KO=1     )
-> min response time                                      3 (OK=3      KO=60009 )
-> max response time                                  60009 (OK=6013   KO=60009 )
-> mean response time                                   355 (OK=237    KO=60009 )
-> std deviation                                       2772 (OK=789    KO=0     )
-> response time 50th percentile                          9 (OK=9      KO=60009 )
-> response time 75th percentile                         51 (OK=50     KO=60009 )
-> response time 95th percentile                       1436 (OK=1377   KO=60009 )
-> response time 99th percentile                       4961 (OK=4950   KO=60009 )
-> mean requests/sec                                  0.504 (OK=0.503  KO=0.001 )
+> request count                                        505 (OK=505    KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                     57 (OK=57     KO=-     )
+> mean response time                                     6 (OK=6      KO=-     )
+> std deviation                                          5 (OK=5      KO=-     )
+> response time 50th percentile                          5 (OK=5      KO=-     )
+> response time 75th percentile                          6 (OK=6      KO=-     )
+> response time 95th percentile                         13 (OK=13     KO=-     )
+> response time 99th percentile                         31 (OK=31     KO=-     )
+> mean requests/sec                                  0.562 (OK=0.562  KO=-     )
 ---- Response Time Distribution ------------------------------------------------
-> t < 800 ms                                           465 ( 92%)
-> 800 ms <= t < 1200 ms                                 11 (  2%)
-> t >= 1200 ms                                          28 (  6%)
-> failed                                                 1 (  0%)
----- Errors --------------------------------------------------------------------
-> Request timeout to localhost/127.0.0.1:30080 after 60000 ms         1 (100.0%)
+> t < 800 ms                                           505 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
 ================================================================================
 ```
-<img width="1899" height="863" alt="P2" src="https://github.com/user-attachments/assets/50e49cd7-fd20-4d63-8355-a27de2f72177" />
+<img width="1343" height="641" alt="image" src="https://github.com/user-attachments/assets/e30e3f08-abf6-4109-a917-d82b80347552" />
 
 ##### Conclusiones
 
-Con Memcached, las respuestas fueron mucho más rápidas: la mayoría se resolvió en menos de 800 ms y la mediana fue de solo 9 ms. Esto nos enseña que un caché bien configurado puede acelerar significativamente las consultas. Hubo un pequeño fallo por timeout, lo que nos recuerda que siempre es bueno monitorear la red y la saturación, pero en general la prueba fue muy positiva.
+Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpoints /animales y /colores en Vespa AI con Memcached, todas las peticiones fueron exitosas, lo cual es muy positivo. La mayoría de las respuestas fueron extremadamente rápidas (menos de 10 ms en promedio) y ninguna superó los 800 ms. Esto nos enseña que el uso de Memcached mejoró significativamente el rendimiento, ofreciendo tiempos de respuesta muy bajos y consistentes. Como aprendizaje, podemos ver que Memcached es una opción eficiente para este escenario, ya que logra reducir la latencia y mantener la estabilidad del sistema incluso bajo carga.
 
-## Prueba 4: Elasticsearch Con Redis
+## Prueba 4: Vespa AI Con Redis
 Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
 Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
 Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
@@ -1205,7 +1202,7 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 ##### Conclusiones
 En otra prueba con Redis, vimos que los tiempos de respuesta seguían siendo largos, aunque todas las peticiones fueron exitosas. Esto nos da un aprendizaje importante: debemos revisar la lógica de caché y cómo Redis maneja las consultas, y compararlo con otras opciones como Memcached, que en pruebas anteriores mostró mejor rendimiento. Lo bueno es que el sistema sigue funcionando correctamente y podemos aprender a optimizarlo.
 
-## Prueba 5: Elasticsearch Con Memcached
+## Prueba 5: Vespa AI Con Memcached
 
 ###### Configuración
 
