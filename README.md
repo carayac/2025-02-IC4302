@@ -1118,36 +1118,130 @@ Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápida
 <details>
   <summary>PostgreSQL</summary> 
 
-#### MariaDB
-##### Prueba 1: PostgreSQL Sin Caché - Endpoint /animales
+#### PostgreSQL
+##### Prueba 1: PostgreSQL Sin Caché 
 
 ###### Configuración
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 500
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
+
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
+
 
 ###### Resultados
 
-##### Prueba 2: PostgreSQL Con Redis - Endpoint /animales
+##### Conclusiones
+
+##### Prueba 2: PostgreSQL Con Redis
 
 ###### Configuración
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 500
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
+
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
 ###### Resultados
 
-##### Prueba 3: PostgreSQL Con Memcached - Endpoint /animales
+##### Conclusiones
+
+##### Prueba 3: PostgreSQL Con Memcached 
 
 ###### Configuración
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 500
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
+
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
 ###### Resultados
 
-##### Prueba 4: PostgreSQL Con Redis - Endpoint /colores
+##### Conclusiones
+
+##### Prueba 4: PostgreSQL Con Redis 
+
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
+Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
 
 ###### Configuración
 
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
+
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
+
 ###### Resultados
 
-##### Prueba 5: PostgreSQL Con Memcached - Endpoint /colores
+##### Conclusiones
+
+##### Prueba 5: PostgreSQL Con Memcached 
+
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
+Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
 
 ###### Configuración
 
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
+
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
+
 ###### Resultados
+
+##### Conclusiones
 
 </details> 
 
