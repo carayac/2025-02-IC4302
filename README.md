@@ -1332,33 +1332,13 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 - **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
 
 ###### Resultados
-```cmd
-================================================================================
----- Global Information --------------------------------------------------------
-> request count                                       1455 (OK=1455   KO=0     )
-> min response time                                      3 (OK=3      KO=-     )
-> max response time                                    417 (OK=417    KO=-     )
-> mean response time                                    14 (OK=14     KO=-     )
-> std deviation                                         26 (OK=26     KO=-     )
-> response time 50th percentile                          8 (OK=8      KO=-     )
-> response time 75th percentile                         12 (OK=13     KO=-     )
-> response time 95th percentile                         42 (OK=42     KO=-     )
-> response time 99th percentile                        148 (OK=148    KO=-     )
-> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
----- Response Time Distribution ------------------------------------------------
-> t < 800 ms                                          1455 (100%)
-> 800 ms <= t < 1200 ms                                  0 (  0%)
-> t >= 1200 ms                                           0 (  0%)
-> failed                                                 0 (  0%)
-================================================================================
-```
 
-<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/f843eb80-78cb-44f0-b04e-d86552486ba2" />
+<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/7a8c19e1-6963-4287-9f09-f4d422734e69" />
 
 
 ##### Conclusiones
-En este caso de prueba con memcached podemos notar que el 100 por ciento de peticiones (1455) fueron exitosas y resueltas rápidamente, todas en menos de 800 ms, inclusive el promedio estando bastante por debajo. 
-Esto demuestra que la implementación de memcached es correcta y confiable para manejar carga de usuarios en postgreSQL
+En este caso de prueba con redis podemos notar velocidad en varios casos pero algunos picos y algunas respuestas que tardan más de lo esperado. 
+Al monitorear se puede concluir que es importante definir mejor el uso de recursos
 
 </details> 
 
