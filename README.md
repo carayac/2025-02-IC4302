@@ -1472,10 +1472,35 @@ Cuando se hace el test con 100 usuarios realizando 5 peticiones aleatorias a los
 
 ###### Resultados
 ```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=504    KO=1     )
+> min response time                                      3 (OK=3      KO=60009 )
+> max response time                                  60009 (OK=6013   KO=60009 )
+> mean response time                                   355 (OK=237    KO=60009 )
+> std deviation                                       2772 (OK=789    KO=0     )
+> response time 50th percentile                          9 (OK=9      KO=60009 )
+> response time 75th percentile                         51 (OK=50     KO=60009 )
+> response time 95th percentile                       1436 (OK=1377   KO=60009 )
+> response time 99th percentile                       4961 (OK=4950   KO=60009 )
+> mean requests/sec                                  0.504 (OK=0.503  KO=0.001 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           465 ( 92%)
+> 800 ms <= t < 1200 ms                                 11 (  2%)
+> t >= 1200 ms                                          28 (  6%)
+> failed                                                 1 (  0%)
+---- Errors --------------------------------------------------------------------
+> Request timeout to localhost/127.0.0.1:30080 after 60000 ms         1 (100.0%)
+================================================================================
+
 ```
 
-##### Conclusiones
 
+<img width="1858" height="858" alt="ChromaMemcached" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/ChromaMemcached.jpeg" />
+
+
+##### Conclusiones
+Cuando probamos Memcached con muchas peticiones, todas fueron muy rápidas.  Esto demuestra que memcached es un buen sistema de caché y que ayuda bastante a la hora de la persistencia y experiencia del usuario.  Una herramienta útil para mucha concurrencia.
 
 
 ## Prueba 4: Chroma Con Redis
@@ -1502,10 +1527,33 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 
 ###### Resultados
 ```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=5      KO=500   )
+> min response time                                     46 (OK=46     KO=2009  )
+> max response time                                  16081 (OK=56     KO=16081 )
+> mean response time                                  2702 (OK=50     KO=2729  )
+> std deviation                                       1176 (OK=4      KO=1151  )
+> response time 50th percentile                       3024 (OK=50     KO=3025  )
+> response time 75th percentile                       3042 (OK=53     KO=3042  )
+> response time 95th percentile                       3080 (OK=55     KO=3080  )
+> response time 99th percentile                       3188 (OK=56     KO=3197  )
+> mean requests/sec                                   0.56 (OK=0.006  KO=0.555 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                               500 ( 99%)
+---- Errors --------------------------------------------------------------------
+> j.i.IOException: Premature close                                  500 (100.0%)
+================================================================================
 ```
-
+<img width="1862" height="828" alt="Prueba4-MariaDB" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/Prueba4-MariaDB.png" />
 
 ##### Conclusiones
+
+Cuando probamos el sistema con usuarios consultando aleatoriamente con Redis, todas las peticiones fueron exitosas,algo bastante bueno. Hubieron respuestas lentas.  Redis tal vez no presentó los mejores resultados cenario, entonces es importante revisar la configuración y el uso real del caché, ya que podría no estar funcionando de forma óptima o estar generando sobrecarga adicional en el sistema.
+
 
 ## Prueba 5: Chroma Con Memcached
 
@@ -1528,9 +1576,30 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
   
 ###### Resultados
 ```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    934 (OK=934    KO=-     )
+> mean response time                                    24 (OK=24     KO=-     )
+> std deviation                                         74 (OK=74     KO=-     )
+> response time 50th percentile                         10 (OK=10     KO=-     )
+> response time 75th percentile                         15 (OK=15     KO=-     )
+> response time 95th percentile                         54 (OK=54     KO=-     )
+> response time 99th percentile                        439 (OK=439    KO=-     )
+> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                          1452 (100%)
+> 800 ms <= t < 1200 ms                                  3 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
 ```
+<img width="1852" height="830" alt="P3" src="https://github.com/user-attachments/assets/c9a371fa-d4a7-4ee6-a141-0b3e1a1be443" />
 
 ##### Conclusiones
+Cuando probamos Memcached con muchas peticiones, todas fueron muy rápidas.  Esto demuestra que memcached es un buen sistema de caché y que ayuda bastante a la hora de la persistencia y experiencia del usuario.  Una herramienta útil para mucha concurrencia.
+
 
 </details> 
 
