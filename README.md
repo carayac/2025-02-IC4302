@@ -241,6 +241,19 @@ Para la realización de esta tarea se implementa Memcached, un sistema de caché
  ```
 
 Para la implementación de caché en todos los mos motores de bases de datos, se intenta recuperar el valor a partir de una clave, si este existe entonces sería un caché hit para que sea devuelto a la solicitud,  En caso de no encontrarse, se registra un caché miss y se procede a realizar la consulta directamente a la base de datos y posteriormente alamcena el resultado en Memcached.
+
+### Redis 
+Para la realización de esta tarea se implementa Redis, un sistema de almacenamiento en memoria de tipo clave-valor, utilizado como caché distribuido para mejorar el rendimiento de las aplicaciones reduciendo la carga sobre las bases de datos. Redis ofrece más funcionalidades, como persistencia de datos, soporte para estructuras más complejas y opciones de replicación y alta disponibilidad.
+
+En el despliegue de Redis también se habilita la exposición de métricas en formato Prometheus, lo que permite monitorizar estadísticas como operaciones realizadas, uso de memoria y número de conexiones:
+```yaml
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+ ```
+
+Para la implementación de caché en todos los motores de bases de datos, se intenta recuperar el valor asociado a una clave en Redis. Si el valor existe, se considera un cache hit y se devuelve inmediatamente al cliente. En caso contrario, se registra un cache miss, se realiza la consulta directamente a la base de datos y, posteriormente, el resultado se almacena en Redis con la clave correspondiente, de forma que futuras solicitudes puedan resolverse de manera más rápida desde la caché.
 </details> 
 
 
@@ -1143,7 +1156,7 @@ Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápida
 
 ##### Conclusiones
 
-##### Prueba 2: PostgreSQL Con Redis
+##### Prueba 2: PostgreSQL Con Memcached
 
 ###### Configuración
 - **Nombre del escenario:** Random Calls
@@ -1163,10 +1176,32 @@ Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápida
 - **Check:** Status HTTP 200
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=505    KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    374 (OK=374    KO=-     )
+> mean response time                                    14 (OK=14     KO=-     )
+> std deviation                                         33 (OK=33     KO=-     )
+> response time 50th percentile                          7 (OK=7      KO=-     )
+> response time 75th percentile                         10 (OK=10     KO=-     )
+> response time 95th percentile                         51 (OK=51     KO=-     )
+> response time 99th percentile                        181 (OK=181    KO=-     )
+> mean requests/sec                                  0.567 (OK=0.567  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           505 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+```
+
+<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/e647b52d-674d-4edd-b3d1-c5b9ec238f6d" />
 
 ##### Conclusiones
 
-##### Prueba 3: PostgreSQL Con Memcached 
+##### Prueba 3: PostgreSQL Con Redis
 
 ###### Configuración
 - **Nombre del escenario:** Random Calls
@@ -1734,5 +1769,6 @@ https://dkbalachandar.wordpress.com/2025/07/21/kubernetes-servicemonitor-explain
 https://flask.palletsprojects.com/en/stable/api/#flask.Flask.before_request
 https://flask.palletsprojects.com/en/stable/api/#flask.Flask.after_request
 https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/developer/getting-started.md#using-servicemonitors
-
+https://redis.io/docs/latest/develop/clients/redis-py/
+https://docs.gatling.io/integrations/build-tools/maven-plugin/
 
