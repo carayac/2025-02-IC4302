@@ -1200,6 +1200,8 @@ Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápida
 <img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/e647b52d-674d-4edd-b3d1-c5b9ec238f6d" />
 
 ##### Conclusiones
+Podemos notar que con 500 usuarios el 100% de las solicitudes fueron resueltas en menos de 800ms, con un promedio de 7ms. 
+Estos datos son muy buenos y notan el beneficio del uso de caché para manejar carga, en este caso con memcached.
 
 ##### Prueba 3: PostgreSQL Con Redis
 
