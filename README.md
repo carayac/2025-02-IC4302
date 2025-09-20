@@ -1133,28 +1133,55 @@ Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápida
 
 #### PostgreSQL
 ##### Prueba 1: PostgreSQL Sin Caché 
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
+Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
 
 ###### Configuración
+
 - **Nombre del escenario:** Random Calls
-- **Usuarios:** 500
-- **Duración total:** 900 segundos (15 minutos)
-- **Tipo de inyección:** `rampUsersDuring`
-- **Repeticiones por usuario:** 5
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
 
-## Endpoints utilizados
-- `/animales`
-- `/colores`
-
-## Request
-- **Nombre:** Random Query
-- **Método:** GET
-- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
-- **Check:** Status HTTP 200
-
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
 
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    417 (OK=417    KO=-     )
+> mean response time                                    14 (OK=14     KO=-     )
+> std deviation                                         26 (OK=26     KO=-     )
+> response time 50th percentile                          8 (OK=8      KO=-     )
+> response time 75th percentile                         12 (OK=13     KO=-     )
+> response time 95th percentile                         42 (OK=42     KO=-     )
+> response time 99th percentile                        148 (OK=148    KO=-     )
+> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                          1455 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+```
+
+<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/f843eb80-78cb-44f0-b04e-d86552486ba2" />
+
 
 ##### Conclusiones
+En esta prueba sin cache de PosgreSQL podemos ver que el 100 por ciento de las peticiones se procesaron, demostrando que es una base e implementación bastante estable;
+inclusive sin usar memoria caché, teniendo un tiempo de respuesta mínimamente más alto que memcached. 
 
 ##### Prueba 2: PostgreSQL Con Memcached
 
@@ -1223,10 +1250,13 @@ Estos datos son muy buenos y notan el beneficio del uso de caché para manejar c
 - **Check:** Status HTTP 200
 
 ###### Resultados
+<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/86a63b8d-1a34-4ea1-9704-2f61789b0b9b" />
 
 ##### Conclusiones
+Se puede ver picos en la latencia y en el uso de memoria al utilizar redis, lo cual puede ser normal por la velocidad a la que se busca
+pero se puede buscar el controlar mejor el uso de recursos
 
-##### Prueba 4: PostgreSQL Con Redis 
+##### Prueba 4: PostgreSQL Con Memcached 
 
 Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
 Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
@@ -1251,9 +1281,34 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 
 ###### Resultados
 
-##### Conclusiones
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    349 (OK=349    KO=-     )
+> mean response time                                    10 (OK=10     KO=-     )
+> std deviation                                         18 (OK=18     KO=-     )
+> response time 50th percentile                          6 (OK=6      KO=-     )
+> response time 75th percentile                          9 (OK=9      KO=-     )
+> response time 95th percentile                         23 (OK=23     KO=-     )
+> response time 99th percentile                         67 (OK=67     KO=-     )
+> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                          1455 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+```
 
-##### Prueba 5: PostgreSQL Con Memcached 
+<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/c2f0334c-b618-42c2-956f-c67c268af0c4" />
+
+##### Conclusiones
+En este caso de prueba con memcached podemos notar que el 100 por ciento de peticiones (1455) fueron exitosas y resueltas rápidamente, todas en menos de 800 ms, inclusive el promedio estando bastante por debajo (6ms). 
+Esto demuestra que la implementación de memcached es correcta y confiable para manejar carga de usuarios en postgreSQL
+
+##### Prueba 5: PostgreSQL Con Redis
 
 Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
 Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
