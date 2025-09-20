@@ -1275,12 +1275,33 @@ Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de l
 
 ###### Resultados
 ```cmd
-
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=505    KO=0     )
+> min response time                                      8 (OK=8      KO=-     )
+> max response time                                    567 (OK=567    KO=-     )
+> mean response time                                    20 (OK=20     KO=-     )
+> std deviation                                         35 (OK=35     KO=-     )
+> response time 50th percentile                         13 (OK=13     KO=-     )
+> response time 75th percentile                         19 (OK=19     KO=-     )
+> response time 95th percentile                         36 (OK=36     KO=-     )
+> response time 99th percentile                        147 (OK=147    KO=-     )
+> mean requests/sec                                  0.562 (OK=0.562  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           505 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
 ```
+
+<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/44a11608-4c96-4042-9096-7539adc2c9ca" />
 
 
 
 ###### Conclusiones
+
+Cuando hacemos el test con 100 usuarios consultando aleatoriamente a los endopints disponibles, se puede observar peticiones exitosas esto demuestra un buen rendimiento a la hora de realizarlos. Vemos que las respuestas fueron considerablemente rápidas.  100 usuarios es un número significativo y podemos observar que chroma soporta bajo carga de una manera bastante buena incluso cuando no se implementa ningún tipo de caché  
 
 ## Prueba 2: Chroma Con Redis 
 
