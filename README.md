@@ -1007,36 +1007,248 @@ Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápida
 <details>
   <summary>Vespa.ai</summary> 
 
-#### MariaDB
-##### Prueba 1: Vespa.ai Sin Caché - Endpoint /animales
+  #### Vespa AI
+## Prueba 1: Vespa AI Sin Caché 
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de los endpoints en cada iteración.
 
 ###### Configuración
 
-###### Resultados
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-##### Prueba 2: Vespa.ai Con Redis - Endpoint /animales
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
+
+
+###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=505    KO=0     )
+> min response time                                      8 (OK=8      KO=-     )
+> max response time                                    567 (OK=567    KO=-     )
+> mean response time                                    20 (OK=20     KO=-     )
+> std deviation                                         35 (OK=35     KO=-     )
+> response time 50th percentile                         13 (OK=13     KO=-     )
+> response time 75th percentile                         19 (OK=19     KO=-     )
+> response time 95th percentile                         36 (OK=36     KO=-     )
+> response time 99th percentile                        147 (OK=147    KO=-     )
+> mean requests/sec                                  0.562 (OK=0.562  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           505 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+```
+
+<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/44a11608-4c96-4042-9096-7539adc2c9ca" />
+
+
+###### Conclusiones
+Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpoints /animales y /colores en Vespa AI sin caché, todas las peticiones fueron exitosas, lo cual es positivo. La mayoría de las respuestas fueron muy rápidas (menos de 20 ms en promedio) y ninguna superó los 800 ms, mostrando un rendimiento consistente. Esto nos enseña que el sistema responde de manera eficiente bajo carga sin necesidad de caché. Como aprendizaje, podemos considerar el uso de caché para reforzar aún más la estabilidad y asegurar tiempos de respuesta todavía más predecibles en escenarios de mayor concurrencia.
+
+## Prueba 2: Vespa AI Con Redis 
 
 ###### Configuración
 
-###### Resultados
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-##### Prueba 3: Vespa.ai Con Memcached - Endpoint /animales
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
+
+###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=505    KO=0     )
+> min response time                                     25 (OK=25     KO=-     )
+> max response time                                  25058 (OK=25058  KO=-     )
+> mean response time                                  4116 (OK=4116   KO=-     )
+> std deviation                                       1668 (OK=1668   KO=-     )
+> response time 50th percentile                       4021 (OK=4021   KO=-     )
+> response time 75th percentile                       4028 (OK=4028   KO=-     )
+> response time 95th percentile                       4053 (OK=4053   KO=-     )
+> response time 99th percentile                       4186 (OK=4186   KO=-     )
+> mean requests/sec                                   0.56 (OK=0.56   KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                         500 ( 99%)
+> failed                                                 0 (  0%)
+================================================================================
+```
+
+<img width="1331" height="638" alt="image" src="https://github.com/user-attachments/assets/ea7dbb89-4993-4d5d-8917-bfc6855acf4f" />
+
+
+###### Conclusiones
+Cuando probamos el sistema con 100 usuarios consultando aleatoriamente los endpoints /animales y /colores en Vespa AI con Redis, todas las peticiones fueron exitosas, lo cual es positivo. Sin embargo, la mayoría de las respuestas fueron mucho más lentas que en la prueba sin caché: el tiempo promedio fue de más de 4 segundos y casi todas las consultas superaron los 1200 ms. Esto nos enseña que, en este escenario, el uso de Redis no mejoró el rendimiento, sino que introdujo una mayor latencia. Como aprendizaje, es importante revisar la configuración del caché y validar si realmente está siendo utilizado de manera efectiva, ya que en su estado actual afecta negativamente la velocidad de respuesta.
+
+
+## Prueba 3: Elasticsearch Con Memcached
 
 ###### Configuración
 
-###### Resultados
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-##### Prueba 4: Vespa.ai Con Redis - Endpoint /colores
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
+
+###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=504    KO=1     )
+> min response time                                      3 (OK=3      KO=60009 )
+> max response time                                  60009 (OK=6013   KO=60009 )
+> mean response time                                   355 (OK=237    KO=60009 )
+> std deviation                                       2772 (OK=789    KO=0     )
+> response time 50th percentile                          9 (OK=9      KO=60009 )
+> response time 75th percentile                         51 (OK=50     KO=60009 )
+> response time 95th percentile                       1436 (OK=1377   KO=60009 )
+> response time 99th percentile                       4961 (OK=4950   KO=60009 )
+> mean requests/sec                                  0.504 (OK=0.503  KO=0.001 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           465 ( 92%)
+> 800 ms <= t < 1200 ms                                 11 (  2%)
+> t >= 1200 ms                                          28 (  6%)
+> failed                                                 1 (  0%)
+---- Errors --------------------------------------------------------------------
+> Request timeout to localhost/127.0.0.1:30080 after 60000 ms         1 (100.0%)
+================================================================================
+```
+<img width="1899" height="863" alt="P2" src="https://github.com/user-attachments/assets/50e49cd7-fd20-4d63-8355-a27de2f72177" />
+
+##### Conclusiones
+
+Con Memcached, las respuestas fueron mucho más rápidas: la mayoría se resolvió en menos de 800 ms y la mediana fue de solo 9 ms. Esto nos enseña que un caché bien configurado puede acelerar significativamente las consultas. Hubo un pequeño fallo por timeout, lo que nos recuerda que siempre es bueno monitorear la red y la saturación, pero en general la prueba fue muy positiva.
+
+## Prueba 4: Elasticsearch Con Redis
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
+Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
 
 ###### Configuración
 
-###### Resultados
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
 
-##### Prueba 5: Vespa.ai Con Memcached - Endpoint /colores
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
+
+###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                    202 (OK=202    KO=-     )
+> max response time                                  15666 (OK=15666  KO=-     )
+> mean response time                                  8171 (OK=8171   KO=-     )
+> std deviation                                        660 (OK=660    KO=-     )
+> response time 50th percentile                       8091 (OK=8091   KO=-     )
+> response time 75th percentile                       8169 (OK=8169   KO=-     )
+> response time 95th percentile                       8527 (OK=8527   KO=-     )
+> response time 99th percentile                      10380 (OK=10380  KO=-     )
+> mean requests/sec                                  1.573 (OK=1.573  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  0%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                        1450 (100%)
+> failed                                                 0 (  0%)
+================================================================================
+```
+<img width="1862" height="828" alt="Screenshot 2025-09-19 170331" src="https://github.com/user-attachments/assets/47b00b98-9436-44ca-84c9-44b6fc4b3b1d" />
+
+##### Conclusiones
+En otra prueba con Redis, vimos que los tiempos de respuesta seguían siendo largos, aunque todas las peticiones fueron exitosas. Esto nos da un aprendizaje importante: debemos revisar la lógica de caché y cómo Redis maneja las consultas, y compararlo con otras opciones como Memcached, que en pruebas anteriores mostró mejor rendimiento. Lo bueno es que el sistema sigue funcionando correctamente y podemos aprender a optimizarlo.
+
+## Prueba 5: Elasticsearch Con Memcached
 
 ###### Configuración
 
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
+
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
+  
 ###### Resultados
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    934 (OK=934    KO=-     )
+> mean response time                                    24 (OK=24     KO=-     )
+> std deviation                                         74 (OK=74     KO=-     )
+> response time 50th percentile                         10 (OK=10     KO=-     )
+> response time 75th percentile                         15 (OK=15     KO=-     )
+> response time 95th percentile                         54 (OK=54     KO=-     )
+> response time 99th percentile                        439 (OK=439    KO=-     )
+> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                          1452 (100%)
+> 800 ms <= t < 1200 ms                                  3 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+```
+<img width="1852" height="830" alt="P3" src="https://github.com/user-attachments/assets/c9a371fa-d4a7-4ee6-a141-0b3e1a1be443" />
+
+##### Conclusiones
+Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápidas (menos de 800 ms), con una mediana de 10 ms. Esto nos demuestra que un buen sistema de caché puede hacer que el usuario tenga una experiencia rápida y estable, incluso con mucha carga. Además, la estabilidad y la baja variabilidad nos enseñan que la implementación de Memcached es confiable y muy útil para entornos con muchos usuarios.
 
 </details> 
 
