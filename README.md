@@ -1282,45 +1282,44 @@ Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de l
 ###### Configuración
 
 - **Nombre del escenario:** Random Calls
-- **Usuarios:** 100
-- **Duración total:** 900 segundos (15 minutos)
-- **Tipo de inyección:** `rampUsersDuring`
-- **Repeticiones por usuario:** 5
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
 
-## Endpoints utilizados
-- `/animales`
-- `/colores`
-
-## Request
-- **Nombre:** Random Query
-- **Método:** GET
-- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
-- **Check:** Status HTTP 200
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
 
 
 ###### Resultados
 ```cmd
 ================================================================================
 ---- Global Information --------------------------------------------------------
-> request count                                        505 (OK=505    KO=0     )
-> min response time                                      8 (OK=8      KO=-     )
-> max response time                                    567 (OK=567    KO=-     )
-> mean response time                                    20 (OK=20     KO=-     )
-> std deviation                                         35 (OK=35     KO=-     )
-> response time 50th percentile                         13 (OK=13     KO=-     )
-> response time 75th percentile                         19 (OK=19     KO=-     )
-> response time 95th percentile                         36 (OK=36     KO=-     )
-> response time 99th percentile                        147 (OK=147    KO=-     )
-> mean requests/sec                                  0.562 (OK=0.562  KO=-     )
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    185 (OK=185    KO=-     )
+> mean response time                                    11 (OK=11     KO=-     )
+> std deviation                                         15 (OK=15     KO=-     )
+> response time 50th percentile                          7 (OK=7      KO=-     )
+> response time 75th percentile                         10 (OK=10     KO=-     )
+> response time 95th percentile                         27 (OK=27     KO=-     )
+> response time 99th percentile                         87 (OK=87     KO=-     )
+> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
 ---- Response Time Distribution ------------------------------------------------
-> t < 800 ms                                           505 (100%)
+> t < 800 ms                                          1455 (100%)
 > 800 ms <= t < 1200 ms                                  0 (  0%)
 > t >= 1200 ms                                           0 (  0%)
 > failed                                                 0 (  0%)
 ================================================================================
 ```
 
-<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/44a11608-4c96-4042-9096-7539adc2c9ca" />
+<img width="1858" height="858" alt="ChromaSIN" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/ChromaSIN.jpeg" />
 
 
 
