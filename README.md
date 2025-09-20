@@ -968,39 +968,150 @@ Cuando probamos Memcached con muchas peticiones, todas fueron exitosas y rápida
 <details>
   <summary>ChromaDB</summary> 
 
+
 #### Chroma
-##### Prueba 1: ChromaDB Sin Caché - Endpoint /animales
+## Prueba 1: Chroma Sin Caché 
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **5 peticiones** seleccionando de manera aleatoria uno de los endpoints en cada iteración.
 
 ###### Configuración
 
-###### Resultados
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-##### Prueba 2: ChromaDB Con Redis - Endpoint /animales
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
+
+
+###### Resultados
+```cmd
+
+```
+
+
+
+###### Conclusiones
+
+## Prueba 2: Chroma Con Redis 
 
 ###### Configuración
 
-###### Resultados
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
-##### Prueba 3: ChromaDB Con Memcached - Endpoint /animales
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
+
+###### Resultados
+```cmd
+```
+
+
+
+###### Conclusiones
+
+
+## Prueba 3: Chroma Con Memcached
 
 ###### Configuración
 
+- **Nombre del escenario:** Random Calls
+- **Usuarios:** 100
+- **Duración total:** 900 segundos (15 minutos)
+- **Tipo de inyección:** `rampUsersDuring`
+- **Repeticiones por usuario:** 5
 
+## Endpoints utilizados
+- `/animales`
+- `/colores`
+
+## Request
+- **Nombre:** Random Query
+- **Método:** GET
+- **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+- **Check:** Status HTTP 200
 
 ###### Resultados
+```cmd
+```
+
+##### Conclusiones
 
 
-##### Prueba 4: ChromaDB Con Redis - Endpoint /colores
+
+## Prueba 4: Chroma Con Redis
+Este escenario simula llamadas aleatorias a los endpoints `/animales` y `/colores`.  
+Cada usuario realiza **2 peticiones**, seleccionando de manera aleatoria uno de los endpoints en cada iteración.  
+Se incluye una inyección de usuarios diseñado para probar picos y cargas constantes del sistema.
 
 ###### Configuración
 
-###### Resultados
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
 
-##### Prueba 5: ChromaDB Con Memcached - Endpoint /colores
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
+
+###### Resultados
+```cmd
+```
+
+
+##### Conclusiones
+
+## Prueba 5: Chroma Con Memcached
 
 ###### Configuración
 
+- **Nombre del escenario:** Random Calls
+- **Repeticiones por usuario:** 2
+- **Endpoints utilizados:** `/animales`, `/colores`
+- **Request:**
+  - **Nombre:** Random Query
+  - **Método:** GET
+  - **Endpoint dinámico:** `#{endpoint}` (seleccionado aleatoriamente)
+  - **Check:** Status HTTP 200
+
+### Random Calls
+- **Espera inicial:** 10 segundos (`nothingFor`)
+- **Subida gradual:** 2 usuarios durante 2 minutos (`rampUsers`)
+- **Pico de usuarios:** 3 usuarios durante 1 minuto (`rampUsers`)
+- **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
+  
 ###### Resultados
+```cmd
+```
+
+##### Conclusiones
 
 </details> 
 
