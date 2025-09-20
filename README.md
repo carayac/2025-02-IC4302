@@ -1386,12 +1386,34 @@ Cuando hacemos el test con 100 usuarios consultando aleatoriamente a los endopin
 
 ###### Resultados
 ```cmd
-```
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=504    KO=1     )
+> min response time                                     58 (OK=58     KO=60006 )
+> max response time                                  60006 (OK=57541  KO=60006 )
+> mean response time                                  9347 (OK=9247   KO=60006 )
+> std deviation                                      11800 (OK=11593  KO=0     )
+> response time 50th percentile                       4022 (OK=4022   KO=60006 )
+> response time 75th percentile                       5186 (OK=5175   KO=60006 )
+> response time 95th percentile                      36644 (OK=36469  KO=60006 )
+> response time 99th percentile                      55395 (OK=55368  KO=60006 )
+> mean requests/sec                                   0.56 (OK=0.559  KO=0.001 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                         499 ( 99%)
+> failed                                                 1 (  0%)
+---- Errors --------------------------------------------------------------------
+> Request timeout to localhost/127.0.0.1:30080 after 60000 ms         1 (100,0%)
+================================================================================
 
+```
+<img width="1347" height="654" alt="image" src="https://github.com/user-attachments/assets/287097ed-dbe2-4ba0-93c1-0c17ee928960" />
 
 
 ###### Conclusiones
 
+Cuando se hace el test con 100 usuarios realizando 5 peticiones aleatorias a los endpoints disponibles , observamos una prueba casi perfecta, 504 peticiones exitosas (99,8 %) y solo 1 fallo por timeout tras 60 s.  Aunque el sistema soporta bien la concurrencia sin fallar tanto,  hay latencias excesivas y muy variables bajo mucha carga.
 
 ## Prueba 3: Chroma Con Memcached
 
