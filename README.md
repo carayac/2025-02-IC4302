@@ -12,6 +12,12 @@ Repositorio privado para el curso **IC4302**.
 | 2024174489  | Daniel Arce Campos                | 2024174489        |
 | 2021052665  | Christopher Jiménez Gutiérrez     | 2021052665        |
 
+## Profesor
+
+**Ing. Gerardo Nereo Campos Araya**  
+
+# Proyecto Opcional  
+
 ### Branch adicional
 - **proyecto-opcional** → Rama para el desarrollo del proyecto opcional.
 ###### Branch derivadas del pr0yecto opcional
@@ -19,7 +25,7 @@ Repositorio privado para el curso **IC4302**.
 - **p0-sparkJob** → Rama para el desarrollo del componente sparkJob.
 - **po-downloader** → Rama para el desarrollo del componente downloader.
 
-## Profesor
-
-**Ing. Gerardo Nereo Campos Araya**  
+# Tarea Corta 01  
  
+### Branch adicional
+- **tarea-corta-01** → Rama para el desarrollo de la tarea corta 1.
