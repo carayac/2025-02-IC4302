@@ -1241,6 +1241,28 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 
 ###### Resultados
 
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                       1455 (OK=1455   KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                    417 (OK=417    KO=-     )
+> mean response time                                    14 (OK=14     KO=-     )
+> std deviation                                         26 (OK=26     KO=-     )
+> response time 50th percentile                          8 (OK=8      KO=-     )
+> response time 75th percentile                         12 (OK=13     KO=-     )
+> response time 95th percentile                         42 (OK=42     KO=-     )
+> response time 99th percentile                        148 (OK=148    KO=-     )
+> mean requests/sec                                  1.601 (OK=1.601  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                          1455 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+
+<img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/f843eb80-78cb-44f0-b04e-d86552486ba2" />
+
+
 ##### Conclusiones
 
 </details> 
