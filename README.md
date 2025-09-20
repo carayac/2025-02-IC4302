@@ -1548,7 +1548,7 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 > j.i.IOException: Premature close                                  500 (100.0%)
 ================================================================================
 ```
-<img width="1862" height="828" alt="Prueba4-MariaDB" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/Prueba4-MariaDB.png" />
+<img width="1862" height="828" alt="Prueba4-Chroma" src="https://github.com/carayac/2025-02-IC4302/blob/tarea-corta-01/TC1/Images/Prueba4-Chroma.png" />
 
 ##### Conclusiones
 
