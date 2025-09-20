@@ -1250,6 +1250,31 @@ Estos datos son muy buenos y notan el beneficio del uso de caché para manejar c
 - **Check:** Status HTTP 200
 
 ###### Resultados
+
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=5      KO=500   )
+> min response time                                     46 (OK=46     KO=2009  )
+> max response time                                  16081 (OK=56     KO=16081 )
+> mean response time                                  2702 (OK=50     KO=2729  )
+> std deviation                                       1176 (OK=4      KO=1151  )
+> response time 50th percentile                       3024 (OK=50     KO=3025  )
+> response time 75th percentile                       3042 (OK=53     KO=3042  )
+> response time 95th percentile                       3080 (OK=55     KO=3080  )
+> response time 99th percentile                       3188 (OK=56     KO=3197  )
+> mean requests/sec                                   0.56 (OK=0.006  KO=0.555 )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                             5 (  1%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                               500 ( 99%)
+---- Errors --------------------------------------------------------------------
+> j.i.IOException: Premature close                                  500 (100.0%)
+================================================================================
+```
+
+
 <img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/86a63b8d-1a34-4ea1-9704-2f61789b0b9b" />
 
 ##### Conclusiones
@@ -1332,6 +1357,28 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 - **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
 
 ###### Resultados
+
+
+```cmd
+================================================================================
+---- Global Information --------------------------------------------------------
+> request count                                        505 (OK=505    KO=0     )
+> min response time                                      3 (OK=3      KO=-     )
+> max response time                                     57 (OK=57     KO=-     )
+> mean response time                                     6 (OK=6      KO=-     )
+> std deviation                                          5 (OK=5      KO=-     )
+> response time 50th percentile                          5 (OK=5      KO=-     )
+> response time 75th percentile                          6 (OK=6      KO=-     )
+> response time 95th percentile                         13 (OK=13     KO=-     )
+> response time 99th percentile                         31 (OK=31     KO=-     )
+> mean requests/sec                                  0.562 (OK=0.562  KO=-     )
+---- Response Time Distribution ------------------------------------------------
+> t < 800 ms                                           505 (100%)
+> 800 ms <= t < 1200 ms                                  0 (  0%)
+> t >= 1200 ms                                           0 (  0%)
+> failed                                                 0 (  0%)
+================================================================================
+```
 
 <img width="921" height="455" alt="image" src="https://github.com/user-attachments/assets/7a8c19e1-6963-4287-9f09-f4d422734e69" />
 
