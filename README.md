@@ -1177,30 +1177,29 @@ Se incluye una inyección de usuarios diseñado para probar picos y cargas const
 - **Carga constante:** 1 usuario por segundo durante 12 minutos (`constantUsersPerSec`)
 
 ###### Resultados
-```cmd
-================================================================================
+```cmd================================================================================
 ---- Global Information --------------------------------------------------------
-> request count                                       1455 (OK=1455   KO=0     )
-> min response time                                    202 (OK=202    KO=-     )
-> max response time                                  15666 (OK=15666  KO=-     )
-> mean response time                                  8171 (OK=8171   KO=-     )
-> std deviation                                        660 (OK=660    KO=-     )
-> response time 50th percentile                       8091 (OK=8091   KO=-     )
-> response time 75th percentile                       8169 (OK=8169   KO=-     )
-> response time 95th percentile                       8527 (OK=8527   KO=-     )
-> response time 99th percentile                      10380 (OK=10380  KO=-     )
-> mean requests/sec                                  1.573 (OK=1.573  KO=-     )
+> request count                                        505 (OK=505    KO=0     )
+> min response time                                     23 (OK=23     KO=-     )
+> max response time                                   4142 (OK=4142   KO=-     )
+> mean response time                                  3983 (OK=3983   KO=-     )
+> std deviation                                        396 (OK=396    KO=-     )
+> response time 50th percentile                       4019 (OK=4019   KO=-     )
+> response time 75th percentile                       4023 (OK=4023   KO=-     )
+> response time 95th percentile                       4043 (OK=4043   KO=-     )
+> response time 99th percentile                       4087 (OK=4087   KO=-     )
+> mean requests/sec                                   0.56 (OK=0.56   KO=-     )
 ---- Response Time Distribution ------------------------------------------------
-> t < 800 ms                                             5 (  0%)
+> t < 800 ms                                             5 (  1%)
 > 800 ms <= t < 1200 ms                                  0 (  0%)
-> t >= 1200 ms                                        1450 (100%)
+> t >= 1200 ms                                         500 ( 99%)
 > failed                                                 0 (  0%)
 ================================================================================
 ```
-<img width="1862" height="828" alt="Screenshot 2025-09-19 170331" src="https://github.com/user-attachments/assets/47b00b98-9436-44ca-84c9-44b6fc4b3b1d" />
+<img width="1340" height="648" alt="image" src="https://github.com/user-attachments/assets/cea97534-bbb6-4093-ba5b-466a37be7362" />
 
 ##### Conclusiones
-En otra prueba con Redis, vimos que los tiempos de respuesta seguían siendo largos, aunque todas las peticiones fueron exitosas. Esto nos da un aprendizaje importante: debemos revisar la lógica de caché y cómo Redis maneja las consultas, y compararlo con otras opciones como Memcached, que en pruebas anteriores mostró mejor rendimiento. Lo bueno es que el sistema sigue funcionando correctamente y podemos aprender a optimizarlo.
+Cuando probamos el sistema con usuarios consultando aleatoriamente los endpoints /animales y /colores en Vespa AI con Redis, todas las peticiones fueron exitosas, lo cual es positivo. Sin embargo, la mayoría de las respuestas fueron lentas: el tiempo promedio fue cercano a 4 segundos y casi todas las consultas superaron los 1200 ms. Esto nos enseña que, en este escenario, Redis no aportó mejoras de rendimiento frente a las pruebas sin caché, sino que introdujo una mayor latencia. Como aprendizaje, es importante revisar la configuración y el uso real del caché, ya que podría no estar funcionando de forma óptima o estar generando sobrecarga adicional en el sistema.
 
 ## Prueba 5: Vespa AI Con Memcached
 
