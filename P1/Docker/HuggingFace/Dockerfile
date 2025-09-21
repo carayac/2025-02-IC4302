@@ -2,10 +2,12 @@ FROM python:3.12.4-slim-bookworm
 
 WORKDIR /app
 
-COPY app/. .
-RUN apt-get update -y
-RUN apt install build-essential -y 
-RUN pip install --no-cache-dir -r requirements.txt
-RUN python -u test.py
+COPY app/requirements.txt .
 
-CMD [ "python", "-u", "./app.py" ]
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app/. .
+
+EXPOSE 5000
+
+CMD ["flask", "--app", "app", "run", "--host=0.0.0.0", "--port=5000"]

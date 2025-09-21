@@ -7,6 +7,5 @@ RUN apt-get update -y
 RUN apt-get install -y libmariadb-dev
 RUN apt install build-essential -y 
 RUN pip install --no-cache-dir -r requirements.txt
-RUN python -u test.py
-
+EXPOSE 5000
 CMD [ "python", "-u", "./app.py" ]

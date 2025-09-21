@@ -30,7 +30,7 @@ helm upgrade --install app app
 Start-Sleep -Seconds 20
 
 # app UI
-helm upgrade --install applicationWeb applicationWeb
+helm upgrade --install application-web application-web
 Start-Sleep -Seconds 20
 
 # grafana-config
