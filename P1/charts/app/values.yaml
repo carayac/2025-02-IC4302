@@ -1,5 +1,5 @@
 config:
-  docker_registry: carayacn # docker registry replace with your own username
+  docker_registry: darcecampos # docker registry replace with your own username
   producer:
     replicas: 1
     name: s3-crawler
@@ -14,6 +14,7 @@ config:
     name: debug
     image: s3-crawler
   huggingface:
-    replicas: 1
+    enabled: true
+    replicas: 2 # it is asked to have at least 2 replicas
     name: huggingface
     image: huggingface

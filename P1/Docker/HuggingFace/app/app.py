@@ -9,9 +9,9 @@ model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 def encode():
     #Obtenemos el texto del request
     data = request.get_json()
-    # Validamos que el campo texto
+    # Validamos el campo texto
     if 'text' not in data:
-        return jsonify({'Error': 'Falta el campo texto'}), 400
+        return jsonify({'Error': 'Falta el campo text'}), 400
     # Guardamos la info del campo texto
     text = data['text']
     # Generamos el embedding
@@ -22,7 +22,15 @@ def encode():
         'embedding': embedding.tolist()
     })
 
+@app.route('/status', methods=['GET'])
+def status():
+    text = "Si funciona"
+    embedding = model.encode(text)
+    return jsonify({
+        'text': text,
+        'embedding': embedding.tolist()
+    })
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
-# https://huggingface.co/sentence-transformers/all-mpnet-base-v2
