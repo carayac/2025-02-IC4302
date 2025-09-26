@@ -1,0 +1,52 @@
+{{- if .Values.config.producer.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.config.producer.name }}
+spec:
+  schedule: {{ .Values.config.producer.schedule}}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        spec:
+          terminationGracePeriodSeconds: 0
+          restartPolicy: OnFailure
+          containers:
+            - name: {{ .Values.config.producer.name }}
+              image: {{ .Values.config.docker_registry }}/{{ .Values.config.producer.image }}
+              env:
+                - name: S3_BUCKET
+                  value: "mi-bucket"
+                - name: S3_PREFIXES
+                  value: "amazon-books,amazon-book-reviews"
+                - name: AWS_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-secret
+                      key: AWS_ACCESS_KEY
+                      optional: false
+                - name: AWS_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-secret
+                      key: AWS_SECRET_KEY
+                      optional: false
+                - name: AWS_REGION
+                  value: "us-east-1"
+
+                - name: RABBITMQ
+                  value: "databases-rabbitmq"
+                - name: RABBITMQ_QUEUE
+                  value: "queue"
+                - name: RABBITMQ_USER
+                  value: "user"
+                - name: RABBITMQ_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: databases-rabbitmq
+                      key: rabbitmq-password
+                      optional: false
+{{- end }}

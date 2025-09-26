@@ -1,10 +1,11 @@
 config:
   docker_registry: darcecampos # docker registry replace with your own username
   producer:
+    enabled: true
     replicas: 1
     name: s3-crawler
     image: s3-crawler
-    schedule: "0 */12 * * *" # every 12 hours
+    schedule: "0 * * * *"  #every hour
   consumer:
     replicas: 1
     name: ingest
