@@ -55,6 +55,7 @@ info
   <summary>Desplegar información</summary> 
 
   info
+  https://huggingface.co/sentence-transformers/all-mpnet-base-v2
 
 </details>
 
