@@ -24,18 +24,17 @@ def login():
         return jsonify({"error": "Email and password are required"}), 400
 
     try:
-        # select the user by email
-        user = execute_query(
-            "SELECT id, name, lastname, description, email, password FROM users WHERE email = ? LIMIT 1",
-            (email,),
-            fetch_one=True
+        res = execute_query(
+            "SELECT id, name, lastname, description, email, password FROM User WHERE email = ? LIMIT 1",
+            (email,)
         )
-        #if user not found will be None
+
+        user = res[0] if res else None
         if not user:
             logger.warning(f"Login failed: email not found {email}")
             return jsonify({"error": "Invalid email or password"}), 401
 
-        # check the password if matches
+        # Verificar contraseña con hash
         if not bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
             logger.warning(f"Login failed: wrong password for {email}")
             return jsonify({"error": "Invalid email or password"}), 401
@@ -56,6 +55,7 @@ def login():
     except Exception as e:
         logger.error(f"Unexpected error during login: {e}")
         return jsonify({"error": "Internal server error"}), 500
+
 
 
 #Route for registering into promptsy

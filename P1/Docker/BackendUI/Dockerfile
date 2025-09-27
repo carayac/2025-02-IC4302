@@ -2,17 +2,17 @@ FROM python:3.12.4-slim-bookworm
 
 WORKDIR /app
 
-# 1. Instalar dependencias del sistema (esto casi nunca cambia)
+# install dependencies to build mariadb connector 
 RUN apt-get update && apt-get install -y \
     libmariadb-dev \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Copiar solo requirements.txt y hacer pip install (esto cambia a veces)
+# copy only requirements to cache dependencies
 COPY app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 3. Ahora sí, copiar el resto de la app (esto cambia mucho)
+# copy the rest of the application
 COPY app/. .
 
 EXPOSE 5000

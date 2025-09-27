@@ -37,13 +37,13 @@ def init_connection():
         sys.exit(1)
 
 #Function to execute a query and return the results witout repeat logic
-def execute_query(query, params=None):
+def execute_query(query, params=None,fetch_one=False):
     global mariadb_pool
     conn = None
     cursor = None
     try:
         conn = mariadb_pool.get_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         if params:
             cursor.execute(query, params)
         else:
@@ -54,7 +54,7 @@ def execute_query(query, params=None):
         logger.error(f"Error executing query: {e}")
         if conn:
             conn.rollback()
-        return None
+        raise
     finally:
         if cursor:
             cursor.close()
