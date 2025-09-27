@@ -19,7 +19,7 @@ spec:
               image: {{ .Values.config.docker_registry }}/{{ .Values.config.producer.image }}
               env:
                 - name: S3_BUCKET
-                  value: "mi-bucket"
+                  value: "ic-tec-dataset"
                 - name: S3_PREFIXES
                   value: "amazon-books,amazon-book-reviews"
                 - name: AWS_ACCESS_KEY
