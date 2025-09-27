@@ -34,7 +34,7 @@ def login():
             logger.warning(f"Login failed: email not found {email}")
             return jsonify({"error": "Invalid email or password"}), 401
 
-        # Verificar contraseña con hash
+        # CHECK PASSWORD
         if not bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
             logger.warning(f"Login failed: wrong password for {email}")
             return jsonify({"error": "Invalid email or password"}), 401

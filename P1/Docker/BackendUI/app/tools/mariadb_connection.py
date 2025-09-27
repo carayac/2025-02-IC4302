@@ -49,7 +49,15 @@ def execute_query(query, params=None,fetch_one=False):
         else:
             cursor.execute(query)
         conn.commit()
-        return cursor.fetchall()
+        #check if the query is a SELECT statement to do a fetch
+        if query.strip().lower().startswith("select"):
+            if fetch_one:
+                return cursor.fetchone()
+            return cursor.fetchall()
+        else:
+            #this is for INSERT, UPDATE, DELETE statements it returns the number of affected rows
+            return cursor.rowcount
+
     except mariadb.Error as e:
         logger.error(f"Error executing query: {e}")
         if conn:
