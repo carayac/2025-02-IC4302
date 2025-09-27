@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-initdb
+data:
+  promptsy.sql: |-
+{{ .Files.Get "promptsy.sql" | indent 4 }}

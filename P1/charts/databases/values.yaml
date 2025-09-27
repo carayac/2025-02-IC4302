@@ -10,8 +10,22 @@ kibana:
   name: ic4302
 mariadb:
   enabled: true
+  auth:
+    database: "promptsy"
+  initdbScriptsConfigMap: "configmap-initdb"
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+      namespace: "monitoring"
+
 rabbitmq:
   enabled: true
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: "monitoring"
 memcached:
   enabled: true
   metrics:
