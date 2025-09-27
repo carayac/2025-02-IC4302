@@ -6,10 +6,14 @@ config:
     name: s3-crawler
     image: s3-crawler
     schedule: "0 * * * *"  #every hour
-  consumer:
+  consumerCSV:
     replicas: 1
-    name: ingest
-    image: ingest
+    name: ingest-csv
+    image: ingest-csv
+  consumerParket:
+    replicas: 1
+    name: ingest-parket
+    image: ingest-parket
   debug:
     replicas: 1
     name: debug

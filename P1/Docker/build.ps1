@@ -35,9 +35,13 @@ docker build -t "$Username/s3-crawler" .
 docker push "$Username/s3-crawler"
 
 #----------------------------------------Ingest----------------------------------------
-Set-Location ../Ingest
-docker build -t "$Username/ingest" .
-docker push "$Username/ingest"
+Set-Location ../Ingest-CSV
+docker build -t "$Username/ingest-csv" .
+docker push "$Username/ingest-csv"
+
+Set-Location ../Ingest-Parket
+docker build -t "$Username/ingest-parket" .
+docker push "$Username/ingest-parket"
 
 #----------------------------------------Spark Huggingface----------------------------------------
 Set-Location ../HuggingFace
