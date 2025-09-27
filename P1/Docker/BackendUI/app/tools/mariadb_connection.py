@@ -1,0 +1,65 @@
+#Imports from mariadb module
+import mariadb
+import sys
+import os
+import logging
+
+logging.basicConfig(
+    stream=sys.stdout, 
+    level=logging.INFO, 
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+#Environment variables for database connection
+DB_HOST = os.getenv("MARIADB")
+DB_USER = os.getenv("MARIADB_USER")
+DB_PASSWORD = os.getenv("MARIADB_PASS")
+
+#mariadb connection pool
+mariadb_pool = None
+
+#Function to create a connection to the MariaDB database
+def init_connection():
+    global mariadb_pool
+    try:
+        mariadb_pool = mariadb.ConnectionPool(
+            pool_name="mypool",
+            pool_size=5,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST,
+            port=3306,
+            database="promptsy"
+        )
+    except mariadb.Error as e:
+        logger.info("Error connecting to MariaDB Platform: {e}")
+        sys.exit(1)
+
+#Function to execute a query and return the results witout repeat logic
+def execute_query(query, params=None):
+    global mariadb_pool
+    conn = None
+    cursor = None
+    try:
+        conn = mariadb_pool.get_connection()
+        cursor = conn.cursor()
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
+        conn.commit()
+        return cursor.fetchall()
+    except mariadb.Error as e:
+        logger.error(f"Error executing query: {e}")
+        if conn:
+            conn.rollback()
+        return None
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+#initialize the connection pool when the module is imported
+init_connection()        

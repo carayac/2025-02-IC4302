@@ -2,17 +2,19 @@ FROM python:3.12.4-slim-bookworm
 
 WORKDIR /app
 
-# Copiar primero solo el archivo de dependencias
-COPY app/requirements.txt .
+# 1. Instalar dependencias del sistema (esto casi nunca cambia)
+RUN apt-get update && apt-get install -y \
+    libmariadb-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalar dependencias (capa que raramente cambia)
+# 2. Copiar solo requirements.txt y hacer pip install (esto cambia a veces)
+COPY app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Ahora copiar el resto del código
+# 3. Ahora sí, copiar el resto de la app (esto cambia mucho)
 COPY app/. .
 
-# Exponer puerto
 EXPOSE 5000
 
-# Comando para iniciar Flask
 CMD ["flask", "--app", "app", "run", "--host=0.0.0.0", "--port=5000"]
