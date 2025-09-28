@@ -1,36 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.config.consumer.name }}
+  name: {{ .Values.config.debug.name }}
   labels:
-    app: {{ .Values.config.consumer.name }}
+    app: {{ .Values.config.debug.name }}
 spec:
-  replicas: {{ .Values.config.consumer.replicas }}
+  replicas: {{ .Values.config.debug.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.config.consumer.name }}
+      app: {{ .Values.config.debug.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.config.consumer.name }}
+        app: {{ .Values.config.debug.name }}
     spec:
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: data
+      - name: scripts
+        configMap:
+          name: scala
+          defaultMode: 0700
       containers:
-      - name: {{ .Values.config.consumer.name }}
+      - name: {{ .Values.config.debug.name }}
         volumeMounts:
           - mountPath: "/data"
             name: data
-        image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumer.image }}
+          - name: scripts
+            mountPath: /scripts
+        image: {{ .Values.config.docker_registry }}/{{ .Values.config.debug.image }}
+        command:
+          - "tail"
+          - "-f"
+          - "/dev/null"
         env:
           - name: DATAFROMK8S
             value: "Hey"
           - name: RABBITMQ
             value: "databases-rabbitmq"
           - name: RABBITMQ_QUEUE
-            value: "queue_parket"
+            value: "queue"
           - name: RABBITMQ_USER
             value: "user"
           - name: XPATH
@@ -66,16 +76,16 @@ spec:
           - name: ELASTIC
             value: "ic4302-es-http"
           - name: BUCKET_NAME
-            value: "ic_tec_dataset"             
+            value: "mi-bucket"             
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
-                name: aws-secret    
-                key: AWS_ACCESS_KEY   
+                name: aws-credentials
+                key: AWS_ACCESS_KEY_ID
           - name: AWS_SECRET_ACCESS_KEY
             valueFrom:
               secretKeyRef:
-                name: aws-secret
-                key: AWS_SECRET_KEY
+                name: aws-credentials
+                key: AWS_SECRET_ACCESS_KEY
           - name: AWS_REGION
             value: "us-east-1"

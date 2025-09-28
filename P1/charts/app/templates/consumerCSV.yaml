@@ -30,7 +30,7 @@ spec:
           - name: RABBITMQ
             value: "databases-rabbitmq"
           - name: RABBITMQ_QUEUE
-            value: "queue"
+            value: "queue_csv"
           - name: RABBITMQ_USER
             value: "user"
           - name: XPATH
@@ -55,3 +55,27 @@ spec:
                 name: databases-mariadb
                 key: mariadb-root-password
                 optional: false
+          - name: ELASTIC_USER
+            value: "elastic"
+          - name: ELASTIC_PASS
+            valueFrom:
+              secretKeyRef:
+                name: ic4302-es-elastic-user
+                key: elastic
+                optional: false
+          - name: ELASTIC
+            value: "ic4302-es-http"
+          - name: BUCKET_NAME
+            value: "ic_tec_dataset"             
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: aws-secret    
+                key: AWS_ACCESS_KEY   
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: aws-secret
+                key: AWS_SECRET_KEY
+          - name: AWS_REGION
+            value: "us-east-1"
