@@ -1,5 +1,5 @@
 config:
-  docker_registry: carayacn # docker registry replace with your own username
+  docker_registry: prosoli # docker registry replace with your own username
   backend:
     replicas: 1
     name: backend
@@ -7,4 +7,4 @@ config:
   frontend:
     replicas: 1
     name: frontend #this is the service name of frontend which represents the web application and the user interface
-    image: frontend
+    image: prosoli/frontend-ui

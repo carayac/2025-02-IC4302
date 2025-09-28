@@ -1,0 +1,5 @@
+.git
+
+# Dentro de app/
+app/node_modules
+app/dist

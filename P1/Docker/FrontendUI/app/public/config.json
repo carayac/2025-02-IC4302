@@ -1,0 +1,4 @@
+{
+  "PUBLIC_API_BASE_URL": "http://<MINIKUBE_IP>:30080",
+  "UI_FEATURE_FLAGS": "feed,likes,friends"
+}

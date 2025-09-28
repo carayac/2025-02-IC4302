@@ -6,7 +6,7 @@ helm uninstall app
 Start-Sleep -Seconds 15
 
 #Desinstalar aplicación web
-helm uninstall applicationWeb
+helm uninstall application-web
 Start-Sleep -Seconds 15
 
 # Desinstalar bases de datos
