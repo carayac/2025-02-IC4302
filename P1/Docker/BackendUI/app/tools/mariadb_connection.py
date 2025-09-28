@@ -37,7 +37,7 @@ def init_connection():
         sys.exit(1)
 
 #Function to execute a query and return the results witout repeat logic
-def execute_query(query, params=None,fetch_one=False):
+def execute_query(query, params=None,fetch_one=False, get_id = False):
     global mariadb_pool
     conn = None
     cursor = None
@@ -55,6 +55,8 @@ def execute_query(query, params=None,fetch_one=False):
                 return cursor.fetchone()
             return cursor.fetchall()
         else:
+            if get_id:
+                return cursor.lastrowid
             #this is for INSERT, UPDATE, DELETE statements it returns the number of affected rows
             return cursor.rowcount
 

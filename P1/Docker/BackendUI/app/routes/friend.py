@@ -109,11 +109,7 @@ def unfollow():
         
         # execute the insert query in the table friends
         res = execute_query(
-            """
-            UPDATE Friend
-            SET enabled = FALSE
-            WHERE id_user = ? AND id_friend = ?
-            """,
+            """UPDATE Friend SET enabled = FALSE WHERE id_user = ? AND id_friend = ?""",
             (id_user, id_friend)
         )
 
@@ -178,10 +174,7 @@ def get_friends():
     try:
         friends = execute_query(
             """
-            SELECT u.id, u.name, u.lastname, u.description, u.email
-            FROM Friend f
-            JOIN User u ON f.id_friend = u.id
-            WHERE f.id_user = ? AND f.enabled = TRUE
+            SELECT u.id, u.name, u.lastname, u.description, u.email FROM Friend f JOIN User u ON f.id_friend = u.id WHERE f.id_user = ? AND f.enabled = TRUE
             """,
             (id_user,)
         )
@@ -197,9 +190,67 @@ def get_friends():
         return {"error": "Error registering user"}, 500
 
 
-#route for get the feed
-@friend_blueprint.route('/feed', methods=['GET'])
-def feed():
-    logger.info("get the feed")
-    return "feed route"
+#route for  like a post
+@friend_blueprint.route('/like', methods=['POST'])
+def like():
+    logger.info("Giving a like to a post")
+    #get data from the request
+    id_prompt = request.json.get("id_prompt")
+    id_user = request.json.get("id_user")
+
+    #validate the data
+    if not id_user or not id_prompt:
+        return jsonify({"error": "id_user and id_prompt are required"}), 400
+    
+    try:
+        # execute the insert query in the table friends
+        execute_query(
+            "INSERT INTO Liked (id_user, id_prompt) VALUES (?, ?)",
+            (id_user, id_prompt,)
+        )
+
+        logger.info(f"User followed successfully: {id_user} -> {id_prompt}")
+        return {"message": "User followed successfully"}, 201
+
+    except mariadb.IntegrityError as e:
+        # the email must be unique this error is for duplicate entry
+        logger.error(f"Integrity error following user : {e}")
+        return {"error": "Database integrity error"}, 500
+
+    except Exception as e:
+        logger.error(f"Integrity error following user : {e}")
+        return {"error": "Error registering user"}, 500
+
+
+#route for unlike a post
+@friend_blueprint.route('/unlike', methods=['PUT'])
+def unlike():
+    logger.info("Giving a like to a post")
+    #get data from the request
+    id_prompt = request.json.get("id_prompt")
+    id_user = request.json.get("id_user")
+
+    #validate the data
+    if not id_user or not id_prompt:
+        return jsonify({"error": "id_user and id_prompt are required"}), 400
+    
+    try:
+        # execute the insert query in the table friends
+        execute_query(
+            """UPDATE Liked SET enabled = FALSE WHERE id_user = ? AND id_prompt = ? AND enabled = TRUE""",
+            (id_user, id_prompt,)
+        )
+
+        logger.info(f"Prompt unliked successfully: {id_user} -> {id_prompt}")
+        return {"message": "Like successfully"}, 201
+
+    except mariadb.IntegrityError as e:
+        # the email must be unique this error is for duplicate entry
+        logger.error(f"Integrity error giving like : {e}")
+        return {"error": "Database integrity error"}, 500
+
+    except Exception as e:
+        logger.error(f"Integrity error giving like  : {e}")
+        return {"error": "Error giving like "}, 500
+
 
