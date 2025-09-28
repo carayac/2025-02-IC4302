@@ -109,14 +109,22 @@ def descargar_objeto(key_name):
 
 
 def procesar_objeto(file_path):
-    with open(file_path, 'r') as file:
-        data = json.load(file)
-
+    documentos = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                try:
+                    doc = json.loads(line)
+                    documentos.append(doc)
+                except json.JSONDecodeError:
+                    print("Error decodificando línea:", line)
+    return documentos
 
 
 def callback(ch, method, body):
     key_name = body.decode('utf-8')  # mensaje recibido, 
-    #part-00099-7aac03f4-2533-4b8f-8be9-9057d831d6be-c000.json
+    #amazon-books/part-00099-7aac03f4-2533-4b8f-8be9-9057d831d6be-c000.json
 
     conn, cursor = conectar_MariaDB() #conectar mariadb
 
