@@ -56,7 +56,6 @@ def conectar_MariaDB():
         key_name VARCHAR(512),
         fecha_proceso DATETIME DEFAULT CURRENT_TIMESTAMP,
         num_documents INT
-        FOREIGN KEY (key_name) REFERENCES {MARIADB_TABLE_BOOKS}(object_key)
     )
     """)
 
@@ -75,6 +74,7 @@ def conectar_MariaDB():
         info_link TEXT,
         image_link TEXT,
         ratings_count INT,
+        FOREIGN KEY (object_key) REFERENCES {MARIADB_TABLE}(key_name)
     );
     """)
     conn.commit()
@@ -122,6 +122,32 @@ def procesar_objeto(file_path):
                 except json.JSONDecodeError:
                     print("Error decodificando línea:", line)
     return documentos
+
+
+def crear_embedding(texto):
+    url = "http://localhost:5000/encode"
+
+    response = requests.post(url, json={"text": texto})
+
+    if response.status_code == 200:
+        data = response.json()
+        embedding = data["embedding"]
+        return embedding
+    else:
+        print("Error:", response.text)
+        return None
+
+
+def embedding_todos_documentos(documentos):
+    for doc in documentos:
+        doc["embedding"] = None
+        texto = doc["description"]
+        embedding = crear_embedding(texto)
+        if not embedding is None:
+            doc["embedding"] = embedding
+    return documentos
+
+
 
 
 def callback(ch, method, body):
