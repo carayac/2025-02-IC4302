@@ -1,16 +1,12 @@
-import time
 import os
-import sys
 import pika
 from datetime import datetime
 import json
-import hashlib
 import mariadb
-import requests
 import xml.etree.ElementTree as ET
-import re
-import ast
 import time
+import boto3
+import json
 
 # General
 HOSTNAME = os.getenv('HOSTNAME')
@@ -69,7 +65,7 @@ def conectar_MariaDB():
 
     # Crear tabla de libros
     cursor.execute(f"""
-    CREATE TABLE IF NOT EXISTS {os.getenv('MARIADB_TABLE_BOOKS')} (
+    CREATE TABLE IF NOT EXISTS {MARIADB_TABLE_BOOKS} (
         id INT AUTO_INCREMENT PRIMARY KEY,
         object_key VARCHAR(255) NOT NULL,
         title VARCHAR(500),
@@ -95,6 +91,28 @@ def buscar_objeto(cursor, tabla, key_buscado):
         return False
     else:
         return True
+
+
+def descargar_objeto(key_name):
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=AWS_ACCESS_KEY,
+        aws_secret_access_key=AWS_SECRET_KEY,
+        region_name=AWS_REGION
+    )
+
+    bucket_name = AWS_BUCKET
+    object_key = f"amazon-books/{key_name}"
+    download_path = XPATH + key_name
+
+    s3.download_file(bucket_name, object_key, download_path)
+
+
+def procesar_objeto(file_path):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+
 
 def callback(ch, method, body):
     key_name = body.decode('utf-8')  # mensaje recibido, 
