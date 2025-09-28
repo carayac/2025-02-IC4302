@@ -45,6 +45,8 @@ spec:
             value: "databases-mariadb"
           - name: MARIADB_TABLE
             value: "objects"
+          - name: MARIADB_TABLE_REVIEWS
+            value: "reviews"
           - name: MARIADB_DB
             value: "control"
           - name: MARIADB_USER
