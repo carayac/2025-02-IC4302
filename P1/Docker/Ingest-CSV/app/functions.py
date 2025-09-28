@@ -64,7 +64,7 @@ def conectar_MariaDB():
     cursor.execute(f"""
     CREATE TABLE IF NOT EXISTS {MARIADB_TABLE_BOOKS} (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        object_key VARCHAR(255) NOT NULL,
+        object_key VARCHAR(512) NOT NULL,
         title VARCHAR(500),
         authors TEXT,
         description TEXT,
@@ -100,7 +100,7 @@ def descargar_objeto(key_name):
     )
 
     bucket_name = AWS_BUCKET
-    object_key = f"amazon-books/{key_name}"
+    object_key = key_name
     download_path = XPATH + key_name
 
     s3.download_file(bucket_name, object_key, download_path)
@@ -148,6 +148,61 @@ def embedding_todos_documentos(documentos):
             doc["embedding"] = embedding
     return documentos
 
+
+def insertar_libro(conn, cursor, object_key, title=None, authors=None, description=None,
+                   categories=None, published_date=None, publisher=None,
+                   preview_link=None, info_link=None, image_link=None,
+                   ratings_count=None):
+    query = f"""
+    INSERT INTO {MARIADB_TABLE_BOOKS}
+    (object_key, title, authors, description, categories,
+     published_date, publisher, preview_link, info_link,
+     image_link, ratings_count)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    try:
+        cursor.execute(query, (
+            object_key,
+            title,
+            authors,
+            description,
+            categories,
+            published_date,
+            publisher,
+            preview_link,
+            info_link,
+            image_link,
+            ratings_count
+        ))
+        conn.commit()
+    except mariadb.Error as e:
+        conn.rollback()
+        print(f"Error insertando libro: {e}")
+
+
+
+def insertar_info(cursor, conn, key_name, documentos):
+    for doc in documentos:
+        title = doc.get("title")
+        authors = doc.get("authors")
+        description = doc.get("description")
+        categories = doc.get("categories")
+        published_date = doc.get("published_date")
+        publisher = doc.get("publisher")
+        preview_link = doc.get("preview_link")
+        info_link = doc.get("info_link")
+        image_link = doc.get("image_link")
+        ratings_count = doc.get("ratings_count")
+
+        insertar_libro(
+            conn, cursor, key_name,
+            title, authors, description,
+            categories, published_date, publisher,
+            preview_link, info_link, image_link,
+            ratings_count
+        )
+
+
 def insertar_object(cursor, conn, key_name, documentos, procesado):
     insert_query = f"""
         INSERT INTO {MARIADB_TABLE}
@@ -157,16 +212,13 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
     try:
         cursor.execute(insert_query, (
             key_name,
-            str(len(documentos)),
+            len(documentos),
             procesado
         ))
         conn.commit()
     except mariadb.Error as e:
         conn.rollback()
         print(f"Error insertando object: {e}")
-
-
-
 
 
 def callback(ch, method, body):
@@ -182,11 +234,20 @@ def callback(ch, method, body):
         ch.basic_ack(delivery_tag=method.delivery_tag) #no se hace nada
     else:
         # 1. Descargar desde S3
+        file_path = descargar_objeto(key_name)
         # 2. Parsear JSON
+        documentos = procesar_objeto(file_path)
         # 3. Generar embeddings
+        procesado = False
+        insertar_object(cursor, conn, key_name, documentos, procesado)
+        documentos = embedding_todos_documentos(documentos)
         # 4. Guardar en Elasticsearch
+
         # 5. Guardar en MariaDB
+        insertar_info(cursor, conn, key_name, documentos)
         # 5. Marcar como procesado en MariaDB
+        procesado = True
+        insertar_object(cursor, conn, key_name, documentos, procesado)
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
