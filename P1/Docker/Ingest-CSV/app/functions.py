@@ -63,6 +63,7 @@ def conectar_MariaDB():
         key_name VARCHAR(512),
         fecha_proceso DATETIME DEFAULT CURRENT_TIMESTAMP,
         num_documents INT
+        FOREIGN KEY (key_name) REFERENCES {MARIADB_TABLE_BOOKS}(object_key)
     )
     """)
 
@@ -81,7 +82,6 @@ def conectar_MariaDB():
         info_link TEXT,
         image_link TEXT,
         ratings_count INT,
-        FOREIGN KEY (object_key) REFERENCES {os.getenv('MARIADB_TABLE')}(key)
     );
     """)
     conn.commit()
@@ -96,6 +96,26 @@ def buscar_objeto(cursor, tabla, key_buscado):
     else:
         return True
 
+def callback(ch, method, body):
+    key_name = body.decode('utf-8')  # mensaje recibido, 
+    #part-00099-7aac03f4-2533-4b8f-8be9-9057d831d6be-c000.json
+
+    conn, cursor = conectar_MariaDB() #conectar mariadb
+
+    # Verificar si ya se procesó
+    existe = buscar_objeto(cursor, MARIADB_TABLE, key_name)
+
+    if existe:
+        ch.basic_ack(delivery_tag=method.delivery_tag) #no se hace nada
+    else:
+        # 1. Descargar desde S3
+        # 2. Parsear JSON
+        # 3. Generar embeddings si quieres
+        # 4. Guardar en Elasticsearch
+        # 5. Guardar en MariaDB
+        # 5. Marcar como procesado en MariaDB
+
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def main():
     credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
