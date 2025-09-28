@@ -1,12 +1,9 @@
 import os
 import pika
-from datetime import datetime
 import json
 import mariadb
-import xml.etree.ElementTree as ET
-import time
+import requests
 import boto3
-import json
 
 # General
 HOSTNAME = os.getenv('HOSTNAME')
@@ -107,6 +104,8 @@ def descargar_objeto(key_name):
 
     s3.download_file(bucket_name, object_key, download_path)
 
+    return download_path
+
 
 def procesar_objeto(file_path):
     documentos = []
@@ -116,6 +115,9 @@ def procesar_objeto(file_path):
             if line:
                 try:
                     doc = json.loads(line)
+                    doc = {clave.lower(): 
+                           valor for clave, 
+                           valor in doc.items()} #pasa las keys a minuscula
                     documentos.append(doc)
                 except json.JSONDecodeError:
                     print("Error decodificando línea:", line)
