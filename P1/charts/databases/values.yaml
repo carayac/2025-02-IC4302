@@ -26,6 +26,7 @@ rabbitmq:
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
+      
 memcached:
   enabled: true
   metrics:
