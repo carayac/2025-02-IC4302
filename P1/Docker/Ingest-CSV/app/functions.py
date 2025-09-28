@@ -56,6 +56,7 @@ def conectar_MariaDB():
         key_name VARCHAR(512),
         fecha_proceso DATETIME DEFAULT CURRENT_TIMESTAMP,
         num_documents INT
+        procesado BIT
     )
     """)
 
@@ -146,6 +147,24 @@ def embedding_todos_documentos(documentos):
         if not embedding is None:
             doc["embedding"] = embedding
     return documentos
+
+def insertar_object(cursor, conn, key_name, documentos, procesado):
+    insert_query = f"""
+        INSERT INTO {MARIADB_TABLE}
+        (key_name, num_documents, procesado)
+        VALUES (?, ?, ?)
+    """
+    try:
+        cursor.execute(insert_query, (
+            key_name,
+            str(len(documentos)),
+            procesado
+        ))
+        conn.commit()
+    except mariadb.Error as e:
+        conn.rollback()
+        print(f"Error insertando object: {e}")
+
 
 
 
