@@ -208,7 +208,10 @@ def like():
             "INSERT INTO Liked (id_user, id_prompt) VALUES (?, ?)",
             (id_user, id_prompt,)
         )
-
+        execute_query(
+            """UPDATE Prompt SET likes = likes+1 WHERE id_prompt = ?""",
+            (id_prompt,)
+        )
         logger.info(f"User followed successfully: {id_user} -> {id_prompt}")
         return {"message": "User followed successfully"}, 201
 
@@ -239,6 +242,10 @@ def unlike():
         execute_query(
             """UPDATE Liked SET enabled = FALSE WHERE id_user = ? AND id_prompt = ? AND enabled = TRUE""",
             (id_user, id_prompt,)
+        )
+        execute_query(
+            """UPDATE Prompt SET likes = likes-1 WHERE id_prompt = ?""",
+            (id_prompt,)
         )
 
         logger.info(f"Prompt unliked successfully: {id_user} -> {id_prompt}")
