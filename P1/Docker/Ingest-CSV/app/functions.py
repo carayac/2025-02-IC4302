@@ -140,7 +140,7 @@ def crear_embedding(texto):
 
 def embedding_todos_documentos(documentos):
     for doc in documentos:
-        doc["embedding"] = None
+        doc["embeddings"] = None
         texto = doc["description"]
         embedding = crear_embedding(texto)
         if not embedding is None:
@@ -164,7 +164,7 @@ def callback(ch, method, body):
     else:
         # 1. Descargar desde S3
         # 2. Parsear JSON
-        # 3. Generar embeddings si quieres
+        # 3. Generar embeddings
         # 4. Guardar en Elasticsearch
         # 5. Guardar en MariaDB
         # 5. Marcar como procesado en MariaDB
@@ -185,64 +185,3 @@ def main():
     channel.basic_qos(prefetch_count=1)
     #Va a consumir esa cola, cuando llega el mensaje llama a callback y no se confirma el mensaje automaticamente
     channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False)
-
-
-
-
-# def insertar_job(cursor, conn, table_name, job):
-#     insert_query = f"""
-#         INSERT INTO {table_name}
-#         (id, estado, lista_ids, omitido, fecha_inicio, fecha_final)
-#         VALUES (?, ?, ?, ?, ?, ?)
-#     """
-#     try:
-#         cursor.execute(insert_query, (
-#             str(job["id"]),
-#             job["estado"],
-#             str(job["lista_ids"]),
-#             str(job["omitido"]),
-#             job["fecha_inicio"],
-#             job["fecha_final"]
-#         ))
-#         conn.commit()
-#     except mariadb.Error as e:
-#         conn.rollback()
-#         print(f"Error insertando job: {e}")
-
-
-
-# def conectar_rabbitmq():
-#     RABBIT_MQ = os.getenv('RABBITMQ')
-#     RABBIT_MQ_PASSWORD = os.getenv('RABBITMQ_PASS')
-#     QUEUE_NAME = os.getenv('RABBITMQ_QUEUE')
-#     try:
-#         credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
-#         parameters = pika.ConnectionParameters(host=RABBIT_MQ, credentials=credentials)
-#         connection = pika.BlockingConnection(parameters)
-#         channel = connection.channel()
-#         channel.queue_declare(queue=QUEUE_NAME)
-#         return connection, channel, QUEUE_NAME
-#     except Exception as e:
-#         print(f"Error conectando a RabbitMQ: {e}")
-#         sys.exit(1)
-
-
-# def enviar_rabbitmq(job_id, channel, queue_name):
-#     try:
-#         msg = str(job_id) # Se construye el mensaje
-#         channel.basic_publish(exchange='', routing_key=queue_name, body=msg) # Se envía el mensaje
-#     except Exception as e:
-#         print(f"Error enviando job-id por RabbitMQ: {e}")
-#     time.sleep(1)
-
-
-# def crear_job(lista_ids):
-#     """Crea un job con un id único y estado inicial"""
-#     return {
-#         "id": uuid.uuid4(), # Genera un ID único
-#         "estado": "pending",
-#         "lista_ids": lista_ids,
-#         "omitido": [],
-#         "fecha_inicio": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-#         "fecha_final": None
-#     }
