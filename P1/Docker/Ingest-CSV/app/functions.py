@@ -44,9 +44,6 @@ AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 AWS_REGION = os.getenv('AWS_REGION')
 
 
-import os
-import mariadb
-
 def conectar_MariaDB():
     conn = mariadb.connect(
         host= MARIADB_HOST,
@@ -62,7 +59,7 @@ def conectar_MariaDB():
     # Crear tabla de objetos procesados
     cursor.execute(f"""
     CREATE TABLE IF NOT EXISTS {os.getenv('MARIADB_TABLE')} (
-        id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+        id INT AUTO_INCREMENT PRIMARY KEY,   
         key_name VARCHAR(512),
         fecha_proceso DATETIME DEFAULT CURRENT_TIMESTAMP,
         num_documents INT
@@ -72,8 +69,8 @@ def conectar_MariaDB():
     # Crear tabla de libros
     cursor.execute(f"""
     CREATE TABLE IF NOT EXISTS {os.getenv('MARIADB_TABLE_BOOKS')} (
-        id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-        s3_object_name VARCHAR(255) NOT NULL,
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        object_key VARCHAR(255) NOT NULL,
         title VARCHAR(500),
         authors TEXT,
         description TEXT,
@@ -81,18 +78,23 @@ def conectar_MariaDB():
         published_date DATE,
         publisher VARCHAR(255),
         preview_link TEXT,
+        info_link TEXT,
         image_link TEXT,
         ratings_count INT,
-        embeddings JSON,
-        processed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE KEY unique_s3_object (s3_object_name)
-    )
+        FOREIGN KEY (object_key) REFERENCES {os.getenv('MARIADB_TABLE')}(key)
+    );
     """)
-
     conn.commit()
     return conn, cursor
 
-
+def buscar_objeto(cursor, tabla, key_buscado):
+    query = f"SELECT * FROM {tabla} WHERE key_name = %s"
+    cursor.execute(query, (key_buscado,))
+    resultado = cursor.fetchone()
+    if resultado is None:
+        return False
+    else:
+        return True
 
 
 def main():
