@@ -1,3 +1,4 @@
+
 # Listar los releases de Helm
 helm list
 
@@ -13,5 +14,3 @@ Start-Sleep -Seconds 15
 helm uninstall databases
 Start-Sleep -Seconds 60
 
-# Desinstalar bootstrap
-helm uninstall bootstrap
