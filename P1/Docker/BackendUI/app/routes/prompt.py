@@ -1,5 +1,6 @@
 from flask import Blueprint, request,jsonify
 from tools.mariadb_connection import execute_query
+from tools.embbeding import get_embedding
 import logging
 import sys
 import mariadb
@@ -14,10 +15,27 @@ logger = logging.getLogger(__name__)
 prompt_blueprint = Blueprint('prompt', __name__)
 
 #route to generate a result by a prompt
-@prompt_blueprint.route('/generate', methods=['GET'])
+@prompt_blueprint.route('/generate', methods=['POST'])
 def generate():
-    logger.info("esto es un prompt generado")
-    return "generate route"
+
+    try:
+        logger.info("Generating prompt")
+        #get data from body request
+        text = request.json.get("text")
+        #get the embedding
+        response = get_embedding(text)
+        embedding = response["embedding"]
+
+        #get the results by the text embedding
+
+
+        
+        return jsonify(response["embedding"]), 400
+    except Exception as e:
+        logger.error(f"Error posting prompt: {e}")
+        return {"error": "Error generating prompt"}, 500
+
+
 
 #auxiliar methods for posting a prompt
 def insert_prompt(text, id_user):

@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.config.consumer.name }}
+  name: {{ .Values.config.consumerParket.name }}
   labels:
-    app: {{ .Values.config.consumer.name }}
+    app: {{ .Values.config.consumerParket.name }}
 spec:
-  replicas: {{ .Values.config.consumer.replicas }}
+  replicas: {{ .Values.config.consumerParket.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.config.consumer.name }}
+      app: {{ .Values.config.consumerParket.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.config.consumer.name }}
+        app: {{ .Values.config.consumerParket.name }}
     spec:
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: data
       containers:
-      - name: {{ .Values.config.consumer.name }}
+      - name: {{ .Values.config.consumerParket.name }}
         volumeMounts:
           - mountPath: "/data"
             name: data
-        image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumer.image }}
+        image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumerParket.image }}
         env:
           - name: DATAFROMK8S
             value: "Hey"
