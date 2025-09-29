@@ -209,7 +209,7 @@ def like():
             (id_user, id_prompt,)
         )
         execute_query(
-            """UPDATE Prompt SET likes = likes+1 WHERE id_prompt = ?""",
+            """UPDATE Prompt SET likes = likes+1 WHERE id = ?""",
             (id_prompt,)
         )
         logger.info(f"User followed successfully: {id_user} -> {id_prompt}")
@@ -244,7 +244,7 @@ def unlike():
             (id_user, id_prompt,)
         )
         execute_query(
-            """UPDATE Prompt SET likes = likes-1 WHERE id_prompt = ?""",
+            """UPDATE Prompt SET likes = likes-1 WHERE id = ?""",
             (id_prompt,)
         )
 

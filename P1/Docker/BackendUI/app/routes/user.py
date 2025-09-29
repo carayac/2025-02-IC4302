@@ -145,4 +145,3 @@ def change_password():
         logger.error(f"Unexpected error editing pass {id}: {e}")
         return {"error": "Error editing pass"}, 500
 
-    return "Change password route"

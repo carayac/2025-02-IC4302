@@ -38,10 +38,19 @@ CREATE TABLE IF NOT EXISTS Friend(
     FOREIGN KEY (id_friend) REFERENCES User(id)
 );
 
+CREATE TABLE IF NOT EXISTS Result (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_prompt INT,
+    searchTyper Enum('vector_books', 'vector_reviews', 'text_books', 'text_reviews', 'mariadb') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_prompt) REFERENCES Prompt(id)
+);
+
+
+
 CREATE TABLE IF NOT EXISTS Book(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    prompt_id INT,
-    searchTyper Enum('vector_books', 'vector_reviews', 'text_books', 'text_reviews', 'mariadb') NOT NULL,
+    id_result INT NULL,
     title VARCHAR(200) NOT NULL,
     description VARCHAR(2000) NOT NULL,
     image VARCHAR(255),
@@ -52,7 +61,24 @@ CREATE TABLE IF NOT EXISTS Book(
     ratings_count FLOAT,
     enabled BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (prompt_id) REFERENCES Prompt(id)
+    FOREIGN KEY (id_result) REFERENCES Result(id)
+);
+
+CREATE TABLE IF NOT EXISTS Review (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_result INT,
+    id_book INT,
+    title VARCHAR(255),
+    price DECIMAL(10,2),
+    profileName VARCHAR(255),
+    helpfulness INT,
+    score DECIMAL(5,2),
+    time DATETIME,
+    summary TEXT,
+    text TEXT,
+    enabled TINYINT(1) DEFAULT 1,
+    FOREIGN KEY (id_result) REFERENCES Result(id),
+    FOREIGN KEY (id_book) REFERENCES Book(id)
 );
 
 
