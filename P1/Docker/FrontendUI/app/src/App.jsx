@@ -4,9 +4,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login.jsx";
 import Register from "./pages/Register/Register.jsx";
 import Ask from "./pages/Ask/Ask.jsx";
+import Prompt from "./pages/Prompt/Prompt.jsx";
+import Friends from "./pages/Friends/Friends.jsx";
 
 export default function App() { 
-    return <Ask />; 
+    return <Friends />; 
 }
 
 
