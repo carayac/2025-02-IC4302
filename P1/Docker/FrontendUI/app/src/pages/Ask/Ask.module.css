@@ -1,0 +1,490 @@
+/* Base Container */
+.container {
+  min-height: 100vh;
+  padding: 1rem;
+  padding-bottom: 5rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: all 0.3s ease;
+}
+
+/* Colorful Theme */
+.colorful {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+}
+
+.colorful .searchSection,
+.colorful .sourcesSection,
+.colorful .resultsSection {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+}
+
+.colorful .bookCard {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+  color: #333;
+}
+
+.colorful .button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.colorful .sourceButton {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  color: #333;
+}
+
+.colorful .bottomNav {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Formal Theme */
+.formal {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.formal .searchSection,
+.formal .sourcesSection,
+.formal .resultsSection {
+  background: #ffffff;
+  color: #1e293b;
+}
+
+.formal .bookCard {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+}
+
+.formal .button {
+  background: #1e40af;
+  color: white;
+}
+
+.formal .sourceButton {
+  background: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+}
+
+.formal .bottomNav {
+  background: #1e293b;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.themeToggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.themeToggle:hover {
+  transform: scale(1.1);
+}
+
+/* Search Section */
+.searchSection {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.inputGroup {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.helpText {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.searchButton {
+  flex: 1;
+  min-width: 120px;
+}
+
+.publishButton {
+  flex: 1;
+  min-width: 160px;
+  opacity: 0.9;
+}
+
+/* Sources Section */
+.sourcesSection {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.sourceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.sourceButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.sourceButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.sourceIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.sourceName {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Results Section */
+.resultsSection {
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.backButton {
+  background: none;
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: #f1f5f9;
+  transform: translateX(-2px);
+}
+
+.booksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.bookCard {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bookCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.bookHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.bookTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.stars {
+  font-size: 1rem;
+}
+
+.ratingValue {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.bookAuthors {
+  font-style: italic;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.bookDescription {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.bookMeta {
+  margin-bottom: 1rem;
+}
+
+.metaItem {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.category {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.bookActions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.previewLink,
+.moreInfoButton {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.previewLink {
+  background: #10b981;
+  color: white;
+}
+
+.moreInfoButton {
+  background: #6b7280;
+  color: white;
+}
+
+.previewLink:hover,
+.moreInfoButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Bottom Navigation */
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.75rem 0;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  min-width: 60px;
+}
+
+.formal .navItem {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.navItem:hover,
+.navItem.active {
+  color: white;
+  transform: translateY(-2px);
+}
+
+.navIcon {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.navLabel {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+    padding-bottom: 5rem;
+  }
+
+  .header {
+    margin-bottom: 1rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .searchSection,
+  .sourcesSection,
+  .resultsSection {
+    padding: 1rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .sourceGrid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .booksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .resultsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bookHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bookActions {
+    flex-direction: column;
+  }
+
+  .navLabel {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sourceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .navIcon {
+    font-size: 1rem;
+  }
+
+  .navLabel {
+    display: none;
+  }
+}
