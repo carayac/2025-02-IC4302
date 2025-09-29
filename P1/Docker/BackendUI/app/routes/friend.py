@@ -212,16 +212,16 @@ def like():
             """UPDATE Prompt SET likes = likes+1 WHERE id = ?""",
             (id_prompt,)
         )
-        logger.info(f"User followed successfully: {id_user} -> {id_prompt}")
-        return {"message": "User followed successfully"}, 201
+        logger.info(f"Like ready: {id_user} -> {id_prompt}")
+        return {"message": "Like successfully"}, 201
 
     except mariadb.IntegrityError as e:
         # the email must be unique this error is for duplicate entry
-        logger.error(f"Integrity error following user : {e}")
+        logger.error(f"Integrity error like user : {e}")
         return {"error": "Database integrity error"}, 500
 
     except Exception as e:
-        logger.error(f"Integrity error following user : {e}")
+        logger.error(f"Integrity error like user : {e}")
         return {"error": "Error registering user"}, 500
 
 

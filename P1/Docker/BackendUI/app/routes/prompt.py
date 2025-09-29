@@ -27,64 +27,12 @@ def insert_prompt(text, id_user):
         get_id=True
     )
 
-
-def insert_result(searchTyper, prompt_id):
+#auxiliar methods for update a prompt
+def update_prompt(text, id_prompt):
     return execute_query(
-        "INSERT INTO Result (searchTyper, id_prompt) VALUES (?, ?)",
-        (searchTyper, prompt_id),
+        "UPDATE Prompt SET text = ? WHERE id = ?",
+        (text, id_prompt),
         get_id=True
-    )
-
-
-def insert_book(book_data, result_id=None):
-    book_id = execute_query(
-        """INSERT INTO Book (id_result, title, description, image, previewLink,
-                             publisher, published_date, infolink, ratings_count)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-        (
-            result_id,
-            book_data.get("title"),
-            book_data.get("description"),
-            book_data.get("image"),
-            book_data.get("previewLink"),
-            book_data.get("publisher"),
-            book_data.get("published_date"),
-            book_data.get("infolink"),
-            book_data.get("ratings_count"),
-        ),
-        get_id=True
-    )
-
-    insert_authors(book_data.get("authors", []), book_id)
-
-    insert_category(book_data.get("categories", []),book_id)
-
-    return book_id
-
-
-def insert_review(review_data, result_id):
-    # si hay libro dentro del review
-    book_data = review_data.get("book")
-    book_id = None
-    if book_data:
-        book_id = insert_book(book_data,result_id)
-    logger.info(f"Prompt {book_data} registered successfully")
-    return execute_query(
-        """INSERT INTO Review (id_result, id_book,title, price, profileName, helpfulness,
-                               score, time, summary, text)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)""",
-        (
-            result_id,
-            book_id,
-            review_data.get("title"),
-            review_data.get("price"),
-            review_data.get("profileName"),
-            review_data.get("helpfulness"),
-            review_data.get("score"),
-            review_data.get("time"),
-            review_data.get("summary"),
-            review_data.get("text"),
-        )
     )
 
 
@@ -98,7 +46,6 @@ def post():
 
     text = data.get("text")
     id_user = data.get("id_user")
-    results = data.get("results", [])
 
     if not text or not id_user:
         return jsonify({"error": "id_user and text are required"}), 400
@@ -106,18 +53,6 @@ def post():
     try:
         #saving the prompt
         prompt_id = insert_prompt(text, id_user)
-
-       #saving the results
-        for r in results:
-            result_id = insert_result(r.get("searchTyper"), prompt_id)
-
-            #books 
-            for b in r.get("books", []):
-                insert_book(b, result_id)
-
-            #getting tha reviews
-            for rev in r.get("reviews", []):
-                insert_review(rev, result_id)
 
         logger.info(f"Prompt {prompt_id} registered successfully")
         return {"message": "Prompt registered successfully"}, 201
@@ -131,69 +66,34 @@ def post():
         return {"error": "Error posting prompt"}, 500
     
 
-
-
-def insert_category(categories, book_id):
-    try:
-        for category in categories:
-
-            res = execute_query(
-                "SELECT id FROM Category where name = ? AND enabled = TRUE",
-                (category,)
-            )
-            if not res:
-                #saving the book into database
-                category_id = execute_query(
-                    "INSERT INTO Category (name) VALUES (?)",
-                    (category,),get_id=True
-                )
-                logger.info(f"Category '{category}' for book {book_id} registered successfully")
-            else:
-                category_id = res[0]["id"]
-                   
-            execute_query(
-                "INSERT INTO Category_Book (book_id,category_id) VALUES (?,?)",
-                (book_id,category_id,)
-            )
-
-        return True
-    except Exception as e:
-        logger.error(f"Error inserting books: {e}")
-        return False
-    
-def insert_authors(authors, book_id):
-    try:
-        for author in authors:
-
-            res = execute_query(
-                "SELECT id FROM Author where name = ? AND enabled = TRUE",
-                (author,)
-            )
-            if not res:
-                #saving the book into database
-                author_id=execute_query(
-                    "INSERT INTO Author (name) VALUES (?)",
-                    (author,),get_id=True
-                )
-                logger.info(f"Author '{author}' for book {book_id} registered successfully")
-            else:
-                author_id = res[0]["id"]
-                   
-            execute_query(
-                "INSERT INTO Author_Book (book_id,author_id) VALUES (?,?)",
-                (book_id,author_id,)
-            )
-
-        return True
-    except Exception as e:
-        logger.error(f"Error inserting books: {e}")
-        return False    
-
 #route to generate a result by a prompt
 @prompt_blueprint.route('/edit', methods=['PUT'])
 def edit():
-    logger.info("esto es un prompt editado")
-    return "edited route"
+    data = request.json.get("prompt")
+    if not data:
+        return jsonify({"error": "prompt is required"}), 400
+
+    text = data.get("text")
+    id_prompt = data.get("id_prompt")
+
+
+    if not text or not id_prompt:
+        return jsonify({"error": "id_prompt and text are required"}), 400
+
+    try:
+        #saving the prompt
+        prompt_id = update_prompt(text, id_prompt)
+
+        logger.info(f"Prompt {prompt_id} edited successfully")
+        return {"message": "Prompt edited successfully"}, 201
+
+    except mariadb.IntegrityError as e:
+        logger.error(f"Integrity error posting prompt: {e}")
+        return {"error": "Database integrity error"}, 500
+
+    except Exception as e:
+        logger.error(f"Error edited prompt: {e}")
+        return {"error": "Error edited prompt"}, 500
 
 
 #route to generate a result by a prompt
@@ -217,68 +117,6 @@ def my_prompts(id_user=None):
             "SELECT id, text, created_at, likes FROM Prompt WHERE id_user = ? AND enabled = TRUE ORDER BY created_at DESC",
             (id_user,)
         )
-
-        for prompt in prompts:
-            prompt_id = prompt["id"]
-
-            #get the results associated 
-            results = execute_query(
-                "SELECT id, searchTyper, created_at FROM Result WHERE id_prompt = ?",
-                (prompt_id,)
-            )
-
-            for result in results:
-                result_id = result["id"]
-
-                # get the books
-                books = execute_query(
-                    """SELECT id, title, description, image, previewLink, publisher,
-                              published_date, infolink, ratings_count
-                       FROM Book
-                       WHERE enabled = 1 AND id_result = ?""",
-                    (result_id,)
-                )
-
-                # para cada libro, agregar autores, categorías y reviews (solo si aplica)
-                for book in books:
-                    book_id = book["id"]
-
-                    #authors
-                    authors = execute_query(
-                        """SELECT a.name
-                           FROM Author AS a
-                           JOIN Author_Book ab ON a.id = ab.author_id
-                           WHERE ab.book_id = ? AND a.enabled = 1""",
-                        (book_id,)
-                    )
-                    book["authors"] = [a["name"] for a in authors]
-
-                    #categories
-                    categories = execute_query(
-                        """SELECT c.name
-                           FROM Category AS c
-                           JOIN Category_Book cb ON c.id = cb.category_id
-                           WHERE cb.book_id = ? AND c.enabled = 1""",
-                        (book_id,)
-                    )
-                    book["categories"] = [c["name"] for c in categories]
-
-                    # reviews solo si el result es de tipo review
-                    if result["searchTyper"] in ("vector_reviews", "text_reviews"):
-                        reviews = execute_query(
-                            """SELECT id, title, price, profileName, helpfulness, score,
-                                      time, summary, text
-                               FROM Review
-                               WHERE enabled = 1 AND id_book = ? AND id_result = ?""",
-                            (book_id, result_id)
-                        )
-                        book["reviews"] = reviews
-                    else:
-                        book["reviews"] = []
-
-                result["books"] = books
-
-            prompt["results"] = results
 
         if invocated:
             return prompts
@@ -304,7 +142,7 @@ def search():
     try:
         # split the text into words to search each one
         words = text.split()
-        query = "SELECT id FROM Prompt WHERE "
+        query = "SELECT id, text FROM Prompt WHERE "
         params = []
         conditions = []
         # create a condition for each word to search in name or lastname
@@ -315,14 +153,9 @@ def search():
         query += " AND ".join(conditions)  #all conditions must be met
         query += " AND enabled = TRUE"
         #execute the query created
-        prompts_ids = execute_query(query, tuple(params))
-        result = []
-        for prompt in prompts_ids:
-            response = my_prompt(prompt["id"])    
-            prompt_data = response.get_json()   
-            result.append(prompt_data)
-
-        return jsonify(result), 200
+        prompts = execute_query(query, tuple(params))
+        
+        return jsonify(prompts), 200
     except mariadb.IntegrityError as e:
         # there was an error with the query
         logger.error(f"Integrity error finding prompt : {e}")
@@ -381,75 +214,10 @@ def my_prompt(id_prompt=None):
 
     try:
         #get user prompts
-        res = execute_query(
+        prompt = execute_query(
             "SELECT id, text, created_at, likes FROM Prompt WHERE id = ?  AND enabled = TRUE ORDER BY created_at DESC",
             (id_prompt,)
         )
-
-        if not res: 
-            logger.error(f"Error id: {id_prompt} does not exist")
-            return jsonify({"error": "Error the prompt does not exist"}), 500
-        prompt = res[0]
-        prompt_id = prompt["id"]
-
-        # obtener results asociados al prompt
-        results = execute_query(
-            "SELECT id, searchTyper, created_at FROM Result WHERE id_prompt = ?",
-            (prompt_id,)
-        )
-
-        for result in results:
-            result_id = result["id"]
-
-            # obtener libros asociados al result
-            books = execute_query(
-                  """SELECT id, title, description, image, previewLink, publisher,
-                             published_date, infolink, ratings_count
-                    FROM Book
-                    WHERE enabled = 1 AND id_result = ?""",
-                (result_id,)
-            )
-
-            # para cada libro, agregar autores, categorías y reviews (solo si aplica)
-            for book in books:
-                book_id = book["id"]
-
-                # autores
-                authors = execute_query(
-                    """SELECT a.name
-                        FROM Author AS a
-                        JOIN Author_Book ab ON a.id = ab.author_id
-                         WHERE ab.book_id = ? AND a.enabled = 1""",
-                    (book_id,)
-                )
-                book["authors"] = [a["name"] for a in authors]
-
-                # categorías
-                categories = execute_query(
-                    """SELECT c.name
-                        FROM Category AS c
-                        JOIN Category_Book cb ON c.id = cb.category_id
-                        WHERE cb.book_id = ? AND c.enabled = 1""",
-                    (book_id,)
-                )
-                book["categories"] = [c["name"] for c in categories]
-
-                # reviews solo si el result es de tipo review
-                if result["searchTyper"] in ("vector_reviews", "text_reviews"):
-                    reviews = execute_query(
-                        """SELECT id, title, price, profileName, helpfulness, score,
-                                    time, summary, text
-                            FROM Review
-                            WHERE enabled = 1 AND id_book = ? AND id_result = ?""",
-                        (book_id, result_id)
-                    )
-                    book["reviews"] = reviews
-                else:
-                    book["reviews"] = []
-
-            result["books"] = books
-
-            prompt["results"] = results
 
         if invocated:
             return prompt
