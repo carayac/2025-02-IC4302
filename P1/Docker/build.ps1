@@ -39,14 +39,14 @@ docker push "$Username/frontend-ui"
 # docker build -t "$Username/ingest" .
 # docker push "$Username/ingest"
 
-#----------------------------------------Ingest----------------------------------------
+<# #----------------------------------------Ingest----------------------------------------
 Set-Location ../Ingest-CSV
 docker build -t "$Username/ingest-csv" .
 docker push "$Username/ingest-csv"
 
 Set-Location ../Ingest-Parket
 docker build -t "$Username/ingest-parket" .
-docker push "$Username/ingest-parket"
+docker push "$Username/ingest-parket" #>
 
 
 # #----------------------------------------Spark Huggingface----------------------------------------
