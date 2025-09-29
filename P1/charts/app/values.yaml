@@ -1,5 +1,5 @@
 config:
-  docker_registry: prosoli # docker registry replace with your own username
+  docker_registry: carayacn # docker registry replace with your own username
   producer:
     enabled: true
     replicas: 1
