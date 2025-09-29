@@ -6,6 +6,10 @@ config:
     name: s3-crawler
     image: s3-crawler
     schedule: "0 * * * *"  #every hour
+  initMariaDB:
+    replicas: 1
+    name: init-mariadb
+    image: init-mariadb
   consumerCSV:
     replicas: 2
     name: ingest-csv

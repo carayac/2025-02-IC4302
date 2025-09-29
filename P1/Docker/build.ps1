@@ -40,6 +40,10 @@ docker push "$Username/frontend-ui"
 # docker push "$Username/ingest"
 
 #----------------------------------------Ingest----------------------------------------
+Set-Location ../InitMariaDB
+docker build -t "$Username/init-mariadb" .
+docker push "$Username/init-mariadb"
+
 Set-Location ../Ingest-CSV
 docker build -t "$Username/ingest-csv" .
 docker push "$Username/ingest-csv"

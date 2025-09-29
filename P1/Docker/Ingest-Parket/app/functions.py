@@ -44,41 +44,7 @@ def conectar_MariaDB():
         password= MARIADB_PASS
     )
     cursor = conn.cursor()
-
-    # Crear la base de datos si no existe
-    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MARIADB_DB}")
-    cursor.execute(f"USE {os.getenv('MARIADB_DB')}")
-
-    # Crear tabla de objetos procesados
-    cursor.execute(f"""
-    CREATE TABLE IF NOT EXISTS {os.getenv('MARIADB_TABLE')} (
-        id INT AUTO_INCREMENT PRIMARY KEY,   
-        key_name VARCHAR(512),
-        fecha_proceso DATETIME DEFAULT CURRENT_TIMESTAMP,
-        num_documents INT
-        procesado BIT
-    )
-    """)
-
-    # Crear tabla de libros
-    cursor.execute(f"""
-    CREATE TABLE IF NOT EXISTS {MARIADB_TABLE_BOOKS} (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        object_key VARCHAR(512) NOT NULL,
-        title VARCHAR(500),
-        authors TEXT,
-        description TEXT,
-        categories TEXT,
-        published_date DATE,
-        publisher VARCHAR(255),
-        preview_link TEXT,
-        info_link TEXT,
-        image_link TEXT,
-        ratings_count INT,
-        FOREIGN KEY (object_key) REFERENCES {MARIADB_TABLE}(key_name)
-    );
-    """)
-    conn.commit()
+    cursor.execute(f"USE {MARIADB_DB}")
     return conn, cursor
 
 def buscar_objeto(cursor, tabla, key_buscado):
