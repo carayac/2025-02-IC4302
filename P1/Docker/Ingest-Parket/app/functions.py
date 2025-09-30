@@ -1,9 +1,9 @@
 import os
 import pika
-import json
 import mariadb
 import requests
 import boto3
+import pandas as pd
 
 # General
 HOSTNAME = os.getenv('HOSTNAME')
@@ -22,6 +22,7 @@ MARIADB_PASS = os.getenv('MARIADB_PASS')
 MARIADB_DB = os.getenv('MARIADB_DB')
 MARIADB_TABLE = os.getenv('MARIADB_TABLE')
 MARIADB_TABLE_BOOKS = os.getenv('MARIADB_TABLE_BOOKS')
+MARIADB_TABLE_REVIEWS = os.getenv('MARIADB_TABLE_REVIEWS')
 
 # ElasticSearch
 ELASTIC_HOST = os.getenv('ELASTIC_HOST')
@@ -76,18 +77,9 @@ def descargar_objeto(key_name):
 
 def procesar_objeto(file_path):
     documentos = []
-    with open(file_path, 'r', encoding='utf-8') as file:
-        for line in file:
-            line = line.strip()
-            if line:
-                try:
-                    doc = json.loads(line)
-                    doc = {clave.lower(): 
-                           valor for clave, 
-                           valor in doc.items()} #pasa las keys a minuscula
-                    documentos.append(doc)
-                except json.JSONDecodeError:
-                    print("Error decodificando línea:", line)
+    dataFrame = pd.read_parquet(file_path) #pandas lee parquet como dataFrame
+    dataFrame.columns = [col.lower() for col in dataFrame.columns] #todo a minusculas
+    documentos = dataFrame.to_dict(orient='records')
     return documentos
 
 
@@ -107,66 +99,71 @@ def crear_embedding(texto):
 
 def embedding_todos_documentos(documentos):
     for doc in documentos:
-        doc["embeddings"] = None
-        texto = doc["description"]
-        embedding = crear_embedding(texto)
-        if not embedding is None:
-            doc["embedding"] = embedding
+        doc["embeddings"] = {"text": None, "summary": None}
+        if "text" in doc:
+            embedding_text = crear_embedding(doc["text"])
+            if embedding_text is not None:
+                doc["embeddings"]["text"] = embedding_text
+        if "review_summary" in doc:
+            embedding_summary = crear_embedding(doc["review_summary"])
+            if embedding_summary is not None:
+                doc["embeddings"]["summary"] = embedding_summary
     return documentos
 
 
-def insertar_libro(conn, cursor, object_key, title=None, authors=None, description=None,
-                   categories=None, published_date=None, publisher=None,
-                   preview_link=None, info_link=None, image_link=None,
-                   ratings_count=None):
+
+def insertar_review(conn, cursor, object_key, title=None, price=None, user_id=None,
+                    profile_name=None, review_helpfulness=None, review_score=None,
+                    review_time=None, review_summary=None, review_text=None):
     query = f"""
-    INSERT INTO {MARIADB_TABLE_BOOKS}
-    (object_key, title, authors, description, categories,
-     published_date, publisher, preview_link, info_link,
-     image_link, ratings_count)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO {MARIADB_TABLE_REVIEWS}
+    (object_key, book_id, title, price, user_id, profile_name, review_helpfulness, 
+     review_score, review_time, review_summary, review_text)
+    VALUES (
+        ?,
+        (SELECT id FROM {MARIADB_TABLE_BOOKS} WHERE LOWER(title) = LOWER(?) LIMIT 1),
+        ?, ?, ?, ?, ?, ?, ?, ?, ?
+    )
     """
     try:
         cursor.execute(query, (
             object_key,
+            title,  # para el subquery book_id
             title,
-            authors,
-            description,
-            categories,
-            published_date,
-            publisher,
-            preview_link,
-            info_link,
-            image_link,
-            ratings_count
+            price,
+            user_id,
+            profile_name,
+            review_helpfulness,
+            review_score,
+            review_time,
+            review_summary,
+            review_text
         ))
         conn.commit()
     except mariadb.Error as e:
         conn.rollback()
-        print(f"Error insertando libro: {e}")
+        print(f"Error insertando review: {e}")
 
 
-
-def insertar_info(cursor, conn, key_name, documentos):
+def insertar_info(cursor, conn, object_key, documentos):
     for doc in documentos:
         title = doc.get("title")
-        authors = doc.get("authors")
-        description = doc.get("description")
-        categories = doc.get("categories")
-        published_date = doc.get("published_date")
-        publisher = doc.get("publisher")
-        preview_link = doc.get("preview_link")
-        info_link = doc.get("info_link")
-        image_link = doc.get("image_link")
-        ratings_count = doc.get("ratings_count")
+        price = doc.get("price")
+        user_id = doc.get("user_id")
+        profile_name = doc.get("profile_name")
+        review_helpfulness = doc.get("review_helpfulness")
+        review_score = doc.get("review_score")
+        review_time = doc.get("review_time")
+        review_summary = doc.get("review_summary")
+        review_text = doc.get("review_text")
 
-        insertar_libro(
-            conn, cursor, key_name,
-            title, authors, description,
-            categories, published_date, publisher,
-            preview_link, info_link, image_link,
-            ratings_count
+        insertar_review(
+            conn, cursor, object_key,
+            title, price, user_id,
+            profile_name, review_helpfulness, review_score,
+            review_time, review_summary, review_text
         )
+
 
 
 def insertar_object(cursor, conn, key_name, documentos, procesado):

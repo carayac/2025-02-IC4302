@@ -1,46 +1,33 @@
-apiVersion: apps/v1
-kind: Deployment
+{{- if .Values.config.initMariaDB.enabled }}
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: {{ .Values.config.consumer.name }}
-  labels:
-    app: {{ .Values.config.consumer.name }}
+  name: {{ .Values.config.initMariaDB.name }}
 spec:
-  replicas: {{ .Values.config.consumer.replicas }}
-  selector:
-    matchLabels:
-      app: {{ .Values.config.consumer.name }}
+  backoffLimit: 3
   template:
-    metadata:
-      labels:
-        app: {{ .Values.config.consumer.name }}
     spec:
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: data
       containers:
-      - name: {{ .Values.config.consumer.name }}
-        volumeMounts:
-          - mountPath: "/data"
-            name: data
-        image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumer.image }}
-        env:
-          - name: MARIADB
-            value: "databases-mariadb"
-          - name: MARIADB_TABLE
-            value: "objects"
-          - name: MARIADB_TABLE_BOOKS
-            value: "books"
-          - name: MARIADB_TABLE_REVIEWS
-            value: "reviews"
-          - name: MARIADB_DB
-            value: "control"
-          - name: MARIADB_USER
-            value: "root"
-          - name: MARIADB_PASS
-            valueFrom:
-              secretKeyRef:
-                name: databases-mariadb
-                key: mariadb-root-password
-                optional: false
-        
+        - name: {{ .Values.config.initMariaDB.name }}
+          image: {{ .Values.config.docker_registry }}/{{ .Values.config.initMariaDB.image }}
+          env:
+            - name: MARIADB
+              value: "databases-mariadb"
+            - name: MARIADB_DB
+              value: "control"
+            - name: MARIADB_USER
+              value: "root"
+            - name: MARIADB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: databases-mariadb
+                  key: mariadb-root-password
+            - name: MARIADB_TABLE
+              value: "objects"
+            - name: MARIADB_TABLE_BOOKS
+              value: "books"
+            - name: MARIADB_TABLE_REVIEWS
+              value: "reviews"
+      restartPolicy: OnFailure
+{{- end }}
+

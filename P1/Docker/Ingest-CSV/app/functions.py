@@ -108,10 +108,11 @@ def crear_embedding(texto):
 def embedding_todos_documentos(documentos):
     for doc in documentos:
         doc["embeddings"] = None
-        texto = doc["description"]
-        embedding = crear_embedding(texto)
-        if not embedding is None:
-            doc["embedding"] = embedding
+        if "description" in doc:
+            texto = doc["description"]
+            embedding = crear_embedding(texto)
+            if embedding is not None:
+                doc["embedding"] = embedding
     return documentos
 
 

@@ -7,14 +7,16 @@ config:
     image: s3-crawler
     schedule: "0 * * * *"  #every hour
   initMariaDB:
-    replicas: 1
+    enabled: true
     name: init-mariadb
     image: init-mariadb
   consumerCSV:
+    enabled: true
     replicas: 2
     name: ingest-csv
     image: ingest-csv
   consumerParket:
+    enabled: true
     replicas: 2
     name: ingest-parket
     image: ingest-parket
