@@ -21,8 +21,8 @@ spec:
         ports:
         - containerPort: 5000
         env:
-            - name: PROMETHEUSENDPOINT
-              value: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
+            - name: EMBEDDINGENDPOINT
+              value: "http://huggingface:5000/encode"
             - name: MARIADB
               value: "databases-mariadb"
             - name: MARIADB_TABLE

@@ -38,50 +38,6 @@ CREATE TABLE IF NOT EXISTS Friend(
     FOREIGN KEY (id_friend) REFERENCES User(id)
 );
 
-CREATE TABLE IF NOT EXISTS Book(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    prompt_id INT,
-    searchTyper Enum('vector_books', 'vector_reviews', 'text_books', 'text_reviews', 'mariadb') NOT NULL,
-    title VARCHAR(200) NOT NULL,
-    description VARCHAR(2000) NOT NULL,
-    image VARCHAR(255),
-    previewLink VARCHAR(255),
-    publisher VARCHAR(255),
-    published_date DATE,
-    infolink VARCHAR(255),
-    ratings_count FLOAT,
-    enabled BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (prompt_id) REFERENCES Prompt(id)
-);
 
 
-CREATE TABLE IF NOT EXISTS Author(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    enabled BOOLEAN DEFAULT TRUE
-);
 
-CREATE TABLE IF NOT EXISTS Category(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    enabled BOOLEAN DEFAULT TRUE
-);
-
-CREATE TABLE IF NOT EXISTS Author_Book(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    book_id INT,
-    author_id INT,
-    enabled BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (book_id) REFERENCES Book(id),
-    FOREIGN KEY (author_id) REFERENCES Author(id)
-);
-
-CREATE TABLE IF NOT EXISTS Category_Book(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    book_id INT,
-    category_id INT,
-    enabled BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (book_id) REFERENCES Book(id),
-    FOREIGN KEY (category_id) REFERENCES Category(id)
-);

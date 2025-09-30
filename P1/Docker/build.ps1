@@ -50,7 +50,7 @@ docker push "$Username/ingest-csv"
 
 Set-Location ../Ingest-Parket
 docker build -t "$Username/ingest-parket" .
-docker push "$Username/ingest-parket"
+docker push "$Username/ingest-parket" #>
 
 
 # #----------------------------------------Spark Huggingface----------------------------------------

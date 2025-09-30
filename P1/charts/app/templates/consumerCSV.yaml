@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.config.consumer.name }}
+  name: {{ .Values.config.consumerCSV.name }}
   labels:
-    app: {{ .Values.config.consumer.name }}
+    app: {{ .Values.config.consumerCSV.name }}
 spec:
-  replicas: {{ .Values.config.consumer.replicas }}
+  replicas: {{ .Values.config.consumerCSV.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.config.consumer.name }}
+      app: {{ .Values.config.consumerCSV.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.config.consumer.name }}
+        app: {{ .Values.config.consumerCSV.name }}
     spec:
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: data
       containers:
-      - name: {{ .Values.config.consumer.name }}
+      - name: {{ .Values.config.consumerCSV.name }}
         volumeMounts:
           - mountPath: "/data"
             name: data
-        image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumer.image }}
+        image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumerCSV.image }}
         env:
           - name: DATAFROMK8S
             value: "Hey"
