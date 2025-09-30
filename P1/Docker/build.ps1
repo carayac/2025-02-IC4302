@@ -34,6 +34,11 @@ docker push "$Username/frontend-ui"
 # docker build -t "$Username/s3-crawler" .
 # docker push "$Username/s3-crawler"
 
+# #----------------------------------------Ingest----------------------------------------
+# Set-Location ../Ingest
+# docker build -t "$Username/ingest" .
+# docker push "$Username/ingest"
+
 #----------------------------------------Ingest----------------------------------------
 Set-Location ../InitMariaDB
 docker build -t "$Username/init-mariadb" .
@@ -49,9 +54,9 @@ docker push "$Username/ingest-parket"
 
 
 # #----------------------------------------Spark Huggingface----------------------------------------
-Set-Location ../HuggingFace
-docker build -t "$Username/huggingface" .
-docker push "$Username/huggingface"
+# Set-Location ../HuggingFace
+# docker build -t "$Username/huggingface" .
+# docker push "$Username/huggingface"
 
 # Volver a la carpeta inicial
 Set-Location ../..
