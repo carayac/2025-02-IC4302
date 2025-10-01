@@ -37,6 +37,10 @@ spec:
                   name: databases-mariadb
                   key: mariadb-root-password
                   optional: false
+            - name: MEMCACHED_HOST
+              value: "databases-memcached"
+            - name: MEMCACHED_PORT
+              value: "11211"
             
 ---
 apiVersion: v1
