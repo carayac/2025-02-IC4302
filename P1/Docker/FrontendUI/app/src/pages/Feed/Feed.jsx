@@ -1,103 +1,94 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useMemo, useState, useCallback } from "react"
 import s from "./Feed.module.css"
+import { NavLink } from "react-router-dom";
+import { Prompts } from "../../lib/api/APIcalls"; //Objeto de funciones
+
+const navItemClass = ({ isActive }) =>
+  `${s.navBtn} ${isActive ? s.active : ""}`;
+
+
+//Geting the main user
+function getStoredUser() {
+  try {
+    const raw = localStorage.getItem("user");
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+function getUserId(u) {
+  if (!u) return null;
+  return u.id_user ?? u.id ?? u.userid ?? u.userId ?? u._id ?? null;
+}
+
+
+//Posting time 
+function timeAgo(input) {
+  if (!input) return "";
+  const date = new Date(input);
+  const diffSec = Math.floor((date.getTime() - Date.now()) / 1000);
+  const rtf = new Intl.RelativeTimeFormat("es", { numeric: "auto" });
+  const steps = [
+    ["second", 60], ["minute", 60], ["hour", 24],
+    ["day", 7], ["week", 4.34524], ["month", 12], ["year", Infinity],
+  ];
+  let v = diffSec;
+  for (const [unit, amt] of steps) {
+    if (Math.abs(v) < amt) return rtf.format(Math.round(v), unit);
+    v /= amt;
+  }
+  return "";
+}
 
 export default function Feed() {
-  const [theme, setTheme] = useState("colorful")
-  const [feedPosts, setFeedPosts] = useState([
-    {
-      id: 1,
-      user: {
-        username: "bookworm_sarah",
-        avatar: "/diverse-woman-avatar.png",
-        isFollowing: false,
-      },
-      prompt:
-        "Looking for mystery novels with strong female protagonists set in Victorian England. Any recommendations?",
-      likes: 234,
-      isLiked: false,
-      timestamp: "2h ago",
-    },
-    {
-      id: 2,
-      user: {
-        username: "literary_mike",
-        avatar: "/man-avatar.png",
-        isFollowing: true,
-      },
-      prompt:
-        'Can anyone suggest sci-fi books that explore AI consciousness and ethics? Similar to "Do Androids Dream of Electric Sheep?"',
-      likes: 567,
-      isLiked: true,
-      timestamp: "4h ago",
-    },
-    {
-      id: 3,
-      user: {
-        username: "fantasy_reader",
-        avatar: "/diverse-person-avatars.png",
-        isFollowing: false,
-      },
-      prompt:
-        "Need epic fantasy series recommendations with complex magic systems and political intrigue. Already read Brandon Sanderson!",
-      likes: 892,
-      isLiked: false,
-      timestamp: "6h ago",
-    },
-    {
-      id: 4,
-      user: {
-        username: "history_buff",
-        avatar: "/woman-glasses-avatar.jpg",
-        isFollowing: true,
-      },
-      prompt:
-        "Searching for historical fiction about ancient Rome. Prefer books that balance accuracy with engaging storytelling.",
-      likes: 445,
-      isLiked: true,
-      timestamp: "8h ago",
-    },
-    {
-      id: 5,
-      user: {
-        username: "thriller_fan",
-        avatar: "/man-beard-avatar.png",
-        isFollowing: false,
-      },
-      prompt:
-        "What are the best psychological thrillers of 2024? Looking for books that keep you guessing until the very end.",
-      likes: 678,
-      isLiked: false,
-      timestamp: "10h ago",
-    },
-  ])
+  const [theme, setTheme] = useState("colorful");
+  const [feedPosts, setFeedPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
 
-  const handleFollowToggle = (postId) => {
-    setFeedPosts(
-      feedPosts.map((post) =>
-        post.id === postId ? { ...post, user: { ...post.user, isFollowing: !post.user.isFollowing } } : post,
-      ),
-    )
-  }
+  const user = useMemo(() => getStoredUser(), []);
+  const id_user = useMemo(() => getUserId(user), [user]);
+  const username = user?.name || user?.username || "me";
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setErr("");
+    try {
+      const data = await Prompts.getMyPrompts(id_user); //Calling endpoint
+      const mapped = (Array.isArray(data) ? data : []).map((p) => ({
+        id: p.id,
+        user: { username, avatar: "/placeholder.svg"},
+        prompt: p.text,
+        likes: Number(p.likes ?? 0),
+        isLiked: false,
+        createdAtISO: p.created_at,
+        timestamp: timeAgo(p.created_at),
+      }));
+      setFeedPosts(mapped);
+    } catch (e) {
+      setErr(e.message || "Error loading feed.");
+    } finally {
+      setLoading(false);
+    }
+  }, [id_user, username]);
+
+  useEffect(() => { load(); }, [load]);
+
+  // Refres when publish 
+  const refresh = load;
+
 
   const handleLikeToggle = (postId) => {
-    setFeedPosts(
-      feedPosts.map((post) =>
+    setFeedPosts((prev) =>
+      prev.map((post) =>
         post.id === postId
-          ? {
-              ...post,
-              isLiked: !post.isLiked,
-              likes: post.isLiked ? post.likes - 1 : post.likes + 1,
-            }
-          : post,
-      ),
-    )
-  }
-
-  const handleNavigation = (page) => {
-    console.log(`Navigate to: ${page}`)
-  }
+          ? { ...post, isLiked: !post.isLiked, likes: post.isLiked ? post.likes - 1 : post.likes + 1 }
+          : post
+      )
+    );
+  };
 
   return (
     <div className={`${s.container} ${s[theme]}`}>
@@ -135,13 +126,6 @@ export default function Feed() {
                   <span className={s.username}>{post.user.username}</span>
                   <span className={s.timestamp}>{post.timestamp}</span>
                 </div>
-                <button
-                  onClick={() => handleFollowToggle(post.id)}
-                  className={`${s.followBtn} ${post.user.isFollowing ? s.following : ""}`}
-                  aria-label={post.user.isFollowing ? `Unfollow ${post.user.username}` : `Follow ${post.user.username}`}
-                >
-                  {post.user.isFollowing ? "Following" : "Follow"}
-                </button>
               </div>
 
               <div className={s.postContent}>
@@ -172,49 +156,78 @@ export default function Feed() {
       </main>
 
       <nav className={s.bottomNav} role="navigation" aria-label="Main navigation">
-        <button onClick={() => handleNavigation("findbook")} className={s.navBtn} aria-label="Find Book">
-          <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <NavLink to="/ask" className={navItemClass} aria-label="Find Book">
+          <svg
+            className={s.navIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <span className={s.navLabel}>Find Book</span>
-        </button>
-        <button onClick={() => handleNavigation("friends")} className={s.navBtn} aria-label="Friends">
-          <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        </NavLink>
+
+        <NavLink to="/friends" className={navItemClass} aria-label="Friends">
+          <svg
+            className={s.navIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
             <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
           <span className={s.navLabel}>Friends</span>
-        </button>
-        <button onClick={() => handleNavigation("prompts")} className={s.navBtn} aria-label="Prompts">
-          <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        </NavLink>
+
+        <NavLink to="/prompt" className={navItemClass} aria-label="Prompts">
+          <svg
+            className={s.navIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
           <span className={s.navLabel}>Prompts</span>
-        </button>
-        <button
-          onClick={() => handleNavigation("feed")}
-          className={`${s.navBtn} ${s.active}`}
-          aria-label="Feed"
-          aria-current="page"
-        >
-          <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        </NavLink>
+
+        <NavLink to="/feed" className={navItemClass} aria-label="Feed">
+          <svg
+            className={s.navIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <rect x="3" y="3" width="7" height="7" />
             <rect x="14" y="3" width="7" height="7" />
             <rect x="14" y="14" width="7" height="7" />
             <rect x="3" y="14" width="7" height="7" />
           </svg>
           <span className={s.navLabel}>Feed</span>
-        </button>
-        <button onClick={() => handleNavigation("me")} className={s.navBtn} aria-label="Profile">
-          <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        </NavLink>
+
+        <NavLink to="/me" className={navItemClass} aria-label="Profile">
+          <svg
+            className={s.navIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
           <span className={s.navLabel}>Me</span>
-        </button>
+        </NavLink>
       </nav>
     </div>
   )
