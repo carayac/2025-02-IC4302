@@ -4,6 +4,22 @@ import logging
 import sys
 import mariadb
 import bcrypt
+from pymemcache.client.base import Client
+from prometheus_client import Counter
+import os, json
+
+#Variables para memcached
+BD_TYPE = "mariadb"
+CACHE_TYPE = "memcached"
+
+cache_hit = Counter("cache_hit", "Cache hits", ["bd", "cache"])
+cache_miss = Counter("cache_miss", "Cache misses", ["bd", "cache"])
+
+MEMCACHED_HOST = os.getenv("MEMCACHED_HOST")
+MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT"))
+CACHE_TTL_SECONDS = 60
+
+memcached = Client((MEMCACHED_HOST, MEMCACHED_PORT))
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -14,6 +30,26 @@ logger = logging.getLogger(__name__)
 
 auth_blueprint = Blueprint('auth', __name__)
 
+
+def cache_get(key):
+    try:
+        raw = memcached.get(key)
+        if not raw:
+            cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+            return None
+        
+        cache_hit.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return json.loads(raw.decode("utf-8"))
+    except Exception:
+        cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return None
+
+def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
+    try:
+        memcached.set(key, json.dumps(value), expire=ttl)
+    except Exception:
+        pass
+
 #Route for login into promptsy
 @auth_blueprint.route('/login' , methods=['POST'])
 def login():
@@ -22,6 +58,10 @@ def login():
 
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
+
+    cached=cache_get(email)
+    if cached is not None:
+        return jsonify({"source": "cache", "data": cached}) #Caché Hit
 
     try:
         res = execute_query(
@@ -39,14 +79,17 @@ def login():
             logger.warning(f"Login failed: wrong password for {email}")
             return jsonify({"error": "Invalid email or password"}), 401
 
-        logger.info(f"User {email} logged in successfully")
-        return jsonify({
+        # Guardar en caché después de login exitoso (cache miss)
+        user_data = {
             "id": user["id"],
             "name": user["name"],
             "lastname": user["lastname"],
             "description": user["description"],
             "email": user["email"]
-        }), 200
+        }
+        cache_set(email, user_data, CACHE_TTL_SECONDS)
+        logger.info(f"User {email} logged in successfully")
+        return jsonify({"source": "db", "data": user_data}), 200
 
     except mariadb.Error as e:
         logger.error(f"Database error during login: {e}")
