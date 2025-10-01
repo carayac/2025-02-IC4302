@@ -3,7 +3,7 @@ config:
     enabled: true
     replicas: 2
     name: backend-ui
-    image: carayacn/backend-ui # backend image name, you have to replace the image by backend_ui_memcached if you want to use the backend with memcached
+    image: prosoli/backend-ui # backend image name, you have to replace the image by backend_ui_memcached if you want to use the backend with memcached
   frontend:
     enabled: true
     replicas: 2

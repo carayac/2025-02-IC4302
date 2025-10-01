@@ -1,1 +1,7 @@
 flask
+flask-cors
+requests
+mariadb
+bcrypt
+pymemcache
+prometheus_client

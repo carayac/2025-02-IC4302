@@ -20,6 +20,9 @@ spec:
         image: {{ .Values.config.frontend.image }}
         ports:
         - containerPort: 80
+        env:
+            - name: VITE_API_URL
+              value: "http://backend-ui:5000"
 ---
 apiVersion: v1
 kind: Service
