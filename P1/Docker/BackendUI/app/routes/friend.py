@@ -58,6 +58,15 @@ def follow():
             (id_user, id_friend)
         )
 
+        #update the followers and following count in the user table
+        execute_query(
+            "UPDATE User SET following = following + 1 WHERE id = ?",
+            (id_user,)
+        )
+        execute_query(
+            "UPDATE User SET followers = followers + 1 WHERE id = ?",
+            (id_friend,)
+        )
         logger.info(f"User followed successfully: {id_user} -> {id_friend}")
         return {"message": "User followed successfully"}, 201
 
@@ -111,6 +120,16 @@ def unfollow():
         res = execute_query(
             """UPDATE Friend SET enabled = FALSE WHERE id_user = ? AND id_friend = ?""",
             (id_user, id_friend)
+        )
+
+         #update the followers and following count in the user table
+        execute_query(
+            "UPDATE User SET following = following - 1 WHERE id = ?",
+            (id_user,)
+        )
+        execute_query(
+            "UPDATE User SET followers = followers - 1 WHERE id = ?",
+            (id_friend,)
         )
 
         logger.info(f"User unfollowed successfully: {id_user} -> {id_friend}")
@@ -174,7 +193,7 @@ def get_friends():
     try:
         friends = execute_query(
             """
-            SELECT u.id, u.name, u.lastname, u.description, u.email FROM Friend f JOIN User u ON f.id_friend = u.id WHERE f.id_user = ? AND f.enabled = TRUE
+            SELECT u.id, u.name, u.lastname, u.description, u.email, u.followers, u.following FROM Friend f JOIN User u ON f.id_friend = u.id WHERE f.id_user = ? AND f.enabled = TRUE
             """,
             (id_user,)
         )
@@ -203,6 +222,15 @@ def like():
         return jsonify({"error": "id_user and id_prompt are required"}), 400
     
     try:
+        #validate if the user has already liked the prompt
+        already_liked = execute_query(
+            "SELECT id FROM Liked WHERE id_user = ? AND id_prompt = ? AND enabled = TRUE LIMIT 1",
+            (id_user, id_prompt),
+        )
+        if already_liked:
+            logger.warning(f"User {id_user} has already liked prompt {id_prompt}")
+            return {"error": "You have already liked this prompt"}, 400
+
         # execute the insert query in the table friends
         execute_query(
             "INSERT INTO Liked (id_user, id_prompt) VALUES (?, ?)",

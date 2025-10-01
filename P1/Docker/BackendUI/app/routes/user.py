@@ -26,7 +26,7 @@ def login():
     
     try:
         res = execute_query(
-            "SELECT id, name, lastname, description, email, password FROM User WHERE id = ? LIMIT 1",
+            "SELECT id, name, lastname, description, email, followers, following FROM User WHERE id = ? LIMIT 1",
             (id,)
         )
 
