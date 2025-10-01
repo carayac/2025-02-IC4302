@@ -5,19 +5,14 @@ USERNAME=$1
 docker login
 
 # ---------------------------------------- Backend UI ----------------------------------------
-# cd BackendUI || exit
-# docker build -t "$USERNAME/backend-ui" .
-# docker push "$USERNAME/backend-ui"
+cd BackendUI || exit
+docker build -t "$USERNAME/backend-ui" .
+docker push "$USERNAME/backend-ui"
 
 # # ---------------------------------------- UI ----------------------------------------
 # cd FrontendUI || exit
 # docker build -t "$USERNAME/frontend-ui" .
 # docker push "$USERNAME/frontend-ui"
-
-# ---------------------------------------- Init MariaDB ----------------------------------------
-cd InitMariaDB
-docker build -t "$USERNAME/init-mariadb" .
-docker push "$USERNAME/init-mariadb"
 
 # ---------------------------------------- Ingest CSV ----------------------------------------
 cd Ingest-CSV || exit

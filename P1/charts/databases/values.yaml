@@ -34,6 +34,3 @@ memcached:
     serviceMonitor:
       enabled: true
       namespace: "monitoring"
-
-  # Keep this line if you are using Mac OS
-  # platform: linux/arm64

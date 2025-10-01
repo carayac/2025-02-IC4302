@@ -34,15 +34,7 @@ docker push "$Username/frontend-ui"
 # docker build -t "$Username/s3-crawler" .
 # docker push "$Username/s3-crawler"
 
-# #----------------------------------------Ingest----------------------------------------
-# Set-Location ../Ingest
-# docker build -t "$Username/ingest" .
-# docker push "$Username/ingest"
-
 #----------------------------------------Ingest----------------------------------------
-Set-Location ../InitMariaDB
-docker build -t "$Username/init-mariadb" .
-docker push "$Username/init-mariadb"
 
 Set-Location ../Ingest-CSV
 docker build -t "$Username/ingest-csv" .
