@@ -1,4 +1,4 @@
-{{ if .Values.config.backend.enabled }}
+{{- if .Values.config.backend.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,31 +17,32 @@ spec:
     spec:
       containers:
       - name: {{ .Values.config.backend.name }}
-        image: {{ .Values.config.backend.image }}
+        image: {{ .Values.config.docker_registry }}/{{ if .Values.config.backend.useMemcached }}{{ .Values.config.backend.imageMemcached }}{{ else }}{{ .Values.config.backend.image }}{{ end }}
         ports:
         - containerPort: 5000
         env:
-            - name: EMBEDDINGENDPOINT
-              value: "http://huggingface:5000/encode"
-            - name: MARIADB
-              value: "databases-mariadb"
-            - name: MARIADB_TABLE
-              value: "objects"
-            - name: MARIADB_DB
-              value: "promptsy"
-            - name: MARIADB_USER
-              value: "root"
-            - name: MARIADB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: databases-mariadb
-                  key: mariadb-root-password
-                  optional: false
-            - name: MEMCACHED_HOST
-              value: "databases-memcached"
-            - name: MEMCACHED_PORT
-              value: "11211"
-            
+          - name: EMBEDDINGENDPOINT
+            value: "http://huggingface:5000/encode"
+          - name: MARIADB
+            value: "databases-mariadb"
+          - name: MARIADB_TABLE
+            value: "objects"
+          - name: MARIADB_DB
+            value: "promptsy"
+          - name: MARIADB_USER
+            value: "root"
+          - name: MARIADB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: databases-mariadb
+                key: mariadb-root-password
+                optional: false
+          {{- if .Values.config.backend.useMemcached }}
+          - name: MEMCACHED_HOST
+            value: "databases-memcached"
+          - name: MEMCACHED_PORT
+            value: "11211"
+          {{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -56,4 +57,4 @@ spec:
       port: 5000
       targetPort: 5000
       nodePort: 30080
-{{ end }}
+{{- end }}
