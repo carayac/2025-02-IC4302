@@ -17,6 +17,13 @@ export const AuthApi = {
   //Get registered user
   me: (id) => api(`/user/me?id=${encodeURIComponent(id)}`),
 
+  //edit user
+  editUser: ({ id, name, lastname, description }) =>
+    api("/user/edit", {
+      method: "PUT",
+      body: JSON.stringify({ id, name, lastname, description }),
+    })
+
 };
 
 export const Prompts = {
@@ -29,5 +36,59 @@ export const Prompts = {
 
   //Get prompts to show in the feed
   getMyPrompts: (id_user) =>
-    api(`/prompt/myprompts?id_user=${encodeURIComponent(id_user)}`)
+    api(`/prompt/myprompts?id_user=${encodeURIComponent(id_user)}`),
+
+  //Search prompts using text
+  search: (text) =>
+    api(`/prompt/search?text=${encodeURIComponent(text)}`),
+
+  // edit prompt
+  editPrompt: (id_prompt, text) =>
+    api("/prompt/edit", {
+      method: "PUT",
+      body: JSON.stringify({ prompt: { id_prompt, text } }),
+    }),
+
+  // delete prompt
+  deletePrompt: (id_prompt) =>
+    api("/prompt/delete", {
+      method: "PUT",
+      body: JSON.stringify({ id_prompt }),
+    }),
+};
+
+export const Likes = {
+  //Like
+  like: (id_user, id_prompt ) =>
+    api("/friend/like", {
+      method: "POST",
+      body: JSON.stringify({ id_user, id_prompt }),
+    }),
+
+  //Unlike
+  unlike: (id_user, id_prompt ) =>
+    api("/friend/unlike", {
+      method: "PUT",
+      body: JSON.stringify({ id_user, id_prompt }),
+    }),
+};
+
+export const Friends = {
+  //Search people with name/lastname
+  findFriend: (text) =>
+    api(`/friend/find?text=${encodeURIComponent(text)}`),
+
+  //Follow
+  follow: (id_user, id_friend ) =>
+    api("/friend/follow", {
+      method: "POST",
+      body: JSON.stringify({ id_user, id_friend }),
+    }),
+
+  //Unfollow
+  unfollow: (id_user, id_friend ) =>
+    api("/friend/unfollow", {
+      method: "PUT",
+      body: JSON.stringify({ id_user, id_friend }),
+    }),
 };
