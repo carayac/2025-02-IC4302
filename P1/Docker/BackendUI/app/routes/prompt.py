@@ -132,7 +132,7 @@ def my_prompts(id_user=None):
     try:
         #get user prompts
         prompts = execute_query(
-            "SELECT id, text, created_at, likes FROM Prompt WHERE id_user = ? AND enabled = TRUE ORDER BY created_at DESC",
+            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname, u.username FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id_user = ? AND p.enabled = TRUE ORDER BY p.created_at DESC",
             (id_user,)
         )
 
@@ -143,8 +143,6 @@ def my_prompts(id_user=None):
     except Exception as e:
         logger.error(f"Error fetching prompts for user {id_user}: {e}")
         return jsonify({"error": "Error fetching prompts"}), 500
-
-
 
 
 #route to search prompts
@@ -158,14 +156,14 @@ def search():
     #clean the text
     text = text.strip('"')
     try:
-        # split the text into words to search each one
+        # split the text into words to search each one in prompts text or user name or lastname
         words = text.split()
-        query = "SELECT id, text FROM Prompt WHERE "
+        query = "SELECT p.id, p.text, u.name, u.lastname, p.likes, u.username FROM Prompt p JOIN User u ON p.id_user = u.id WHERE "
         params = []
         conditions = []
         # create a condition for each word to search in name or lastname
         for w in words:
-            conditions.append("(text LIKE CONCAT('%', ?, '%'))")
+            conditions.append("(p.text LIKE CONCAT('%', ?, '%') OR u.name LIKE CONCAT('%', ?, '%') OR u.lastname LIKE CONCAT('%', ?, '%'))")
             params.extend([w])
 
         query += " AND ".join(conditions)  #all conditions must be met
@@ -233,7 +231,7 @@ def my_prompt(id_prompt=None):
     try:
         #get user prompts
         prompt = execute_query(
-            "SELECT id, text, created_at, likes FROM Prompt WHERE id = ?  AND enabled = TRUE ORDER BY created_at DESC",
+            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname, p.likes, u.username FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id = ?  AND p.enabled = TRUE ORDER BY p.created_at DESC",
             (id_prompt,)
         )
 
