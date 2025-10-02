@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.config.frontend.name }}
-        image: {{ .Values.config.frontend.image }}
+        image: {{ .Values.config.docker_registry }}/{{ .Values.config.frontend.image }}
         ports:
         - containerPort: 80
         env:
@@ -36,5 +36,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30081   
-{{ end }}
+      nodePort: 30081
+{{- end }}
