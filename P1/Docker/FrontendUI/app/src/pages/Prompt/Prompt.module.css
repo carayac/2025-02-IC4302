@@ -502,3 +502,33 @@
 .formal .themeToggle:focus {
   outline-color: #60a5fa;
 }
+
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.18);
+  z-index: 1000;
+  cursor: pointer;
+  max-width: 90vw;
+}
+.toastError {
+  background: #ffe6e6;
+  color: #8a1f1f;
+  border: 1px solid #efb0b0;
+}
+.toastInfo {
+  background: #eef6ff;
+  color: #0b3a75;
+  border: 1px solid #b7d4ff;
+}
+
+
+.promptCard { min-height: 72px; }
+.errorText { color: #b3261e; }
+

@@ -266,14 +266,14 @@ const Ask = () => {
           <span className={s.navLabel}>Find Book</span>
         </NavLink>
 
-        <NavLink to="/friends" className={navItemClass} aria-label="Friends">
+        <NavLink to="/friends" className={navItemClass} aria-label="Find Friends">
           <span className={s.navIcon}>👥</span>
-          <span className={s.navLabel}>Friends</span>
+          <span className={s.navLabel}>Find Friends</span>
         </NavLink>
 
-        <NavLink to="/prompt" className={navItemClass} aria-label="Prompts">
+        <NavLink to="/prompt" className={navItemClass} aria-label="Search Prompts">
           <span className={s.navIcon}>💭</span>
-          <span className={s.navLabel}>Prompts</span>
+          <span className={s.navLabel}>Search Prompts</span>
         </NavLink>
 
         <NavLink to="/feed" className={navItemClass} aria-label="Feed">
@@ -281,7 +281,7 @@ const Ask = () => {
           <span className={s.navLabel}>Feed</span>
         </NavLink>
 
-        <NavLink to="/me" className={navItemClass} aria-label="Profile">
+        <NavLink to="/me" className={navItemClass} aria-label="Me">
           <span className={s.navIcon}>👤</span>
           <span className={s.navLabel}>Me</span>
         </NavLink>

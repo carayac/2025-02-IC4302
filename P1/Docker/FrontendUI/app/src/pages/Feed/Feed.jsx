@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useCallback } from "react"
 import s from "./Feed.module.css"
 import { NavLink } from "react-router-dom";
 import { Prompts } from "../../lib/api/APIcalls"; //Objeto de funciones
+import { Likes } from "../../lib/api/APIcalls"; //Objeto de funciones
 
 const navItemClass = ({ isActive }) =>
   `${s.navBtn} ${isActive ? s.active : ""}`;
@@ -47,6 +48,7 @@ export default function Feed() {
   const [feedPosts, setFeedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const [likeErr, setLikeErr] = useState("");
 
   const user = useMemo(() => getStoredUser(), []);
   const id_user = useMemo(() => getUserId(user), [user]);
@@ -59,12 +61,13 @@ export default function Feed() {
       const data = await Prompts.getMyPrompts(id_user); //Calling endpoint
       const mapped = (Array.isArray(data) ? data : []).map((p) => ({
         id: p.id,
-        user: { username, avatar: "/placeholder.svg"},
+        user: { username, avatar: "/placeholder.svg" },
         prompt: p.text,
         likes: Number(p.likes ?? 0),
         isLiked: false,
         createdAtISO: p.created_at,
         timestamp: timeAgo(p.created_at),
+        likeBusy: false,
       }));
       setFeedPosts(mapped);
     } catch (e) {
@@ -80,14 +83,44 @@ export default function Feed() {
   const refresh = load;
 
 
-  const handleLikeToggle = (postId) => {
+  const handleToggleLike = async (postId) => {
+    setLikeErr("");
+
+    const prevFeed = feedPosts;
+    const target = prevFeed.find((p) => p.id === postId);
+    if (!target) return;
+    const wasLiked = target.isLiked;
+
+    // Marcar busy
     setFeedPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? { ...post, isLiked: !post.isLiked, likes: post.isLiked ? post.likes - 1 : post.likes + 1 }
-          : post
+      prev.map((p) =>
+        p.id === postId
+          ? {
+            ...p,
+            likeBusy: true,
+            isLiked: !p.isLiked,
+            likes: p.isLiked ? Math.max(0, p.likes - 1) : p.likes + 1,
+          }
+          : p
       )
     );
+
+    try {
+      //Calling endpoints
+      if (wasLiked) {
+        await Likes.unlike(id_user, postId);
+      } else {
+        await Likes.like(id_user, postId);
+      }
+      //Quitando like busy
+      setFeedPosts((prev) =>
+        prev.map((p) => (p.id === postId ? { ...p, likeBusy: false } : p))
+      );
+    } catch (e) {
+      //Rollback
+      setLikeErr(e.message || "Error updating like.");
+      setFeedPosts(prevFeed);
+    }
   };
 
   return (
@@ -134,8 +167,10 @@ export default function Feed() {
 
               <div className={s.postFooter}>
                 <button
-                  onClick={() => handleLikeToggle(post.id)}
+                  onClick={() => handleToggleLike(post.id)}
                   className={`${s.likeBtn} ${post.isLiked ? s.liked : ""}`}
+                  disabled={post.likeBusy}
+                  title={post.isLiked ? "Unlike post" : "Like post"}
                   aria-label={post.isLiked ? "Unlike post" : "Like post"}
                 >
                   <svg
@@ -170,7 +205,7 @@ export default function Feed() {
           <span className={s.navLabel}>Find Book</span>
         </NavLink>
 
-        <NavLink to="/friends" className={navItemClass} aria-label="Friends">
+        <NavLink to="/friends" className={navItemClass} aria-label="Find Friends">
           <svg
             className={s.navIcon}
             viewBox="0 0 24 24"
@@ -186,7 +221,7 @@ export default function Feed() {
           <span className={s.navLabel}>Friends</span>
         </NavLink>
 
-        <NavLink to="/prompt" className={navItemClass} aria-label="Prompts">
+        <NavLink to="/prompt" className={navItemClass} aria-label="Search Prompts">
           <svg
             className={s.navIcon}
             viewBox="0 0 24 24"
@@ -215,7 +250,7 @@ export default function Feed() {
           <span className={s.navLabel}>Feed</span>
         </NavLink>
 
-        <NavLink to="/me" className={navItemClass} aria-label="Profile">
+        <NavLink to="/me" className={navItemClass} aria-label="Me">
           <svg
             className={s.navIcon}
             viewBox="0 0 24 24"

@@ -19,10 +19,10 @@ Set-Location BackendUI
 docker build -t "$Username/backend-ui" .
 docker push "$Username/backend-ui"
 
-# #--------------------------------Backend UI Memcached----------------------------------------
-# Set-Location ../BackendUIMemcached
-# docker build -t "$Username/backend-ui-memcached" .
-# docker push "$Username/backend-ui-memcached"
+#--------------------------------Backend UI Memcached----------------------------------------
+Set-Location ../BackendUI_Memcached
+docker build -t "$Username/backend-ui-memcached" .
+docker push "$Username/backend-ui-memcached"
 
 
 #----------------------------------------UI ----------------------------------------

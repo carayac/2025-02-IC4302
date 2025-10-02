@@ -1,12 +1,14 @@
 config:
+  docker_registry: prosoli
   backend:
     enabled: true
-    replicas: 2
+    replicas: 1
     name: backend-ui
-    image: prosoli/backend-ui # backend image name, you have to replace the image by backend_ui_memcached if you want to use the backend with memcached
+    useMemcached: false #variable to enable or disable memcached usage in backend
+    image: backend-ui
+    imageMemcached: backend-ui-memcached
   frontend:
     enabled: true
     replicas: 2
     name: frontend #this is the service name of frontend which represents the web application and the user interface
-    image: prosoli/frontend-ui
-    
+    image: frontend-ui      
