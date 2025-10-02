@@ -61,8 +61,9 @@ def login():
 
     cached=cache_get(email)
     if cached is not None:
-        return jsonify({"source": "cache", "data": cached}) #Caché Hit
-
+        logger.info(f"User {email} login source=cache")
+        return jsonify(cached), 200 #cache hit
+    
     try:
         res = execute_query(
             "SELECT id, name, lastname, description, email, password FROM User WHERE email = ? LIMIT 1",
@@ -88,8 +89,8 @@ def login():
             "email": user["email"]
         }
         cache_set(email, user_data, CACHE_TTL_SECONDS)
-        logger.info(f"User {email} logged in successfully")
-        return jsonify({"source": "db", "data": user_data}), 200
+        logger.info(f"User {email} login source=db")
+        return jsonify(user_data), 200
 
     except mariadb.Error as e:
         logger.error(f"Database error during login: {e}")
