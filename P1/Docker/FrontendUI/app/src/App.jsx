@@ -8,6 +8,7 @@ import Prompt from "./pages/Prompt/Prompt.jsx";
 import Friends from "./pages/Friends/Friends.jsx";
 import Feed from "./pages/Feed/Feed.jsx";
 import Me from "./pages/Me/Me.jsx";
+import MyFriends from "./pages/MyFriends/MyFriends.jsx";
 
 /* export default function App() { 
     return <Friends />; 
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/ask" element={<Ask />} />
         <Route path="/prompt" element={<Prompt />} />
         <Route path="/friends" element={<Friends />} />
+        <Route path="/myFriends" element={<MyFriends />} />
         <Route path="/me" element={<Me />} />
       </Routes>
     </BrowserRouter>

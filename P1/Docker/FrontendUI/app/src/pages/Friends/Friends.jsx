@@ -262,7 +262,7 @@ const Friends = () => {
           <div className={s.usersList}>
             {!loading &&
               results
-                .filter((u) => Number(u.id) !== Number(meId)) 
+                .filter((u) => Number(u.id) !== Number(meId))
                 .map((u) => {
                   const id = Number(u.id)
                   const fullName = `${u.name ?? ""} ${u.lastname ?? ""}`.trim() || "Unnamed"
@@ -281,12 +281,12 @@ const Friends = () => {
                         </div>
                       </div>
 
-                      {}
+                      { }
                       <button
                         onClick={() => handleFollowToggle(id)}
                         className={`${s.followButton} ${isFollowing ? s.following : s.notFollowing}`}
                         aria-label={`${isFollowing ? "Unfollow" : "Follow"} ${fullName}`}
-                        disabled={isPending || !meId} 
+                        disabled={isPending || !meId}
                       >
                         {isPending ? "..." : isFollowing ? "Unfollow" : "Follow"}
                       </button>
@@ -334,6 +334,11 @@ const Friends = () => {
         <NavLink to="/me" className={navItemClass} aria-label="Me">
           <span className={s.navIcon}>👤</span>
           <span className={s.navLabel}>Me</span>
+        </NavLink>
+
+        <NavLink to="/friends" className={navItemClass} aria-label="Friends">
+          <span className={s.navIcon}>👥</span>
+          <span className={s.navLabel}>Find Friends</span>
         </NavLink>
       </nav>
     </div>
