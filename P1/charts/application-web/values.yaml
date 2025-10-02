@@ -11,4 +11,4 @@ config:
     enabled: true
     replicas: 2
     name: frontend #this is the service name of frontend which represents the web application and the user interface
-    image: frontend-ui
+    image: frontend-ui      
