@@ -1,10 +1,10 @@
 config:
-  docker_registry: darcecampos
+  docker_registry: prosoli
   backend:
     enabled: true
     replicas: 1
     name: backend-ui
-    useMemcached: true #variable to enable or disable memcached usage in backend
+    useMemcached: false #variable to enable or disable memcached usage in backend
     image: backend-ui
     imageMemcached: backend-ui-memcached
   frontend:
