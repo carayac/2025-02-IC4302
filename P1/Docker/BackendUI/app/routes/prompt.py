@@ -262,10 +262,13 @@ def feed():
 
         feed = []
         for friend in friends:
-            friend_prompt = my_prompts(friend["id_friend"])
-            if friend_prompt:
-                feed.append(friend_prompt)
-                added_prompt_ids.add(friend_prompt["id"])
+            friend_prompts = my_prompts(friend["id_friend"])
+            logger.error(f"Error fetching prompts for user {friend_prompts}")
+            if friend_prompts and isinstance(friend_prompts, list):
+                for prompt in friend_prompts:
+                    if isinstance(prompt, dict) and "id" in prompt and prompt["id"] not in added_prompt_ids:
+                        feed.append(prompt)
+                        added_prompt_ids.add(prompt["id"])
             
         #get liked prompts
         likes = execute_query(
@@ -277,12 +280,15 @@ def feed():
             id_prompt = like["id_prompt"]
             if id_prompt not in added_prompt_ids:
                 like_prompt = my_prompt(id_prompt)
-                if like_prompt:
-                    feed.append(like_prompt)
+                if like_prompt and isinstance(like_prompt, list) and len(like_prompt) > 0:
+                    prompt = like_prompt[0]
+                    if isinstance(prompt, dict) and "id" in prompt and prompt["id"] not in added_prompt_ids:
+                        feed.append(prompt)
+                        added_prompt_ids.add(prompt["id"])
 
         return jsonify(feed), 200
 
     except Exception as e:
-        logger.error(f"Error fetching prompts for user {id_user}: {e}")
+        logger.error(f"Error aaaaaaaaaaaaaaaaaaaaaaaa {id_user}: {e}")
         return jsonify({"error": "Error fetching prompts"}), 500
 
