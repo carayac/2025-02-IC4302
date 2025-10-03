@@ -4,7 +4,22 @@ import logging
 import sys
 import mariadb
 import bcrypt
+from pymemcache.client.base import Client
+from prometheus_client import Counter
+import os, json
 
+#Memcached variables
+BD_TYPE = "mariadb"
+CACHE_TYPE = "memcached"
+
+cache_hit = Counter("cache_hit", "Cache hits", ["bd", "cache"])
+cache_miss = Counter("cache_miss", "Cache misses", ["bd", "cache"])
+
+MEMCACHED_HOST = os.getenv("MEMCACHED_HOST")
+MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT"))
+CACHE_TTL_SECONDS = 60
+
+memcached = Client((MEMCACHED_HOST, MEMCACHED_PORT))
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -15,6 +30,25 @@ logger = logging.getLogger(__name__)
 
 user_blueprint = Blueprint('user', __name__)
 
+def cache_get(key):
+    try:
+        raw = memcached.get(key)
+        if not raw:
+            cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+            return None
+        
+        cache_hit.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return json.loads(raw.decode("utf-8"))
+    except Exception:
+        cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return None
+
+def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
+    try:
+        memcached.set(key, json.dumps(value), expire=ttl)
+    except Exception:
+        pass
+
 #Route for getting user info
 @user_blueprint.route('/me',methods=['GET'])
 def login():
@@ -23,6 +57,13 @@ def login():
 
     if not id:
         return jsonify({"error": "ID is required"}), 400
+    
+    # Try to get user data from cache hit
+    cache_key = f"user:{id}"
+    cached = cache_get(cache_key)
+    if cached is not None:
+        logger.info(f"User id={id} found source=cache")
+        return jsonify(cached), 200
     
     try:
         res = execute_query(
@@ -35,14 +76,18 @@ def login():
             logger.warning(f"Search failed: user not found {id}")
             return jsonify({"error": "Invalid id"}), 401
 
-        logger.info(f"User found {id} successfully")
-        return jsonify({
+        user_data = {
             "id": user["id"],
             "name": user["name"],
             "lastname": user["lastname"],
             "description": user["description"],
             "email": user["email"]
-        }), 200
+        }
+
+        # Cache miss, so we save the user data in cache
+        cache_set(cache_key, user_data, CACHE_TTL_SECONDS)
+        logger.info(f"User id={id} found source=cache")
+        return jsonify(user_data), 200
 
     except mariadb.Error as e:
         logger.error(f"Database error during search: {e}")
