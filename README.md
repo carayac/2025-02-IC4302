@@ -164,7 +164,9 @@ Por último se presenta el botón de **logout** para cerrar sesión y redirigir 
 <details>
   <summary>Desplegar información</summary> 
 
-  info
+1. El uso de connection pooling en las bases de datos permite reutilizar conexiones existentes en lugar de crear una nueva cada vez que se requiere comunicación. Esto optimiza el uso de recursos, mejora el rendimiento del sistema y reduce la latencia en las operaciones.
+
+2. La correcta utilización de los métodos HTTP resulta fundamental para definir de manera clara y estandarizada cómo se manipula la información que es enviada o recibida a través de los endpoints. Su adecuada implementación favorece la coherencia y la mantenibilidad servicios.
 
 </details>
 
@@ -173,7 +175,10 @@ Por último se presenta el botón de **logout** para cerrar sesión y redirigir 
 <details>
   <summary>Desplegar información</summary> 
 
-  info
+1. Uso de variables de entorno
+Se recomienda centralizar la configuración del sistema mediante variables de entorno, lo cual facilita la mantenibilidad y portabilidad de la aplicación. Estas variables deben incluir, entre otros aspectos, las credenciales y parámetros de conexión a la base de datos, así como las direcciones y claves necesarias para el consumo de endpoints externos. 
+2. Separación del esquema de base de datos y el código de aplicación
+Se recomienda generar un script de inicialización de la base de datos, integrado en los Helm Charts, que permita separar la creación y configuración del esquema de la base de datos del código de la aplicación en producción. Esto asegura mayor control y trazabilidad en la gestión del ciclo de vida de la base de datos, evitando acoplamiento con el código de negocio. También facilita la automatización de despliegues y la aplicación de migraciones en entornos de desarrollo, pruebas y producción de manera ordenada y consistente.
 
 </details>
 
@@ -184,6 +189,26 @@ Por último se presenta el botón de **logout** para cerrar sesión y redirigir 
 
 
   https://huggingface.co/sentence-transformers/all-mpnet-base-v2
+  
+  https://www.ibm.com/think/topics/api-endpoint
+  
+  https://mariadb.com/docs/connectors/mariadb-connector-python/pooling
+  
+  https://discuss.elastic.co/t/connection-pooling-using-python-client-8-10/344763
+  
+  http://elastic.co/docs/reference/elasticsearch/clients/python/connecting
+  
+  https://www.elastic.co/what-is/vector-search
+  
+  https://www.elastic.co/docs/solutions/search/vector
+  
+  https://www.w3schools.com/sql/sql_like.asp
+  
+  https://realpython.com/api-integration-in-python/
+  
+  https://mariadb.com/docs/tools/mariadb-enterprise-operator/installation/helm
+  
+  
 
 </details>
 
