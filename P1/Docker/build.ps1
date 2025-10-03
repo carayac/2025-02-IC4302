@@ -30,9 +30,9 @@ Set-Location ../FrontendUI
 docker build -t "$Username/frontend-ui" .
 docker push "$Username/frontend-ui"
 # #----------------------------------------S3 Crawler----------------------------------------
-# Set-Location ../S3Crawler
-# docker build -t "$Username/s3-crawler" .
-# docker push "$Username/s3-crawler"
+Set-Location ../S3Crawler
+docker build -t "$Username/s3-crawler" .
+docker push "$Username/s3-crawler"
 
 # #----------------------------------------Ingest----------------------------------------
 # Set-Location ../Ingest
