@@ -8,7 +8,7 @@ from pymemcache.client.base import Client
 from prometheus_client import Counter
 import os, json
 
-#Variables para memcached
+#Memcached variables
 BD_TYPE = "mariadb"
 CACHE_TYPE = "memcached"
 
@@ -59,10 +59,11 @@ def login():
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
 
+    # Try to get user data from cache hit
     cached=cache_get(email)
     if cached is not None:
         logger.info(f"User {email} login source=cache")
-        return jsonify(cached), 200 #cache hit
+        return jsonify(cached), 200 
     
     try:
         res = execute_query(
@@ -80,7 +81,7 @@ def login():
             logger.warning(f"Login failed: wrong password for {email}")
             return jsonify({"error": "Invalid email or password"}), 401
 
-        # Guardar en caché después de login exitoso (cache miss)
+        # Cache miss, so we save the user data in cache
         user_data = {
             "id": user["id"],
             "name": user["name"],

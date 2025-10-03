@@ -4,6 +4,22 @@ import logging
 import sys
 import mariadb
 import bcrypt
+from pymemcache.client.base import Client
+from prometheus_client import Counter
+import os, json
+
+#Memcached variables
+BD_TYPE = "mariadb"
+CACHE_TYPE = "memcached"
+
+cache_hit = Counter("cache_hit", "Cache hits", ["bd", "cache"])
+cache_miss = Counter("cache_miss", "Cache misses", ["bd", "cache"])
+
+MEMCACHED_HOST = os.getenv("MEMCACHED_HOST")
+MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT"))
+CACHE_TTL_SECONDS = 60
+
+memcached = Client((MEMCACHED_HOST, MEMCACHED_PORT))
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -14,6 +30,24 @@ logger = logging.getLogger(__name__)
 
 friend_blueprint = Blueprint('friends', __name__)
 
+def cache_get(key):
+    try:
+        raw = memcached.get(key)
+        if not raw:
+            cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+            return None
+        
+        cache_hit.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return json.loads(raw.decode("utf-8"))
+    except Exception:
+        cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return None
+
+def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
+    try:
+        memcached.set(key, json.dumps(value), expire=ttl)
+    except Exception:
+        pass
 
 #route for following a friend
 @friend_blueprint.route('/follow', methods=['POST'])
@@ -135,6 +169,15 @@ def find():
         return jsonify({"error": "text is required"}), 400
     #clean the text
     text = text.strip('"')
+
+    cache_key = f"find:{text.lower()}"  
+
+    # Try to get user data from cache hit
+    cached = cache_get(cache_key)
+    if cached is not None:
+        logger.info(f"Find friends text='{text}' source=cache")
+        return jsonify(cached), 200
+    
     try:
         # split the text into words to search each one
         words = text.split()
@@ -151,6 +194,9 @@ def find():
         #execute the query created
         users = execute_query(query, tuple(params))
 
+        # Cache miss, so we save the user data in cache
+        cache_set(cache_key, users, CACHE_TTL_SECONDS)
+        logger.info(f"Find friends text='{text}' source=db")
         return jsonify(users), 200
     except mariadb.IntegrityError as e:
         # there was an error with the query
@@ -170,6 +216,12 @@ def get_friends():
     if not id_user:
         return jsonify({"error": "id_user is required"}), 400
     
+    # Try to get user data from cache hit
+    cache_key = f"friends:{id_user}"
+    cached = cache_get(cache_key)
+    if cached is not None:
+        logger.info(f"Get friends for user {id_user} source=cache")
+        return jsonify(cached), 200
     #get the friends from the database
     try:
         friends = execute_query(
@@ -178,7 +230,10 @@ def get_friends():
             """,
             (id_user,)
         )
-        logger.info(f"Friends retrieved successfully for user {id_user}")
+
+        # Cache miss, so we save the user data in cache
+        cache_set(cache_key, friends, CACHE_TTL_SECONDS)
+        logger.info(f"Get friends for user {id_user} source=db")
         return jsonify(friends), 200
     except mariadb.IntegrityError as e:
         # the user it was not found
