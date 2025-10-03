@@ -21,9 +21,6 @@ mariadb:
 
 rabbitmq:
   enabled: true
-  auth:
-    username: user
-    password: pass
   metrics:
     enabled: true
     serviceMonitor:
