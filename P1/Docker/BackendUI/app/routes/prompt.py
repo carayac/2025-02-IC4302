@@ -132,7 +132,7 @@ def my_prompts(id_user=None):
     try:
         #get user prompts
         prompts = execute_query(
-            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname, u.username FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id_user = ? AND p.enabled = TRUE ORDER BY p.created_at DESC",
+            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id_user = ? AND p.enabled = TRUE ORDER BY p.created_at DESC",
             (id_user,)
         )
 
@@ -158,7 +158,7 @@ def search():
     try:
         # split the text into words to search each one in prompts text or user name or lastname
         words = text.split()
-        query = "SELECT p.id, p.text, u.name, u.lastname, p.likes, u.username FROM Prompt p JOIN User u ON p.id_user = u.id WHERE "
+        query = "SELECT p.id, p.text, u.name, u.lastname, p.likes FROM Prompt p JOIN User u ON p.id_user = u.id WHERE "
         params = []
         conditions = []
         # create a condition for each word to search in name or lastname
@@ -231,7 +231,7 @@ def my_prompt(id_prompt=None):
     try:
         #get user prompts
         prompt = execute_query(
-            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname, p.likes, u.username FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id = ?  AND p.enabled = TRUE ORDER BY p.created_at DESC",
+            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id = ?  AND p.enabled = TRUE ORDER BY p.created_at DESC",
             (id_prompt,)
         )
 
