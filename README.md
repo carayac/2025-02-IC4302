@@ -110,7 +110,7 @@ info
 <details>
   <summary>Desplegar información</summary>  
   
-A continuación se presenta un resumen de lo componentes aplicado en ekl proyecto  
+A continuación se presenta un resumen de lo componentes aplicado en el proyecto  
 
 ## UI 
   <details>
@@ -135,10 +135,10 @@ Al buscar podrá obtener resultados de ta ta ta en los que podrá conusltar info
 Al utilizar la opcion de publicar, el prompt o petición del usuario será publicado en el feed para ser consultado en un futuro o para que sea visto por sus amigos. 
   
 ### Search Prompts
-En Search Prompts se realiza una barra de búsqueda que filtra prompts por el texto y por el nombre de usuario. Cada tarjeta de prompt mostrada incluye la acción de “like”. Cuando el usuario da like, se realiza una actualización de likes en los prompts del usuario y ese prompt también se agrega al Feed del usuario que dio like. 
+En Search Prompts se realiza una barra de búsqueda que filtra prompts por el texto y por el nombre de usuario. Cada tarjeta de prompt mostrada incluye la acción de "like". Cuando el usuario da like, se realiza una actualización de likes en los prompts del usuario y ese prompt también se agrega al Feed del usuario que dio like. 
   
 ### Find Friends
-Para Find Friends se construye un buscador por nombre. Cada resultado se presenta con un pequeño perfil con el nombre del usuarios y cantidad de followers, además de un botón de “Follow” para poder agregarlo a sus amigos.
+Para Find Friends se construye un buscador por nombre. Cada resultado se presenta con un pequeño perfil con el nombre del usuarios y cantidad de followers, además de un botón de "Follow" para poder agregarlo a sus amigos.
   
 ### Feed
 El Feed mezcla los prompts propios y los de la gente que el usuario sigue, ordenados del más reciente al más antiguo.   También al lado del prompt puede econctrar el botón de **buscar** de esta manera si el usuario quiere buscar los resultados que puede arrojar ese prompt lo puede hacer.
@@ -153,10 +153,516 @@ Por último se presenta el botón de **logout** para cerrar sesión y redirigir 
 
 </details>  
 
-</details>  
+## API
+<details>
+  <summary>Desplegar información</summary>
 
+### Arquitectura General
 
+El API REST del backend está construido con Flask y expone endpoints organizados en 4 módulos principales:
+- **Authentication**: Gestión de registro e inicio de sesión
+- **User**: Gestión de información de usuario
+- **Prompt**: Gestión de prompts y búsquedas
+- **Friend**: Gestión de relaciones sociales y likes
 
+Todos los endpoints utilizan conexión a MariaDB mediante connection pooling y bcrypt para el manejo seguro de contraseñas.
+
+---
+
+### Authentication Endpoints
+
+**Base URL:** `/promptsy/auth`
+
+#### 1. Login
+```
+POST /promptsy/auth/login
+```
+
+**Descripción:** Autentica a un usuario mediante email y contraseña.
+
+**Request Body:**
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+**Response Success (200):**
+```json
+{
+  "id": "integer",
+  "name": "string",
+  "lastname": "string",
+  "description": "string",
+  "email": "string"
+}
+```
+
+**Errores:**
+- `400`: Email y password son requeridos
+- `401`: Credenciales inválidas
+- `500`: Error de base de datos
+
+---
+
+#### 2. Register
+```
+POST /promptsy/auth/register
+```
+
+**Descripción:** Registra un nuevo usuario en el sistema.
+
+**Request Body:**
+```json
+{
+  "name": "string",
+  "lastname": "string",
+  "description": "string",
+  "email": "string",
+  "password": "string"
+}
+```
+
+**Response Success (201):**
+```json
+{
+  "message": "User registered successfully"
+}
+```
+
+**Errores:**
+- `400`: Campos requeridos faltantes o email ya existe
+- `500`: Error de base de datos
+
+**Nota:** La contraseña se hashea con bcrypt antes de almacenarse.
+
+---
+
+### User Endpoints
+
+**Base URL:** `/promptsy/user`
+
+#### 1. Get User Information
+```
+GET /promptsy/user/me?id={user_id}
+```
+
+**Descripción:** Obtiene la información completa de un usuario.
+
+**Response Success (200):**
+```json
+{
+  "id": "integer",
+  "name": "string",
+  "lastname": "string",
+  "description": "string",
+  "email": "string"
+}
+```
+
+---
+
+#### 2. Edit User Information
+```
+PUT /promptsy/user/edit
+```
+
+**Descripción:** Actualiza nombre, apellido y descripción del usuario.
+
+**Request Body:**
+```json
+{
+  "id": "integer",
+  "name": "string",
+  "lastname": "string",
+  "description": "string"
+}
+```
+
+**Response Success (201):**
+```json
+{
+  "message": "User edited successfully"
+}
+```
+
+---
+
+#### 3. Change Password
+```
+POST /promptsy/user/change-password
+```
+
+**Descripción:** Cambia la contraseña del usuario validando la contraseña anterior.
+
+**Request Body:**
+```json
+{
+  "id": "integer",
+  "oldpass": "string",
+  "newpass": "string"
+}
+```
+
+**Response Success (201):**
+```json
+{
+  "message": "Password edited successfully"
+}
+```
+
+**Errores:**
+- `401`: Contraseña antigua incorrecta
+
+---
+
+### Prompt Endpoints
+
+**Base URL:** `/promptsy/prompt`
+
+#### 1. Generate Embedding
+```
+POST /promptsy/prompt/generate
+```
+
+**Descripción:** Genera embeddings para un texto utilizando HuggingFace.
+
+**Request Body:**
+```json
+{
+  "text": "string"
+}
+```
+
+**Nota:** Endpoint en desarrollo para búsqueda semántica.
+
+---
+
+#### 2. Post Prompt
+```
+POST /promptsy/prompt/post
+```
+
+**Descripción:** Crea un nuevo prompt.
+
+**Request Body:**
+```json
+{
+  "prompt": {
+    "text": "string",
+    "id_user": "integer"
+  }
+}
+```
+
+**Response Success (201):**
+```json
+{
+  "message": "Prompt registered successfully"
+}
+```
+
+---
+
+#### 3. Edit Prompt
+```
+PUT /promptsy/prompt/edit
+```
+
+**Descripción:** Edita el texto de un prompt existente.
+
+**Request Body:**
+```json
+{
+  "prompt": {
+    "id_prompt": "integer",
+    "text": "string"
+  }
+}
+```
+
+---
+
+#### 4. Delete Prompt
+```
+PUT /promptsy/prompt/delete
+```
+
+**Descripción:** Realiza un borrado lógico del prompt (enabled = FALSE).
+
+**Request Body:**
+```json
+{
+  "id_prompt": "integer"
+}
+```
+
+---
+
+#### 5. Get My Prompts
+```
+GET /promptsy/prompt/myprompts?id_user={user_id}
+```
+
+**Descripción:** Obtiene todos los prompts de un usuario.
+
+**Response Success (200):**
+```json
+[
+  {
+    "id": "integer",
+    "text": "string",
+    "created_at": "timestamp",
+    "likes": "integer",
+    "name": "string",
+    "lastname": "string"
+  }
+]
+```
+
+---
+
+#### 6. Get Single Prompt
+```
+GET /promptsy/prompt/myprompt?id_prompt={prompt_id}
+```
+
+**Descripción:** Obtiene un prompt específico por su ID.
+
+---
+
+#### 7. Search Prompts
+```
+GET /promptsy/prompt/search?text={search_text}
+```
+
+**Descripción:** Busca prompts por texto, nombre o apellido de usuario.
+
+**Response Success (200):**
+```json
+[
+  {
+    "id": "integer",
+    "text": "string",
+    "name": "string",
+    "lastname": "string",
+    "likes": "integer"
+  }
+]
+```
+
+**Implementación:**
+- Divide el texto en palabras
+- Busca coincidencias con operador LIKE
+- Todas las palabras deben coincidir (AND)
+
+---
+
+#### 8. Get Feed
+```
+GET /promptsy/prompt/feed?id_user={user_id}
+```
+
+**Descripción:** Obtiene el feed personalizado (prompts de amigos y prompts con like).
+
+**Response Success (200):**
+```json
+[
+  {
+    "id": "integer",
+    "text": "string",
+    "created_at": "timestamp",
+    "likes": "integer",
+    "name": "string",
+    "lastname": "string"
+  }
+]
+```
+
+---
+
+### Friend Endpoints
+
+**Base URL:** `/promptsy/friend`
+
+#### 1. Follow User
+```
+POST /promptsy/friend/follow
+```
+
+**Descripción:** Permite seguir a otro usuario.
+
+**Request Body:**
+```json
+{
+  "id_user": "integer",
+  "id_friend": "integer"
+}
+```
+
+**Response Success (201):**
+```json
+{
+  "message": "User followed successfully"
+}
+```
+
+**Validaciones:**
+- No puede seguirse a sí mismo
+- No puede seguir al mismo usuario dos veces
+- El usuario a seguir debe existir
+
+**Efectos:**
+- Incrementa contador `following` del usuario
+- Incrementa contador `followers` del usuario seguido
+
+---
+
+#### 2. Unfollow User
+```
+PUT /promptsy/friend/unfollow
+```
+
+**Descripción:** Deja de seguir a un usuario.
+
+**Request Body:**
+```json
+{
+  "id_user": "integer",
+  "id_friend": "integer"
+}
+```
+
+**Efectos:**
+- Borrado lógico (enabled = FALSE)
+- Decrementa contadores de following/followers
+
+---
+
+#### 3. Find Friends
+```
+GET /promptsy/friend/find?text={search_text}
+```
+
+**Descripción:** Busca usuarios por nombre o apellido.
+
+**Response Success (200):**
+```json
+[
+  {
+    "id": "integer",
+    "name": "string",
+    "lastname": "string",
+    "email": "string"
+  }
+]
+```
+
+---
+
+#### 4. Get Friends
+```
+GET /promptsy/friend/get_friends?id={user_id}
+```
+
+**Descripción:** Obtiene la lista de usuarios que el usuario sigue.
+
+**Response Success (200):**
+```json
+[
+  {
+    "id": "integer",
+    "name": "string",
+    "lastname": "string",
+    "description": "string",
+    "email": "string",
+    "followers": "integer",
+    "following": "integer"
+  }
+]
+```
+
+---
+
+#### 5. Like Prompt
+```
+POST /promptsy/friend/like
+```
+
+**Descripción:** Da "like" a un prompt.
+
+**Request Body:**
+```json
+{
+  "id_user": "integer",
+  "id_prompt": "integer"
+}
+```
+
+**Efectos:**
+- Incrementa contador de likes del prompt
+- El prompt aparece en el feed del usuario
+
+---
+
+#### 6. Unlike Prompt
+```
+PUT /promptsy/friend/unlike
+```
+
+**Descripción:** Quita el "like" de un prompt.
+
+**Request Body:**
+```json
+{
+  "id_user": "integer",
+  "id_prompt": "integer"
+}
+```
+
+**Efectos:**
+- Borrado lógico (enabled = FALSE)
+- Decrementa contador de likes del prompt
+
+---
+
+### Características Técnicas
+
+#### Seguridad
+- Contraseñas hasheadas con bcrypt
+- Consultas parametrizadas (prevención de SQL injection)
+- No se devuelven contraseñas en respuestas
+
+#### Connection Pooling
+- Conexiones reutilizables a MariaDB
+- Optimización de recursos y rendimiento
+- Implementado en `mariadb_connection.py`
+
+#### Borrado Lógico
+- Campo `enabled` para soft delete
+- Permite auditoría y recuperación de datos
+- Aplicado en: Friend, Liked, Prompt
+
+#### Logging
+- Logs estructurados con nivel INFO/WARNING/ERROR
+- Trazabilidad de operaciones
+- Integración con sistemas de observabilidad
+
+#### Versión con Memcached
+Disponible en `BackendUI_Memcached` con:
+- Cache de endpoints de lectura
+- Métricas de cache hit/miss
+- TTL configurable
+
+#### Health Check
+```
+GET /health
+```
+Verifica disponibilidad del servicio para Kubernetes.
+
+</details>
+</details>
 
 
 # Conclusiones
@@ -234,4 +740,3 @@ Se recomienda generar un script de inicialización de la base de datos, integrad
 
 
 </details>
-
