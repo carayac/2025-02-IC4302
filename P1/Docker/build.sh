@@ -5,10 +5,10 @@ USERNAME=$1
 docker login
 
 # ---------------------------------------- Backend UI ----------------------------------------
-cd BackendUI || exit
-docker build -t "$USERNAME/backend-ui" .
-docker push "$USERNAME/backend-ui"
-cd ..
+# cd BackendUI || exit
+# docker build -t "$USERNAME/backend-ui" .
+# docker push "$USERNAME/backend-ui"
+# cd ..
 
 # # ---------------------------------------- UI ----------------------------------------
 # cd FrontendUI || exit
@@ -17,7 +17,7 @@ cd ..
 # cd ..
 
 #------------------------- S3 CRAWLER ----------------------------
-cd S3Crawler
+cd S3_Crawler
 docker build -t "$USERNAME/s3-crawler" .
 docker push "$USERNAME/s3-crawler"
 cd ..
