@@ -5,3 +5,6 @@ metadata:
 data:
   promptsy.sql: |-
 {{ .Files.Get "promptsy.sql" | indent 4 }}
+
+  elastic-mappings.json: |-
+{{ .Files.Get "elastic-mappings.json" | indent 4}}
