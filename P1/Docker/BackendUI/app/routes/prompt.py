@@ -164,7 +164,7 @@ def search():
         # create a condition for each word to search in name or lastname
         for w in words:
             conditions.append("(p.text LIKE CONCAT('%', ?, '%') OR u.name LIKE CONCAT('%', ?, '%') OR u.lastname LIKE CONCAT('%', ?, '%'))")
-            params.extend([w])
+            params.extend([w, w, w])
 
         query += " AND ".join(conditions)  #all conditions must be met
         query += " AND enabled = TRUE"
