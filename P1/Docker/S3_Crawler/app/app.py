@@ -56,7 +56,6 @@ def crawl_bucket():
     for prefix in S3_PREFIXES:
         logging.info(f"Listando objetos en prefijo: {prefix}")
         continuation_token = None
-<<<<<<< HEAD
 
         while True:
             kwargs = {"Bucket": S3_BUCKET, "Prefix": prefix}
@@ -76,7 +75,7 @@ def crawl_bucket():
                 if not (key.endswith(".json") or key.endswith(".parquet")):
                     continue
 
-                #de momento se publica solo la key, preguntar
+                # Publicar SOLO la key
                 publish_message(channel, RABBITMQ_QUEUE, key)
 
             if response.get("IsTruncated"):  # hay más objetos
@@ -89,39 +88,3 @@ def crawl_bucket():
 
 if __name__ == '__main__':
     crawl_bucket()
-
-=======
->>>>>>> 7995d6aa64c35c700ee9a35060771f92489a0c98
-
-        while True:
-            kwargs = {"Bucket": S3_BUCKET, "Prefix": prefix}
-            if continuation_token:
-                kwargs["ContinuationToken"] = continuation_token
-
-            response = s3.list_objects_v2(**kwargs)
-
-            for obj in response.get("Contents", []):
-                key = obj["Key"]
-
-                # Ignorar archivos innecesarios
-                if key.endswith(".crc") or key.endswith("_SUCCESS"):
-                    continue
-
-                # Solo procesar JSON o Parquet
-                if not (key.endswith(".json") or key.endswith(".parquet")):
-                    continue
-
-                #de momento se publica solo la key, preguntar
-                publish_message(channel, RABBITMQ_QUEUE, key)
-
-            if response.get("IsTruncated"):  # hay más objetos
-                continuation_token = response.get("NextContinuationToken")
-            else:
-                break
-
-    connection.close()
-    logging.info("Crawler finalizado")
-
-if __name__ == '__main__':
-    crawl_bucket()
-
