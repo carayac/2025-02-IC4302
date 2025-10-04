@@ -16,7 +16,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: {{ .Values.config.producer.name }}
-              image: {{ .Values.config.docker_registry }}/{{ .Values.config.producer.image }}
+              image: bitnamilegacy/rabbitmq:3.12.12-debian-11-r15
               env:
                 - name: S3_BUCKET
                   value: "ic-tec-dataset"
@@ -40,7 +40,7 @@ spec:
                 - name: RABBITMQ
                   value: "databases-rabbitmq"
                 - name: RABBITMQ_QUEUE
-                  value: "queue"
+                  value: "queue_csv"
                 - name: RABBITMQ_USER
                   value: "user"
                 - name: RABBITMQ_PASS

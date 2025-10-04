@@ -52,36 +52,36 @@ s3 = boto3.client(
 
 def crawl_bucket():
     connection, channel = rabbitmq_connection()
+    publish_message(channel, RABBITMQ_QUEUE, "amazon-books/part-00099-7aac03f4-2533-4b8f-8be9-9057d831d6be-c000.json")
+    # for prefix in S3_PREFIXES:
+    #     logging.info(f"Listando objetos en prefijo: {prefix}")
+    #     continuation_token = None
 
-    for prefix in S3_PREFIXES:
-        logging.info(f"Listando objetos en prefijo: {prefix}")
-        continuation_token = None
+    #     while True:
+    #         kwargs = {"Bucket": S3_BUCKET, "Prefix": prefix}
+    #         if continuation_token:
+    #             kwargs["ContinuationToken"] = continuation_token
 
-        while True:
-            kwargs = {"Bucket": S3_BUCKET, "Prefix": prefix}
-            if continuation_token:
-                kwargs["ContinuationToken"] = continuation_token
+    #         response = s3.list_objects_v2(**kwargs)
 
-            response = s3.list_objects_v2(**kwargs)
+    #         for obj in response.get("Contents", []):
+    #             key = obj["Key"]
 
-            for obj in response.get("Contents", []):
-                key = obj["Key"]
+    #             # Ignorar archivos innecesarios
+    #             if key.endswith(".crc") or key.endswith("_SUCCESS"):
+    #                 continue
 
-                # Ignorar archivos innecesarios
-                if key.endswith(".crc") or key.endswith("_SUCCESS"):
-                    continue
+    #             # Solo procesar JSON o Parquet
+    #             if not (key.endswith(".json") or key.endswith(".parquet")):
+    #                 continue
 
-                # Solo procesar JSON o Parquet
-                if not (key.endswith(".json") or key.endswith(".parquet")):
-                    continue
+    #             # Publicar SOLO la key
+    #             publish_message(channel, RABBITMQ_QUEUE, key)
 
-                # Publicar SOLO la key
-                publish_message(channel, RABBITMQ_QUEUE, key)
-
-            if response.get("IsTruncated"):  # hay más objetos
-                continuation_token = response.get("NextContinuationToken")
-            else:
-                break
+    #         if response.get("IsTruncated"):  # hay más objetos
+    #             continuation_token = response.get("NextContinuationToken")
+    #         else:
+    #             break
 
     connection.close()
     logging.info("Crawler finalizado")
