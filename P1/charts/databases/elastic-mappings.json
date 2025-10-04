@@ -1,28 +1,80 @@
 {
-  "books/reviews": {
+  "books": {
     "mappings": {
       "properties": {
+        "title": {"type": "text"},
+        "description": {"type": "text"},
+        "authors": {"type": "text"},
+        "categories": {"type": "text"},
+        "published_date": {"type": "date"},
+        "publisher": {"type": "text"},
+        "preview_link": {"type": "text"},
+        "info_link": {"type": "text"},
+        "image_link": {"type": "text"},
+        "ratings_count": {"type": "integer"},
+        "object_key": {"type": "keyword"},
+        "embeddings": {
+          "properties": {
+            "description": {"type": "dense_vector", "dims": 768}
+          }
+        }
+      }
+    }
+  },
+
+  "reviews": {
+    "mappings": {
+      "properties": {
+        "title": {"type": "text"},
+        "review_text": {"type": "text"},
+        "review_summary": {"type": "text"},
+        "user_id": {"type": "keyword"},
         "embeddings": {
           "properties": {
             "text": {"type": "dense_vector", "dims": 768},
             "summary": {"type": "dense_vector", "dims": 768}
           }
         },
-        "title": {"type": "text"},
-        "review_text": {"type": "text"},
-        "review_summary": {"type": "text"},
-        "user_id": {"type": "keyword"}
+        "book_id": {"type": "keyword"},
+        "object_key": {"type": "keyword"}
       }
     }
   },
-  "nbooks/nreviews": {
+
+  "nbooks": {
+    "mappings": {
+      "properties": {
+        "title": {"type": "text"},
+        "description": {"type": "text"},
+        "authors": {"type": "text"},
+        "categories": {"type": "text"},
+        "published_date": {"type": "date"},
+        "publisher": {"type": "text"},
+        "preview_link": {"type": "text"},
+        "info_link": {"type": "text"},
+        "image_link": {"type": "text"},
+        "ratings_count": {"type": "integer"},
+        "object_key": {"type": "keyword"},
+        "embeddings": {
+          "properties": {
+            "description": {"type": "dense_vector", "dims": 768}
+          }
+        }
+      }
+    }
+  },
+
+  "nreviews": {
     "mappings": {
       "properties": {
         "title": {"type": "text"},
         "review_text": {"type": "text"},
         "review_summary": {"type": "text"},
-        "user_id": {"type": "keyword"}
+        "user_id": {"type": "keyword"},
+        "book_id": {"type": "keyword"},
+        "object_key": {"type": "keyword"}
       }
     }
   }
 }
+

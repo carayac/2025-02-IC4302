@@ -39,7 +39,7 @@ spec:
 
                 - name: RABBITMQ
                   value: "databases-rabbitmq"
-                - name: RABBITMQ_QUEUE_CSV
+                - name: RABBITMQ_QUEUE
                   value: "queue_csv"
                 - name: RABBITMQ_QUEUE_PARKET
                   value: "queue_parket"

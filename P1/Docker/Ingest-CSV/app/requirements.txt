@@ -2,3 +2,4 @@ pika
 mariadb
 boto3
 requests
+elasticsearch

@@ -40,6 +40,14 @@ spec:
               value: "objects"
             - name: MARIADB_TABLE_BOOKS
               value: "books"
+            - name: MARIADB_TABLE_AUTHORS
+              value: "authors"
+            - name: MARIADB_TABLE_CATEGORIES
+              value: "categories"
+            - name: MARIADB_TABLE_AUTHORS_BOOKS
+              value: "book_authors"
+            - name: MARIADB_TABLE_CATEORIES_BOOKS
+              value: "book_categories"
             - name: MARIADB_DB
               value: "promptsy"
             - name: MARIADB_USER

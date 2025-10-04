@@ -4,7 +4,7 @@ import json
 import mariadb
 import requests
 import boto3
-#from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch
 
 # General
 HOSTNAME = os.getenv('HOSTNAME')
@@ -16,6 +16,8 @@ RABBIT_MQ = os.getenv('RABBITMQ')
 RABBITMQ_PASS = os.getenv('RABBITMQ_PASS')
 QUEUE_NAME = os.getenv('RABBITMQ_QUEUE')
 RABBITMQ_USER = os.getenv('RABBITMQ_USER')
+print("USER:", os.environ.get("RABBITMQ_USER"))
+print("PASS:", os.environ.get("RABBITMQ_PASS"))
 
 # MariaDB
 MARIADB_HOST = os.getenv('MARIADB')
@@ -24,6 +26,11 @@ MARIADB_PASS = os.getenv('MARIADB_PASS')
 MARIADB_DB = os.getenv('MARIADB_DB')
 MARIADB_TABLE = os.getenv('MARIADB_TABLE')
 MARIADB_TABLE_BOOKS = os.getenv('MARIADB_TABLE_BOOKS')
+MARIADB_TABLE_AUTHORS = os.getenv("MARIADB_TABLE_AUTHORS")
+MARIADB_TABLE_CATEGORIES = os.getenv("MARIADB_TABLE_CATEGORIES")
+MARIADB_TABLE_AUTHORS_BOOKS = os.getenv("MARIADB_TABLE_AUTHORS_BOOKS")
+MARIADB_TABLE_CATEGORIES_BOOKS = os.getenv("MARIADB_TABLE_CATEGORIES_BOOKS")
+
 
 # ElasticSearch
 ELASTIC_HOST = os.getenv('ELASTIC_HOST')
@@ -118,85 +125,112 @@ def embedding_todos_documentos(documentos):
     return documentos
 
 #########################Elastic
-# def conectar_elasticsearch():    
-#     try:
-#         es = Elasticsearch(
-#             ELASTIC_HOST,
-#             http_auth=(ELASTIC_USER, ELASTIC_PASS),
-#             scheme="http",
-#             port=9200  # Cambia si tu puerto es otro
-#         )
-#         # Opcional: verificar la conexión
-#         if not es.ping():
-#             print("No se pudo conectar a Elasticsearch")
-#             return None
-#         return es
-#     except Exception as e:
-#         print("Error conectando a Elasticsearch:", e)
-#         return None
+# Conexión a Elasticsearch
+def conectar_elasticsearch():
+    try:
+        es = Elasticsearch(
+            os.getenv("ELASTIC_HOST"),
+            http_auth=(os.getenv("ELASTIC_USER"), os.getenv("ELASTIC_PASS")),
+            scheme="http",
+            port=9200
+        )
+        if not es.ping():
+            print("No se pudo conectar a Elasticsearch")
+            return None
+        return es
+    except Exception as e:
+        print("Error conectando a Elasticsearch:", e)
+        return None
 
-# def guardar_en_elasticsearch(documentos):
-#     es = conectar_elasticsearch()
-#     if es is None:
-#         return
-#     for doc in documentos:
-#         # Copia del doc sin embeddings
-#         doc_sin_embedding = doc.copy()
-#         doc_sin_embedding.pop("embedding", None)
+# Guardar libros en Elasticsearch
+def guardar_libros_elasticsearch(documentos):
+    es = conectar_elasticsearch()
+    if es is None:
+        return
 
-#         # Insertar con embedding en books/reviews
-#         try:
-#             es.index(index=ELASTIC_INDEX_BOOKS, document=doc)
-#         except Exception as e:
-#             print("Error insertando en books/reviews:", e)
+    for doc in documentos:
+        # Documento sin embeddings
+        doc_sin_embedding = doc.copy()
+        doc_sin_embedding.pop("embeddings", None)
 
-#         # Insertar sin embedding en nbooks/nreviews
-#         try:
-#             es.index(index=ELASTIC_INDEX_NBOOKS, document=doc_sin_embedding)
-#         except Exception as e:
-#             print("Error insertando en nbooks/nreviews:", e)
+        # Insertar con embeddings en "books"
+        try:
+            es.index(index="books", document=doc)
+        except Exception as e:
+            print("Error insertando en books:", e)
+
+        # Insertar sin embeddings en "nbooks"
+        try:
+            es.index(index="nbooks", document=doc_sin_embedding)
+        except Exception as e:
+            print("Error insertando en nbooks:", e)
 
 ################################
 
+def insertar_author(cursor, conn, author_name):
+    query = f"INSERT IGNORE INTO {MARIADB_TABLE_AUTHORS} (name) VALUES (?)"
+    cursor.execute(query, (author_name,))
+    conn.commit()
 
-def insertar_libro(conn, cursor, object_key, title=None, authors=None, description=None,
-                   categories=None, published_date=None, publisher=None,
-                   preview_link=None, info_link=None, image_link=None,
-                   ratings_count=None):
+    # Obtener el ID del autor
+    cursor.execute(f"SELECT id FROM {MARIADB_TABLE_AUTHORS} WHERE name = ?", (author_name,))
+    return cursor.fetchone()[0]
+
+
+def insertar_category(cursor, conn, category_name):
+    query = f"INSERT IGNORE INTO {MARIADB_TABLE_CATEGORIES} (name) VALUES (?)"
+    cursor.execute(query, (category_name,))
+    conn.commit()
+
+    # Obtener el ID de la categoría
+    cursor.execute(f"SELECT id FROM {MARIADB_TABLE_CATEGORIES} WHERE name = ?", (category_name,))
+    return cursor.fetchone()[0]
+
+
+def insertar_libro(conn, cursor, object_key, title=None, description=None,
+                   published_date=None, publisher=None, preview_link=None,
+                   info_link=None, image_link=None, ratings_count=None):
     query = f"""
-    INSERT INTO {MARIADB_TABLE_BOOKS}
-    (object_key, title, authors, description, categories,
-     published_date, publisher, preview_link, info_link,
-     image_link, ratings_count)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO books
+    (object_key, title, description, published_date, publisher, preview_link, info_link, image_link, ratings_count)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
-    try:
-        cursor.execute(query, (
-            object_key,
-            title,
-            authors,
-            description,
-            categories,
-            published_date,
-            publisher,
-            preview_link,
-            info_link,
-            image_link,
-            ratings_count
-        ))
-        conn.commit()
-    except mariadb.Error as e:
-        conn.rollback()
-        print(f"Error insertando libro: {e}")
+    cursor.execute(query, (
+        object_key, title, description, published_date,
+        publisher, preview_link, info_link, image_link, ratings_count
+    ))
+    conn.commit()
+
+    cursor.execute("SELECT LAST_INSERT_ID()")
+    return cursor.fetchone()[0]  # ID del libro insertado
+
+def relacionar_autores_categories(cursor, conn, book_id, authors=None, categories=None):
+    # Autores
+    if authors:
+        for author in authors:
+            author_id = insertar_author(cursor, conn, author.strip())
+            cursor.execute(f"""
+                INSERT IGNORE INTO {MARIADB_TABLE_AUTHORS_BOOKS} (book_id, author_id)
+                VALUES (?, ?)
+            """, (book_id, author_id))
+    # Categorías
+    if categories:
+        for category in categories:
+            category_id = insertar_category(cursor, conn, category.strip())
+            cursor.execute(f"""
+                INSERT IGNORE INTO {MARIADB_TABLE_CATEGORIES_BOOKS} (book_id, category_id)
+                VALUES (?, ?)
+            """, (book_id, category_id))
+    conn.commit()
 
 
 
 def insertar_info(cursor, conn, key_name, documentos):
     for doc in documentos:
         title = doc.get("title")
-        authors = doc.get("authors")
+        authors = doc.get("authors")  # Debe ser lista
         description = doc.get("description")
-        categories = doc.get("categories")
+        categories = doc.get("categories")  # Debe ser lista
         published_date = doc.get("published_date")
         publisher = doc.get("publisher")
         preview_link = doc.get("preview_link")
@@ -204,13 +238,13 @@ def insertar_info(cursor, conn, key_name, documentos):
         image_link = doc.get("image_link")
         ratings_count = doc.get("ratings_count")
 
-        insertar_libro(
-            conn, cursor, key_name,
-            title, authors, description,
-            categories, published_date, publisher,
-            preview_link, info_link, image_link,
-            ratings_count
-        )
+        # Insertar libro
+        book_id = insertar_libro(conn, cursor, key_name, title, description,
+                                 published_date, publisher, preview_link,
+                                 info_link, image_link, ratings_count)
+
+        # Relacionar autores y categorías
+        relacionar_autores_categories(cursor, conn, book_id, authors, categories)
 
 
 def insertar_object(cursor, conn, key_name, documentos, procesado):
@@ -232,34 +266,58 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
 
 
 def callback(ch, method, body):
-    key_name = body.decode('utf-8')  # mensaje recibido, 
-    #amazon-books/part-00099-7aac03f4-2533-4b8f-8be9-9057d831d6be-c000.json
+    key_name = body.decode('utf-8')  # mensaje recibido
+    print(f"[INFO] Mensaje recibido: {key_name}")
 
-    conn, cursor = conectar_MariaDB() #conectar mariadb
+    conn, cursor = conectar_MariaDB()  # conectar MariaDB
+    print("[INFO] Conectado a MariaDB")
 
     # Verificar si ya se procesó
     existe = buscar_objeto(cursor, MARIADB_TABLE, key_name)
+    print(f"[INFO] ¿Ya procesado? {existe}")
 
     if existe:
-        ch.basic_ack(delivery_tag=method.delivery_tag) #no se hace nada
+        print("[INFO] Objeto ya procesado. Reconociendo mensaje...")
+        ch.basic_ack(delivery_tag=method.delivery_tag)  # no se hace nada
     else:
-        # 1. Descargar desde S3
-        file_path = descargar_objeto(key_name)
-        # 2. Parsear JSON
-        documentos = procesar_objeto(file_path)
-        # 3. Generar embeddings
-        procesado = False
-        insertar_object(cursor, conn, key_name, documentos, procesado)
-        documentos = embedding_todos_documentos(documentos)
-        # 4. Guardar en Elasticsearch
-        #guardar_en_elasticsearch(documentos) solo la parte de reviews
-        # 5. Guardar en MariaDB
-        insertar_info(cursor, conn, key_name, documentos)
-        # 5. Marcar como procesado en MariaDB
-        procesado = True
-        insertar_object(cursor, conn, key_name, documentos, procesado)
+        try:
+            # 1. Descargar desde S3
+            print("[INFO] Descargando objeto desde S3...")
+            file_path = descargar_objeto(key_name)
+            print(f"[INFO] Objeto descargado en: {file_path}")
 
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+            # 2. Parsear JSON/parquet
+            print("[INFO] Procesando objeto...")
+            documentos = procesar_objeto(file_path)
+            print(f"[INFO] Documentos extraídos: {len(documentos)}")
+
+            # 3. Generar embeddings
+            procesado = False
+            print("[INFO] Insertando registro inicial en MariaDB...")
+            insertar_object(cursor, conn, key_name, documentos, procesado)
+
+            print("[INFO] Generando embeddings...")
+            documentos = embedding_todos_documentos(documentos)
+            print("[INFO] Embeddings generados")
+
+            # 4. Guardar en Elasticsearch (solo reviews)
+            #guardar_en_elasticsearch(documentos)
+            print("[INFO] (Opcional) Guardar en Elasticsearch")
+
+            # 5. Guardar en MariaDB
+            print("[INFO] Insertando información en MariaDB...")
+            insertar_info(cursor, conn, key_name, documentos)
+            print("[INFO] Información insertada en MariaDB")
+
+            # 6. Marcar como procesado
+            procesado = True
+            insertar_object(cursor, conn, key_name, documentos, procesado)
+            print("[INFO] Objeto marcado como procesado")
+
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            print("[INFO] Mensaje confirmado (ack)")
+        except Exception as e:
+            print(f"[ERROR] Ocurrió un error: {e}")
 
 def main():
     credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)

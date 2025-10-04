@@ -112,40 +112,48 @@ def embedding_todos_documentos(documentos):
     return documentos
 
 ########################Elastic
-# def conectar_elasticsearch():
-#     try:
-#         es = Elasticsearch(
-#             ELASTIC_HOST,
-#             http_auth=(ELASTIC_USER, ELASTIC_PASS),
-#             scheme="http",
-#             port=9200
-#         )
-#         if not es.ping():
-#             print("No se pudo conectar a Elasticsearch")
-#             return None
-#         return es
-#     except Exception as e:
-#         print("Error conectando a Elasticsearch:", e)
-#         return None
+from elasticsearch import Elasticsearch
+import os
 
-# def guardar_en_elasticsearch(documentos):
-#     es = conectar_elasticsearch()
-#     if es is None:
-#         return
+# Conexión a Elasticsearch
+def conectar_elasticsearch():
+    try:
+        es = Elasticsearch(
+            os.getenv("ELASTIC_HOST"),
+            http_auth=(os.getenv("ELASTIC_USER"), os.getenv("ELASTIC_PASS")),
+            scheme="http",
+            port=9200
+        )
+        if not es.ping():
+            print("No se pudo conectar a Elasticsearch")
+            return None
+        return es
+    except Exception as e:
+        print("Error conectando a Elasticsearch:", e)
+        return None
 
-#     for doc in documentos:
-#         doc_sin_embedding = doc.copy()
-#         doc_sin_embedding.pop("embeddings", None)
+# Guardar reviews en Elasticsearch
+def guardar_reviews_elasticsearch(documentos):
+    es = conectar_elasticsearch()
+    if es is None:
+        return
 
-#         try:
-#             es.index(index=ELASTIC_INDEX_BOOKS, document=doc)
-#         except Exception as e:
-#             print("Error insertando en books/reviews:", e)
+    for doc in documentos:
+        # Documento sin embeddings
+        doc_sin_embedding = doc.copy()
+        doc_sin_embedding.pop("embeddings", None)
 
-#         try:
-#             es.index(index=ELASTIC_INDEX_NBOOKS, document=doc_sin_embedding)
-#         except Exception as e:
-#             print("Error insertando en nbooks/nreviews:", e)
+        # Insertar con embeddings en "reviews"
+        try:
+            es.index(index="reviews", document=doc)
+        except Exception as e:
+            print("Error insertando en reviews:", e)
+
+        # Insertar sin embeddings en "nreviews"
+        try:
+            es.index(index="nreviews", document=doc_sin_embedding)
+        except Exception as e:
+            print("Error insertando en nreviews:", e)
 
 
 ################################

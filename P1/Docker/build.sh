@@ -17,10 +17,10 @@ docker login
 # cd ..
 
 #------------------------- S3 CRAWLER ----------------------------
-cd S3_Crawler
-docker build -t "$USERNAME/s3-crawler" .
-docker push "$USERNAME/s3-crawler"
-cd ..
+# cd S3_Crawler
+# docker build -t "$USERNAME/s3-crawler" .
+# docker push "$USERNAME/s3-crawler"
+# cd ..
 #-----------------------------------------------------------------
 
 
@@ -30,17 +30,17 @@ docker build -t "$USERNAME/ingest-csv" .
 docker push "$USERNAME/ingest-csv"
 cd ..
 
-# ---------------------------------------- Ingest Parquet ----------------------------------------
-cd Ingest-Parket || exit
-docker build -t "$USERNAME/ingest-parket" .
-docker push "$USERNAME/ingest-parket"
-cd ..
+# # ---------------------------------------- Ingest Parquet ----------------------------------------
+# cd Ingest-Parket || exit
+# docker build -t "$USERNAME/ingest-parket" .
+# docker push "$USERNAME/ingest-parket"
+# cd ..
 
-# ---------------------------------------- Spark HuggingFace ----------------------------------------
-cd HuggingFace || exit
-docker build -t "$USERNAME/huggingface" .
-docker push "$USERNAME/huggingface"
-cd ..
+# # ---------------------------------------- Spark HuggingFace ----------------------------------------
+# cd HuggingFace || exit
+# docker build -t "$USERNAME/huggingface" .
+# docker push "$USERNAME/huggingface"
+# cd ..
 
 # ---------------------------------------- Volver a la carpeta inicial ----------------------------------------
 cd ..

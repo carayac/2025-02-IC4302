@@ -16,9 +16,7 @@ CREATE TABLE IF NOT EXISTS books (
     id INT AUTO_INCREMENT PRIMARY KEY,
     object_key VARCHAR(512) NOT NULL,
     title VARCHAR(500),
-    authors TEXT,
     description TEXT,
-    categories TEXT,
     published_date DATE,
     publisher VARCHAR(255),
     preview_link TEXT,
@@ -27,6 +25,38 @@ CREATE TABLE IF NOT EXISTS books (
     ratings_count INT,
     CONSTRAINT fk_books_object FOREIGN KEY (object_key) REFERENCES objects(key_name)
 );
+
+-- Autores
+CREATE TABLE IF NOT EXISTS authors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- Intermedia autores y libro
+CREATE TABLE IF NOT EXISTS book_authors (
+    book_id INT NOT NULL,
+    author_id INT NOT NULL,
+    PRIMARY KEY (book_id, author_id),
+    CONSTRAINT fk_ba_book FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+    CONSTRAINT fk_ba_author FOREIGN KEY (author_id) REFERENCES authors(id) ON DELETE CASCADE
+);
+
+-- Categorias
+CREATE TABLE IF NOT EXISTS categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- Intermedia categorias y libros
+CREATE TABLE IF NOT EXISTS book_categories (
+    book_id INT NOT NULL,
+    category_id INT NOT NULL,
+    PRIMARY KEY (book_id, category_id),
+    CONSTRAINT fk_bc_book FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+    CONSTRAINT fk_bc_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+
 
 -- Tabla de reseñas
 CREATE TABLE IF NOT EXISTS reviews (
