@@ -331,14 +331,14 @@ const Friends = () => {
           <span className={s.navLabel}>Feed</span>
         </NavLink>
 
+        <NavLink to="/myFriends" className={navItemClass} aria-label="Friends">
+          <span className={s.navIcon}>👥</span>
+          <span className={s.navLabel}>Friends</span>
+        </NavLink>
+
         <NavLink to="/me" className={navItemClass} aria-label="Me">
           <span className={s.navIcon}>👤</span>
           <span className={s.navLabel}>Me</span>
-        </NavLink>
-
-        <NavLink to="/friends" className={navItemClass} aria-label="Friends">
-          <span className={s.navIcon}>👥</span>
-          <span className={s.navLabel}>Find Friends</span>
         </NavLink>
       </nav>
     </div>

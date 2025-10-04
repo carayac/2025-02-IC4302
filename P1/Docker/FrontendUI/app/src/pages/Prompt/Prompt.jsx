@@ -406,41 +406,41 @@ const Prompt = () => {
 
       {/* Bottom Navigation */}
       <nav className={s.bottomNav} role="navigation" aria-label="Main navigation">
-        <button className={s.navItem} aria-label="Find Book">
+        <NavLink to="/ask" className={navItemClass} aria-label="Find Book">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
           </svg>
           <span>Find Book</span>
-        </button>
+        </NavLink>
 
-        <button className={s.navItem} aria-label="Find Friends">
+        <NavLink to="/friends" className={navItemClass} aria-label="Find Friends">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
             <circle cx="9" cy="7" r="4"></circle>
             <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
-          <span>Friends</span>
-        </button>
+          <span>Find Friends</span>
+        </NavLink>
 
-        <button className={`${s.navItem} ${s.active}`} aria-label="Search Prompts" aria-current="page">
+        <NavLink to="/prompt" className={navItemClass} aria-label="Search Prompts">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
           </svg>
-          <span>Prompts</span>
-        </button>
+          <span>Search Prompts</span>
+        </NavLink>
 
-        <button className={s.navItem} aria-label="Feed">
+        <NavLink to="/feed" className={navItemClass} aria-label="Feed">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M4 11a9 9 0 0 1 9 9"></path>
             <path d="M4 4a16 16 0 0 1 16 16"></path>
             <circle cx="5" cy="19" r="1"></circle>
           </svg>
           <span>Feed</span>
-        </button>
+        </NavLink>
 
-        <button className={s.navItem} aria-label="Friends">
+        <NavLink to="/myFriends" className={navItemClass} aria-label="Find Friends">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
             <circle cx="9" cy="7" r="4"></circle>
@@ -448,17 +448,15 @@ const Prompt = () => {
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
           <span>Friends</span>
-        </button>
+        </NavLink>
 
-
-        <button className={s.navItem} aria-label="Me">
+        <NavLink to="/me" className={navItemClass} aria-label="Me">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
           <span>Me</span>
-        </button>
-
+        </NavLink>
       </nav>
 
       {/* --- Toast --- */}

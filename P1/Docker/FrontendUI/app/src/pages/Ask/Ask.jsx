@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState, useEffect } from "react"
 import s from "./Ask.module.css"
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Prompts } from "../../lib/api/APIcalls"; //Objeto de funciones
 
 
@@ -34,6 +34,27 @@ const Ask = () => {
   const user = getStoredUser();
   const id_user = getUserId(user);
 
+  const location = useLocation();
+
+
+  useEffect(() => {
+
+    const fromState = location.state && location.state.presetPrompt;
+
+    //Bringing back the prompt from feed
+    let fromQuery = null;
+    try {
+      const qs = new URLSearchParams(location.search);
+      fromQuery = qs.get("prompt");
+    } catch { }
+
+    const incoming = fromState ?? fromQuery;
+    if (incoming && !prompt) {
+      setPrompt(incoming);
+
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [location.state, location.search]);
 
 
   //Read the user from Local Storage
@@ -281,15 +302,17 @@ const Ask = () => {
           <span className={s.navLabel}>Feed</span>
         </NavLink>
 
+        <NavLink to="/myFriends" className={navItemClass} aria-label="Friends">
+          <span className={s.navIcon}>👥</span>
+          <span className={s.navLabel}>Find Friends</span>
+        </NavLink>
+
         <NavLink to="/me" className={navItemClass} aria-label="Me">
           <span className={s.navIcon}>👤</span>
           <span className={s.navLabel}>Me</span>
         </NavLink>
 
-        <NavLink to="/friends" className={navItemClass} aria-label="Friends">
-          <span className={s.navIcon}>👥</span>
-          <span className={s.navLabel}>Find Friends</span>
-        </NavLink>
+
       </nav>
     </div>
   )

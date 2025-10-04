@@ -1,9 +1,13 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState, useCallback } from "react" 
-import { useNavigate } from "react-router-dom"                             
+import { useEffect, useMemo, useRef, useState, useCallback } from "react"
+import { useNavigate, NavLink } from "react-router-dom"
 import s from "./Me.module.css"
-import { AuthApi, Prompts } from "../../lib/api/APIcalls"                 
+import { AuthApi, Prompts } from "../../lib/api/APIcalls"
+
+const navItemClass = ({ isActive }) =>
+  `${s.navItem} ${isActive ? s.active : ""}`;
+
 
 
 function getStoredUser() {
@@ -27,47 +31,56 @@ function formatDate(d) {
 }
 
 export default function Me() {
-  const navigate = useNavigate() 
+  const navigate = useNavigate()
 
   const [theme, setTheme] = useState("colorful")
   const [isEditing, setIsEditing] = useState(false)
   const [editingPromptId, setEditingPromptId] = useState(null)
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
 
-  
+
+
   const [profile, setProfile] = useState({
-    id: null,                
-    name: "",                
-    lastname: "",            
-    email: "",               
-    description: "",         
-    avatar: "/diverse-woman-avatar.png",
-    followers: null,        
-    following: null,         
+    id: null,
+    name: "",
+    lastname: "",
+    email: "",
+    description: "",
+    avatar: "/neutral-avatar.svg",
+    followers: 0,
+    following: 0,
   })
 
-  
+
   const [editForm, setEditForm] = useState({
     name: "",
     lastname: "",
     description: "",
   })
 
-  
+  const [passwordForm, setPasswordForm] = useState({
+    oldpass: "",
+    newpass: "",
+    confirm: "",
+  })
+
+
   const [prompts, setPrompts] = useState([])
 
   const [editPromptText, setEditPromptText] = useState("")
-  const [loading, setLoading] = useState(true)        
-  const [savingProfile, setSavingProfile] = useState(false) 
-  const [savingPrompt, setSavingPrompt] = useState(false)   
-  const [errorMsg, setErrorMsg] = useState("")        
-  const [infoMsg, setInfoMsg] = useState("")         
+  const [loading, setLoading] = useState(true)
+  const [savingProfile, setSavingProfile] = useState(false)
+  const [savingPrompt, setSavingPrompt] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
+  const [infoMsg, setInfoMsg] = useState("")
+  const [savingPassword, setSavingPassword] = useState(false)
 
- 
+
   useEffect(() => {
     const u = getStoredUser()
     const id = getUserId(u)
     if (!id) {
-      
+
       navigate("/")
       return
     }
@@ -79,7 +92,7 @@ export default function Me() {
       try {
         //Showing profile data
         const userRes = await AuthApi.me(id)
-        
+
         if (!cancelled && userRes) {
           setProfile((prev) => ({
             ...prev,
@@ -88,7 +101,8 @@ export default function Me() {
             lastname: userRes.lastname ?? "",
             email: userRes.email ?? "",
             description: userRes.description ?? "",
-            //AQUI FOLLOWERS
+            followers: Number(userRes.followers ?? 0), 
+            following: Number(userRes.following ?? 0), 
           }))
           setEditForm({
             name: userRes.name ?? "",
@@ -99,13 +113,13 @@ export default function Me() {
 
         //Showing prompts
         const myPrompts = await Prompts.getMyPrompts(id)
-        
+
         if (!cancelled && Array.isArray(myPrompts)) {
           setPrompts(
             myPrompts.map((p) => ({
               id: p.id,
               text: p.text,
-              createdAt: p.created_at, 
+              createdAt: p.created_at,
               likes: p.likes,
             }))
           )
@@ -125,6 +139,7 @@ export default function Me() {
   }, [navigate])
 
   const handleEditProfile = () => {
+    setIsChangingPassword(false)
     setIsEditing(true)
     setEditForm({
       name: profile.name,
@@ -133,7 +148,14 @@ export default function Me() {
     })
   }
 
-  
+  const handleChangePassword = () => {
+    setIsEditing(false)
+    setIsChangingPassword(true)
+    setPasswordForm({ oldpass: "", newpass: "", confirm: "" })
+    setErrorMsg("")
+    setInfoMsg("")
+  }
+
   const handleSaveProfile = async () => {
     if (!profile.id) return
     setSavingProfile(true)
@@ -170,13 +192,59 @@ export default function Me() {
     })
   }
 
+  const handleSubmitPassword = async (e) => {
+    e.preventDefault()
+    if (!profile.id) return
+
+    setErrorMsg("")
+    setInfoMsg("")
+
+    // Validaciones mínimas en front
+    const { oldpass, newpass, confirm } = passwordForm
+    if (!oldpass || !newpass || !confirm) {
+      setErrorMsg("Please complete all password fields.")
+      return
+    }
+    if (newpass.length < 8) {
+      setErrorMsg("New password must be at least 8 characters.")
+      return
+    }
+    if (newpass !== confirm) {
+      setErrorMsg("New password and confirmation do not match.")
+      return
+    }
+
+    setSavingPassword(true)
+    try {
+      await AuthApi.changePassword({
+        id: profile.id,
+        oldpass,
+        newpass,
+      })
+      setIsChangingPassword(false)
+      setPasswordForm({ oldpass: "", newpass: "", confirm: "" })
+      setInfoMsg("Your password has been updated.")
+    } catch (err) {
+
+      setErrorMsg("Could not change your password. Check your current password.")
+    } finally {
+      setSavingPassword(false)
+    }
+  }
+
+  //
+  const handleCancelChangePassword = () => {
+    setIsChangingPassword(false)
+    setPasswordForm({ oldpass: "", newpass: "", confirm: "" })
+  }
+
   const handleEditPrompt = (prompt) => {
     setEditingPromptId(prompt.id)
     setEditPromptText(prompt.text)
   }
 
-  
- //Handle of saving prompt
+
+  //Handle of saving prompt
   const handleSavePrompt = async (id) => {
     setSavingPrompt(true)
     setErrorMsg("")
@@ -194,7 +262,7 @@ export default function Me() {
     }
   }
 
- //Handle of deleting prompt
+  //Handle of deleting prompt
   const handleDeletePrompt = async (id) => {
     if (!window.confirm("Are you sure you want to delete this prompt?")) return
     setErrorMsg("")
@@ -212,9 +280,9 @@ export default function Me() {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       try {
-        localStorage.removeItem("user") 
-      } catch {}
-      navigate("/")               
+        localStorage.removeItem("user")
+      } catch { }
+      navigate("/")
     }
   }
 
@@ -232,17 +300,14 @@ export default function Me() {
       </header>
 
       <main className={s.main}>
-        
-        {(loading || savingProfile || savingPrompt) && (
-          <div className={s.infoBanner} role="status">Cargando...</div>
+        {(loading || savingProfile || savingPrompt || savingPassword) && (
+          <div className={s.infoBanner} role="status">Loading...</div>
         )}
         {errorMsg && <div className={s.errorBanner} role="alert">{errorMsg}</div>}
         {infoMsg && <div className={s.successBanner} role="status">{infoMsg}</div>}
 
-        
         <section className={s.profileSection}>
           <div className={s.profileHeader}>
-            
             <img
               src={profile.avatar || "/placeholder.svg"}
               alt={`${profile.name} ${profile.lastname} avatar`}
@@ -251,35 +316,42 @@ export default function Me() {
             <div className={s.stats}>
               <div className={s.statItem}>
                 <span className={s.statNumber}>
-                  {profile.followers ?? "--" }
+                  {profile.followers}
                 </span>
                 <span className={s.statLabel}>Followers</span>
               </div>
               <div className={s.statItem}>
                 <span className={s.statNumber}>
-                  {profile.following ?? "--" }
+                  {profile.following}
                 </span>
                 <span className={s.statLabel}>Following</span>
               </div>
             </div>
           </div>
 
-          {!isEditing ? (
+
+          {!isEditing && !isChangingPassword ? (
             <div className={s.profileInfo}>
-              
               <h2 className={s.profileName}>
                 {profile.name} {profile.lastname}
               </h2>
               <p className={s.profileEmail}>{profile.email}</p>
-
               <p className={s.profileBio}>{profile.description}</p>
 
-              <button onClick={handleEditProfile} className={s.editButton} aria-label="Edit profile">
-                Edit Profile
-              </button>
+              <div className={s.formActions}>
+                <button onClick={handleEditProfile} className={s.editButton} aria-label="Edit profile">
+                  Edit Profile
+                </button>
+
+                <button onClick={handleChangePassword} className={s.editButton} aria-label="Change password">
+                  Change Password
+                </button>
+              </div>
             </div>
-          ) : (
-            
+          ) : null}
+
+          {/* Formulario Editar Perfil */}
+          {isEditing && !isChangingPassword && (
             <form
               className={s.editForm}
               onSubmit={(e) => {
@@ -288,9 +360,7 @@ export default function Me() {
               }}
             >
               <div className={s.formGroup}>
-                <label htmlFor="name" className={s.label}>
-                  Name
-                </label>
+                <label htmlFor="name" className={s.label}>Name</label>
                 <input
                   id="name"
                   type="text"
@@ -302,9 +372,7 @@ export default function Me() {
               </div>
 
               <div className={s.formGroup}>
-                <label htmlFor="lastname" className={s.label}>
-                  Lastname
-                </label>
+                <label htmlFor="lastname" className={s.label}>Lastname</label>
                 <input
                   id="lastname"
                   type="text"
@@ -316,9 +384,7 @@ export default function Me() {
               </div>
 
               <div className={s.formGroup}>
-                <label htmlFor="description" className={s.label}>
-                  Description
-                </label>
+                <label htmlFor="description" className={s.label}>Description</label>
                 <textarea
                   id="description"
                   value={editForm.description}
@@ -334,6 +400,59 @@ export default function Me() {
                   {savingProfile ? "Saving..." : "Save Changes"}
                 </button>
                 <button type="button" onClick={handleCancelEdit} className={s.cancelButton} aria-label="Cancel editing">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+
+          {isChangingPassword && !isEditing && (
+            <form className={s.editForm} onSubmit={handleSubmitPassword}>
+              <div className={s.formGroup}>
+                <label htmlFor="oldpass" className={s.label}>Current Password</label>
+                <input
+                  id="oldpass"
+                  type="password"
+                  value={passwordForm.oldpass}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, oldpass: e.target.value })}
+                  className={s.input}
+                  autoComplete="current-password"
+                  aria-required="true"
+                />
+              </div>
+
+              <div className={s.formGroup}>
+                <label htmlFor="newpass" className={s.label}>New Password</label>
+                <input
+                  id="newpass"
+                  type="password"
+                  value={passwordForm.newpass}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, newpass: e.target.value })}
+                  className={s.input}
+                  autoComplete="new-password"
+                  aria-required="true"
+                />
+                <small className={s.passwordHint}>At least 8 characters.</small>
+              </div>
+
+              <div className={s.formGroup}>
+                <label htmlFor="confirm" className={s.label}>Confirm New Password</label>
+                <input
+                  id="confirm"
+                  type="password"
+                  value={passwordForm.confirm}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, confirm: e.target.value })}
+                  className={s.input}
+                  autoComplete="new-password"
+                  aria-required="true"
+                />
+              </div>
+
+              <div className={s.formActions}>
+                <button type="submit" className={s.saveButton} aria-label="Save password" disabled={savingPassword}>
+                  {savingPassword ? "Saving..." : "Save Password"}
+                </button>
+                <button type="button" onClick={handleCancelChangePassword} className={s.cancelButton} aria-label="Cancel password change">
                   Cancel
                 </button>
               </div>
@@ -462,44 +581,43 @@ export default function Me() {
 
       {/* Bottom Navigation */}
       <nav className={s.bottomNav} role="navigation" aria-label="Main navigation">
-
-        <button className={s.navItem} aria-label="Find Book">
+        <NavLink to="/ask" className={navItemClass} aria-label="Find Book">
           <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
           </svg>
           <span className={s.navLabel}>Find Book</span>
-        </button>
+        </NavLink>
 
-        <button className={s.navItem} aria-label="Find Friends">
+        <NavLink to="/friends" className={navItemClass} aria-label="Find Friends">
           <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
             <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
-          <span className={s.navLabel}>Friends</span>
-        </button>
+          <span className={s.navLabel}>Find Friends</span>
+        </NavLink>
 
-        <button className={s.navItem} aria-label="Search Prompts">
+        <NavLink to="/prompt" className={navItemClass} aria-label="Search Prompts">
           <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="12" cy="12" r="10" />
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
-          <span className={s.navLabel}>Prompts</span>
-        </button>
+          <span className={s.navLabel}>Search Prompts</span>
+        </NavLink>
 
-        <button className={s.navItem} aria-label="Feed">
+        <NavLink to="/feed" className={navItemClass} aria-label="Feed">
           <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M4 11a9 9 0 0 1 9 9" />
             <path d="M4 4a16 16 0 0 1 16 16" />
             <circle cx="5" cy="19" r="1" />
           </svg>
           <span className={s.navLabel}>Feed</span>
-        </button>
+        </NavLink>
 
-        <button className={s.navItem} aria-label="Friends">
+        <NavLink to="/myFriends" className={navItemClass} aria-label="Find Friends">
           <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
@@ -507,17 +625,15 @@ export default function Me() {
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
           <span className={s.navLabel}>Friends</span>
-        </button>
+        </NavLink>
 
-        <button className={`${s.navItem} ${s.active}`} aria-label="Me" aria-current="page">
+        <NavLink to="/me" className={navItemClass} aria-label="Me">
           <svg className={s.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
           <span className={s.navLabel}>Me</span>
-        </button>
-
-        
+        </NavLink>
       </nav>
     </div>
   )

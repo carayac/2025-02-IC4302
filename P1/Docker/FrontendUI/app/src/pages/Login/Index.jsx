@@ -15,6 +15,7 @@ const Login = () => {
   })
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const navigate = useNavigate()
 
@@ -95,7 +96,7 @@ const handleSubmit = async (e) => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               value={formData.password}
@@ -104,6 +105,14 @@ const handleSubmit = async (e) => {
               aria-describedby={error ? "error-message" : undefined}
               disabled={loading}
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className={s.eyeButton}
+            >
+              {showPassword ? "👁" : "👁"}
+            </button>
           </div>
 
           {error && (

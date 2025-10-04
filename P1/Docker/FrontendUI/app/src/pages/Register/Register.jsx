@@ -17,6 +17,7 @@ const Register = () => {
   })
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const navigate = useNavigate()
 
@@ -142,12 +143,10 @@ const Register = () => {
             />
           </div>
 
-          <div className={s.inputGroup}>
-            <label htmlFor="password" className={s.label}>
-              Password *
-            </label>
+          <div className={`${s.inputGroup} ${s.passwordWrapper}`}>
+            <label htmlFor="password" className={s.label}>Password *</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               value={formData.password}
@@ -155,7 +154,20 @@ const Register = () => {
               className={s.input}
               aria-describedby={error ? "error-message" : undefined}
               disabled={loading}
+              autoComplete="new-password"
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((p) => !p)}
+              className={s.eyeButton}
+              aria-pressed={showPassword}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              title={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? "👁" : "👁"}
+            </button>
+            
             <small className={s.hint}>At least 8 characters</small>
           </div>
 
