@@ -17,30 +17,42 @@ AWS_SECRET_KEY = os.environ['AWS_SECRET_KEY']
 AWS_REGION = os.environ['AWS_REGION']
 
 RABBITMQ_HOST = os.environ['RABBITMQ']
-RABBITMQ_QUEUE = os.environ['RABBITMQ_QUEUE']
+RABBITMQ_QUEUE_CSV = os.environ['RABBITMQ_QUEUE_CSV']
+RABBITMQ_QUEUE_PARKET = os.environ['RABBITMQ_QUEUE_PARKET']
 RABBITMQ_USER = os.environ['RABBITMQ_USER']
 RABBITMQ_PASS = os.environ['RABBITMQ_PASS']
 
+
 def rabbitmq_connection():
-    credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
-    parameters = pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials)
-    connection = pika.BlockingConnection(parameters)
-    channel = connection.channel()
-    channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
-    logging.info("Conexión a RabbitMQ exitosa")
-    return connection, channel
+    """Crea conexión con RabbitMQ y asegura la existencia de ambas colas."""
+    try:
+        credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
+        parameters = pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials)
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel()
+        # Crear ambas colas 
+        channel.queue_declare(queue=RABBITMQ_QUEUE_CSV, durable=True)
+        channel.queue_declare(queue=RABBITMQ_QUEUE_PARKET, durable=True)
+        logging.info("Conexión a RabbitMQ exitosa y colas creadas")
+        return connection, channel
+    except Exception as e:
+        logging.error(f"Error conectando a RabbitMQ: {e}")
+        raise
+
 
 def publish_message(channel, queue, message):
+    """Publica un mensaje en la cola especificada."""
     try:
         channel.basic_publish(
             exchange='',
             routing_key=queue,
             body=message,
-            properties=pika.BasicProperties(delivery_mode=2)  # persistente
+            properties=pika.BasicProperties(delivery_mode=2)  # Persistente
         )
-        logging.info(f"Mensaje publicado: {message}")
+        logging.info(f"Mensaje publicado en {queue}: {message}")
     except Exception as e:
         logging.error(f"Error publicando mensaje: {e}")
+
 
 # Inicializar S3
 s3 = boto3.client(
@@ -50,41 +62,47 @@ s3 = boto3.client(
     region_name=AWS_REGION
 )
 
+
 def crawl_bucket():
+    """Recorre el bucket S3, filtra archivos y publica según su tipo."""
     connection, channel = rabbitmq_connection()
-    publish_message(channel, RABBITMQ_QUEUE, "amazon-books/part-00099-7aac03f4-2533-4b8f-8be9-9057d831d6be-c000.json")
-    # for prefix in S3_PREFIXES:
-    #     logging.info(f"Listando objetos en prefijo: {prefix}")
-    #     continuation_token = None
 
-    #     while True:
-    #         kwargs = {"Bucket": S3_BUCKET, "Prefix": prefix}
-    #         if continuation_token:
-    #             kwargs["ContinuationToken"] = continuation_token
+    for prefix in S3_PREFIXES:
+        logging.info(f"Listando objetos en prefijo: {prefix}")
+        continuation_token = None
 
-    #         response = s3.list_objects_v2(**kwargs)
+        while True:
+            kwargs = {"Bucket": S3_BUCKET, "Prefix": prefix}
+            if continuation_token:
+                kwargs["ContinuationToken"] = continuation_token
 
-    #         for obj in response.get("Contents", []):
-    #             key = obj["Key"]
+            response = s3.list_objects_v2(**kwargs)
 
-    #             # Ignorar archivos innecesarios
-    #             if key.endswith(".crc") or key.endswith("_SUCCESS"):
-    #                 continue
+            for obj in response.get("Contents", []):
+                key = obj["Key"]
 
-    #             # Solo procesar JSON o Parquet
-    #             if not (key.endswith(".json") or key.endswith(".parquet")):
-    #                 continue
+                # Ignorar archivos irrelevantes
+                if key.endswith(".crc") or key.endswith("_SUCCESS"):
+                    continue
 
-    #             # Publicar SOLO la key
-    #             publish_message(channel, RABBITMQ_QUEUE, key)
+                # Clasificar por tipo de archivo
+                if key.endswith(".json"):
+                    publish_message(channel, RABBITMQ_QUEUE_CSV, key)
+                elif key.endswith(".parquet"):
+                    publish_message(channel, RABBITMQ_QUEUE_PARKET, key)
+                else:
+                    continue
 
-    #         if response.get("IsTruncated"):  # hay más objetos
-    #             continuation_token = response.get("NextContinuationToken")
-    #         else:
-    #             break
+            if response.get("IsTruncated"): #revisa si hay más objetos
+                continuation_token = response.get("NextContinuationToken")
+            else: 
+                break
 
     connection.close()
-    logging.info("Crawler finalizado")
+    logging.info("Crawler finalizado correctamente.")
+
 
 if __name__ == '__main__':
     crawl_bucket()
+
+
