@@ -1,6 +1,6 @@
 -- Crear la base de datos si no existe
-CREATE DATABASE IF NOT EXISTS control;
-USE control;
+CREATE DATABASE IF NOT EXISTS promptsy;
+USE promptsy;
 
 -- Tabla de objetos procesados
 CREATE TABLE IF NOT EXISTS objects (

@@ -4,6 +4,7 @@ import json
 import mariadb
 import requests
 import boto3
+#from elasticsearch import Elasticsearch
 
 # General
 HOSTNAME = os.getenv('HOSTNAME')
@@ -12,8 +13,9 @@ DATA = os.getenv('DATAFROMK8S')
 
 # RabbitMQ
 RABBIT_MQ = os.getenv('RABBITMQ')
-RABBIT_MQ_PASSWORD = os.getenv('RABBITMQ_PASS')
+RABBITMQ_PASS = os.getenv('RABBITMQ_PASS')
 QUEUE_NAME = os.getenv('RABBITMQ_QUEUE')
+RABBITMQ_USER = os.getenv('RABBITMQ_USER')
 
 # MariaDB
 MARIADB_HOST = os.getenv('MARIADB')
@@ -115,6 +117,47 @@ def embedding_todos_documentos(documentos):
                 doc["embedding"] = embedding
     return documentos
 
+#########################Elastic
+# def conectar_elasticsearch():    
+#     try:
+#         es = Elasticsearch(
+#             ELASTIC_HOST,
+#             http_auth=(ELASTIC_USER, ELASTIC_PASS),
+#             scheme="http",
+#             port=9200  # Cambia si tu puerto es otro
+#         )
+#         # Opcional: verificar la conexión
+#         if not es.ping():
+#             print("No se pudo conectar a Elasticsearch")
+#             return None
+#         return es
+#     except Exception as e:
+#         print("Error conectando a Elasticsearch:", e)
+#         return None
+
+# def guardar_en_elasticsearch(documentos):
+#     es = conectar_elasticsearch()
+#     if es is None:
+#         return
+#     for doc in documentos:
+#         # Copia del doc sin embeddings
+#         doc_sin_embedding = doc.copy()
+#         doc_sin_embedding.pop("embedding", None)
+
+#         # Insertar con embedding en books/reviews
+#         try:
+#             es.index(index=ELASTIC_INDEX_BOOKS, document=doc)
+#         except Exception as e:
+#             print("Error insertando en books/reviews:", e)
+
+#         # Insertar sin embedding en nbooks/nreviews
+#         try:
+#             es.index(index=ELASTIC_INDEX_NBOOKS, document=doc_sin_embedding)
+#         except Exception as e:
+#             print("Error insertando en nbooks/nreviews:", e)
+
+################################
+
 
 def insertar_libro(conn, cursor, object_key, title=None, authors=None, description=None,
                    categories=None, published_date=None, publisher=None,
@@ -209,7 +252,7 @@ def callback(ch, method, body):
         insertar_object(cursor, conn, key_name, documentos, procesado)
         documentos = embedding_todos_documentos(documentos)
         # 4. Guardar en Elasticsearch
-
+        #guardar_en_elasticsearch(documentos) solo la parte de reviews
         # 5. Guardar en MariaDB
         insertar_info(cursor, conn, key_name, documentos)
         # 5. Marcar como procesado en MariaDB
@@ -219,7 +262,7 @@ def callback(ch, method, body):
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def main():
-    credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
+    credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
     parameters = pika.ConnectionParameters(
         host=RABBIT_MQ,
         credentials=credentials,

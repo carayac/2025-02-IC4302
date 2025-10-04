@@ -4,6 +4,7 @@ import mariadb
 import requests
 import boto3
 import pandas as pd
+from elasticsearch import Elasticsearch
 
 # General
 HOSTNAME = os.getenv('HOSTNAME')
@@ -110,6 +111,44 @@ def embedding_todos_documentos(documentos):
                 doc["embeddings"]["summary"] = embedding_summary
     return documentos
 
+########################Elastic
+# def conectar_elasticsearch():
+#     try:
+#         es = Elasticsearch(
+#             ELASTIC_HOST,
+#             http_auth=(ELASTIC_USER, ELASTIC_PASS),
+#             scheme="http",
+#             port=9200
+#         )
+#         if not es.ping():
+#             print("No se pudo conectar a Elasticsearch")
+#             return None
+#         return es
+#     except Exception as e:
+#         print("Error conectando a Elasticsearch:", e)
+#         return None
+
+# def guardar_en_elasticsearch(documentos):
+#     es = conectar_elasticsearch()
+#     if es is None:
+#         return
+
+#     for doc in documentos:
+#         doc_sin_embedding = doc.copy()
+#         doc_sin_embedding.pop("embeddings", None)
+
+#         try:
+#             es.index(index=ELASTIC_INDEX_BOOKS, document=doc)
+#         except Exception as e:
+#             print("Error insertando en books/reviews:", e)
+
+#         try:
+#             es.index(index=ELASTIC_INDEX_NBOOKS, document=doc_sin_embedding)
+#         except Exception as e:
+#             print("Error insertando en nbooks/nreviews:", e)
+
+
+################################
 
 
 def insertar_review(conn, cursor, object_key, title=None, price=None, user_id=None,
@@ -205,7 +244,7 @@ def callback(ch, method, body):
         insertar_object(cursor, conn, key_name, documentos, procesado)
         documentos = embedding_todos_documentos(documentos)
         # 4. Guardar en Elasticsearch
-
+        guardar_en_elasticsearch(documentos)
         # 5. Guardar en MariaDB
         insertar_info(cursor, conn, key_name, documentos)
         # 5. Marcar como procesado en MariaDB

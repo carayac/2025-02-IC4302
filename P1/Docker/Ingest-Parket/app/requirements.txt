@@ -3,3 +3,4 @@ mariadb
 boto3
 requests
 pandas
+elasticsearch

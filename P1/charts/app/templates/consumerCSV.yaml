@@ -14,70 +14,63 @@ spec:
       labels:
         app: {{ .Values.config.consumerCSV.name }}
     spec:
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: data
       containers:
-      - name: {{ .Values.config.consumerCSV.name }}
-        volumeMounts:
-          - mountPath: "/data"
-            name: data
-        image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumerCSV.image }}
-        env:
-          - name: DATAFROMK8S
-            value: "Hey"
-          - name: RABBITMQ
-            value: "databases-rabbitmq"
-          - name: RABBITMQ_QUEUE
-            value: "queue_csv"
-          - name: RABBITMQ_USER
-            value: "user"
-          - name: XPATH
-            value: "/data"
-          - name: RABBITMQ_PASS
-            valueFrom:
-              secretKeyRef:
-                name: databases-rabbitmq
-                key: rabbitmq-password
-                optional: false
-          - name: MARIADB
-            value: "databases-mariadb"
-          - name: MARIADB_TABLE
-            value: "objects"
-          - name: MARIADB_TABLE_BOOKS
-            value: "books"
-          - name: MARIADB_DB
-            value: "control"
-          - name: MARIADB_USER
-            value: "root"
-          - name: MARIADB_PASS
-            valueFrom:
-              secretKeyRef:
-                name: databases-mariadb
-                key: mariadb-root-password
-                optional: false
-          - name: ELASTIC_USER
-            value: "elastic"
-          - name: ELASTIC_PASS
-            valueFrom:
-              secretKeyRef:
-                name: ic4302-es-elastic-user
-                key: elastic
-                optional: false
-          - name: ELASTIC
-            value: "ic4302-es-http"
-          - name: BUCKET_NAME
-            value: "ic_tec_dataset"             
-          - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: aws-secret    
-                key: AWS_ACCESS_KEY   
-          - name: AWS_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: aws-secret
-                key: AWS_SECRET_KEY
-          - name: AWS_REGION
-            value: "us-east-1"
+        - name: {{ .Values.config.consumerCSV.name }}
+          image: bitnamilegacy/rabbitmq:3.12.12-debian-11-r15
+          env:
+            - name: DATAFROMK8S
+              value: "Hey"
+            - name: RABBITMQ
+              value: "databases-rabbitmq"
+            - name: RABBITMQ_QUEUE
+              value: "queue_csv"
+            - name: RABBITMQ_USER
+              value: "user"
+            - name: XPATH
+              value: "/data"
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: databases-rabbitmq
+                  key: rabbitmq-password
+                  optional: false
+            - name: MARIADB
+              value: "databases-mariadb"
+            - name: MARIADB_TABLE
+              value: "objects"
+            - name: MARIADB_TABLE_BOOKS
+              value: "books"
+            - name: MARIADB_DB
+              value: "promptsy"
+            - name: MARIADB_USER
+              value: "root"
+            - name: MARIADB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: databases-mariadb
+                  key: mariadb-root-password
+                  optional: false
+            - name: ELASTIC_USER
+              value: "elastic"
+            - name: ELASTIC_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: ic4302-es-elastic-user
+                  key: elastic
+                  optional: false
+            - name: ELASTIC
+              value: "ic4302-es-http"
+            - name: BUCKET_NAME
+              value: "ic_tec_dataset"             
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret    
+                  key: AWS_ACCESS_KEY   
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: AWS_SECRET_KEY
+            - name: AWS_REGION
+              value: "us-east-1"
