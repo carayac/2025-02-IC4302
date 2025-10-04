@@ -1,0 +1,28 @@
+{
+  "books/reviews": {
+    "mappings": {
+      "properties": {
+        "embeddings": {
+          "properties": {
+            "text": {"type": "dense_vector", "dims": 768},
+            "summary": {"type": "dense_vector", "dims": 768}
+          }
+        },
+        "title": {"type": "text"},
+        "review_text": {"type": "text"},
+        "review_summary": {"type": "text"},
+        "user_id": {"type": "keyword"}
+      }
+    }
+  },
+  "nbooks/nreviews": {
+    "mappings": {
+      "properties": {
+        "title": {"type": "text"},
+        "review_text": {"type": "text"},
+        "review_summary": {"type": "text"},
+        "user_id": {"type": "keyword"}
+      }
+    }
+  }
+}
