@@ -41,7 +41,9 @@ def login():
             "name": user["name"],
             "lastname": user["lastname"],
             "description": user["description"],
-            "email": user["email"]
+            "email": user["email"],
+            "followers": user["followers"],
+            "following": user["following"]
         }), 200
 
     except mariadb.Error as e:
