@@ -132,7 +132,7 @@ def my_prompts(id_user=None):
     try:
         #get user prompts
         prompts = execute_query(
-            "SELECT id, text, created_at, likes FROM Prompt WHERE id_user = ? AND enabled = TRUE ORDER BY created_at DESC",
+            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id_user = ? AND p.enabled = TRUE ORDER BY p.created_at DESC",
             (id_user,)
         )
 
@@ -143,8 +143,6 @@ def my_prompts(id_user=None):
     except Exception as e:
         logger.error(f"Error fetching prompts for user {id_user}: {e}")
         return jsonify({"error": "Error fetching prompts"}), 500
-
-
 
 
 #route to search prompts
@@ -158,15 +156,15 @@ def search():
     #clean the text
     text = text.strip('"')
     try:
-        # split the text into words to search each one
+        # split the text into words to search each one in prompts text or user name or lastname
         words = text.split()
-        query = "SELECT id, text FROM Prompt WHERE "
+        query = "SELECT p.id, p.text, u.name, u.lastname, p.likes FROM Prompt p JOIN User u ON p.id_user = u.id WHERE "
         params = []
         conditions = []
         # create a condition for each word to search in name or lastname
         for w in words:
-            conditions.append("(text LIKE CONCAT('%', ?, '%'))")
-            params.extend([w])
+            conditions.append("(p.text LIKE CONCAT('%', ?, '%') OR u.name LIKE CONCAT('%', ?, '%') OR u.lastname LIKE CONCAT('%', ?, '%'))")
+            params.extend([w, w, w])
 
         query += " AND ".join(conditions)  #all conditions must be met
         query += " AND enabled = TRUE"
@@ -233,7 +231,7 @@ def my_prompt(id_prompt=None):
     try:
         #get user prompts
         prompt = execute_query(
-            "SELECT id, text, created_at, likes FROM Prompt WHERE id = ?  AND enabled = TRUE ORDER BY created_at DESC",
+            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id = ?  AND p.enabled = TRUE ORDER BY p.created_at DESC",
             (id_prompt,)
         )
 
@@ -264,10 +262,13 @@ def feed():
 
         feed = []
         for friend in friends:
-            friend_prompt = my_prompts(friend["id_friend"])
-            if friend_prompt:
-                feed.append(friend_prompt)
-                added_prompt_ids.add(friend_prompt["id"])
+            friend_prompts = my_prompts(friend["id_friend"])
+            logger.error(f"Error fetching prompts for user {friend_prompts}")
+            if friend_prompts and isinstance(friend_prompts, list):
+                for prompt in friend_prompts:
+                    if isinstance(prompt, dict) and "id" in prompt and prompt["id"] not in added_prompt_ids:
+                        feed.append(prompt)
+                        added_prompt_ids.add(prompt["id"])
             
         #get liked prompts
         likes = execute_query(
@@ -279,12 +280,15 @@ def feed():
             id_prompt = like["id_prompt"]
             if id_prompt not in added_prompt_ids:
                 like_prompt = my_prompt(id_prompt)
-                if like_prompt:
-                    feed.append(like_prompt)
+                if like_prompt and isinstance(like_prompt, list) and len(like_prompt) > 0:
+                    prompt = like_prompt[0]
+                    if isinstance(prompt, dict) and "id" in prompt and prompt["id"] not in added_prompt_ids:
+                        feed.append(prompt)
+                        added_prompt_ids.add(prompt["id"])
 
         return jsonify(feed), 200
 
     except Exception as e:
-        logger.error(f"Error fetching prompts for user {id_user}: {e}")
+        logger.error(f"Error aaaaaaaaaaaaaaaaaaaaaaaa {id_user}: {e}")
         return jsonify({"error": "Error fetching prompts"}), 500
 

@@ -1,13 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useRef, useState, useEffect } from "react"
 import s from "./Ask.module.css"
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import { Prompts } from "../../lib/api/APIcalls"; //Objeto de funciones
+
+
+const navItemClass = ({ isActive }) =>
+  `${s.navItem} ${isActive ? s.active : ""}`
 
 const Ask = () => {
   const [prompt, setPrompt] = useState("")
   const [searchResults, setSearchResults] = useState([])
   const [selectedSource, setSelectedSource] = useState("")
   const [isSearching, setIsSearching] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false);
   const [theme, setTheme] = useState("colorful") // 'colorful' or 'formal'
 
   const sources = [
@@ -18,64 +25,97 @@ const Ask = () => {
     { id: "mariadb", name: "MariaDB", icon: "🗄️" },
   ]
 
-  const mockBooks = [
-    {
-      id: 1,
-      title: "The Art of Clean Code",
-      authors: ["Robert C. Martin", "John Doe"],
-      description: "A comprehensive guide to writing maintainable and readable code that stands the test of time.",
-      publishedDate: "2023-05-15",
-      previewLink: "https://example.com/preview/1",
-      publisher: "Tech Publications",
-      rating: 4.8,
-      categories: ["Programming", "Software Development", "Best Practices"],
-    },
-    {
-      id: 2,
-      title: "Modern React Patterns",
-      authors: ["Jane Smith"],
-      description: "Explore advanced React patterns and techniques for building scalable applications.",
-      publishedDate: "2023-08-22",
-      previewLink: "https://example.com/preview/2",
-      publisher: "Web Dev Press",
-      rating: 4.6,
-      categories: ["React", "JavaScript", "Frontend"],
-    },
-    {
-      id: 3,
-      title: "Database Design Fundamentals",
-      authors: ["Michael Johnson", "Sarah Wilson"],
-      description: "Learn the principles of effective database design and optimization strategies.",
-      publishedDate: "2023-03-10",
-      previewLink: "https://example.com/preview/3",
-      publisher: "Data Science Books",
-      rating: 4.7,
-      categories: ["Database", "SQL", "Data Management"],
-    },
-  ]
+  // Publicación
+  const [isPosting, setIsPosting] = useState(false);
+  const [postOk, setPostOk] = useState(false);
+  const [postError, setPostError] = useState("");
+
+  const inputRef = useRef(null);
+  const user = getStoredUser();
+  const id_user = getUserId(user);
+
+  const location = useLocation();
+
+
+  useEffect(() => {
+
+    const fromState = location.state && location.state.presetPrompt;
+
+    //Bringing back the prompt from feed
+    let fromQuery = null;
+    try {
+      const qs = new URLSearchParams(location.search);
+      fromQuery = qs.get("prompt");
+    } catch { }
+
+    const incoming = fromState ?? fromQuery;
+    if (incoming && !prompt) {
+      setPrompt(incoming);
+
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [location.state, location.search]);
+
+
+  //Read the user from Local Storage
+  function getStoredUser() {
+    try {
+      const raw = localStorage.getItem("user");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  //User id for the post Endpoint
+  function getUserId(u) {
+    if (!u) return null;
+    return u.id_user ?? u.id ?? u.userid ?? u.userId ?? u._id ?? null;
+  }
 
   const handleSearch = () => {
-    if (!prompt.trim()) return
-    setIsSearching(true)
-    setSearchResults([])
-    setSelectedSource("")
+    if (!prompt.trim()) return;
+    setIsSearching(true);
+    setHasSearched(true);
+    setSearchResults([]);
+    setSelectedSource("");
 
-    // Simulate search delay
+    // GENERATE ENDPOINT
     setTimeout(() => {
-      setIsSearching(false)
-    }, 1000)
-  }
+      setIsSearching(false);
+    }, 600);
+  };
 
   const handleSourceSelect = (sourceId) => {
-    setSelectedSource(sourceId)
-    setSearchResults(mockBooks)
+    setSelectedSource(sourceId);
+    setSearchResults([]);
   }
 
-  const handlePublishToFeed = () => {
-    if (!prompt.trim()) return
-    // Simulate publishing prompt to feed
-    alert(`Prompt published to feed: "${prompt}"`)
-  }
+  const handlePublishToFeed = async () => {
+    if (!prompt.trim()) {
+      inputRef.current?.focus();
+      return;
+    }
+    if (!id_user) {
+      setPostError("Please Login to publish a prompt.");
+      return;
+    }
+
+    setIsPosting(true);
+    setPostOk(false);
+    setPostError("");
+
+    try {
+      await Prompts.postPrompt(id_user, prompt.trim());
+      setPostOk(true);
+      setPrompt("");
+      setTimeout(() => setPostOk(false), 1500);
+    } catch (e) {
+      setPostError(e.message || "Error during prompt posting");
+    } finally {
+      setIsPosting(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -84,6 +124,11 @@ const Ask = () => {
       day: "numeric",
     })
   }
+
+  const canPublish = useMemo(
+    () => Boolean(prompt.trim()) && !isPosting,
+    [prompt, isPosting]
+  );
 
   return (
     <div className={`${s.container} ${s[theme]}`}>
@@ -111,6 +156,7 @@ const Ask = () => {
             placeholder="Enter your search prompt here..."
             rows={4}
             aria-describedby="search-help"
+            ref={inputRef}
           />
           <p id="search-help" className={s.helpText}>
             Describe the type of book or topic you're interested in
@@ -132,12 +178,25 @@ const Ask = () => {
             disabled={!prompt.trim()}
             aria-label="Publish prompt to feed"
           >
-            Publish to my Feed
+            {isPosting ? "Publishing…" : "Publish to my Feed"}
           </button>
         </div>
+
+        { }
+        {postOk && (
+          <div className={s.successBanner}>
+            Prompt published
+          </div>
+        )}
+        {!!postError && (
+          <div className={s.errorBanner}>
+            Error when posting {postError}
+          </div>
+        )}
+
       </div>
 
-      {!isSearching && prompt && !selectedSource && (
+      {!isSearching && hasSearched && !selectedSource && (
         <div className={s.sourcesSection}>
           <h2 className={s.sectionTitle}>Choose a source to search:</h2>
           <div className={s.sourceGrid}>
@@ -223,26 +282,37 @@ const Ask = () => {
       )}
 
       <nav className={s.bottomNav} role="navigation" aria-label="Main navigation">
-        <button className={`${s.navItem} ${s.active}`} aria-label="Find Books">
+        <NavLink to="/ask" className={navItemClass} aria-label="Find Books">
           <span className={s.navIcon}>📚</span>
           <span className={s.navLabel}>Find Book</span>
-        </button>
-        <button className={s.navItem} aria-label="Friends">
+        </NavLink>
+
+        <NavLink to="/friends" className={navItemClass} aria-label="Find Friends">
           <span className={s.navIcon}>👥</span>
-          <span className={s.navLabel}>Friends</span>
-        </button>
-        <button className={s.navItem} aria-label="Prompts">
+          <span className={s.navLabel}>Find Friends</span>
+        </NavLink>
+
+        <NavLink to="/prompt" className={navItemClass} aria-label="Search Prompts">
           <span className={s.navIcon}>💭</span>
-          <span className={s.navLabel}>Prompts</span>
-        </button>
-        <button className={s.navItem} aria-label="Feed">
+          <span className={s.navLabel}>Search Prompts</span>
+        </NavLink>
+
+        <NavLink to="/feed" className={navItemClass} aria-label="Feed">
           <span className={s.navIcon}>📰</span>
           <span className={s.navLabel}>Feed</span>
-        </button>
-        <button className={s.navItem} aria-label="Profile">
+        </NavLink>
+
+        <NavLink to="/myFriends" className={navItemClass} aria-label="Friends">
+          <span className={s.navIcon}>👥</span>
+          <span className={s.navLabel}>Find Friends</span>
+        </NavLink>
+
+        <NavLink to="/me" className={navItemClass} aria-label="Me">
           <span className={s.navIcon}>👤</span>
           <span className={s.navLabel}>Me</span>
-        </button>
+        </NavLink>
+
+
       </nav>
     </div>
   )

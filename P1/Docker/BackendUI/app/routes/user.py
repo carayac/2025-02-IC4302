@@ -26,7 +26,7 @@ def login():
     
     try:
         res = execute_query(
-            "SELECT id, name, lastname, description, email, password FROM User WHERE id = ? LIMIT 1",
+            "SELECT id, name, lastname, description, email, followers, following FROM User WHERE id = ? LIMIT 1",
             (id,)
         )
 
@@ -41,7 +41,9 @@ def login():
             "name": user["name"],
             "lastname": user["lastname"],
             "description": user["description"],
-            "email": user["email"]
+            "email": user["email"],
+            "followers": user["followers"],
+            "following": user["following"]
         }), 200
 
     except mariadb.Error as e:

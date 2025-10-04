@@ -2,6 +2,10 @@
 
 import { useState } from "react"
 import s from "./Register.module.css"
+import { AuthApi } from "../../lib/api/APIcalls"
+import { useNavigate } from "react-router-dom"
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +16,10 @@ const Register = () => {
     password: "",
   })
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -22,9 +30,10 @@ const Register = () => {
     if (error) setError("")
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
+    const { name, lastname, description, email, password } = formData
     const requiredFields = ["name", "lastname", "email", "password"]
     const emptyFields = requiredFields.filter((field) => !formData[field].trim())
 
@@ -33,8 +42,35 @@ const Register = () => {
       return
     }
 
-    // Handle register logic here
-    console.log("Register attempt:", formData)
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address")
+      return
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long")
+      return
+    }
+
+    try {
+      setLoading(true)
+
+      //Calling register backend
+      await AuthApi.register({ name, lastname, description, email, password })
+
+      //Calling Auto-login and saving user
+      const user = await AuthApi.login(email, password)
+      localStorage.setItem("user", JSON.stringify(user))
+
+      
+      navigate("/feed")
+    } catch (err) {
+      console.error("Register error:", err)
+      const msg = err?.message || err?.error || "Register failed"
+      setError(msg)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -55,6 +91,7 @@ const Register = () => {
               onChange={handleChange}
               className={s.input}
               aria-describedby={error ? "error-message" : undefined}
+              disabled={loading}
             />
           </div>
 
@@ -70,6 +107,7 @@ const Register = () => {
               onChange={handleChange}
               className={s.input}
               aria-describedby={error ? "error-message" : undefined}
+              disabled={loading}
             />
           </div>
 
@@ -85,6 +123,7 @@ const Register = () => {
               className={s.textarea}
               rows="3"
               placeholder="Tell us about yourself..."
+              disabled={loading}
             />
           </div>
 
@@ -100,22 +139,36 @@ const Register = () => {
               onChange={handleChange}
               className={s.input}
               aria-describedby={error ? "error-message" : undefined}
+              disabled={loading}
             />
           </div>
 
-          <div className={s.inputGroup}>
-            <label htmlFor="password" className={s.label}>
-              Password *
-            </label>
+          <div className={`${s.inputGroup} ${s.passwordWrapper}`}>
+            <label htmlFor="password" className={s.label}>Password *</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               className={s.input}
               aria-describedby={error ? "error-message" : undefined}
+              disabled={loading}
+              autoComplete="new-password"
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((p) => !p)}
+              className={s.eyeButton}
+              aria-pressed={showPassword}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              title={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? "👁" : "👁"}
+            </button>
+            
+            <small className={s.hint}>At least 8 characters</small>
           </div>
 
           {error && (
@@ -124,8 +177,8 @@ const Register = () => {
             </div>
           )}
 
-          <button type="submit" className={s.submitButton}>
-            Create Account
+          <button type="submit" className={s.submitButton} disabled={loading}>
+            {loading ? "Creating account..." : "Create Account"}
           </button>
         </form>
       </div>

@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS User(
     lastname VARCHAR(100) NOT NULL,
     description VARCHAR(800) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    followers INT DEFAULT 0,
+    following INT DEFAULT 0,
     password VARCHAR(100) NOT NULL
 );
 

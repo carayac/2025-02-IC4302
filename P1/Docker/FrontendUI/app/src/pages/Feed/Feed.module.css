@@ -373,3 +373,18 @@
     max-width: 700px;
   }
 }
+
+.searchBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  background: var(--bg, #fff);
+  cursor: pointer;
+}
+.searchBtn:hover { background: #f9fafb; }
+.searchIcon { width: 20px; height: 20px; }
+.searchLabel { font-weight: 600; }
+

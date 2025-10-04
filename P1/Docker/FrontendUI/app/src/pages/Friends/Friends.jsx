@@ -1,46 +1,206 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import s from "./Friends.module.css"
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Friends as FriendsApi } from "../../lib/api/APIcalls"; //Objeto de funciones
+
+
+const navItemClass = ({ isActive }) =>
+  `${s.navItem} ${isActive ? s.active : ""}`
+
+
+// Getting main user
+function getStoredUser() {
+  try {
+    const raw = localStorage.getItem("user")
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+function getUserId(u) {
+  if (!u) return null
+  return u.id_user ?? u.id ?? u.userid ?? u.userId ?? u._id ?? null
+}
+
+
+const AVATARS = ["👩‍💼", "👨‍🎓", "👩‍🎨", "👨‍💻", "👩‍🔬", "👨‍🎨", "👩‍🏫", "👨‍🔬"]
+function getAvatarFor(id) {
+  if (typeof id !== "number") return "👤"
+  return AVATARS[id % AVATARS.length]
+}
+
+//Validate if you already followed the user
+const FOLLOW_KEY = (uid) => `followed:${uid}`
+function loadFollowed(uid) {
+  try {
+    const raw = localStorage.getItem(FOLLOW_KEY(uid))
+    if (!raw) return new Set()
+    const arr = JSON.parse(raw)
+    return new Set((arr || []).map(Number))
+  } catch {
+    return new Set()
+  }
+}
+function saveFollowed(uid, followedSet) {
+  try {
+    localStorage.setItem(FOLLOW_KEY(uid), JSON.stringify(Array.from(followedSet)))
+  } catch { }
+}
 
 const Friends = () => {
+  const navigate = useNavigate()
+  const [meId, setMeId] = useState(null)
+
   const [searchTerm, setSearchTerm] = useState("")
   const [theme, setTheme] = useState("colorful")
+  const [results, setResults] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
   const [followedUsers, setFollowedUsers] = useState(new Set())
+  const [pending, setPending] = useState(new Set())
 
-  // Mock users data
-  const mockUsers = [
-    { id: 1, username: "bookworm_sarah", fullName: "Sarah Johnson", avatar: "👩‍💼", followers: 1234 },
-    { id: 2, username: "reading_enthusiast", fullName: "Mike Chen", avatar: "👨‍🎓", followers: 856 },
-    { id: 3, username: "novel_lover", fullName: "Emma Davis", avatar: "👩‍🎨", followers: 2341 },
-    { id: 4, username: "bookclub_admin", fullName: "Alex Rodriguez", avatar: "👨‍💻", followers: 567 },
-    { id: 5, username: "literature_fan", fullName: "Jessica Brown", avatar: "👩‍🔬", followers: 1789 },
-    { id: 6, username: "story_seeker", fullName: "David Wilson", avatar: "👨‍🎨", followers: 923 },
-    { id: 7, username: "page_turner", fullName: "Lisa Anderson", avatar: "👩‍🏫", followers: 1456 },
-    { id: 8, username: "book_reviewer", fullName: "Tom Garcia", avatar: "👨‍🔬", followers: 678 },
-  ]
+  const debounceRef = useRef(null)
+  const abortRef = useRef(null)
+  const reqCounterRef = useRef(0)
 
-  const filteredUsers = mockUsers.filter(
-    (user) =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.fullName.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
 
-  const handleFollow = (userId) => {
-    setFollowedUsers((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(userId)) {
-        newSet.delete(userId)
-      } else {
-        newSet.add(userId)
+
+  useEffect(() => {
+    const me = getStoredUser()
+    const uid = getUserId(me)
+    if (!uid) {
+      navigate("/", { replace: true })
+      return
+    }
+    setMeId(uid)
+    //Get people you already follow
+    const stored = loadFollowed(uid)
+    setFollowedUsers(stored)
+  }, [navigate])
+
+
+
+  //Show data while writing
+  useEffect(() => {
+    setError("")
+    if (!searchTerm.trim()) {
+      setResults([])
+      if (abortRef.current) abortRef.current.abort()
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+      return
+    }
+
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(async () => {
+      if (abortRef.current) abortRef.current.abort()
+      const ctrl = new AbortController()
+      abortRef.current = ctrl
+
+      const reqId = ++reqCounterRef.current
+      setLoading(true)
+      try {
+        //Calling Backend
+        const res = await FriendsApi.findFriend(searchTerm)
+
+        const raw = Array.isArray(res?.results || res) ? (res.results || res) : []
+        // Dont show the user of the account
+        const list = (meId == null)
+          ? raw
+          : raw.filter(x => Number(x?.id) !== Number(meId))
+        if (reqId === reqCounterRef.current) {
+          setResults(list)
+        }
+
+      } catch (e) {
+        if (e?.name !== "AbortError") {
+          setError("No se pudo obtener resultados. Intenta de nuevo.")
+        }
+      } finally {
+        if (reqId === reqCounterRef.current) {
+          setLoading(false)
+        }
       }
-      return newSet
-    })
+    }, 300)
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [searchTerm, meId])
+
+
+  useEffect(() => {
+    if (meId == null || results.length === 0) return
+    setResults(prev => prev.filter(x => Number(x?.id) !== Number(meId)))
+  }, [meId])
+
+  function setAndPersistFollow(nextSet) {
+    setFollowedUsers(nextSet)
+    if (meId != null) saveFollowed(meId, nextSet)
+  }
+
+
+  const handleFollowToggle = async (userId) => {
+    if (!meId) return
+    if (pending.has(userId)) return
+
+    setPending(prev => new Set(prev).add(userId))
+
+    const already = followedUsers.has(userId)
+    // UI optimista and persistency of followers
+    const optimistic = new Set(followedUsers)
+    if (already) optimistic.delete(userId)
+    else optimistic.add(userId)
+    setAndPersistFollow(optimistic)
+
+    try {
+      if (already) {
+        const res = await FriendsApi.unfollow(meId, userId) //Calling unfollow
+
+        if (res?.error && !/not following/i.test(res.error)) {
+          throw new Error(res.error)
+        }
+      } else {
+        const res = await FriendsApi.follow(meId, userId) //Calling follow
+
+        if (res?.error && !/already following/i.test(res.error)) {
+          throw new Error(res.error)
+        }
+      }
+    } catch (e) {
+
+      const status = e?.status ?? 0
+      const msg = (e && e.message) ? e.message : ""
+      const idempotentOk =
+        (!already && (/already following/i.test(msg) || status === 400)) ||
+        (already && (/not following/i.test(msg) || status === 400))
+      if (!idempotentOk) {
+        const revert = new Set(optimistic)
+        if (already) revert.add(userId)
+        else revert.delete(userId)
+        setAndPersistFollow(revert)
+        setError("Could not update the follow.")
+      }
+    } finally {
+      setPending(prev => {
+        const ns = new Set(prev)
+        ns.delete(userId)
+        return ns
+      })
+    }
   }
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "colorful" ? "formal" : "colorful"))
   }
+
+  const resultsTitle = useMemo(() => {
+    if (!searchTerm.trim()) return "Suggested Friends"
+    return `Results for "${searchTerm}"`
+  }, [searchTerm])
+
 
   return (
     <div className={`${s.container} ${s[theme]}`}>
@@ -66,80 +226,120 @@ const Friends = () => {
             <input
               id="search-input"
               type="text"
-              placeholder="Search by username or name..."
+              placeholder="Search by name or lastname"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={s.searchInput}
               aria-describedby="search-help"
             />
             <span id="search-help" className={s.searchHelp}>
-              Find friends by typing their username or full name
+              Find friends by typing their name or lastname
             </span>
           </div>
         </div>
 
         <div className={s.resultsSection}>
           <div className={s.resultsHeader}>
-            <h2 className={s.resultsTitle}>{searchTerm ? `Results for "${searchTerm}"` : "Suggested Friends"}</h2>
-            <span className={s.resultsCount}>
-              {filteredUsers.length} {filteredUsers.length === 1 ? "user" : "users"} found
-            </span>
+            <h2 className={s.resultsTitle}>{resultsTitle}</h2>
+            {searchTerm.trim() ? (
+              <span className={s.resultsCount}>
+                {results.length} {results.length === 1 ? "user" : "users"} found
+              </span>
+            ) : null}
           </div>
+
+          {loading && (
+            <div className={s.loading} role="status" aria-live="polite">
+              Searching…
+            </div>
+          )}
+          {error && !loading && (
+            <div className={s.error} role="alert">
+              {error}
+            </div>
+          )}
 
           <div className={s.usersList}>
-            {filteredUsers.map((user) => (
-              <div key={user.id} className={s.userCard}>
-                <div className={s.userInfo}>
-                  <div className={s.userAvatar} aria-hidden="true">
-                    {user.avatar}
-                  </div>
-                  <div className={s.userDetails}>
-                    <h3 className={s.username}>{user.username}</h3>
-                    <p className={s.fullName}>{user.fullName}</p>
-                    <span className={s.followers}>{user.followers.toLocaleString()} followers</span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleFollow(user.id)}
-                  className={`${s.followButton} ${followedUsers.has(user.id) ? s.following : s.notFollowing}`}
-                  aria-label={`${followedUsers.has(user.id) ? "Unfollow" : "Follow"} ${user.username}`}
-                >
-                  {followedUsers.has(user.id) ? "Unfollow" : "Follow"}
-                </button>
-              </div>
-            ))}
+            {!loading &&
+              results
+                .filter((u) => Number(u.id) !== Number(meId))
+                .map((u) => {
+                  const id = Number(u.id)
+                  const fullName = `${u.name ?? ""} ${u.lastname ?? ""}`.trim() || "Unnamed"
+                  const avatar = getAvatarFor(id)
+                  const isFollowing = followedUsers.has(id)
+                  const isPending = pending.has(id)
+
+                  return (
+                    <div key={id} className={s.userCard}>
+                      <div className={s.userInfo}>
+                        <div className={s.userAvatar} aria-hidden="true">
+                          {avatar}
+                        </div>
+                        <div className={s.userDetails}>
+                          <h3 className={s.username}>{fullName}</h3>
+                        </div>
+                      </div>
+
+                      { }
+                      <button
+                        onClick={() => handleFollowToggle(id)}
+                        className={`${s.followButton} ${isFollowing ? s.following : s.notFollowing}`}
+                        aria-label={`${isFollowing ? "Unfollow" : "Follow"} ${fullName}`}
+                        disabled={isPending || !meId}
+                      >
+                        {isPending ? "..." : isFollowing ? "Unfollow" : "Follow"}
+                      </button>
+                    </div>
+                  )
+                })}
           </div>
 
-          {filteredUsers.length === 0 && searchTerm && (
+          {!loading && results.length === 0 && searchTerm.trim() && (
             <div className={s.noResults}>
               <p className={s.noResultsText}>No users found matching "{searchTerm}"</p>
               <p className={s.noResultsSubtext}>Try searching with a different term</p>
+            </div>
+          )}
+
+          {!loading && !searchTerm.trim() && (
+            <div className={s.noResults}>
+              <p className={s.noResultsText}>Start typing to search for friends</p>
             </div>
           )}
         </div>
       </main>
 
       <nav className={s.bottomNav} role="navigation" aria-label="Main navigation">
-        <button className={s.navItem} aria-label="Find Book">
+        <NavLink to="/ask" className={navItemClass} aria-label="Find Books">
           <span className={s.navIcon}>📚</span>
           <span className={s.navLabel}>Find Book</span>
-        </button>
-        <button className={`${s.navItem} ${s.active}`} aria-label="Friends" aria-current="page">
+        </NavLink>
+
+        <NavLink to="/friends" className={navItemClass} aria-label="Find Friends">
           <span className={s.navIcon}>👥</span>
-          <span className={s.navLabel}>Friends</span>
-        </button>
-        <button className={s.navItem} aria-label="Prompts">
+          <span className={s.navLabel}>Find Friends</span>
+        </NavLink>
+
+        <NavLink to="/prompt" className={navItemClass} aria-label="Search Prompts">
           <span className={s.navIcon}>💭</span>
-          <span className={s.navLabel}>Prompts</span>
-        </button>
-        <button className={s.navItem} aria-label="Feed">
+          <span className={s.navLabel}>Search Prompts</span>
+        </NavLink>
+
+        <NavLink to="/feed" className={navItemClass} aria-label="Feed">
           <span className={s.navIcon}>📰</span>
           <span className={s.navLabel}>Feed</span>
-        </button>
-        <button className={s.navItem} aria-label="Profile">
+        </NavLink>
+
+        <NavLink to="/myFriends" className={navItemClass} aria-label="Friends">
+          <span className={s.navIcon}>👥</span>
+          <span className={s.navLabel}>Friends</span>
+        </NavLink>
+
+        <NavLink to="/me" className={navItemClass} aria-label="Me">
           <span className={s.navIcon}>👤</span>
           <span className={s.navLabel}>Me</span>
-        </button>
+        </NavLink>
       </nav>
     </div>
   )

@@ -16,6 +16,14 @@ cd ..
 # docker push "$USERNAME/frontend-ui"
 # cd ..
 
+#------------------------- S3 CRAWLER ----------------------------
+cd S3Crawler
+docker build -t "$USERNAME/s3-crawler" .
+docker push "$USERNAME/s3-crawler"
+cd ..
+#-----------------------------------------------------------------
+
+
 # ---------------------------------------- Ingest CSV ----------------------------------------
 cd Ingest-CSV || exit
 docker build -t "$USERNAME/ingest-csv" .

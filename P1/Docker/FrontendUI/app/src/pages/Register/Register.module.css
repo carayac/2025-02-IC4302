@@ -123,3 +123,40 @@
     gap: 1rem;
   }
 }
+
+
+.passwordWrapper {
+  position: relative;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 12px;
+  top: 50%;           
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.15rem; 
+  padding: 0;
+  color: #666;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.eyeButton:hover {
+  color: #000;
+}
+
+.input {
+  padding-right: 38px; 
+}
+
+
+.hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #6b7280; 
+}
+
