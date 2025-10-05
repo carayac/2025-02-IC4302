@@ -6,6 +6,8 @@ from routes.prompt import prompt_blueprint
 from routes.user import user_blueprint
 import logging
 import sys
+from prometheus_client import Counter
+
 
 # Set up logging to output to stdout
 logging.basicConfig(

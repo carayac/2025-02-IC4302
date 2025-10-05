@@ -5,15 +5,12 @@ import sys
 import mariadb
 import bcrypt
 from pymemcache.client.base import Client
-from prometheus_client import Counter
+from metrics import cache_hit, cache_miss
 import os, json
 
 #Memcached variables
 BD_TYPE = "mariadb"
 CACHE_TYPE = "memcached"
-
-cache_hit = Counter("cache_hit", "Cache hits", ["bd", "cache"])
-cache_miss = Counter("cache_miss", "Cache misses", ["bd", "cache"])
 
 MEMCACHED_HOST = os.getenv("MEMCACHED_HOST")
 MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT"))
