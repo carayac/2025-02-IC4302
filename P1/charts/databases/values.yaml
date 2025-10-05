@@ -8,8 +8,13 @@ kibana:
   version: 8.6.1
   replicas: 1
   name: ic4302
+
 mariadb:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/mariadb
+    tag: 11.2.3-debian-11-r1
   auth:
     database: "promptsy"
   initdbScriptsConfigMap: "configmap-initdb"
@@ -18,6 +23,19 @@ mariadb:
     serviceMonitor:
       enabled: false
       namespace: "monitoring"
+
+#Version before bitnami's migration:
+
+#mariadb:
+#  enabled: true
+#  auth:
+#    database: "promptsy"
+#  initdbScriptsConfigMap: "configmap-initdb"
+#  metrics:
+#    enabled: false
+#    serviceMonitor:
+#      enabled: false
+#      namespace: "monitoring"
 
 rabbitmq:
   enabled: true
