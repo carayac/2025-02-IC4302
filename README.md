@@ -674,6 +674,11 @@ Verifica disponibilidad del servicio para Kubernetes.
 
 2. La correcta utilización de los métodos HTTP resulta fundamental para definir de manera clara y estandarizada cómo se manipula la información que es enviada o recibida a través de los endpoints. Su adecuada implementación favorece la coherencia y la mantenibilidad servicios.
 
+3. Utilizar React para desarrollo permite crear interfaces flexibles gracias a la gran cantidad de librerias que contiene y a su arquitectura basada en componnetes.
+
+4. Al desarrollar la aplicación se establece una interfaz intuitiva para la interacción con el sistema, se crea una aplicación similar a una red social para que los usuarios puedasn descubrir nuevos libros por medio de busquedas vectoriales y a la vez compartir sus busquedas con otras personas.
+
+
 </details>
 
 # Recomendaciones
@@ -682,9 +687,14 @@ Verifica disponibilidad del servicio para Kubernetes.
   <summary>Desplegar información</summary> 
 
 1. Uso de variables de entorno
-Se recomienda centralizar la configuración del sistema mediante variables de entorno, lo cual facilita la mantenibilidad y portabilidad de la aplicación. Estas variables deben incluir, entre otros aspectos, las credenciales y parámetros de conexión a la base de datos, así como las direcciones y claves necesarias para el consumo de endpoints externos. 
+Se recomienda centralizar la configuración del sistema mediante variables de entorno, lo cual facilita la mantenibilidad y portabilidad de la aplicación. Estas variables deben incluir, entre otros aspectos, las credenciales y parámetros de conexión a la base de datos, así como las direcciones y claves necesarias para el consumo de endpoints externos.
+
 2. Separación del esquema de base de datos y el código de aplicación
 Se recomienda generar un script de inicialización de la base de datos, integrado en los Helm Charts, que permita separar la creación y configuración del esquema de la base de datos del código de la aplicación en producción. Esto asegura mayor control y trazabilidad en la gestión del ciclo de vida de la base de datos, evitando acoplamiento con el código de negocio. También facilita la automatización de despliegues y la aplicación de migraciones en entornos de desarrollo, pruebas y producción de manera ordenada y consistente.
+
+3.  Al desarrollar la UI se recomienda separar la vista de los datos, de manera que exista un componente que se encargue unicamente de hacer las peticiones, esto permite mejor entendimiento y facilidad a la hora de detectar errores.
+
+4.  Utilizar mensajes para el usuario a la hora de que interactue con el sistema, al momento de que algo sale bien o algo sale mal.  Esto permite que tengan mejor enteindimiento de lo que se está haciendo y mejora la experiencia de uso al evitar confusiones.
 
 </details>
 
@@ -713,6 +723,11 @@ Se recomienda generar un script de inicialización de la base de datos, integrad
   https://realpython.com/api-integration-in-python/
   
   https://mariadb.com/docs/tools/mariadb-enterprise-operator/installation/helm
+
+  https://react.dev/learn/managing-state
+
+  
+  
   
   
 
