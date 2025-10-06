@@ -356,6 +356,11 @@ const Prompt = () => {
             const count = likeCounts[p.id] ?? 0;
             return (
               <article key={p.id} className={s.promptCard}>
+                <header className={s.promptHeader}>
+                  <span className={s.authorName}>
+                    {p.name} {p.lastname}
+                  </span>
+                </header>
                 <div className={s.promptContent}>
                   <p className={s.promptText}>{p.text}</p>
                 </div>

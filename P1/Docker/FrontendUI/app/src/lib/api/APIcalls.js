@@ -49,7 +49,7 @@ export const Prompts = {
   getFeed: (id_user) =>
     api(`/prompt/feed?id_user=${encodeURIComponent(id_user)}`),
 
-  //Search prompts using text
+  //Search prompts using text and user name/lastname
   search: (text) =>
     api(`/prompt/search?text=${encodeURIComponent(text)}`),
 
@@ -103,7 +103,8 @@ export const Friends = {
       body: JSON.stringify({ id_user, id_friend }),
     }),
 
+  //Get people I follow
   getMyFriends: (id_user) =>
     api(`/friend/get_friends?id=${encodeURIComponent(id_user)}`),
-  
+
 };
