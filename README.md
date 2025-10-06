@@ -118,7 +118,13 @@ A continuación se presenta un resumen de lo componentes aplicado en el proyecto
     
 ### Registro / Inicio de sesión
 Se implementan dos pantallas, una para crear cuenta y otra para iniciar sesión. En el registro se validan los campos básicos nombre completo, correo, descripcion y contraseña.  Toda la información relacionada al cliente es guardado en MariaDB. 
-En el inicio de sesión se toma el correo y la contraseña para la validación de existencia del usuario.
+En el inicio de sesión se toma el correo y la contraseña para la validación de existencia del usuario.  
+
+<img width="300" height="400" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/login.png" />  
+
+
+
+<img width="400" height="400" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/register.png" />
   
 ### Menú de navegación
   Al entrar, la persona podrá ver una barra de navegación para poder ingresar a cualquiera de las distincas opciones y navegar facilmente a cada función
@@ -132,24 +138,31 @@ En el inicio de sesión se toma el correo y la contraseña para la validación d
 ### Find Book
 Para Find Book se presenta un campo de busqueda, donde el usuario escribe la necesidad de tipo de libros que desea buscar y con respecto a su petición podrá tener dos opciones: **Buscar** o **Publicar**
 Al buscar podrá obtener resultados de ta ta ta en los que podrá conusltar información general de los libros obtenidos.  
-Al utilizar la opcion de publicar, el prompt o petición del usuario será publicado en el feed para ser consultado en un futuro o para que sea visto por sus amigos. 
+Al utilizar la opcion de publicar, el prompt o petición del usuario será publicado en el feed para ser consultado en un futuro o para que sea visto por sus amigos.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/findBooks.png" />
   
 ### Search Prompts
-En Search Prompts se realiza una barra de búsqueda que filtra prompts por el texto y por el nombre de usuario. Cada tarjeta de prompt mostrada incluye la acción de "like". Cuando el usuario da like, se realiza una actualización de likes en los prompts del usuario y ese prompt también se agrega al Feed del usuario que dio like. 
+En Search Prompts se realiza una barra de búsqueda que filtra prompts por el texto y por el nombre de usuario. Cada tarjeta de prompt mostrada incluye la acción de "like". Cuando el usuario da like, se realiza una actualización de likes en los prompts del usuario y ese prompt también se agrega al Feed del usuario que dio like.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/searchPrompts.png" />
   
 ### Find Friends
-Para Find Friends se construye un buscador por nombre. Cada resultado se presenta con un pequeño perfil con el nombre del usuarios y cantidad de followers, además de un botón de "Follow" para poder agregarlo a sus amigos.
+Para Find Friends se construye un buscador por nombre. Cada resultado se presenta con un pequeño perfil con el nombre del usuarios y cantidad de followers, además de un botón de "Follow" para poder agregarlo a sus amigos.  
+
   
 ### Feed
-El Feed mezcla los prompts propios y los de la gente que el usuario sigue, ordenados del más reciente al más antiguo.   También al lado del prompt puede econctrar el botón de **buscar** de esta manera si el usuario quiere buscar los resultados que puede arrojar ese prompt lo puede hacer.
+El Feed mezcla los prompts propios y los de la gente que el usuario sigue, ordenados del más reciente al más antiguo.   También al lado del prompt puede econctrar el botón de **buscar** de esta manera si el usuario quiere buscar los resultados que puede arrojar ese prompt lo puede hacer.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/feed.png" />
 
 ### Friends
-La sección Friends lista a las personas que el usuario ya sigue, así como la opcion de dejarlos de seguir si así lo decide.
+La sección Friends lista a las personas que el usuario ya sigue, así como la opcion de dejarlos de seguir si así lo decide.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/feed.png" />
   
 ### Me
 En Me se centralizan dos cosas: el perfil del usuario y la gestión de sus prompts. Para el perfil se muestra el nombre, apellido, descripción y correo.  Se permite editarlos.  
 Para los prompts propios, se muestra una lista editable con opciones para modificar o borrar el prompt. La idea con esta funcionalidad es que el usuario tenga control total de su información y contenido de manera facil.  
-Por último se presenta el botón de **logout** para cerrar sesión y redirigir a la pantalla de inicio de sesión
+Por último se presenta el botón de **logout** para cerrar sesión y redirigir a la pantalla de inicio de sesión.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/me.png" />  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/me2.png" />
 
 </details>  
 
