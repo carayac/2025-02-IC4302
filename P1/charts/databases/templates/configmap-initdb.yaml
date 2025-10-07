@@ -8,6 +8,3 @@ data:
 
   control.sql: |-
 {{ .Files.Get "control.sql" | indent 4 }}
-
-  elastic-mappings.json: |-
-{{ .Files.Get "elastic-mappings.json" | indent 4}}

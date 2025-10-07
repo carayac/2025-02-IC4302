@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: {{ .Values.config.consumerParket.name }}
-          image: bitnamilegacy/rabbitmq:3.12.12-debian-11-r15
+          image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumerParket.image }}
           env:
             - name: DATAFROMK8S
               value: "Hey"
@@ -60,19 +60,26 @@ spec:
                   name: ic4302-es-elastic-user
                   key: elastic
                   optional: false
-            - name: ELASTIC
+            - name: ELASTIC_HOST
               value: "ic4302-es-http"
-            - name: BUCKET_NAME
+            - name: AWS_BUCKET
               value: "ic_tec_dataset"
-            - name: AWS_ACCESS_KEY_ID
+            - name: AWS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: aws-secret
+                  name: aws-secret    
                   key: AWS_ACCESS_KEY
-            - name: AWS_SECRET_ACCESS_KEY
+            - name: AWS_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: aws-secret
                   key: AWS_SECRET_KEY
             - name: AWS_REGION
               value: "us-east-1"
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+      volumes:
+        - name: data-volume
+          emptyDir: {}
+

@@ -31,8 +31,8 @@ def rabbitmq_connection():
         connection = pika.BlockingConnection(parameters)
         channel = connection.channel()
         # Crear ambas colas 
-        channel.queue_declare(queue=RABBITMQ_QUEUE_CSV, durable=True)
-        channel.queue_declare(queue=RABBITMQ_QUEUE_PARKET, durable=True)
+        channel.queue_declare(queue=RABBITMQ_QUEUE_CSV, durable=False)
+        channel.queue_declare(queue=RABBITMQ_QUEUE_PARKET, durable=False)
         logging.info("Conexión a RabbitMQ exitosa y colas creadas")
         return connection, channel
     except Exception as e:
@@ -47,7 +47,7 @@ def publish_message(channel, queue, message):
             exchange='',
             routing_key=queue,
             body=message,
-            properties=pika.BasicProperties(delivery_mode=2)  # Persistente
+            properties=pika.BasicProperties(delivery_mode=1)  # Persistente
         )
         logging.info(f"Mensaje publicado en {queue}: {message}")
     except Exception as e:

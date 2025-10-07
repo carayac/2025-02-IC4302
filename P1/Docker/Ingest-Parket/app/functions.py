@@ -3,6 +3,7 @@ import pika
 import mariadb
 import requests
 import boto3
+import time
 import pandas as pd
 from elasticsearch import Elasticsearch
 
@@ -69,8 +70,11 @@ def descargar_objeto(key_name):
 
     bucket_name = AWS_BUCKET
     object_key = key_name
-    download_path = XPATH + key_name
-
+    print(key_name)
+    download_path = os.path.join(XPATH, key_name)
+    print(download_path)
+    os.makedirs(os.path.dirname(download_path), exist_ok=True)
+    print(download_path)
     s3.download_file(bucket_name, object_key, download_path)
 
     return download_path
@@ -112,9 +116,6 @@ def embedding_todos_documentos(documentos):
     return documentos
 
 ########################Elastic
-from elasticsearch import Elasticsearch
-import os
-
 # Conexión a Elasticsearch
 def conectar_elasticsearch():
     try:
@@ -231,7 +232,7 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
         print(f"Error insertando object: {e}")
 
 
-def callback(ch, method, body):
+def callback(ch, method, properties, body):
     key_name = body.decode('utf-8')  # mensaje recibido, 
     #amazon-books/part-00099-7aac03f4-2533-4b8f-8be9-9057d831d6be-c000.json
 
@@ -248,30 +249,49 @@ def callback(ch, method, body):
         # 2. Parsear JSON
         documentos = procesar_objeto(file_path)
         # 3. Generar embeddings
-        procesado = False
+        procesado = True
         insertar_object(cursor, conn, key_name, documentos, procesado)
         documentos = embedding_todos_documentos(documentos)
         # 4. Guardar en Elasticsearch
-        guardar_en_elasticsearch(documentos)
+        guardar_reviews_elasticsearch(documentos)
         # 5. Guardar en MariaDB
         insertar_info(cursor, conn, key_name, documentos)
         # 5. Marcar como procesado en MariaDB
         procesado = True
-        insertar_object(cursor, conn, key_name, documentos, procesado)
+        # insertar_object(cursor, conn, key_name, documentos, procesado)
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def main():
-    credentials = pika.PlainCredentials('user', RABBIT_MQ_PASSWORD)
+    credentials = pika.PlainCredentials("user", RABBIT_MQ_PASSWORD)
     parameters = pika.ConnectionParameters(
         host=RABBIT_MQ,
         credentials=credentials,
         heartbeat=600,
         blocked_connection_timeout=300
     )
-    connection = pika.BlockingConnection(parameters)
+
+    # Intentar conexión hasta que RabbitMQ esté listo
+    max_retries = 20
+    for intento in range(max_retries):
+        try:
+            print(f"[INFO] Intentando conectar a RabbitMQ... intento {intento+1}/{max_retries}")
+            connection = pika.BlockingConnection(parameters)
+            print("[INFO] Conexión a RabbitMQ exitosa")
+            break
+        except pika.exceptions.AMQPConnectionError as e:
+            print(f"[WARN] No se pudo conectar a RabbitMQ (intento {intento+1}): {e}")
+            time.sleep(10)
+    else:
+        print("[ERROR] No se pudo conectar a RabbitMQ tras varios intentos")
+        return
+
     channel = connection.channel()
     channel.queue_declare(queue=QUEUE_NAME)
     channel.basic_qos(prefetch_count=1)
-    #Va a consumir esa cola, cuando llega el mensaje llama a callback y no se confirma el mensaje automaticamente
     channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False)
+
+    print("[INFO] Esperando mensajes...")
+    channel.start_consuming()
+
+
