@@ -691,6 +691,9 @@ Verifica disponibilidad del servicio para Kubernetes.
 
 4. Al desarrollar la aplicación se establece una interfaz intuitiva para la interacción con el sistema, se crea una aplicación similar a una red social para que los usuarios puedasn descubrir nuevos libros por medio de busquedas vectoriales y a la vez compartir sus busquedas con otras personas.
 
+5. El uso de Memcached mejora significativamente el rendimiento de la API, ya que evita llamadas redundantes a la base de datos y optimiza la experiencia de usuario al entregar respuestas más rápidas.
+
+6. El uso de logs mejora la capacidad de monitoreo y depuración de la aplicación, permitiendo identificar errores, clasificar el tipo y llevar un registro del tiempo de cada uno. 
 
 </details>
 
@@ -708,6 +711,10 @@ Se recomienda generar un script de inicialización de la base de datos, integrad
 3.  Al desarrollar la UI se recomienda separar la vista de los datos, de manera que exista un componente que se encargue unicamente de hacer las peticiones, esto permite mejor entendimiento y facilidad a la hora de detectar errores.
 
 4.  Utilizar mensajes para el usuario a la hora de que interactue con el sistema, al momento de que algo sale bien o algo sale mal.  Esto permite que tengan mejor enteindimiento de lo que se está haciendo y mejora la experiencia de uso al evitar confusiones.
+
+5.  Implementar Memcached para almacenar los resultados de consultas frecuentes permite reducir la carga sobre la base de datos y minimizar la latencia en las respuestas. También, es recomendable definir un tiempo de expiración apropiado para los datos cacheados.
+
+6.  Usar logs en lugar de prints como se hacia anteriormente, ya que este es mejor debido que se puede definir por categorias los mensajes (info, warning, error, debug). Además, de que nos indican el timestamp lo cual es muy beneficioso y no lo realizan los prints.
 
 </details>
 
