@@ -4,6 +4,19 @@ from tools.embbeding import get_embedding
 import logging
 import sys
 import mariadb
+from pymemcache.client.base import Client
+from metrics import cache_hit, cache_miss
+import os, json 
+
+#Memcached variables
+BD_TYPE = "mariadb"
+CACHE_TYPE = "memcached"
+
+MEMCACHED_HOST = os.getenv("MEMCACHED_HOST")
+MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT"))
+CACHE_TTL_SECONDS = 60
+
+memcached = Client((MEMCACHED_HOST, MEMCACHED_PORT))
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -13,6 +26,25 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 prompt_blueprint = Blueprint('prompt', __name__)
+
+def cache_get(key):
+    try:
+        raw = memcached.get(key)
+        if not raw:
+            cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+            return None
+        
+        cache_hit.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return json.loads(raw.decode("utf-8"))
+    except Exception:
+        cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        return None
+
+def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
+    try:
+        memcached.set(key, json.dumps(value), expire=ttl)
+    except Exception:
+        pass
 
 #route to generate a result by a prompt
 @prompt_blueprint.route('/generate', methods=['POST'])
@@ -115,7 +147,6 @@ def edit():
 
 
 #route to generate a result by a prompt
-
 @prompt_blueprint.route('/myprompts', methods=['GET'])
 def my_prompts(id_user=None):
     invocated = True
@@ -129,12 +160,26 @@ def my_prompts(id_user=None):
     if not id_user:
         return jsonify({"error": "id_user is required"}), 400
 
+    cache_key = f"myprompts:{id_user}"
+
+    # Try to get user prompts from cache hit
+    cached = cache_get(cache_key)
+    if cached is not None:
+        logger.info(f"My prompts id_user='{id_user}' source=cache")
+        if invocated:
+            return cached
+        return jsonify(cached), 200
+
     try:
         #get user prompts
         prompts = execute_query(
             "SELECT id, text, created_at, likes FROM Prompt WHERE id_user = ? AND enabled = TRUE ORDER BY created_at DESC",
             (id_user,)
         )
+
+        # Cache miss, so we save the prompts data in cache
+        cache_set(cache_key, prompts, CACHE_TTL_SECONDS)
+        logger.info(f"My prompts id_user='{id_user}' source=db")
 
         if invocated:
             return prompts
@@ -143,9 +188,6 @@ def my_prompts(id_user=None):
     except Exception as e:
         logger.error(f"Error fetching prompts for user {id_user}: {e}")
         return jsonify({"error": "Error fetching prompts"}), 500
-
-
-
 
 #route to search prompts
 @prompt_blueprint.route('/search', methods=['GET'])
@@ -157,6 +199,15 @@ def search():
         return jsonify({"error": "text is required"}), 400
     #clean the text
     text = text.strip('"')
+
+    cache_key = f"search:{text.lower()}"  
+
+    # Try to get user data from cache hit
+    cached = cache_get(cache_key)
+    if cached is not None:
+        logger.info(f"Search prompts text='{text}' source=cache")
+        return jsonify(cached), 200
+    
     try:
         # split the text into words to search each one
         words = text.split()
@@ -172,8 +223,12 @@ def search():
         query += " AND enabled = TRUE"
         #execute the query created
         prompts = execute_query(query, tuple(params))
-        
+
+        # Cache miss, so we save the prompts data in cache
+        cache_set(cache_key, prompts, CACHE_TTL_SECONDS)
+        logger.info(f"Search prompts text='{text}' source=db")
         return jsonify(prompts), 200
+        
     except mariadb.IntegrityError as e:
         # there was an error with the query
         logger.error(f"Integrity error finding prompt : {e}")
@@ -182,8 +237,6 @@ def search():
     except Exception as e:
         logger.error(f"Integrity error finding users : {e}")
         return {"error": "Error finding prompt"}, 500
-
-
 
 #route to generate a result by a prompt
 @prompt_blueprint.route('/delete', methods=['PUT'])
@@ -230,12 +283,26 @@ def my_prompt(id_prompt=None):
     if not id_prompt:
         return jsonify({"error": "id_prompt is required"}), 400
 
+    cache_key = f"myprompt:{id_prompt}"
+
+    # Try to get prompt data from cache hit
+    cached = cache_get(cache_key)
+    if cached is not None:
+        logger.info(f"My prompt id_prompt='{id_prompt}' source=cache")
+        if invocated:
+            return cached
+        return jsonify(cached), 200
+
     try:
         #get user prompts
         prompt = execute_query(
             "SELECT id, text, created_at, likes FROM Prompt WHERE id = ?  AND enabled = TRUE ORDER BY created_at DESC",
             (id_prompt,)
         )
+
+        # Cache miss, so we save the prompt data in cache
+        cache_set(cache_key, prompt, CACHE_TTL_SECONDS)
+        logger.info(f"My prompt id_prompt='{id_prompt}' source=db")
 
         if invocated:
             return prompt
