@@ -139,16 +139,22 @@ def embedding_todos_documentos(documentos):
 # Conexión a Elasticsearch
 def conectar_elasticsearch():
     try:
+        es_host = os.getenv("ELASTIC_HOST")
+        es_user = os.getenv("ELASTIC_USER")
+        es_pass = os.getenv("ELASTIC_PASS")
+
+        # Forma correcta para Elasticsearch >=8.x
         es = Elasticsearch(
-            os.getenv("ELASTIC_HOST"),
-            http_auth=(os.getenv("ELASTIC_USER"), os.getenv("ELASTIC_PASS")),
-            scheme="http",
-            port=9200
+            f"http://{es_user}:{es_pass}@{es_host}:9200"
         )
+
         if not es.ping():
             print("No se pudo conectar a Elasticsearch")
             return None
+
+        print("Conexión a Elasticsearch exitosa")
         return es
+
     except Exception as e:
         print("Error conectando a Elasticsearch:", e)
         return None
@@ -159,7 +165,7 @@ def guardar_libros_elasticsearch(documentos):
     if es is None:
         return
 
-    for doc in documentos:
+    for i, doc in enumerate(documentos, start=1):
         # Documento sin embeddings
         doc_sin_embedding = doc.copy()
         doc_sin_embedding.pop("embeddings", None)
@@ -168,13 +174,13 @@ def guardar_libros_elasticsearch(documentos):
         try:
             es.index(index="books", document=doc)
         except Exception as e:
-            print("Error insertando en books:", e)
+            print(f"Error insertando en books (documento {i}):", e)
 
         # Insertar sin embeddings en "nbooks"
         try:
             es.index(index="nbooks", document=doc_sin_embedding)
         except Exception as e:
-            print("Error insertando en nbooks:", e)
+            print(f"Error insertando en nbooks (documento {i}):", e)
 
 ################################
 

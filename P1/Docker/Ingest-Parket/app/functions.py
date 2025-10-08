@@ -131,28 +131,33 @@ def embedding_todos_documentos(documentos):
 # Conexión a Elasticsearch
 def conectar_elasticsearch():
     try:
+        es_host = os.getenv("ELASTIC_HOST")
+        es_user = os.getenv("ELASTIC_USER")
+        es_pass = os.getenv("ELASTIC_PASS")
+
+        # Forma correcta para Elasticsearch moderno
         es = Elasticsearch(
-            os.getenv("ELASTIC_HOST"),
-            http_auth=(os.getenv("ELASTIC_USER"), os.getenv("ELASTIC_PASS")),
-            scheme="http",
-            port=9200
+            f"http://{es_user}:{es_pass}@{es_host}:9200"
         )
+
         if not es.ping():
             print("No se pudo conectar a Elasticsearch")
             return None
+
+        print("Conexión a Elasticsearch exitosa")
         return es
+
     except Exception as e:
         print("Error conectando a Elasticsearch:", e)
         return None
 
-# Guardar reviews en Elasticsearch
+
 def guardar_reviews_elasticsearch(documentos):
     es = conectar_elasticsearch()
     if es is None:
         return
 
-    for doc in documentos:
-        # Documento sin embeddings
+    for i, doc in enumerate(documentos, start=1):
         doc_sin_embedding = doc.copy()
         doc_sin_embedding.pop("embeddings", None)
 
@@ -160,13 +165,13 @@ def guardar_reviews_elasticsearch(documentos):
         try:
             es.index(index="reviews", document=doc)
         except Exception as e:
-            print("Error insertando en reviews:", e)
+            print(f"Error insertando en reviews (doc {i}):", e)
 
         # Insertar sin embeddings en "nreviews"
         try:
             es.index(index="nreviews", document=doc_sin_embedding)
         except Exception as e:
-            print("Error insertando en nreviews:", e)
+            print(f"Error insertando en nreviews (doc {i}):", e)
 
 
 ################################
