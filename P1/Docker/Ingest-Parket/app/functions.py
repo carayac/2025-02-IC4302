@@ -11,6 +11,7 @@ from elasticsearch import Elasticsearch
 HOSTNAME = os.getenv('HOSTNAME')
 XPATH = os.getenv('XPATH')
 DATA = os.getenv('DATAFROMK8S')
+ENDPOINT = os.getenv("EMBEDDINGENDPOINT")  # endpoint de HuggingFace
 
 # RabbitMQ
 RABBIT_MQ = os.getenv('RABBITMQ')
@@ -87,32 +88,43 @@ def procesar_objeto(file_path):
     documentos = dataFrame.to_dict(orient='records')
     return documentos
 
-
 def crear_embedding(texto):
-    url = "http://localhost:5000/encode"
-
-    response = requests.post(url, json={"text": texto})
-
-    if response.status_code == 200:
-        data = response.json()
-        embedding = data["embedding"]
-        return embedding
-    else:
-        print("Error:", response.text)
+    """Genera embedding para un texto usando el endpoint."""
+    if not texto:
+        return None
+    try:
+        response = requests.post(ENDPOINT, json={"text": texto}, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            return data.get("embedding")
+        else:
+            print(f"Error al generar embedding: {response.status_code}, {response.text}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Error de conexión al endpoint {ENDPOINT}: {e}")
+        return None
+    except Exception as e:
+        print(f"Error inesperado generando embedding: {e}")
         return None
 
 
 def embedding_todos_documentos(documentos):
-    for doc in documentos:
+    """Genera embeddings para los campos 'text' y 'review_summary' de cada documento."""
+    for idx, doc in enumerate(documentos, start=1):
         doc["embeddings"] = {"text": None, "summary": None}
+
         if "text" in doc:
             embedding_text = crear_embedding(doc["text"])
             if embedding_text is not None:
                 doc["embeddings"]["text"] = embedding_text
+
         if "review_summary" in doc:
             embedding_summary = crear_embedding(doc["review_summary"])
             if embedding_summary is not None:
                 doc["embeddings"]["summary"] = embedding_summary
+
+        print(f"Documento {idx}/{len(documentos)} procesado")
+
     return documentos
 
 ########################Elastic
@@ -249,11 +261,11 @@ def callback(ch, method, properties, body):
         # 2. Parsear JSON
         documentos = procesar_objeto(file_path)
         # 3. Generar embeddings
-        procesado = True
-        insertar_object(cursor, conn, key_name, documentos, procesado)
         documentos = embedding_todos_documentos(documentos)
         # 4. Guardar en Elasticsearch
         guardar_reviews_elasticsearch(documentos)
+        procesado = True
+        insertar_object(cursor, conn, key_name, documentos, procesado)
         # 5. Guardar en MariaDB
         insertar_info(cursor, conn, key_name, documentos)
         # 5. Marcar como procesado en MariaDB
@@ -267,12 +279,12 @@ def main():
     parameters = pika.ConnectionParameters(
         host=RABBIT_MQ,
         credentials=credentials,
-        heartbeat=600,
+        heartbeat=2000,
         blocked_connection_timeout=300
     )
 
     # Intentar conexión hasta que RabbitMQ esté listo
-    max_retries = 20
+    max_retries = 30
     for intento in range(max_retries):
         try:
             print(f"[INFO] Intentando conectar a RabbitMQ... intento {intento+1}/{max_retries}")

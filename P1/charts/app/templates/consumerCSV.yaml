@@ -82,6 +82,8 @@ spec:
                   key: AWS_SECRET_KEY
             - name: AWS_REGION
               value: "us-east-1"
+            - name: EMBEDDINGENDPOINT
+              value: "http://huggingface:5000/encode"
           volumeMounts:
             - name: data-volume
               mountPath: /data
