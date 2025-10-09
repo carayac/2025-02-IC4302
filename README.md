@@ -102,7 +102,22 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
   
 <details>
   <summary>Desplegar información</summary> 
-info
+
+### HuggingFace  
+<details>
+  <summary>Desplegar información</summary>
+
+Se realizaron tres pruebas unitarios con pytest a esta API para comprobar su funcionalidad:
+
+- Verificación de que el endpoint encode retorne la información correcta 
+- Verificación de que el endpoint status retorne la información correcta
+- Verificación de que se valide el campo "text"
+
+![Imagen test 2025-10-08 a las 20 13 22_07747d3f](https://github.com/user-attachments/assets/19ec81ea-0611-4c35-9ca0-9616e9f1e081)
+
+</details>
+
+  
 </details>
 
 
