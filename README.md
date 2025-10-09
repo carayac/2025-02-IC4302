@@ -107,7 +107,7 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 <details>
   <summary>Desplegar información</summary>
 
-Se realizaron tres pruebas unitarios con pytest a esta API para comprobar su funcionalidad:
+Se realizaron tres pruebas unitarias con pytest a esta API para comprobar su funcionalidad:
 
 - Verificación de que el endpoint encode retorne la información correcta 
 - Verificación de que el endpoint status retorne la información correcta
