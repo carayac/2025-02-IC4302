@@ -7,6 +7,7 @@ import requests
 import boto3
 from elasticsearch import Elasticsearch
 
+#Variables globales
 # General
 HOSTNAME = os.getenv('HOSTNAME')
 XPATH = os.getenv('XPATH')
@@ -18,8 +19,6 @@ RABBIT_MQ = os.getenv('RABBITMQ')
 RABBITMQ_PASS = os.getenv('RABBITMQ_PASS')
 QUEUE_NAME = os.getenv('RABBITMQ_QUEUE')
 RABBITMQ_USER = os.getenv('RABBITMQ_USER')
-print("USER:", os.environ.get("RABBITMQ_USER"))
-print("PASS:", os.environ.get("RABBITMQ_PASS"))
 
 # MariaDB
 MARIADB_HOST = os.getenv('MARIADB')
@@ -38,8 +37,8 @@ MARIADB_TABLE_CATEGORIES_BOOKS = os.getenv("MARIADB_TABLE_CATEGORIES_BOOKS")
 ELASTIC_HOST = os.getenv('ELASTIC_HOST')
 ELASTIC_USER = os.getenv('ELASTIC_USER')
 ELASTIC_PASS = os.getenv('ELASTIC_PASS')
-ELASTIC_INDEX_BOOKS = os.getenv('ELASTIC_INDEX_BOOKS')  # books/reviews
-ELASTIC_INDEX_NBOOKS = os.getenv('ELASTIC_INDEX_NBOOKS')  # nbooks/nreviews
+ELASTIC_INDEX_BOOKS = os.getenv('ELASTIC_INDEX_BOOKS')  
+ELASTIC_INDEX_NBOOKS = os.getenv('ELASTIC_INDEX_NBOOKS')  
 
 # AWS S3 Bucket
 AWS_BUCKET = os.getenv('AWS_BUCKET')
@@ -47,17 +46,8 @@ AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 AWS_REGION = os.getenv('AWS_REGION')
 
-
-def conectar_MariaDB():
-    conn = mariadb.connect(
-        host= MARIADB_HOST,
-        user= MARIADB_USER,
-        password= MARIADB_PASS
-    )
-    cursor = conn.cursor()
-    cursor.execute(f"USE {MARIADB_DB}")
-    return conn, cursor
-
+#Descargar objeto desde AWS
+#Determinar si el objeto fue procesado
 def buscar_objeto(cursor, tabla, key_buscado):
     query = f"SELECT * FROM {tabla} WHERE key_name = %s"
     cursor.execute(query, (key_buscado,))
@@ -67,7 +57,7 @@ def buscar_objeto(cursor, tabla, key_buscado):
     else:
         return True
 
-
+#Descarga objeto de bucket
 def descargar_objeto(key_name):
     s3 = boto3.client(
         's3',
@@ -88,7 +78,7 @@ def descargar_objeto(key_name):
 
     return download_path
 
-
+#Procesa objetos del bucket
 def procesar_objeto(file_path):
     documentos = []
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -105,13 +95,13 @@ def procesar_objeto(file_path):
                     print("Error decodificando línea:", line)
     return documentos
 
-
+#Embeddings
+#Crea embeddings haciendo un request al endpoint
 def crear_embedding(texto):
-    """Genera el embedding de un texto usando el endpoint Flask."""
     try:
         data = {"text": texto}
         response = requests.post(EMBEDDINGENDPOINT, json=data, timeout=10)  # timeout para no quedarse pegado
-        response.raise_for_status()  # lanza excepción si status != 200
+        response.raise_for_status()  
         embedding = response.json().get("embedding")
         if embedding is None:
             print(f"No se recibió embedding para el texto: {texto[:50]}...")
@@ -123,8 +113,8 @@ def crear_embedding(texto):
         print(f"Error inesperado generando embedding: {e}")
         return None
 
+#embedding de todos los documentos
 def embedding_todos_documentos(documentos):
-    """Itera sobre los documentos y genera embeddings para la descripción si existe."""
     for i, doc in enumerate(documentos, start=1):
         doc["embeddings"] = None
         if "description" in doc and doc["description"]:
@@ -135,17 +125,21 @@ def embedding_todos_documentos(documentos):
         print(f"Procesado documento {i}/{len(documentos)}")
     return documentos
 
-#########################Elastic
-# Conexión a Elasticsearch
+#Elastic
+#Conectar a elasticsearch
 def conectar_elasticsearch():
     try:
-        es_host = os.getenv("ELASTIC_HOST")
-        es_user = os.getenv("ELASTIC_USER")
-        es_pass = os.getenv("ELASTIC_PASS")
+        host = os.getenv("ELASTIC_HOST")
+        user = os.getenv("ELASTIC_USER")
+        password = os.getenv("ELASTIC_PASS")
 
-        # Forma correcta para Elasticsearch >=8.x
+        if not host.startswith("http"):
+            host = f"http://{host}:9200"
+
         es = Elasticsearch(
-            f"http://{es_user}:{es_pass}@{es_host}:9200"
+            host,
+            basic_auth=(user, password),
+            verify_certs=False
         )
 
         if not es.ping():
@@ -159,31 +153,43 @@ def conectar_elasticsearch():
         print("Error conectando a Elasticsearch:", e)
         return None
 
-# Guardar libros en Elasticsearch
+#Guardar todos los libros en books y nbooks
 def guardar_libros_elasticsearch(documentos):
     es = conectar_elasticsearch()
     if es is None:
+        print("No se insertarán documentos porque Elasticsearch no está disponible.")
         return
 
+    index_books = os.getenv("ELASTIC_INDEX_BOOKS", "books")
+    index_nbooks = os.getenv("ELASTIC_INDEX_NBOOKS", "nbooks")
+
     for i, doc in enumerate(documentos, start=1):
-        # Documento sin embeddings
         doc_sin_embedding = doc.copy()
         doc_sin_embedding.pop("embeddings", None)
 
-        # Insertar con embeddings en "books"
         try:
-            es.index(index="books", document=doc)
+            es.index(index=index_books, document=doc)
         except Exception as e:
-            print(f"Error insertando en books (documento {i}):", e)
+            print(f"Error insertando en {index_books} (documento {i}):", e)
 
-        # Insertar sin embeddings en "nbooks"
         try:
-            es.index(index="nbooks", document=doc_sin_embedding)
+            es.index(index=index_nbooks, document=doc_sin_embedding)
         except Exception as e:
-            print(f"Error insertando en nbooks (documento {i}):", e)
+            print(f"Error insertando en {index_nbooks} (documento {i}):", e)
 
-################################
+# Mariadb
+#Conexión a MariaDB
+def conectar_MariaDB():
+    conn = mariadb.connect(
+        host=MARIADB_HOST,
+        user=MARIADB_USER,
+        password=MARIADB_PASS
+    )
+    cursor = conn.cursor()
+    cursor.execute(f"USE {MARIADB_DB}")
+    return conn, cursor
 
+#Insertar autor (sin repetir) en la tabla
 def insertar_author(cursor, conn, author_name):
     query = f"INSERT IGNORE INTO {MARIADB_TABLE_AUTHORS} (name) VALUES (?)"
     cursor.execute(query, (author_name,))
@@ -193,7 +199,7 @@ def insertar_author(cursor, conn, author_name):
     cursor.execute(f"SELECT id FROM {MARIADB_TABLE_AUTHORS} WHERE name = ?", (author_name,))
     return cursor.fetchone()[0]
 
-
+#Insertar categoría (sin repetir) en la tabla
 def insertar_category(cursor, conn, category_name):
     query = f"INSERT IGNORE INTO {MARIADB_TABLE_CATEGORIES} (name) VALUES (?)"
     cursor.execute(query, (category_name,))
@@ -203,7 +209,7 @@ def insertar_category(cursor, conn, category_name):
     cursor.execute(f"SELECT id FROM {MARIADB_TABLE_CATEGORIES} WHERE name = ?", (category_name,))
     return cursor.fetchone()[0]
 
-
+#Insertar libro en la tabla
 def insertar_libro(conn, cursor, object_key, title=None, description=None,
                    published_date=None, publisher=None, preview_link=None,
                    info_link=None, image_link=None, ratings_count=None):
@@ -221,6 +227,7 @@ def insertar_libro(conn, cursor, object_key, title=None, description=None,
     cursor.execute("SELECT LAST_INSERT_ID()")
     return cursor.fetchone()[0]  # ID del libro insertado
 
+#Relacionar los autores y las categorías a los libros
 def relacionar_autores_categories(cursor, conn, book_id, authors=None, categories=None):
     # Autores
     if authors:
@@ -241,7 +248,7 @@ def relacionar_autores_categories(cursor, conn, book_id, authors=None, categorie
     conn.commit()
 
 
-
+#Insertar todos los documentos
 def insertar_info(cursor, conn, key_name, documentos):
     for doc in documentos:
         title = doc.get("title")
@@ -263,7 +270,7 @@ def insertar_info(cursor, conn, key_name, documentos):
         # Relacionar autores y categorías
         relacionar_autores_categories(cursor, conn, book_id, authors, categories)
 
-
+#Insertar el objeto como procesado y con numero de docs
 def insertar_object(cursor, conn, key_name, documentos, procesado):
     insert_query = f"""
         INSERT INTO {MARIADB_TABLE}
@@ -281,61 +288,41 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
         conn.rollback()
         print(f"Error insertando object: {e}")
 
-
+#callback
 def callback(ch, method, properties, body):
     key_name = body.decode('utf-8')  # mensaje recibido
-    print(f"[INFO] Mensaje recibido: {key_name}")
-
     conn, cursor = conectar_MariaDB()  # conectar MariaDB
-    print("[INFO] Conectado a MariaDB")
-
-    # Verificar si ya se procesó
     existe = buscar_objeto(cursor, MARIADB_TABLE, key_name)
-    print(f"[INFO] ¿Ya procesado? {existe}")
 
     if existe:
-        print("[INFO] Objeto ya procesado. Reconociendo mensaje...")
         ch.basic_ack(delivery_tag=method.delivery_tag)  # no se hace nada
-        #amazon-books/part-00099-7aac03f4-2533-4b8f-8be9-9057d831d6be-c000.json
     else:
         try:
             # 1. Descargar desde S3
-            print("[INFO] Descargando objeto desde S3...")
             file_path = descargar_objeto(key_name)
-            print(f"[INFO] Objeto descargado en: {file_path}")
 
-            # 2. Parsear JSON/parquet
-            print("[INFO] Procesando objeto...")
+            # 2. Parsear JSON
             documentos = procesar_objeto(file_path)
-            print(f"[INFO] Documentos extraídos: {len(documentos)}")
 
             # 3. Generar embeddings
-            print("[INFO] Generando embeddings...")
             documentos = embedding_todos_documentos(documentos)
-            print("[INFO] Embeddings generados")
 
             # 4. Guardar en Elasticsearch (solo reviews)
-            print("[INFO] Guardar en Elasticsearch")
             guardar_libros_elasticsearch(documentos)
 
             # 5. Guardar en MariaDB
-            procesado = True
-            print("[INFO] Insertando registro inicial en MariaDB...")
-            insertar_object(cursor, conn, key_name, documentos, procesado)
-            print("[INFO] Insertando información en MariaDB...")
             insertar_info(cursor, conn, key_name, documentos)
-            print("[INFO] Información insertada en MariaDB")
 
             # 6. Marcar como procesado
-            procesado = True
-            #insertar_object(cursor, conn, key_name, documentos, procesado)
-            print("[INFO] Objeto marcado como procesado")
+            insertar_object(cursor, conn, key_name, documentos, True)
+            print("Objeto marcado como procesado")
 
             ch.basic_ack(delivery_tag=method.delivery_tag)
-            print("[INFO] Mensaje confirmado (ack)")
+
         except Exception as e:
             print(f"[ERROR] Ocurrió un error: {e}")
 
+#main
 def main():
     credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
     parameters = pika.ConnectionParameters(

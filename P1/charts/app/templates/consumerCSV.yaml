@@ -68,6 +68,10 @@ spec:
                   optional: false
             - name: ELASTIC_HOST
               value: "ic4302-es-http"
+            - name: ELASTIC_INDEX_BOOKS
+              value: "books"
+            - name: ELASTIC_INDEX_NBOOKS
+              value: "nbooks"
             - name: AWS_BUCKET
               value: "ic-tec-dataset"
             - name: AWS_ACCESS_KEY

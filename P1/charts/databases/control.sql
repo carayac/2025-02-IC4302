@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS books (
     info_link TEXT,
     image_link TEXT,
     ratings_count INT,
-    CONSTRAINT fk_books_object FOREIGN KEY (object_key) REFERENCES objects(key_name)
 );
 
 -- Autores
@@ -56,6 +55,15 @@ CREATE TABLE IF NOT EXISTS book_categories (
     CONSTRAINT fk_bc_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
+-- Ayuda para procesar reviews
+CREATE TABLE pending_review_links (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    review_object_key VARCHAR(255) NOT NULL,
+    book_title VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    processed BOOLEAN DEFAULT FALSE
+);
+
 -- Tabla de reseñas
 CREATE TABLE IF NOT EXISTS reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,6 +78,5 @@ CREATE TABLE IF NOT EXISTS reviews (
     review_time DATETIME,
     review_summary TEXT,
     review_text TEXT,
-    CONSTRAINT fk_reviews_object FOREIGN KEY (object_key) REFERENCES objects(key_name),
     CONSTRAINT fk_reviews_book FOREIGN KEY (book_id) REFERENCES books(id)
 );

@@ -42,6 +42,8 @@ spec:
               value: "books"
             - name: MARIADB_TABLE_REVIEWS
               value: "reviews"
+            - name: MARIADB_TABLE_PENDING
+              value: "pending_review_links"
             - name: MARIADB_DB
               value: "promptsy"
             - name: MARIADB_USER
@@ -62,6 +64,10 @@ spec:
                   optional: false
             - name: ELASTIC_HOST
               value: "ic4302-es-http"
+            - name: ELASTIC_INDEX_REVIEWS
+              value: "reviews"
+            - name: ELASTIC_INDEX_NREVIEWS
+              value: "nreviews"
             - name: AWS_BUCKET
               value: "ic-tec-dataset"
             - name: AWS_ACCESS_KEY
