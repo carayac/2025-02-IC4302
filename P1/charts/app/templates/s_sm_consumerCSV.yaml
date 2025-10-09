@@ -1,0 +1,39 @@
+{{- if .Values.config.consumerCSV.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.config.consumerCSV.name }}-metrics
+  labels:
+    app: {{ .Values.config.consumerCSV.name }}
+    release: prometheus
+spec:
+  ports:
+    - name: metrics
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: {{ .Values.config.consumerCSV.name }}
+{{- end }}
+
+---
+{{- if .Values.config.consumerCSV.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.config.consumerCSV.name }}-monitor
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.config.consumerCSV.name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s
+{{- end }}
+

@@ -1,0 +1,47 @@
+{
+  "title": "HuggingFace Embeddings Metrics",
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "pluginId": "prometheus",
+        "label": "Prometheus"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Total Peticiones HTTP",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (componente) (total_peticiones_http_total{componente=\"huggingface\"})",
+          "legendFormat": "{{componente}}"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Tiempo de Embeddings",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(promedio_tiempo_embedding_sum{componente=\"huggingface\"}[1m]) / rate(promedio_tiempo_embedding_count{componente=\"huggingface\"}[1m])",
+          "legendFormat": "Promedio"
+        },
+        {
+          "expr": "max_over_time(promedio_tiempo_embedding_sum{componente=\"huggingface\"}[1m])",
+          "legendFormat": "Máximo"
+        },
+        {
+          "expr": "min_over_time(promedio_tiempo_embedding_sum{componente=\"huggingface\"}[1m])",
+          "legendFormat": "Mínimo"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    }
+  ]
+}

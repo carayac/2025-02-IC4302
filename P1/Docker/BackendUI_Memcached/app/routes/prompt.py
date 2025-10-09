@@ -7,6 +7,27 @@ import mariadb
 from pymemcache.client.base import Client
 from metrics import cache_hit, cache_miss
 import os, json 
+from prometheus_client import Counter, Histogram
+import time
+
+# --- NUEVAS MÉTRICAS ---
+cache_hit_api = Counter("api_cache_hit", "Cache hits en API", ["componente"])
+cache_miss_api = Counter("api_cache_miss", "Cache misses en API", ["componente"])
+
+# --- MÉTRICAS DE TIEMPO Y PETICIONES POR ENDPOINT ---
+tiempo_procesamiento_api = Histogram(
+    "api_tiempo_procesamiento_segundos",
+    "Tiempo de procesamiento de requests en API",
+    ["componente", "endpoint"]
+)
+
+peticiones_endpoint_api = Counter(
+    "api_total_peticiones_endpoint",
+    "Total de peticiones por endpoint en API",
+    ["componente", "endpoint"]
+)
+
+COMPONENT = "api"
 
 #Memcached variables
 BD_TYPE = "mariadb"
@@ -32,12 +53,15 @@ def cache_get(key):
         raw = memcached.get(key)
         if not raw:
             cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+            cache_miss_api.labels(componente=COMPONENT).inc()
             return None
         
         cache_hit.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        cache_hit_api.labels(componente=COMPONENT).inc()
         return json.loads(raw.decode("utf-8"))
     except Exception:
         cache_miss.labels(bd=BD_TYPE, cache=CACHE_TYPE).inc()
+        cache_miss_api.labels(componente=COMPONENT).inc()
         return None
 
 def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):

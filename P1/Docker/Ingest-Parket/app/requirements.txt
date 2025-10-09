@@ -5,3 +5,4 @@ requests
 pandas
 elasticsearch==8.13.0
 pyarrow
+prometheus_client

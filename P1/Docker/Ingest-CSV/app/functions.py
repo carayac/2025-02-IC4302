@@ -6,6 +6,16 @@ import mariadb
 import requests
 import boto3
 from elasticsearch import Elasticsearch
+from prometheus_client import Counter, Histogram, start_http_server
+
+# --- MÉTRICAS ---
+objetos_procesados = Counter('total_objetos_procesados', 'Cantidad de objetos procesados', ['componente'])
+objetos_error = Counter('total_objetos_error', 'Cantidad de objetos con error', ['componente'])
+tiempo_objeto = Histogram('tiempo_procesamiento_objeto', 'Tiempo de procesamiento por objeto (segundos)', ['componente'])
+
+# Iniciar servidor de métricas en el puerto 8000
+start_http_server(8000)
+print("[INFO] Servidor de métricas Prometheus iniciado en el puerto 8000")
 
 #Variables globales
 # General
@@ -288,6 +298,7 @@ def callback(ch, method, properties, body):
     if existe:
         ch.basic_ack(delivery_tag=method.delivery_tag)  # no se hace nada
     else:
+        start_time = time.time()
         try:
             # 1. Descargar desde S3
             file_path = descargar_objeto(key_name)
@@ -308,10 +319,15 @@ def callback(ch, method, properties, body):
             insertar_object(cursor, conn, key_name, documentos, True)
             print("Objeto marcado como procesado")
 
+            objetos_procesados.labels(componente="ingest").inc(len(documentos))
+            tiempo_objeto.labels(componente="ingest").observe(time.time() - start_time)
+
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
         except Exception as e:
             print(f"[ERROR] Ocurrió un error: {e}")
+            objetos_error.labels(componente="ingest").inc()
+            ch.basic_ack(delivery_tag=method.delivery_tag)
 
 #main
 def main():

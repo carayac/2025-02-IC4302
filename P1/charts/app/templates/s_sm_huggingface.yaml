@@ -1,0 +1,41 @@
+{{- if .Values.config.huggingface.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.config.huggingface.name }}
+  labels:
+    app: {{ .Values.config.huggingface.name }}
+    release: prometheus      
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "5000"
+spec:
+  type: NodePort
+  selector:
+    app: {{ .Values.config.huggingface.name }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 32000
+{{- end }}
+---
+{{- if .Values.config.huggingface.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.config.huggingface.name }}-monitor
+  labels:
+    release: prometheus        
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.config.huggingface.name }}
+  namespaceSelector:
+    matchNames:
+      - default               
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 10s
+{{- end }}

@@ -1,0 +1,39 @@
+{{- if .Values.config.consumerParket.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.config.consumerParket.name }}-metrics
+  labels:
+    app: {{ .Values.config.consumerParket.name }}
+    release: prometheus
+spec:
+  ports:
+    - name: metrics
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: {{ .Values.config.consumerParket.name }}
+{{- end }}
+
+---
+{{- if .Values.config.consumerParket.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.config.consumerParket.name }}-monitor
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.config.consumerParket.name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 15s
+{{- end }}
+

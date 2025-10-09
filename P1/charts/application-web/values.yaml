@@ -1,5 +1,5 @@
 config:
-  docker_registry: prolosi
+  docker_registry: helena0504
   backend:
     enabled: true
     replicas: 1

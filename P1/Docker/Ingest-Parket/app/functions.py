@@ -6,6 +6,16 @@ import boto3
 import time
 import pandas as pd
 from elasticsearch import Elasticsearch
+from prometheus_client import Counter, Histogram, start_http_server
+
+# --- MÉTRICAS ---
+objetos_procesados = Counter('total_objetos_procesados', 'Cantidad de objetos procesados', ['componente'])
+objetos_error = Counter('total_objetos_error', 'Cantidad de objetos con error', ['componente'])
+tiempo_objeto = Histogram('tiempo_procesamiento_objeto', 'Tiempo de procesamiento por objeto (segundos)', ['componente'])
+
+# Iniciar servidor de métricas en el puerto 8000
+start_http_server(8000)
+print("[INFO] Servidor de métricas Prometheus iniciado en el puerto 8000")
 
 # Variables de entorno
 # General
@@ -268,19 +278,28 @@ def callback(ch, method, properties, body):
     if buscar_objeto(cursor, MARIADB_TABLE, key_name):
         ch.basic_ack(delivery_tag=method.delivery_tag)
         return
+    start_time = time.time()
+    try:
+        file_path = descargar_objeto(key_name)
+        documentos = procesar_objeto(file_path)
+        # documentos = embedding_todos_documentos(documentos)
+        guardar_reviews_elasticsearch(documentos)
 
-    file_path = descargar_objeto(key_name)
-    documentos = procesar_objeto(file_path)
-    # documentos = embedding_todos_documentos(documentos)
-    guardar_reviews_elasticsearch(documentos)
+        insertar_info(cursor, conn, key_name, documentos)
+        insertar_object(cursor, conn, key_name, documentos, True)
 
-    insertar_info(cursor, conn, key_name, documentos)
-    insertar_object(cursor, conn, key_name, documentos, True)
+        arreglar_reviews_pendientes()
 
-    arreglar_reviews_pendientes()
 
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-    conn.close()
+        objetos_procesados.labels(componente="ingest").inc(len(documentos))
+        tiempo_objeto.labels(componente="ingest").observe(time.time() - start_time)
+
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+
+    except Exception as e:
+        print(f"[ERROR] Ocurrió un error: {e}")
+        objetos_error.labels(componente="ingest").inc()
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 # Main

@@ -2,6 +2,13 @@ import os
 import boto3
 import pika
 import logging
+import time
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import start_http_server
+
+# --- MÉTRICAS ---
+documentos_procesados = Counter('total_documentos_procesados', 'Total documentos procesados', ['componente'])
+tiempo_total = Histogram('tiempo_total_crawler', 'Tiempo total crawler', ['componente'])
 
 # Configuración de logging
 logging.basicConfig(
@@ -65,6 +72,7 @@ s3 = boto3.client(
 
 def crawl_bucket():
     """Recorre el bucket S3, filtra archivos y publica según su tipo."""
+    start_time = time.time()
     connection, channel = rabbitmq_connection()
 
     for prefix in S3_PREFIXES:
@@ -88,21 +96,25 @@ def crawl_bucket():
                 # Clasificar por tipo de archivo
                 if key.endswith(".json"):
                     publish_message(channel, RABBITMQ_QUEUE_CSV, key)
+                    documentos_procesados.labels(componente="crawler").inc()
                 elif key.endswith(".parquet"):
                     publish_message(channel, RABBITMQ_QUEUE_PARKET, key)
+                    documentos_procesados.labels(componente="crawler").inc()
                 else:
                     continue
 
-            if response.get("IsTruncated"): #revisa si hay más objetos
+            if response.get("IsTruncated"):  # revisa si hay más objetos
                 continuation_token = response.get("NextContinuationToken")
-            else: 
+            else:
                 break
 
     connection.close()
-    logging.info("Crawler finalizado correctamente.")
+    duracion = time.time() - start_time
+    tiempo_total.labels(componente="crawler").observe(duracion)
 
 
 if __name__ == '__main__':
+    start_http_server(8000)
     crawl_bucket()
 
 

@@ -3,3 +3,4 @@ mariadb
 boto3
 requests
 elasticsearch==8.13.0
+prometheus_client

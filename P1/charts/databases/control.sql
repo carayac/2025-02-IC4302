@@ -68,7 +68,7 @@ CREATE TABLE pending_review_links (
 CREATE TABLE IF NOT EXISTS reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     object_key VARCHAR(512) NOT NULL,
-    book_id INT NOT NULL,
+    book_id INT,
     title VARCHAR(1000),
     price DECIMAL(10,2),
     user_id VARCHAR(50),

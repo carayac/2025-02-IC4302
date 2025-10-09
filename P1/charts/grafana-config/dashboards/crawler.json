@@ -1,0 +1,39 @@
+{
+  "title": "Producer (Crawler) Metrics",
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "pluginId": "prometheus",
+        "label": "Prometheus"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Total Documentos Procesados",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (componente) (total_documentos_procesados_total{componente=\"crawler\"})",
+          "legendFormat": "{{componente}}"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Tiempo Total de Procesamiento (segundos)",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(tiempo_total_crawler_sum{componente=\"crawler\"}[1m]) / rate(tiempo_total_crawler_count{componente=\"crawler\"}[1m])",
+          "legendFormat": "Crawler"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    }
+  ]
+}
