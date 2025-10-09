@@ -1,2 +1,4 @@
 flask
 sentence-transformers
+pytest
+numpy
