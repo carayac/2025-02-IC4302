@@ -15,14 +15,14 @@ CREATE TABLE IF NOT EXISTS objects (
 CREATE TABLE IF NOT EXISTS books (
     id INT AUTO_INCREMENT PRIMARY KEY,
     object_key VARCHAR(512) NOT NULL,
-    title VARCHAR(500),
+    title VARCHAR(1000),
     description TEXT,
     published_date DATE,
-    publisher VARCHAR(255),
+    publisher VARCHAR(1000),
     preview_link TEXT,
     info_link TEXT,
     image_link TEXT,
-    ratings_count INT,
+    ratings_count INT
 );
 
 -- Autores
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS book_categories (
 CREATE TABLE pending_review_links (
     id INT AUTO_INCREMENT PRIMARY KEY,
     review_object_key VARCHAR(255) NOT NULL,
-    book_title VARCHAR(255) NOT NULL,
+    book_title VARCHAR(1000) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     processed BOOLEAN DEFAULT FALSE
 );
@@ -69,11 +69,11 @@ CREATE TABLE IF NOT EXISTS reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     object_key VARCHAR(512) NOT NULL,
     book_id INT NOT NULL,
-    title VARCHAR(500),
+    title VARCHAR(1000),
     price DECIMAL(10,2),
     user_id VARCHAR(50),
     profile_name VARCHAR(255),
-    review_helpfulness VARCHAR(20),
+    review_helpfulness VARCHAR(1000),
     review_score FLOAT,
     review_time DATETIME,
     review_summary TEXT,

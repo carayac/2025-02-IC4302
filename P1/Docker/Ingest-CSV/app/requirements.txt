@@ -2,4 +2,4 @@ pika
 mariadb
 boto3
 requests
-elasticsearch
+elasticsearch==8.13.0

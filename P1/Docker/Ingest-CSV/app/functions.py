@@ -95,63 +95,54 @@ def procesar_objeto(file_path):
                     print("Error decodificando línea:", line)
     return documentos
 
-#Embeddings
-#Crea embeddings haciendo un request al endpoint
-def crear_embedding(texto):
-    try:
-        data = {"text": texto}
-        response = requests.post(EMBEDDINGENDPOINT, json=data, timeout=10)  # timeout para no quedarse pegado
-        response.raise_for_status()  
-        embedding = response.json().get("embedding")
-        if embedding is None:
-            print(f"No se recibió embedding para el texto: {texto[:50]}...")
-        return embedding
-    except requests.exceptions.RequestException as e:
-        print(f"Error en la petición al endpoint {EMBEDDINGENDPOINT}: {e}")
-        return None
-    except Exception as e:
-        print(f"Error inesperado generando embedding: {e}")
-        return None
+# #Embeddings
+# #Crea embeddings haciendo un request al endpoint
+# def crear_embedding(texto):
+#     try:
+#         data = {"text": texto}
+#         response = requests.post(EMBEDDINGENDPOINT, json=data, timeout=10)  # timeout para no quedarse pegado
+#         response.raise_for_status()  
+#         embedding = response.json().get("embedding")
+#         if embedding is None:
+#             print(f"No se recibió embedding para el texto: {texto[:50]}...")
+#         return embedding
+#     except requests.exceptions.RequestException as e:
+#         print(f"Error en la petición al endpoint {EMBEDDINGENDPOINT}: {e}")
+#         return None
+#     except Exception as e:
+#         print(f"Error inesperado generando embedding: {e}")
+#         return None
 
-#embedding de todos los documentos
-def embedding_todos_documentos(documentos):
-    for i, doc in enumerate(documentos, start=1):
-        doc["embeddings"] = None
-        if "description" in doc and doc["description"]:
-            texto = doc["description"]
-            embedding = crear_embedding(texto)
-            if embedding is not None:
-                doc["embeddings"] = embedding
-        print(f"Procesado documento {i}/{len(documentos)}")
-    return documentos
+# #embedding de todos los documentos
+# def embedding_todos_documentos(documentos):
+#     for i, doc in enumerate(documentos, start=1):
+#         doc["embeddings"] = None
+#         if "description" in doc and doc["description"]:
+#             texto = doc["description"]
+#             embedding = crear_embedding(texto)
+#             if embedding is not None:
+#                 doc["embeddings"] = embedding
+#         print(f"Procesado documento {i}/{len(documentos)}")
+#     return documentos
 
 #Elastic
 #Conectar a elasticsearch
-def conectar_elasticsearch():
-    try:
-        host = os.getenv("ELASTIC_HOST")
-        user = os.getenv("ELASTIC_USER")
-        password = os.getenv("ELASTIC_PASS")
+def conectar_elasticsearch(max_retries=50, delay=5):
+    for intento in range(max_retries):
+        try:
+            es = Elasticsearch(
+                f"http://{ELASTIC_HOST}:9200",
+                basic_auth=(ELASTIC_USER, ELASTIC_PASS)
+            )
+            if es.ping():
+                print("Conexión a Elasticsearch exitosa")
+                return es
+        except Exception as e:
+            print(f"Intento {intento+1} fallido: {e}")
+        time.sleep(delay)
+    print("No se pudo conectar a Elasticsearch tras varios intentos")
+    return None
 
-        if not host.startswith("http"):
-            host = f"http://{host}:9200"
-
-        es = Elasticsearch(
-            host,
-            basic_auth=(user, password),
-            verify_certs=False
-        )
-
-        if not es.ping():
-            print("No se pudo conectar a Elasticsearch")
-            return None
-
-        print("Conexión a Elasticsearch exitosa")
-        return es
-
-    except Exception as e:
-        print("Error conectando a Elasticsearch:", e)
-        return None
 
 #Guardar todos los libros en books y nbooks
 def guardar_libros_elasticsearch(documentos):
@@ -305,7 +296,7 @@ def callback(ch, method, properties, body):
             documentos = procesar_objeto(file_path)
 
             # 3. Generar embeddings
-            documentos = embedding_todos_documentos(documentos)
+            # documentos = embedding_todos_documentos(documentos)
 
             # 4. Guardar en Elasticsearch (solo reviews)
             guardar_libros_elasticsearch(documentos)

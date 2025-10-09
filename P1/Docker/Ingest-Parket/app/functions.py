@@ -75,60 +75,54 @@ def procesar_objeto(file_path):
     return dataFrame.to_dict(orient='records')
 
 
-# Embeddings
+# # Embeddings
 
-#Hacer request a huggingface 
-def crear_embedding(texto):
-    if not texto:
-        return None
-    try:
-        response = requests.post(ENDPOINT, json={"text": texto}, timeout=10)
-        if response.status_code == 200:
-            return response.json().get("embedding")
-        else:
-            print(f"Error embedding {response.status_code}: {response.text}")
-            return None
-    except Exception as e:
-        print(f"Error creando embedding: {e}")
-        return None
+# #Hacer request a huggingface 
+# def crear_embedding(texto):
+#     if not texto:
+#         return None
+#     try:
+#         response = requests.post(ENDPOINT, json={"text": texto}, timeout=10)
+#         if response.status_code == 200:
+#             return response.json().get("embedding")
+#         else:
+#             print(f"Error embedding {response.status_code}: {response.text}")
+#             return None
+#     except Exception as e:
+#         print(f"Error creando embedding: {e}")
+#         return None
 
 
-#Procesar todos los documentos
-def embedding_todos_documentos(documentos):
-    for idx, doc in enumerate(documentos, start=1):
-        doc["embeddings"] = {"text": None, "summary": None}
-        if "text" in doc:
-            doc["embeddings"]["text"] = crear_embedding(doc["text"])
-        if "review_summary" in doc:
-            doc["embeddings"]["summary"] = crear_embedding(doc["review_summary"])
-        print(f"Documento {idx}/{len(documentos)} procesado")
-    return documentos
+# #Procesar todos los documentos
+# def embedding_todos_documentos(documentos):
+#     for idx, doc in enumerate(documentos, start=1):
+#         doc["embeddings"] = {"text": None, "summary": None}
+#         if "text" in doc:
+#             doc["embeddings"]["text"] = crear_embedding(doc["text"])
+#         if "review_summary" in doc:
+#             doc["embeddings"]["summary"] = crear_embedding(doc["review_summary"])
+#         print(f"Documento {idx}/{len(documentos)} procesado")
+#     return documentos
 
 
 # Elasticsearch
 
 #Conectar a elasticsearch
-def conectar_elasticsearch():
-    try:
-        # Asegurar formato del host
-        host = ELASTIC_HOST
-        if not host.startswith("http"):
-            host = f"http://{host}:9200"
-
-        es = Elasticsearch(
-            host,
-            basic_auth=(ELASTIC_USER, ELASTIC_PASS),
-            verify_certs=False
-        )
-
-        if es.ping():
-            print("Conexión a Elasticsearch exitosa")
-            return es
-        print("No se pudo conectar a Elasticsearch")
-        return None
-    except Exception as e:
-        print("Error conectando a Elasticsearch:", e)
-        return None
+def conectar_elasticsearch(max_retries=50, delay=5):
+    for intento in range(max_retries):
+        try:
+            es = Elasticsearch(
+                f"http://{ELASTIC_HOST}:9200",
+                basic_auth=(ELASTIC_USER, ELASTIC_PASS)
+            )
+            if es.ping():
+                print("Conexión a Elasticsearch exitosa")
+                return es
+        except Exception as e:
+            print(f"Intento {intento+1} fallido: {e}")
+        time.sleep(delay)
+    print("No se pudo conectar a Elasticsearch tras varios intentos")
+    return None
 
 #Guardar las reviws en índices de elasticsearch
 def guardar_reviews_elasticsearch(documentos):
@@ -277,7 +271,7 @@ def callback(ch, method, properties, body):
 
     file_path = descargar_objeto(key_name)
     documentos = procesar_objeto(file_path)
-    documentos = embedding_todos_documentos(documentos)
+    # documentos = embedding_todos_documentos(documentos)
     guardar_reviews_elasticsearch(documentos)
 
     insertar_info(cursor, conn, key_name, documentos)
