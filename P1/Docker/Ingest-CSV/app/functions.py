@@ -307,7 +307,7 @@ def callback(ch, method, properties, body):
             documentos = procesar_objeto(file_path)
 
             # 3. Generar embeddings
-            # documentos = embedding_todos_documentos(documentos)
+            documentos = embedding_todos_documentos(documentos)
 
             # 4. Guardar en Elasticsearch (solo reviews)
             guardar_libros_elasticsearch(documentos)

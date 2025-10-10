@@ -282,7 +282,7 @@ def callback(ch, method, properties, body):
     try:
         file_path = descargar_objeto(key_name)
         documentos = procesar_objeto(file_path)
-        # documentos = embedding_todos_documentos(documentos)
+        documentos = embedding_todos_documentos(documentos)
         guardar_reviews_elasticsearch(documentos)
 
         insertar_info(cursor, conn, key_name, documentos)
