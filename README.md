@@ -708,7 +708,11 @@ Verifica disponibilidad del servicio para Kubernetes.
 
 5. El uso de Memcached mejora significativamente el rendimiento de la API, ya que evita llamadas redundantes a la base de datos y optimiza la experiencia de usuario al entregar respuestas más rápidas.
 
-6. El uso de logs mejora la capacidad de monitoreo y depuración de la aplicación, permitiendo identificar errores, clasificar el tipo y llevar un registro del tiempo de cada uno. 
+6. El uso de logs mejora la capacidad de monitoreo y depuración de la aplicación, permitiendo identificar errores, clasificar el tipo y llevar un registro del tiempo de cada uno.
+
+7. Utilizar el servicio AWS S3 como fuente de datos y RabbitMQ como cola intermedia permite un flujo eficiente en el flujo y en el procesamiento, permitiendo usar esta infraestructura para datasets grandes.
+
+8. El uso de una arquitectura modular, donde el crawler y los consumidores funcionan como componentes independientes, facilita la escalabilida y el mantenimiento del sistema. 
 
 </details>
 
@@ -730,6 +734,10 @@ Se recomienda generar un script de inicialización de la base de datos, integrad
 5.  Implementar Memcached para almacenar los resultados de consultas frecuentes permite reducir la carga sobre la base de datos y minimizar la latencia en las respuestas. También, es recomendable definir un tiempo de expiración apropiado para los datos cacheados.
 
 6.  Usar logs en lugar de prints como se hacia anteriormente, ya que este es mejor debido que se puede definir por categorias los mensajes (info, warning, error, debug). Además, de que nos indican el timestamp lo cual es muy beneficioso y no lo realizan los prints.
+
+7.  Se recomienda aprovechar los servicios cloud y los patrones de mensajería modernos, como AWS S3 y como RabbitMQ, para así poder tener escalabilidad en los proyectos, estando preparados para trabajar con datasets enormes.
+
+8. Al trabajar en procesamiento de datos grandes, se recomienda seguir el patrón producer-consumer. En el caso del proyecto esto se ve en la separación de componentes: Crawler, Ingest y una cola que los comunica, esto favorece la escalabilidad horizontal, el añadir cosas nuevas y la mantenibilidad.
 
 </details>
 
