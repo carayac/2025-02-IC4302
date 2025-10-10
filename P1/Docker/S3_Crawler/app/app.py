@@ -81,22 +81,17 @@ s3 = boto3.client(
 
 
 def crawl_bucket():
-    """Recorre el bucket S3, filtra archivos y publica según su tipo."""
+    """Recorre el bucket S3 una sola vez por prefijo, usando paginador."""
     start_time = time.time()
     connection, channel = rabbitmq_connection()
 
+    paginator = s3.get_paginator("list_objects_v2")
+
     for prefix in S3_PREFIXES:
-        logging.info(f"Listando objetos en prefijo: {prefix}")
-        continuation_token = None
+        logging.info(f"Listando objetos para prefijo: {prefix}")
 
-        while True:
-            kwargs = {"Bucket": S3_BUCKET, "Prefix": prefix}
-            if continuation_token:
-                kwargs["ContinuationToken"] = continuation_token
-
-            response = s3.list_objects_v2(**kwargs)
-
-            for obj in response.get("Contents", []):
+        for page in paginator.paginate(Bucket=S3_BUCKET, Prefix=prefix):
+            for obj in page.get("Contents", []):
                 key = obj["Key"]
 
                 if key.endswith(".crc") or key.endswith("_SUCCESS"):
@@ -108,11 +103,6 @@ def crawl_bucket():
                 elif key.endswith(".parquet"):
                     publish_message(channel, RABBITMQ_QUEUE_PARKET, key)
                     documentos_procesados.labels(componente="crawler").inc()
-
-            if response.get("IsTruncated"):
-                continuation_token = response.get("NextContinuationToken")
-            else:
-                break
 
     connection.close()
     duracion = time.time() - start_time
@@ -132,3 +122,4 @@ if __name__ == '__main__':
     ).start()
 
     crawl_bucket()
+
