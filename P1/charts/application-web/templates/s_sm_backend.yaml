@@ -1,20 +1,4 @@
 {{- if .Values.config.backend.enabled }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Values.config.backend.name }}-metrics
-  labels:
-    app: {{ .Values.config.backend.name }}
-    release: prometheus
-spec:
-  ports:
-    - name: metrics
-      port: 5000
-      targetPort: 5000
-  selector:
-    app: {{ .Values.config.backend.name }}
----
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -28,9 +12,9 @@ spec:
       app: {{ .Values.config.backend.name }}
   namespaceSelector:
     matchNames:
-      - default
+      - {{ .Release.Namespace }}
   endpoints:
-    - port: metrics
+    - port: metrics3
       path: /metrics
       interval: 15s
 {{- end }}

@@ -87,32 +87,32 @@ def procesar_objeto(file_path):
 
 # # Embeddings
 
-# #Hacer request a huggingface 
-# def crear_embedding(texto):
-#     if not texto:
-#         return None
-#     try:
-#         response = requests.post(ENDPOINT, json={"text": texto}, timeout=10)
-#         if response.status_code == 200:
-#             return response.json().get("embedding")
-#         else:
-#             print(f"Error embedding {response.status_code}: {response.text}")
-#             return None
-#     except Exception as e:
-#         print(f"Error creando embedding: {e}")
-#         return None
+#Hacer request a huggingface 
+def crear_embedding(texto):
+    if not texto:
+        return None
+    try:
+        response = requests.post(ENDPOINT, json={"text": texto}, timeout=10)
+        if response.status_code == 200:
+            return response.json().get("embedding")
+        else:
+            print(f"Error embedding {response.status_code}: {response.text}")
+            return None
+    except Exception as e:
+        print(f"Error creando embedding: {e}")
+        return None
 
 
-# #Procesar todos los documentos
-# def embedding_todos_documentos(documentos):
-#     for idx, doc in enumerate(documentos, start=1):
-#         doc["embeddings"] = {"text": None, "summary": None}
-#         if "text" in doc:
-#             doc["embeddings"]["text"] = crear_embedding(doc["text"])
-#         if "review_summary" in doc:
-#             doc["embeddings"]["summary"] = crear_embedding(doc["review_summary"])
-#         print(f"Documento {idx}/{len(documentos)} procesado")
-#     return documentos
+#Procesar todos los documentos
+def embedding_todos_documentos(documentos):
+    for idx, doc in enumerate(documentos, start=1):
+        doc["embeddings"] = {"text": None, "summary": None}
+        if "text" in doc:
+            doc["embeddings"]["text"] = crear_embedding(doc["text"])
+        if "review_summary" in doc:
+            doc["embeddings"]["summary"] = crear_embedding(doc["review_summary"])
+        print(f"Documento {idx}/{len(documentos)} procesado")
+    return documentos
 
 
 # Elasticsearch

@@ -1,4 +1,5 @@
 grafana:
+  namespace: monitoring
   namespaceOverride: monitoring
   operator:
     enabled: true
@@ -15,13 +16,18 @@ grafana:
       enabled: true
       size: 5Gi
 prometheus:
+  namespace: monitoring
   namespaceOverride: monitoring
-  prometheus:
+  enabled: true
+  prometheusServer:
+    enabled: true
+    replicas: 1
     retention: 2d
     persistence:
       enabled: true
       size: 5Gi
   alertmanager:
+    enabled: true
     persistence:
       enabled: true
-      size: 5Gi  
+      size: 5Gi

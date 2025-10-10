@@ -13,11 +13,11 @@
   "panels": [
     {
       "type": "graph",
-      "title": "Total Documentos Procesados",
+      "title": "Total Objetos Procesados",
       "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum by (componente) (objetos_procesados_total{componente=\"ingest\"})",
+          "expr": "sum by (componente) (total_objetos_procesados_total{componente=\"ingest\"})",
           "legendFormat": "{{componente}}"
         }
       ],
@@ -25,20 +25,12 @@
     },
     {
       "type": "graph",
-      "title": "Tiempo de Procesamiento por Objeto",
+      "title": "Tiempo Promedio de Procesamiento por Objeto (segundos)",
       "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "rate(tiempo_objeto_sum{componente=\"ingest\"}[1m]) / rate(tiempo_objeto_count{componente=\"ingest\"}[1m])",
-          "legendFormat": "Promedio"
-        },
-        {
-          "expr": "max(tiempo_objeto_bucket{componente=\"ingest\"})",
-          "legendFormat": "Máximo"
-        },
-        {
-          "expr": "min(tiempo_objeto_bucket{componente=\"ingest\"})",
-          "legendFormat": "Mínimo"
+          "expr": "rate(tiempo_procesamiento_objeto_sum{componente=\"ingest\"}[1m]) / rate(tiempo_procesamiento_objeto_count{componente=\"ingest\"}[1m])",
+          "legendFormat": "Promedio (último minuto)"
         }
       ],
       "datasource": "${DS_PROMETHEUS}"
@@ -55,5 +47,7 @@
       ],
       "datasource": "${DS_PROMETHEUS}"
     }
-  ]
+  ],
+  "schemaVersion": 39,
+  "version": 1
 }

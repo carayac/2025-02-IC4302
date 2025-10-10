@@ -1,16 +1,15 @@
 from sentence_transformers import SentenceTransformer
-import flask
-from flask import request, jsonify
+from flask import Flask, request, jsonify, Response
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 import time
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
 # --- MÉTRICAS ---
 peticiones_http = Counter('total_peticiones_http', 'Total peticiones HTTP', ['componente'])
 promedio_tiempo = Histogram('promedio_tiempo_embedding', 'Tiempo promedio de embeddings', ['componente'])
 
-
+# --- Hooks para medir tiempo y requests ---
 @app.before_request
 def iniciar_tiempo():
     request.start_time = time.time()
@@ -20,22 +19,19 @@ def medir_peticiones(response):
     tiempo = time.time() - request.start_time
     promedio_tiempo.labels(componente="huggingface").observe(tiempo)
     peticiones_http.labels(componente="huggingface").inc()
+    return response
 
-
+# --- Modelo de embeddings ---
 model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 
 @app.route('/encode', methods=['POST'])
 def encode():
-    #Obtenemos el texto del request
     data = request.get_json()
-    # Validamos el campo texto
-    if 'text' not in data:
-        return jsonify({'Error': 'Falta el campo text'}), 400
-    # Guardamos la info del campo texto
+    if not data or 'text' not in data:
+        return jsonify({'error': 'Falta el campo text'}), 400
+
     text = data['text']
-    # Generamos el embedding
     embedding = model.encode(text)
-    # Retornamos el texto y el embedding en formato JSON
     return jsonify({
         'text': text,
         'embedding': embedding.tolist()
@@ -50,10 +46,12 @@ def status():
         'embedding': embedding.tolist()
     })
 
+# --- Métricas Prometheus ---
 @app.route('/metrics', methods=['GET'])
 def metrics():
-    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 if __name__ == '__main__':
+    # Ejecutar Flask en 0.0.0.0 para que Prometheus pueda hacer scrape
     app.run(host='0.0.0.0', port=5000)
 

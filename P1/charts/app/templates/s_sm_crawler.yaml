@@ -8,7 +8,7 @@ metadata:
     release: prometheus
 spec:
   ports:
-    - name: metrics
+    - name: metrics2
       port: 8000
       targetPort: 8000
   selector:
@@ -32,8 +32,7 @@ spec:
     matchNames:
       - {{ .Release.Namespace }}
   endpoints:
-    - port: metrics
+    - port: metrics2
       path: /metrics
       interval: 15s
 {{- end }}
-

@@ -106,34 +106,34 @@ def procesar_objeto(file_path):
     return documentos
 
 # #Embeddings
-# #Crea embeddings haciendo un request al endpoint
-# def crear_embedding(texto):
-#     try:
-#         data = {"text": texto}
-#         response = requests.post(EMBEDDINGENDPOINT, json=data, timeout=10)  # timeout para no quedarse pegado
-#         response.raise_for_status()  
-#         embedding = response.json().get("embedding")
-#         if embedding is None:
-#             print(f"No se recibió embedding para el texto: {texto[:50]}...")
-#         return embedding
-#     except requests.exceptions.RequestException as e:
-#         print(f"Error en la petición al endpoint {EMBEDDINGENDPOINT}: {e}")
-#         return None
-#     except Exception as e:
-#         print(f"Error inesperado generando embedding: {e}")
-#         return None
+#Crea embeddings haciendo un request al endpoint
+def crear_embedding(texto):
+    try:
+        data = {"text": texto}
+        response = requests.post(EMBEDDINGENDPOINT, json=data, timeout=10)  # timeout para no quedarse pegado
+        response.raise_for_status()  
+        embedding = response.json().get("embedding")
+        if embedding is None:
+            print(f"No se recibió embedding para el texto: {texto[:50]}...")
+        return embedding
+    except requests.exceptions.RequestException as e:
+        print(f"Error en la petición al endpoint {EMBEDDINGENDPOINT}: {e}")
+        return None
+    except Exception as e:
+        print(f"Error inesperado generando embedding: {e}")
+        return None
 
-# #embedding de todos los documentos
-# def embedding_todos_documentos(documentos):
-#     for i, doc in enumerate(documentos, start=1):
-#         doc["embeddings"] = None
-#         if "description" in doc and doc["description"]:
-#             texto = doc["description"]
-#             embedding = crear_embedding(texto)
-#             if embedding is not None:
-#                 doc["embeddings"] = embedding
-#         print(f"Procesado documento {i}/{len(documentos)}")
-#     return documentos
+#embedding de todos los documentos
+def embedding_todos_documentos(documentos):
+    for i, doc in enumerate(documentos, start=1):
+        doc["embeddings"] = None
+        if "description" in doc and doc["description"]:
+            texto = doc["description"]
+            embedding = crear_embedding(texto)
+            if embedding is not None:
+                doc["embeddings"] = embedding
+        print(f"Procesado documento {i}/{len(documentos)}")
+    return documentos
 
 #Elastic
 #Conectar a elasticsearch
