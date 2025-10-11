@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "./config";  //Dirección URL base
 
 
 export async function api(path, opts = {}) {
@@ -8,12 +8,12 @@ export async function api(path, opts = {}) {
   };
 
   const res = await fetch(`${API_BASE_URL}${path}`, {   
-    ...opts,    //metodos y body
+    ...opts,    
     headers,
   });
 
-  const isJson = res.headers.get("content-type")?.includes("application/json");
-  const data = isJson ? await res.json() : null;    //Parsear jsons
+  const isJson = res.headers.get("content-type")?.includes("application/json"); //Verificación de datos json
+  const data = isJson ? await res.json() : null;    //lectura de jsons
 
   if (!res.ok) {
     const msg = data?.error || data?.message || `Error ${res.status}`;

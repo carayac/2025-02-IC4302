@@ -5,15 +5,17 @@ import s from "./Friends.module.css"
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Friends as FriendsApi } from "../../lib/api/APIcalls"; //Objeto de funciones
 
+// BUSQUEDA DE AMIGOS, PUEDE SEGUIR/DEJAR DE SEGUIR
 
+//Navegación entre rutas
 const navItemClass = ({ isActive }) =>
   `${s.navItem} ${isActive ? s.active : ""}`
 
 
-// Getting main user
+//Geting the main user from Local Storage
 function getStoredUser() {
   try {
-    const raw = localStorage.getItem("user")
+    const raw = localStorage.getItem("user")  //User guardado
     return raw ? JSON.parse(raw) : null
   } catch {
     return null
@@ -33,7 +35,8 @@ function getAvatarFor(id) {
 }
 
 //Validate if you already followed the user
-const FOLLOW_KEY = (uid) => `followed:${uid}`
+const FOLLOW_KEY = (uid) => `followed:${uid}` 
+//Carga lista de seguidos
 function loadFollowed(uid) {
   try {
     const raw = localStorage.getItem(FOLLOW_KEY(uid))
@@ -44,22 +47,25 @@ function loadFollowed(uid) {
     return new Set()
   }
 }
+//Guarda personas seguidas en Local Storage
 function saveFollowed(uid, followedSet) {
   try {
-    localStorage.setItem(FOLLOW_KEY(uid), JSON.stringify(Array.from(followedSet)))
+    localStorage.setItem(FOLLOW_KEY(uid), 
+    JSON.stringify(Array.from(followedSet)))
   } catch { }
 }
 
+
 const Friends = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate()  //Navegación entre rutas
   const [meId, setMeId] = useState(null)
 
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")  //Escritura de prompts
   const [theme, setTheme] = useState("colorful")
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState([])  //Resultados de busqueda
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [followedUsers, setFollowedUsers] = useState(new Set())
+  const [followedUsers, setFollowedUsers] = useState(new Set()) //Ids seguidos
   const [pending, setPending] = useState(new Set())
 
   const debounceRef = useRef(null)
@@ -69,23 +75,51 @@ const Friends = () => {
 
 
   useEffect(() => {
+    //User y Id desde Local storage
     const me = getStoredUser()
     const uid = getUserId(me)
     if (!uid) {
       navigate("/", { replace: true })
       return
     }
-    setMeId(uid)
-    //Get people you already follow
+    setMeId(Number(uid))
+
+    //Get people you already follow on Local storage
     const stored = loadFollowed(uid)
     setFollowedUsers(stored)
   }, [navigate])
 
 
+    useEffect(() => {
+    if (meId == null) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const list = await FriendsApi.getMyFriends(meId);   //Lista de personas seguidas al backend
+        
+        // Lista de IDS numericos
+        const ids = Array.isArray(list)
+          ? list.map(u => Number(u?.id)).filter(Number.isFinite)
+          : [];
+        const serverSet = new Set(ids); //Conjunto sin repetidos
+        if (!cancelled) {
+          setFollowedUsers(serverSet);   
+          saveFollowed(meId, serverSet);  //Se actualiza en local storage las persoans seguidas
+        }
+      } catch {
+        
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [meId]);
+  
 
   //Show data while writing
   useEffect(() => {
     setError("")
+    //Limpiar y cancelar busquedas pendientes
     if (!searchTerm.trim()) {
       setResults([])
       if (abortRef.current) abortRef.current.abort()
@@ -94,7 +128,10 @@ const Friends = () => {
     }
 
     if (debounceRef.current) clearTimeout(debounceRef.current)
+    //Esperar 300 ms para buscar la persona
     debounceRef.current = setTimeout(async () => {
+
+      //Abortar bsuquedas anteriores
       if (abortRef.current) abortRef.current.abort()
       const ctrl = new AbortController()
       abortRef.current = ctrl
@@ -126,56 +163,74 @@ const Friends = () => {
     }, 300)
 
     return () => {
+      //Reincio de temporizador
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
   }, [searchTerm, meId])
 
-
+  
+  //Filtrar el propio ususario en caso de que esté dentro de la lista
   useEffect(() => {
     if (meId == null || results.length === 0) return
     setResults(prev => prev.filter(x => Number(x?.id) !== Number(meId)))
   }, [meId])
 
+  //Guarda el conjunto de seguidos en costante y en local storage
   function setAndPersistFollow(nextSet) {
     setFollowedUsers(nextSet)
     if (meId != null) saveFollowed(meId, nextSet)
   }
 
-
+  //Manejo de seguir/dejar de seguir 
   const handleFollowToggle = async (userId) => {
     if (!meId) return
     if (pending.has(userId)) return
 
-    setPending(prev => new Set(prev).add(userId))
+    setPending(prev => {
+      const ns = new Set(prev)
+      ns.add(userId)
+      return ns
+    })
 
-    const already = followedUsers.has(userId)
-    // UI optimista and persistency of followers
+    const already = followedUsers.has(userId) //Verificar si era ya seguido
+
+    //Seguir dejar de seguir segun followedUsers
     const optimistic = new Set(followedUsers)
-    if (already) optimistic.delete(userId)
+    if (already) optimistic.delete(userId)  
     else optimistic.add(userId)
     setAndPersistFollow(optimistic)
 
     try {
-      if (already) {
-        const res = await FriendsApi.unfollow(meId, userId) //Calling unfollow
-
+      if (already) { //Si ya lo seguia llama backend de unfollow
+        const res = await FriendsApi.unfollow(meId, userId)
         if (res?.error && !/not following/i.test(res.error)) {
           throw new Error(res.error)
         }
-      } else {
-        const res = await FriendsApi.follow(meId, userId) //Calling follow
-
+      } else {  //Si no se seguía llama backend de follow
+        const res = await FriendsApi.follow(meId, userId)
         if (res?.error && !/already following/i.test(res.error)) {
           throw new Error(res.error)
         }
       }
-    } catch (e) {
 
+      //Lista de seguidos según el backend
+      FriendsApi.getMyFriends(meId)
+        .then(list => {
+          const ids = Array.isArray(list) //Ids numericos
+            ? list.map(u => Number(u && u.id)).filter(Number.isFinite)
+            : []
+          const fresh = new Set(ids)  //Conjunto sin repeticiones
+          setAndPersistFollow(fresh)  //Actualizar lista de seguidos 
+        })
+        .catch(() => { })
+
+    } catch (e) {
       const status = e?.status ?? 0
       const msg = (e && e.message) ? e.message : ""
       const idempotentOk =
         (!already && (/already following/i.test(msg) || status === 400)) ||
         (already && (/not following/i.test(msg) || status === 400))
+
       if (!idempotentOk) {
         const revert = new Set(optimistic)
         if (already) revert.add(userId)
@@ -191,7 +246,8 @@ const Friends = () => {
       })
     }
   }
-
+  
+  //Cambio de temas
   const toggleTheme = () => {
     setTheme((prev) => (prev === "colorful" ? "formal" : "colorful"))
   }

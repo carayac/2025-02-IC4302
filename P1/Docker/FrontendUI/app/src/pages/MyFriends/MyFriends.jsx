@@ -3,18 +3,22 @@
 import { useEffect, useMemo, useState, useCallback } from "react"
 import s from "./MyFriends.module.css"
 import { NavLink } from "react-router-dom";
-import { Friends as FriendsApi } from "../../lib/api/APIcalls";
+import { Friends as FriendsApi } from "../../lib/api/APIcalls"; //Objeto de funciones
 
-const navBtnClass = ({ isActive }) => `${s.navButton} ${isActive ? s.active : ""}`;
+// LISTA LOS AMIGOS DEL USUARIO
 
+const navBtnClass = ({ isActive }) => `${s.navButton} ${isActive ? s.active : ""}`; //Navegación entre rutas
+
+//Read the user from Local Storage
 function getStoredUser() {
   try {
-    const raw = localStorage.getItem("user");
+    const raw = localStorage.getItem("user"); //Leer user
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }
 }
+//User id 
 function getUserId(u) {
   if (!u) return null;
   return u.id_user ?? u.id ?? u.userid ?? u.userId ?? u._id ?? null;
@@ -23,15 +27,16 @@ function getUserId(u) {
 
 export default function MyFriends() {
   const [theme, setTheme] = useState("colorful")
-  const [friends, setFriends] = useState([]); 
+  const [friends, setFriends] = useState([]); //lista de amigos
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [busyIds, setBusyIds] = useState(new Set()); 
 
-  const me = getStoredUser();
+  const me = getStoredUser(); //Lectura de usuario registrado
   const myId = useMemo(() => getUserId(me), [me]);
 
   
+  //Lista de amigos
   useEffect(() => {
     let alive = true;
     async function load() {
@@ -43,17 +48,17 @@ export default function MyFriends() {
       setLoading(true);
       setErr("");
       try {
-        const res = await FriendsApi.getMyFriends(myId);
+        const res = await FriendsApi.getMyFriends(myId);  //solicita lista de amigos al backed
         if (!alive) return;
 
         const normalized = (Array.isArray(res) ? res : []).map((f) => ({
           ...f,
           followers:
             typeof f.followers === "number" ? f.followers : Number(f.followers ?? 0),
-          isFollowing: true, 
+          isFollowing: true, //para boton de is following es true
         }));
 
-        setFriends(normalized);
+        setFriends(normalized); //Set lista de amigos
       } catch (e) {
         if (!alive) return;
         setErr(e?.message || "Failed to load your friends.");
@@ -67,12 +72,13 @@ export default function MyFriends() {
     };
   }, [myId]);
 
+  //Cantidad de usuarios seguidos
   const followingCount = useMemo(
     () => friends.filter((f) => f.isFollowing).length,
     [friends]
   );
 
-  
+  //Hanlder para seguir/dejar de seguir
   const handleToggleFollow = useCallback(
     async (friend) => {
       if (!myId || !friend?.id) return;
@@ -82,7 +88,7 @@ export default function MyFriends() {
       setErr("");
 
      
-      const prevFriends = friends;
+      const prevFriends = friends;  //Guarda lista actual
 
       
       const nextFriends = prevFriends.map((f) => {
@@ -95,15 +101,15 @@ export default function MyFriends() {
 
       try {
         if (friend.isFollowing) {
-          
+          //Si ya se seguía, llama al backend para unfollow
           await FriendsApi.unfollow(myId, id);
         } else {
-          
+          //Si no segría, llama al backend para follow
           await FriendsApi.follow(myId, id);
         }
       } catch (e) {
         
-        setFriends(prevFriends);
+        setFriends(prevFriends);  
         setErr(
           e?.message ||
             (friend.isFollowing

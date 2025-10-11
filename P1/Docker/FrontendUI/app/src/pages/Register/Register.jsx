@@ -2,9 +2,10 @@
 
 import { useState } from "react"
 import s from "./Register.module.css"
-import { AuthApi } from "../../lib/api/APIcalls"
+import { AuthApi } from "../../lib/api/APIcalls" //Objeto de endpoints
 import { useNavigate } from "react-router-dom"
 
+//validación de email
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const Register = () => {
@@ -16,11 +17,12 @@ const Register = () => {
     password: "",
   })
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false) 
+  const [showPassword, setShowPassword] = useState(false) //flag para visualizar contraseña
 
   const navigate = useNavigate()
 
+  //Manejo de eventos al hacer cambios en los input
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -37,6 +39,7 @@ const Register = () => {
     const requiredFields = ["name", "lastname", "email", "password"]
     const emptyFields = requiredFields.filter((field) => !formData[field].trim())
 
+    //Validación de campos requeridos
     if (emptyFields.length > 0) {
       setError("Please fill in all required fields")
       return
@@ -60,10 +63,10 @@ const Register = () => {
 
       //Calling Auto-login and saving user
       const user = await AuthApi.login(email, password)
-      localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem("user", JSON.stringify(user)) //Persistencia del usuario logueado
 
       
-      navigate("/feed")
+      navigate("/feed") //Navegación a la pagina del feed
     } catch (err) {
       console.error("Register error:", err)
       const msg = err?.message || err?.error || "Register failed"
@@ -156,7 +159,8 @@ const Register = () => {
               disabled={loading}
               autoComplete="new-password"
             />
-
+            
+            {/* manejo de show password */}
             <button
               type="button"
               onClick={() => setShowPassword((p) => !p)}

@@ -5,18 +5,21 @@ import s from "./Ask.module.css"
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Prompts } from "../../lib/api/APIcalls"; //Objeto de funciones
 
+// LISTA LOS RESULTADOS DE BUSQUEDA Y PUBLICA PROMPTS
 
+//Navegación entre rutas
 const navItemClass = ({ isActive }) =>
   `${s.navItem} ${isActive ? s.active : ""}`
 
 const Ask = () => {
   const [prompt, setPrompt] = useState("")
-  const [searchResults, setSearchResults] = useState([])
-  const [selectedSource, setSelectedSource] = useState("")
+  const [searchResults, setSearchResults] = useState([])  //Resultados de busquedas
+  const [selectedSource, setSelectedSource] = useState("")  //Fuente de busqueda
   const [isSearching, setIsSearching] = useState(false)
   const [hasSearched, setHasSearched] = useState(false);
   const [theme, setTheme] = useState("colorful") // 'colorful' or 'formal'
 
+  //Fuentes disponibles
   const sources = [
     { id: "vector-search", name: "Vector Search", icon: "🔍" },
     { id: "vector-reviews", name: "Vector Reviews", icon: "⭐" },
@@ -31,14 +34,15 @@ const Ask = () => {
   const [postError, setPostError] = useState("");
 
   const inputRef = useRef(null);
-  const user = getStoredUser();
-  const id_user = getUserId(user);
+  const user = getStoredUser(); //Usear de local storage
+  const id_user = getUserId(user);  //id de local storage
 
-  const location = useLocation();
+  const location = useLocation(); //Estado para recibir desde otras pantallas
 
 
   useEffect(() => {
 
+    //Prompt pre cargado de otro pantalla
     const fromState = location.state && location.state.presetPrompt;
 
     //Bringing back the prompt from feed
@@ -50,7 +54,7 @@ const Ask = () => {
 
     const incoming = fromState ?? fromQuery;
     if (incoming && !prompt) {
-      setPrompt(incoming);
+      setPrompt(incoming);  //Set prompt desde otra pantalla
 
       requestAnimationFrame(() => inputRef.current?.focus());
     }
@@ -67,17 +71,18 @@ const Ask = () => {
     }
   }
 
-  //User id for the post Endpoint
+  //User id 
   function getUserId(u) {
     if (!u) return null;
     return u.id_user ?? u.id ?? u.userid ?? u.userId ?? u._id ?? null;
   }
 
+  //handler de boton search
   const handleSearch = () => {
     if (!prompt.trim()) return;
-    setIsSearching(true);
+    setIsSearching(true); 
     setHasSearched(true);
-    setSearchResults([]);
+    setSearchResults([]); //Limpiar resulatdos anteriores
     setSelectedSource("");
 
     // GENERATE ENDPOINT
@@ -91,6 +96,7 @@ const Ask = () => {
     setSearchResults([]);
   }
 
+  //Publicar prompt en el feed
   const handlePublishToFeed = async () => {
     if (!prompt.trim()) {
       inputRef.current?.focus();
@@ -106,8 +112,9 @@ const Ask = () => {
     setPostError("");
 
     try {
+      //Llamar al backend para publicar
       await Prompts.postPrompt(id_user, prompt.trim());
-      setPostOk(true);
+      setPostOk(true);  //Mensaje de exito
       setPrompt("");
       setTimeout(() => setPostOk(false), 1500);
     } catch (e) {

@@ -3,21 +3,24 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react"
 import { useNavigate, NavLink } from "react-router-dom"
 import s from "./Me.module.css"
-import { AuthApi, Prompts } from "../../lib/api/APIcalls"
+import { AuthApi, Prompts } from "../../lib/api/APIcalls" //Objeto de funciones
 
+//PERFIL DEL USUARIO
+
+//Navegación entre rutas
 const navItemClass = ({ isActive }) =>
   `${s.navItem} ${isActive ? s.active : ""}`;
 
-
-
+//Read the user from Local Storage
 function getStoredUser() {
   try {
-    const raw = localStorage.getItem("user")
+    const raw = localStorage.getItem("user")  //Leer user
     return raw ? JSON.parse(raw) : null
   } catch {
     return null
   }
 }
+//User id 
 function getUserId(u) {
   if (!u) return null
   return u.id_user ?? u.id ?? u.userid ?? u.userId ?? u._id ?? null
@@ -36,10 +39,10 @@ export default function Me() {
   const [theme, setTheme] = useState("colorful")
   const [isEditing, setIsEditing] = useState(false)
   const [editingPromptId, setEditingPromptId] = useState(null)
-  const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const [isChangingPassword, setIsChangingPassword] = useState(false) 
 
 
-
+  //Estado con la info de perfil
   const [profile, setProfile] = useState({
     id: null,
     name: "",
@@ -51,13 +54,14 @@ export default function Me() {
     following: 0,
   })
 
-
+  //Formulario de edición de perfil
   const [editForm, setEditForm] = useState({
     name: "",
     lastname: "",
     description: "",
   })
 
+  //Formulario para cambio de contraseña
   const [passwordForm, setPasswordForm] = useState({
     oldpass: "",
     newpass: "",
@@ -65,7 +69,7 @@ export default function Me() {
   })
 
 
-  const [prompts, setPrompts] = useState([])
+  const [prompts, setPrompts] = useState([])  //Para lista de prompts
 
   const [editPromptText, setEditPromptText] = useState("")
   const [loading, setLoading] = useState(true)
@@ -77,6 +81,8 @@ export default function Me() {
 
 
   useEffect(() => {
+
+    //Solicitando user logueado a local storage
     const u = getStoredUser()
     const id = getUserId(u)
     if (!id) {
@@ -90,11 +96,12 @@ export default function Me() {
       setLoading(true)
       setErrorMsg("")
       try {
-        //Showing profile data
+        //Datos del ususario del backend
         const userRes = await AuthApi.me(id)
 
         if (!cancelled && userRes) {
           setProfile((prev) => ({
+            //Asignación del perfil 
             ...prev,
             id: userRes.id ?? id,
             name: userRes.name ?? "",
@@ -104,6 +111,7 @@ export default function Me() {
             followers: Number(userRes.followers ?? 0), 
             following: Number(userRes.following ?? 0), 
           }))
+          //Llena el form de edit con los datos del backenn
           setEditForm({
             name: userRes.name ?? "",
             lastname: userRes.lastname ?? "",
@@ -111,12 +119,14 @@ export default function Me() {
           })
         }
 
-        //Showing prompts
+        //Lista de prompts desde el backend
         const myPrompts = await Prompts.getMyPrompts(id)
 
         if (!cancelled && Array.isArray(myPrompts)) {
           setPrompts(
+
             myPrompts.map((p) => ({
+              //Asignación de valores con lo mandado por el backend
               id: p.id,
               text: p.text,
               createdAt: p.created_at,
@@ -138,9 +148,10 @@ export default function Me() {
     }
   }, [navigate])
 
+  //Handler de editar el perfil
   const handleEditProfile = () => {
-    setIsChangingPassword(false)
-    setIsEditing(true)
+    setIsChangingPassword(false)  //Cerrar vista de editar contraseña 
+    setIsEditing(true)  //Abrir vista de editar
     setEditForm({
       name: profile.name,
       lastname: profile.lastname,
@@ -148,6 +159,7 @@ export default function Me() {
     })
   }
 
+  //Hnalder de editar contraseña
   const handleChangePassword = () => {
     setIsEditing(false)
     setIsChangingPassword(true)
@@ -156,18 +168,20 @@ export default function Me() {
     setInfoMsg("")
   }
 
+  //Hanlder para guardar la edición del perfil
   const handleSaveProfile = async () => {
     if (!profile.id) return
     setSavingProfile(true)
     setErrorMsg("")
     setInfoMsg("")
     try {
-      await AuthApi.editUser({
+      await AuthApi.editUser({  //Cambios enviados al backend
         id: profile.id,
         name: editForm.name,
         lastname: editForm.lastname,
         description: editForm.description,
       })
+      //Cambia los datos del perfil en la UI
       setProfile((prev) => ({
         ...prev,
         name: editForm.name,
@@ -182,9 +196,9 @@ export default function Me() {
       setSavingProfile(false)
     }
   }
-
+  //Handler de cancelar la edición
   const handleCancelEdit = () => {
-    setIsEditing(false)
+    setIsEditing(false) //Oculta vista de editar
     setEditForm({
       name: profile.name,
       lastname: profile.lastname,
@@ -192,6 +206,7 @@ export default function Me() {
     })
   }
 
+  //Handler para guardar la contraseña
   const handleSubmitPassword = async (e) => {
     e.preventDefault()
     if (!profile.id) return
@@ -199,7 +214,7 @@ export default function Me() {
     setErrorMsg("")
     setInfoMsg("")
 
-    // Validaciones mínimas en front
+    // Validaciones mínimas de contraseña
     const { oldpass, newpass, confirm } = passwordForm
     if (!oldpass || !newpass || !confirm) {
       setErrorMsg("Please complete all password fields.")
@@ -214,14 +229,14 @@ export default function Me() {
       return
     }
 
-    setSavingPassword(true)
+    setSavingPassword(true) 
     try {
-      await AuthApi.changePassword({
+      await AuthApi.changePassword({  //Mnada datos de cambio de contraseña al backend
         id: profile.id,
         oldpass,
         newpass,
       })
-      setIsChangingPassword(false)
+      setIsChangingPassword(false)  
       setPasswordForm({ oldpass: "", newpass: "", confirm: "" })
       setInfoMsg("Your password has been updated.")
     } catch (err) {
@@ -232,26 +247,28 @@ export default function Me() {
     }
   }
 
-  //
+  //Hanlder para cancelar cambio de contraseña
   const handleCancelChangePassword = () => {
-    setIsChangingPassword(false)
+    setIsChangingPassword(false)  //Oculta vista
     setPasswordForm({ oldpass: "", newpass: "", confirm: "" })
   }
 
+  //Handler vista de editar prompts
   const handleEditPrompt = (prompt) => {
     setEditingPromptId(prompt.id)
     setEditPromptText(prompt.text)
   }
 
 
-  //Handle of saving prompt
+  //Handler de guardar prompts
   const handleSavePrompt = async (id) => {
     setSavingPrompt(true)
     setErrorMsg("")
     setInfoMsg("")
     try {
-      await Prompts.editPrompt(id, editPromptText)
-      setPrompts((curr) => curr.map((p) => (p.id === id ? { ...p, text: editPromptText } : p)))
+      await Prompts.editPrompt(id, editPromptText)  //Mnada datos al backend
+
+      setPrompts((curr) => curr.map((p) => (p.id === id ? { ...p, text: editPromptText } : p))) //Actualiza lista de prompts local
       setEditingPromptId(null)
       setEditPromptText("")
       setInfoMsg("Your prompt has been updated.")
@@ -262,27 +279,27 @@ export default function Me() {
     }
   }
 
-  //Handle of deleting prompt
+  //Handler de eliminar prompt
   const handleDeletePrompt = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this prompt?")) return
+    if (!window.confirm("Are you sure you want to delete this prompt?")) return //Confirmación de ususario 
     setErrorMsg("")
     setInfoMsg("")
     try {
-      await Prompts.deletePrompt(id)
-      setPrompts((curr) => curr.filter((p) => p.id !== id))
+      await Prompts.deletePrompt(id)  //Solicitud al backend
+      setPrompts((curr) => curr.filter((p) => p.id !== id)) //Actualiza lista local sin la eliminada
       setInfoMsg("Your prompt has been deleted.")
     } catch (err) {
       setErrorMsg("Could not delete this prompt.")
     }
   }
 
-  //Handle of login out
+  //Handler para cerrar sesión
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       try {
-        localStorage.removeItem("user")
+        localStorage.removeItem("user") //Cierra el usuario de Local storage
       } catch { }
-      navigate("/")
+      navigate("/") //Navegación hasta login 
     }
   }
 

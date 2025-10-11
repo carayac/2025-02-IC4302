@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import s from "./Index.module.css"
-import { AuthApi } from "../../lib/api/APIcalls";
+import { AuthApi } from "../../lib/api/APIcalls"; //Objeto de endpoints
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
 
@@ -15,10 +15,11 @@ const Login = () => {
   })
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false) //flag para visualizar contraseña
 
   const navigate = useNavigate()
-
+  
+  //Manejo de eventos al hacer cambios en los input
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -55,10 +56,10 @@ const handleSubmit = async (e) => {
       setLoading(true)
       const user = await AuthApi.login(formData.email, formData.password) 
 
-      localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem("user", JSON.stringify(user)) //Persistencia del usuario logueado
 
       console.log("Login Successfull:", user)
-      navigate("/feed")
+      navigate("/feed") //Navegación a la pagina del feed
 
     } catch (err) {
       console.error("Login error:", err)
@@ -105,7 +106,7 @@ const handleSubmit = async (e) => {
               aria-describedby={error ? "error-message" : undefined}
               disabled={loading}
             />
-
+            {/* manejo de show password */}
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}

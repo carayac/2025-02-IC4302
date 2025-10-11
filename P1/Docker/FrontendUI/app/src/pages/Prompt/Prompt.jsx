@@ -4,27 +4,32 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react"
 import s from "./Prompt.module.css"
 import { Likes } from "../../lib/api/APIcalls"
 import { NavLink } from "react-router-dom"
-import { Prompts } from "../../lib/api/APIcalls"
+import { Prompts } from "../../lib/api/APIcalls" //Objeto de funciones
+
+
+// BUSCA PROMPTS Y PUEDE DAR LIKE
 
 const navItemClass = ({ isActive }) =>
-  `${s.navItem ?? ""} ${isActive ? (s.active ?? "") : ""}`
+  `${s.navItem ?? ""} ${isActive ? (s.active ?? "") : ""}`//Navegación entre rutas
 
+//Read the user from Local Storage
 function getStoredUser() {
   try {
-    const raw = localStorage.getItem("user");
+    const raw = localStorage.getItem("user");//Leer user
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }
 }
+//User id 
 function getUserId(u) {
   if (!u) return null;
   return u.id_user ?? u.id ?? u.userid ?? u.userId ?? u._id ?? null;
 }
 
-const DEBOUNCE_MS = 350;
+const DEBOUNCE_MS = 350;  //Tiempo de espera para buscar mientras se escirbe
 
-
+//Manejo de espera para buscar
 function useDebouncedCallback(fn, delay) {
   const fnRef = useRef(fn);
   const t = useRef(null);
@@ -44,28 +49,31 @@ function useDebouncedCallback(fn, delay) {
 }
 
 
+//Carga de likes que ha realizado el usuario
 function loadLikedSet(userId) {
   if (!userId) return new Set();
   try {
-    const raw = localStorage.getItem(`liked_prompts:${userId}`);
+    const raw = localStorage.getItem(`liked_prompts:${userId}`);  //Lee likes
     const arr = raw ? JSON.parse(raw) : [];
     return new Set(arr);
   } catch {
     return new Set();
   }
 }
+//Guarda en local storage el conjunto de likes
 function saveLikedSet(userId, likedSet) {
   if (!userId) return;
   try {
     localStorage.setItem(
-      `liked_prompts:${userId}`,
+      `liked_prompts:${userId}`,  //Guarda likes
       JSON.stringify(Array.from(likedSet))
     );
   } catch { }
 }
+
 function loadCounts() {
   try {
-    const raw = localStorage.getItem("prompt_like_counts");
+    const raw = localStorage.getItem("prompt_like_counts"); // Carga cantidad de likes
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
@@ -73,7 +81,7 @@ function loadCounts() {
 }
 function saveCounts(mapObj) {
   try {
-    localStorage.setItem("prompt_like_counts", JSON.stringify(mapObj));
+    localStorage.setItem("prompt_like_counts", JSON.stringify(mapObj)); //Guarda cantidad de likes en local storage
   } catch { }
 }
 
@@ -93,7 +101,7 @@ function extractErrorMessage(e, { action } = {}) {
     e?.message ??
     e?.toString?.();
 
-
+  //Manejo de erores
   if (status === 409 || code === "ALREADY_LIKED") {
     return "Ya habías dado like a este prompt.";
   }
@@ -127,6 +135,7 @@ function extractErrorMessage(e, { action } = {}) {
 }
 
 
+
 function useToast(autoHideMs = 3500) {
   const [toast, setToast] = useState({ open: false, text: "", type: "error" });
   const timerRef = useRef(null);
@@ -148,26 +157,22 @@ function useToast(autoHideMs = 3500) {
 }
 
 const Prompt = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); //texto de busqueda
   const [theme, setTheme] = useState("colorful");
-
-  const [prompts, setPrompts] = useState([]); // prompts from api
+  const [prompts, setPrompts] = useState([]); //lista de prompts
   const [loading, setLoading] = useState(false);
-
-
   const [err, setErr] = useState("");
-
-
   const { toast, show: showToast, hide: hideToast } = useToast(3500);
 
-  const user = getStoredUser();
+  const user = getStoredUser(); //Lee user desde local storage
   const userId = getUserId(user);
+  const [likedSet, setLikedSet] = useState(() => loadLikedSet(userId)); //Contador de likes
 
-  const [likedSet, setLikedSet] = useState(() => loadLikedSet(userId));
   useEffect(() => {
-    setLikedSet(loadLikedSet(userId));
+    setLikedSet(loadLikedSet(userId));  //Guarda lieks cada vez que se actualiza
   }, [userId]);
 
+  //contador de likes para local stge
   const [likeCounts, setLikeCounts] = useState(() => loadCounts());
   useEffect(() => {
     saveCounts(likeCounts);
@@ -176,10 +181,11 @@ const Prompt = () => {
 
   const requestIdRef = useRef(0);
 
+  //Handler para buscar 
   const handleSearch = useCallback(async (q) => {
     const id = ++requestIdRef.current;
 
-    if (!q || !q.trim()) {
+    if (!q || !q.trim()) {  //Limpia resultados si no está en busqueda
       if (id === requestIdRef.current) {
         setPrompts([]);
         setErr("");
@@ -192,14 +198,16 @@ const Prompt = () => {
     setErr("");
 
     try {
-      const res = await Prompts.search(q.trim());
+      const res = await Prompts.search(q.trim()); //Solicita lista de prompts al backend
       const dataRaw = Array.isArray(res) ? res : (res?.data ?? []);
+      //ordena por id como texto 
       const data = [...dataRaw].sort((a, b) => {
         const ai = String(a.id ?? "");
         const bi = String(b.id ?? "");
         return ai.localeCompare(bi);
       });
 
+      //Si el resultado no es el mas recite se ignora
       if (id !== requestIdRef.current) return;
       setPrompts(data);
     } catch (e) {
@@ -213,10 +221,11 @@ const Prompt = () => {
   const debouncedSearch = useDebouncedCallback(handleSearch, DEBOUNCE_MS);
 
   useEffect(() => {
-    debouncedSearch(searchTerm);
+    debouncedSearch(searchTerm);  
 
   }, [searchTerm]);
 
+  //Dar like a un prompt
   const likePrompt = async (promptId) => {
     if (!userId) {
       const msg = "No se pudo identificar al usuario.";
@@ -225,12 +234,12 @@ const Prompt = () => {
       return;
     }
     if (likedSet.has(promptId)) {
-
+      //Error si el usuario ya habia dado like
       showToast("Ya habías dado like a este prompt.");
       return;
     }
 
-    // UI optimista
+    //Muestra like en UI al instante
     const prevLiked = new Set(likedSet);
     const nextLiked = new Set(likedSet);
     nextLiked.add(promptId);
@@ -242,9 +251,9 @@ const Prompt = () => {
     setLikeCounts(nextCounts);
 
     try {
-      await Likes.like(userId, promptId);
+      await Likes.like(userId, promptId); //Manda solicitud al backend
     } catch (e) {
-
+      //En caso de fallo, vuleve los likea a los actuales
       setLikedSet(prevLiked);
       saveLikedSet(userId, prevLiked);
       setLikeCounts(prevCounts);
@@ -254,7 +263,7 @@ const Prompt = () => {
       showToast(msg);
     }
   };
-
+  //Dar unlike
   const unlikePrompt = async (promptId) => {
     if (!userId) {
       const msg = "No se pudo identificar al usuario.";
@@ -267,7 +276,7 @@ const Prompt = () => {
       return;
     }
 
-    // UI optimista
+    //Quita el like en UI
     const prevLiked = new Set(likedSet);
     const nextLiked = new Set(likedSet);
     nextLiked.delete(promptId);
@@ -282,9 +291,10 @@ const Prompt = () => {
     setLikeCounts(nextCounts);
 
     try {
-      await Likes.unlike(userId, promptId);
+      await Likes.unlike(userId, promptId); //Solicita unlike post al backend
     } catch (e) {
 
+      //En caso de error, restaura todo a lo actual
       setLikedSet(prevLiked);
       saveLikedSet(userId, prevLiked);
       setLikeCounts(prevCounts);

@@ -3,16 +3,19 @@
 import { useEffect, useMemo, useState, useCallback } from "react"
 import s from "./Feed.module.css"
 import { NavLink, useNavigate } from "react-router-dom";
-import { Prompts } from "../../lib/api/APIcalls";
+import { Prompts } from "../../lib/api/APIcalls"; //Objeti de endpoints
 
+//MUESTRA PROMPTS PROPIOS Y DE AMIGOS
+//PERMITE BUSCAR EL PROMPT DIRECTAMENTE 
 
+//Navegación entre rutas
 const navItemClass = ({ isActive }) =>
   `${s.navBtn} ${isActive ? s.active : ""}`;
 
-//Geting the main user
+//Geting the main user from Local Storage
 function getStoredUser() {
   try {
-    const raw = localStorage.getItem("user");
+    const raw = localStorage.getItem("user"); //User guardado
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -23,11 +26,11 @@ function getUserId(u) {
   return u.id_user ?? u.id ?? u.userid ?? u.userId ?? u._id ?? null;
 }
 
-//Posting time 
+//Conversión de la fecha a tiempo de publicacion
 function timeAgo(input) {
   if (!input) return "";
-  const date = new Date(input);
-  const diffSec = Math.floor((date.getTime() - Date.now()) / 1000);
+  const date = new Date(input); //Convierte texto a fecha
+  const diffSec = Math.floor((date.getTime() - Date.now()) / 1000); //Calcula diferencia con la hora actual
   const rtf = new Intl.RelativeTimeFormat("es", { numeric: "auto" });
   const steps = [
     ["second", 60], ["minute", 60], ["hour", 24],
@@ -43,13 +46,13 @@ function timeAgo(input) {
 
 export default function Feed() {
   const [theme, setTheme] = useState("colorful");
-  const [feedPosts, setFeedPosts] = useState([]);
+  const [feedPosts, setFeedPosts] = useState([]); //Guarda los posts que se mostrarán
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
 
-  const user = useMemo(() => getStoredUser(), []);
-  const id_user = useMemo(() => getUserId(user), [user]);
+  const user = useMemo(() => getStoredUser(), []);  //Scaa el usuario de local storage
+  const id_user = useMemo(() => getUserId(user), [user]); //Scaa el id de user
   const username = user?.name || user?.username || "me";
 
   const navigate = useNavigate();
@@ -60,6 +63,7 @@ export default function Feed() {
     return [maybeArrayOrObj];
   }
 
+  //Organización de la infromación de un post
   function mapPrompt(p) {
     const authorName = `${p.name ?? ""} ${p.lastname ?? ""}`.trim()
       || p.username
@@ -78,33 +82,36 @@ export default function Feed() {
     };
   }
 
+  //Función para cargar los posts propios y de amigos
   const load = useCallback(async () => {
     setLoading(true);
     setErr("");
     try {
       const [mineRaw, feedRaw] = await Promise.all([
-        Prompts.getMyPrompts(id_user),
-        Prompts.getFeed(id_user), // Calling endpoints
+        Prompts.getMyPrompts(id_user),  //Propios posts
+        Prompts.getFeed(id_user), //Friends posts
       ]);
 
+      //Normaliza la respuesta
       const mine = normalizeArray(mineRaw).map((p) => mapPrompt(p, username));
       const friendsFeed = normalizeArray(feedRaw).flatMap((item) =>
         normalizeArray(item).map((p) => mapPrompt(p))
       );
 
+      //Mapea los posts repetidos y los quita
       const byId = new Map();
       [...mine, ...friendsFeed].forEach((p) => {
         if (!byId.has(p.id)) byId.set(p.id, p);
       });
 
-      // Order by date
+      // Ordena los post por fecha
       const merged = Array.from(byId.values()).sort((a, b) => {
         const ta = a.createdAtISO ? new Date(a.createdAtISO).getTime() : 0;
         const tb = b.createdAtISO ? new Date(b.createdAtISO).getTime() : 0;
         return tb - ta;
       });
 
-      setFeedPosts(merged);
+      setFeedPosts(merged); //Guarda los resultados en la constante de estado
     } catch (e) {
       setErr(e.message || "Error loading feed.");
     } finally {
@@ -112,11 +119,11 @@ export default function Feed() {
     }
   }, [id_user, username]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [load]); //Ejecuta load una vez se abra la pagina
 
   const refresh = load;
 
-
+  //Redirige a /ask en caso de que se quiera buscar el prompt con el promt seleccionado
   const handleBuscar = (post) => {
     navigate("/ask", { state: { presetPrompt: post.prompt ?? "" } });
   };
