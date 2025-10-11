@@ -10,6 +10,7 @@ kibana:
   name: ic4302
 
 mariadb:
+  replicas: 3
   enabled: true
   image:
     registry: docker.io

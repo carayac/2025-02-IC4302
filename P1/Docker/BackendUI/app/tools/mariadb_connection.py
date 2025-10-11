@@ -19,7 +19,7 @@ DB_PASSWORD = os.getenv("MARIADB_PASS")
 #mariadb connection pool
 mariadb_pool = None
 
-#Function to create a connection to the MariaDB database
+#Function to create a connection to the MariaDB database from promptsy database
 def init_connection():
     global mariadb_pool
     try:

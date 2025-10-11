@@ -1,3 +1,4 @@
+{{- if .Values.config.consumerCSV.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -90,4 +91,4 @@ spec:
       volumes:
         - name: data-volume
           emptyDir: {}
-
+{{- end }}

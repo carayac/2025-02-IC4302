@@ -1,5 +1,6 @@
 from flask import Blueprint, request,jsonify
 from tools.mariadb_connection import execute_query
+from tools.elastic_connection import execute_query_es, execute_vector_query, execute_text_search_by_title
 from tools.embbeding import get_embedding
 import logging
 import sys
@@ -25,17 +26,92 @@ def generate():
         #get the embedding
         response = get_embedding(text)
         embedding = response["embedding"]
+        # run searches
+        # reviews vector search
+        #rv_hits = execute_vector_query("reviews", embedding)
+        #reviews_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (rv_hits or [])]
 
-        #get the results by the text embedding
+        #reviews text search (nreviews index uses text+summary)
+        rt_hits = execute_text_search_by_title("nreviews", text, match_phrase=False, fuzziness="AUTO", fields=["title", "review_text", "review_summary"]) or []
+        reviews_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in rt_hits]
+
+        #books vector search
+        #bv_hits = execute_vector_query("books", embedding)
+        #books_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (bv_hits or [])]
+
+        #books text search (nbooks index searches description)
+        bt_hits = execute_text_search_by_title("nbooks", text, match_phrase=False, fuzziness="AUTO", fields=["title", "description"]) or []
+        books_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in bt_hits]
+
+        #maria db search
+        #mariaresult = search_mariadb(text)
+
+        combined = {
+            "reviews_text": reviews_text,
+            "books_text": books_text
+        }
 
 
-        
-        return jsonify(response["embedding"]), 400
+        """ combined = {
+            "reviews_vector": reviews_vector,
+            "reviews_text": reviews_text,
+            "books_vector": books_vector,
+            "books_text": books_text,
+            "mariadb": mariaresult
+        } """
+
+
+        return jsonify(combined), 200
     except Exception as e:
         logger.error(f"Error posting prompt: {e}")
         return {"error": "Error generating prompt"}, 500
 
 
+#auxiliar methods for searching reviews with vectors search in elasticsearch
+def search_vector(embedding,name):
+    #call the function in elastic_connection to do the vector search
+    result = execute_vector_query(name, embedding)
+    # result is a list of hit dicts
+    try:
+        if result:
+            return jsonify(result)
+        return None
+    except Exception as e:
+        logger.error(f"Error converting vector search results to json: {e}")
+        return None
+
+#auxiliar methods for searching reviews with text search in elasticsearch
+def search_esText(text,name):
+
+    # choose fields depending on index
+    try:
+        if name == "nbooks":
+            fields = ["description"]
+        elif name == "nreviews":
+            fields = ["review_text", "review_summary"]
+        else:
+            fields = ["title"]
+
+        result = execute_text_search_by_title(name, text, match_phrase=False, fuzziness="AUTO", fields=fields)
+
+        # result is a list of hits
+        if result:
+            return jsonify(result)
+        return None
+    except Exception as e:
+        logger.error(f"Error executing text search for index {name}: {e}")
+        return None
+
+
+
+
+#auxiliar methods for searching books and reviews in mariadb
+def search_mariadb(text):
+    return text
+
+#auxiliar method to create a json response with the five search results
+def create_json_response(data):
+    return jsonify({"data": data})
 
 #auxiliar methods for posting a prompt
 def insert_prompt(text, id_user):

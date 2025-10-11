@@ -37,6 +37,19 @@ spec:
                 name: databases-mariadb
                 key: mariadb-root-password
                 optional: false
+          - name: ELASTIC_HOST
+            value: "ic4302-es-http"
+          - name: ELASTIC_PORT
+            value: "9200"
+          - name: ELASTIC_USER
+            value: "elastic"
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ic4302-es-elastic-user
+                key: elastic
+                optional: false
+
           {{- if .Values.config.backend.useMemcached }}
           - name: MEMCACHED_HOST
             value: "databases-memcached"
