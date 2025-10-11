@@ -1,0 +1,53 @@
+{
+  "title": "Ingest Metrics",
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "pluginId": "prometheus",
+        "label": "Prometheus"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Total Objetos Procesados",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (componente) (total_objetos_procesados_total{componente=\"ingest\"})",
+          "legendFormat": "{{componente}}"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "graph",
+      "title": "Tiempo Promedio de Procesamiento por Objeto (segundos)",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(tiempo_procesamiento_objeto_sum{componente=\"ingest\"}[1m]) / rate(tiempo_procesamiento_objeto_count{componente=\"ingest\"}[1m])",
+          "legendFormat": "Promedio (último minuto)"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    },
+    {
+      "type": "stat",
+      "title": "Objetos con Error",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 6 },
+      "targets": [
+        {
+          "expr": "sum by (componente) (objetos_error_total{componente=\"ingest\"})",
+          "legendFormat": "Errores"
+        }
+      ],
+      "datasource": "${DS_PROMETHEUS}"
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

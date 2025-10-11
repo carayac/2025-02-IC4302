@@ -53,7 +53,8 @@ spec:
   selector:
     app: {{ .Values.config.backend.name }}
   ports:
-    - protocol: TCP
+    - name: metrics3
+      protocol: TCP
       port: 5000
       targetPort: 5000
       nodePort: 30080

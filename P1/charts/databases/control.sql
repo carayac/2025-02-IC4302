@@ -5,7 +5,7 @@ USE promptsy;
 -- Tabla de objetos procesados
 CREATE TABLE IF NOT EXISTS objects (
     id INT AUTO_INCREMENT PRIMARY KEY,   
-    key_name VARCHAR(512) NOT NULL,
+    key_name VARCHAR(512) NOT NULL UNIQUE,  -- 🔹 Se agrega UNIQUE aquí
     fecha_proceso DATETIME DEFAULT CURRENT_TIMESTAMP,
     num_documents INT,
     procesado BIT DEFAULT 0
@@ -15,15 +15,14 @@ CREATE TABLE IF NOT EXISTS objects (
 CREATE TABLE IF NOT EXISTS books (
     id INT AUTO_INCREMENT PRIMARY KEY,
     object_key VARCHAR(512) NOT NULL,
-    title VARCHAR(500),
+    title VARCHAR(1000),
     description TEXT,
     published_date DATE,
-    publisher VARCHAR(255),
+    publisher VARCHAR(1000),
     preview_link TEXT,
     info_link TEXT,
     image_link TEXT,
-    ratings_count INT,
-    CONSTRAINT fk_books_object FOREIGN KEY (object_key) REFERENCES objects(key_name)
+    ratings_count INT
 );
 
 -- Autores
@@ -56,26 +55,28 @@ CREATE TABLE IF NOT EXISTS book_categories (
     CONSTRAINT fk_bc_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
-
+-- Ayuda para procesar reviews
+CREATE TABLE pending_review_links (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    review_object_key VARCHAR(255) NOT NULL,
+    book_title VARCHAR(1000) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    processed BOOLEAN DEFAULT FALSE
+);
 
 -- Tabla de reseñas
 CREATE TABLE IF NOT EXISTS reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     object_key VARCHAR(512) NOT NULL,
-    book_id INT NOT NULL,
-    title VARCHAR(500),
+    book_id INT,
+    title VARCHAR(1000),
     price DECIMAL(10,2),
     user_id VARCHAR(50),
     profile_name VARCHAR(255),
-    review_helpfulness VARCHAR(20),
+    review_helpfulness VARCHAR(1000),
     review_score FLOAT,
     review_time DATETIME,
     review_summary TEXT,
     review_text TEXT,
-    CONSTRAINT fk_reviews_object FOREIGN KEY (object_key) REFERENCES objects(key_name),
     CONSTRAINT fk_reviews_book FOREIGN KEY (book_id) REFERENCES books(id)
 );
-
-
-
-

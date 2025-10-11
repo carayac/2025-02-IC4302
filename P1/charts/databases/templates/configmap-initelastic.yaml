@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-initelastic
+data:
+  elastic-mappings.json: |-
+{{ .Files.Get "elastic-mappings.json" | indent 4 }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-elastic
+spec:
+  template:
+    spec:
+      containers:
+      - name: elastic-init
+        image: ubuntu:22.04
+        env:
+          - name: ELASTIC_USER
+            value: "elastic"
+          - name: ELASTIC_PASS
+            valueFrom:
+              secretKeyRef:
+                name: ic4302-es-elastic-user
+                key: elastic
+                optional: false
+          - name: ELASTIC_HOST
+            value: "ic4302-es-http"
+        command:
+          - /bin/bash
+          - -c
+          - |
+            apt-get update && apt-get install -y curl jq
+
+            ES_HOST="http://$ELASTIC_HOST:9200"
+            ES_USER="$ELASTIC_USER"
+            ES_PASS="$ELASTIC_PASS"
+            JSON_FILE="/config/elastic-mappings.json"
+
+            echo "Esperando a Elasticsearch..."
+            until curl -s -u $ES_USER:$ES_PASS $ES_HOST >/dev/null 2>&1; do sleep 5; done
+            echo "Elasticsearch listo"
+
+            for index in $(jq -r 'keys[]' $JSON_FILE); do
+              echo "Procesando índice $index..."
+              STATUS=$(curl -s -u $ES_USER:$ES_PASS -o /dev/null -w "%{http_code}" $ES_HOST/$index)
+              if [ "$STATUS" != "200" ]; then
+                curl -u $ES_USER:$ES_PASS -X PUT "$ES_HOST/$index" \
+                  -H 'Content-Type: application/json' \
+                  -d "$(jq -c ".[$index]" $JSON_FILE)"
+                echo "Índice $index creado"
+              else
+                echo "Índice $index ya existe"
+              fi
+            done
+
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+      restartPolicy: OnFailure
+      volumes:
+      - name: config-volume
+        configMap:
+          name: configmap-initelastic
+
+

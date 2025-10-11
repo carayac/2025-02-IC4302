@@ -2,6 +2,24 @@ import os
 import boto3
 import pika
 import logging
+import time
+import threading
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from flask import Flask, Response
+
+app = Flask(__name__)
+
+# --- MÉTRICAS ---
+documentos_procesados = Counter(
+    'total_documentos_procesados',
+    'Total documentos procesados',
+    ['componente']
+)
+tiempo_total = Histogram(
+    'tiempo_total_crawler',
+    'Tiempo total de ejecución del crawler',
+    ['componente']
+)
 
 # Configuración de logging
 logging.basicConfig(
@@ -30,9 +48,8 @@ def rabbitmq_connection():
         parameters = pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials)
         connection = pika.BlockingConnection(parameters)
         channel = connection.channel()
-        # Crear ambas colas 
-        channel.queue_declare(queue=RABBITMQ_QUEUE_CSV, durable=True)
-        channel.queue_declare(queue=RABBITMQ_QUEUE_PARKET, durable=True)
+        channel.queue_declare(queue=RABBITMQ_QUEUE_CSV, durable=False)
+        channel.queue_declare(queue=RABBITMQ_QUEUE_PARKET, durable=False)
         logging.info("Conexión a RabbitMQ exitosa y colas creadas")
         return connection, channel
     except Exception as e:
@@ -47,7 +64,7 @@ def publish_message(channel, queue, message):
             exchange='',
             routing_key=queue,
             body=message,
-            properties=pika.BasicProperties(delivery_mode=2)  # Persistente
+            properties=pika.BasicProperties(delivery_mode=1)
         )
         logging.info(f"Mensaje publicado en {queue}: {message}")
     except Exception as e:
@@ -65,6 +82,7 @@ s3 = boto3.client(
 
 def crawl_bucket():
     """Recorre el bucket S3, filtra archivos y publica según su tipo."""
+    start_time = time.time()
     connection, channel = rabbitmq_connection()
 
     for prefix in S3_PREFIXES:
@@ -81,28 +99,36 @@ def crawl_bucket():
             for obj in response.get("Contents", []):
                 key = obj["Key"]
 
-                # Ignorar archivos irrelevantes
                 if key.endswith(".crc") or key.endswith("_SUCCESS"):
                     continue
 
-                # Clasificar por tipo de archivo
                 if key.endswith(".json"):
                     publish_message(channel, RABBITMQ_QUEUE_CSV, key)
+                    documentos_procesados.labels(componente="crawler").inc()
                 elif key.endswith(".parquet"):
                     publish_message(channel, RABBITMQ_QUEUE_PARKET, key)
-                else:
-                    continue
+                    documentos_procesados.labels(componente="crawler").inc()
 
-            if response.get("IsTruncated"): #revisa si hay más objetos
+            if response.get("IsTruncated"):
                 continuation_token = response.get("NextContinuationToken")
-            else: 
+            else:
                 break
 
     connection.close()
-    logging.info("Crawler finalizado correctamente.")
+    duracion = time.time() - start_time
+    tiempo_total.labels(componente="crawler").observe(duracion)
+    logging.info(f"Crawler completado en {duracion:.2f} segundos.")
+
+
+@app.route("/metrics")
+def metrics():
+    """Endpoint para Prometheus."""
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 
 if __name__ == '__main__':
+    threading.Thread(
+        target=lambda: app.run(host='0.0.0.0', port=8000, debug=False, use_reloader=False)
+    ).start()
+
     crawl_bucket()
-
-

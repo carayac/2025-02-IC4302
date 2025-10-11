@@ -1,0 +1,38 @@
+{{- if .Values.config.producer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.config.producer.name }}-metrics
+  labels:
+    app: {{ .Values.config.producer.name }}
+    release: prometheus
+spec:
+  ports:
+    - name: metrics2
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: {{ .Values.config.producer.name }}
+{{- end }}
+
+---
+{{- if .Values.config.producer.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.config.producer.name }}-monitor
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.config.producer.name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: metrics2
+      path: /metrics
+      interval: 15s
+{{- end }}

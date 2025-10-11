@@ -3,4 +3,6 @@ mariadb
 boto3
 requests
 pandas
-elasticsearch
+elasticsearch==8.13.0
+pyarrow
+prometheus_client

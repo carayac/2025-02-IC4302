@@ -1,4 +1,4 @@
-prometheus: 
+prometheus:
   namespace: monitoring
 dashboards:
   elasticsearch:
@@ -12,4 +12,16 @@ dashboards:
   memcached:
     name: memcached
     file: memcached.json
+    enable: true
+  huggingface:
+    name: huggingface
+    file: huggingface.json
+    enable: true
+  crawler:
+    name: crawler
+    file: crawler.json
+    enable: true
+  ingest:
+    name: ingest
+    file: ingest.json
     enable: true

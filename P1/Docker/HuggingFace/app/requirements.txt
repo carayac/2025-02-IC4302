@@ -1,2 +1,5 @@
 flask
 sentence-transformers
+pytest
+numpy
+prometheus_client

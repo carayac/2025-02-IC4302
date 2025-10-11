@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: {{ .Values.config.consumerCSV.name }}
-          image: bitnamilegacy/rabbitmq:3.12.12-debian-11-r15
+          image: {{ .Values.config.docker_registry }}/{{ .Values.config.consumerCSV.image }}
           env:
             - name: DATAFROMK8S
               value: "Hey"
@@ -46,7 +46,7 @@ spec:
               value: "categories"
             - name: MARIADB_TABLE_AUTHORS_BOOKS
               value: "book_authors"
-            - name: MARIADB_TABLE_CATEORIES_BOOKS
+            - name: MARIADB_TABLE_CATEGORIES_BOOKS
               value: "book_categories"
             - name: MARIADB_DB
               value: "promptsy"
@@ -66,19 +66,31 @@ spec:
                   name: ic4302-es-elastic-user
                   key: elastic
                   optional: false
-            - name: ELASTIC
+            - name: ELASTIC_HOST
               value: "ic4302-es-http"
-            - name: BUCKET_NAME
-              value: "ic_tec_dataset"             
-            - name: AWS_ACCESS_KEY_ID
+            - name: ELASTIC_INDEX_BOOKS
+              value: "books"
+            - name: ELASTIC_INDEX_NBOOKS
+              value: "nbooks"
+            - name: AWS_BUCKET
+              value: "ic-tec-dataset"
+            - name: AWS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: aws-secret    
-                  key: AWS_ACCESS_KEY   
-            - name: AWS_SECRET_ACCESS_KEY
+                  key: AWS_ACCESS_KEY
+            - name: AWS_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: aws-secret
                   key: AWS_SECRET_KEY
             - name: AWS_REGION
               value: "us-east-1"
+            - name: EMBEDDINGENDPOINT
+              value: "http://huggingface:5000/encode"
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+      volumes:
+        - name: data-volume
+          emptyDir: {}

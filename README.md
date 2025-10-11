@@ -102,7 +102,22 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
   
 <details>
   <summary>Desplegar información</summary> 
-info
+
+### HuggingFace  
+<details>
+  <summary>Desplegar información</summary>
+
+Se realizaron tres pruebas unitarias con pytest a esta API para comprobar su funcionalidad:
+
+- Verificación de que el endpoint encode retorne la información correcta 
+- Verificación de que el endpoint status retorne la información correcta
+- Verificación de que se valide el campo "text"
+
+![Imagen test 2025-10-08 a las 20 13 22_07747d3f](https://github.com/user-attachments/assets/19ec81ea-0611-4c35-9ca0-9616e9f1e081)
+
+</details>
+
+  
 </details>
 
 
@@ -118,7 +133,13 @@ A continuación se presenta un resumen de lo componentes aplicado en el proyecto
     
 ### Registro / Inicio de sesión
 Se implementan dos pantallas, una para crear cuenta y otra para iniciar sesión. En el registro se validan los campos básicos nombre completo, correo, descripcion y contraseña.  Toda la información relacionada al cliente es guardado en MariaDB. 
-En el inicio de sesión se toma el correo y la contraseña para la validación de existencia del usuario.
+En el inicio de sesión se toma el correo y la contraseña para la validación de existencia del usuario.  
+
+<img width="300" height="400" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/login.png" />  
+
+
+
+<img width="400" height="400" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/register.png" />
   
 ### Menú de navegación
   Al entrar, la persona podrá ver una barra de navegación para poder ingresar a cualquiera de las distincas opciones y navegar facilmente a cada función
@@ -132,24 +153,31 @@ En el inicio de sesión se toma el correo y la contraseña para la validación d
 ### Find Book
 Para Find Book se presenta un campo de busqueda, donde el usuario escribe la necesidad de tipo de libros que desea buscar y con respecto a su petición podrá tener dos opciones: **Buscar** o **Publicar**
 Al buscar podrá obtener resultados de ta ta ta en los que podrá conusltar información general de los libros obtenidos.  
-Al utilizar la opcion de publicar, el prompt o petición del usuario será publicado en el feed para ser consultado en un futuro o para que sea visto por sus amigos. 
+Al utilizar la opcion de publicar, el prompt o petición del usuario será publicado en el feed para ser consultado en un futuro o para que sea visto por sus amigos.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/findBooks.png" />
   
 ### Search Prompts
-En Search Prompts se realiza una barra de búsqueda que filtra prompts por el texto y por el nombre de usuario. Cada tarjeta de prompt mostrada incluye la acción de "like". Cuando el usuario da like, se realiza una actualización de likes en los prompts del usuario y ese prompt también se agrega al Feed del usuario que dio like. 
+En Search Prompts se realiza una barra de búsqueda que filtra prompts por el texto y por el nombre de usuario. Cada tarjeta de prompt mostrada incluye la acción de "like". Cuando el usuario da like, se realiza una actualización de likes en los prompts del usuario y ese prompt también se agrega al Feed del usuario que dio like.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/searchPrompts.png" />
   
 ### Find Friends
-Para Find Friends se construye un buscador por nombre. Cada resultado se presenta con un pequeño perfil con el nombre del usuarios y cantidad de followers, además de un botón de "Follow" para poder agregarlo a sus amigos.
+Para Find Friends se construye un buscador por nombre. Cada resultado se presenta con un pequeño perfil con el nombre del usuarios y cantidad de followers, además de un botón de "Follow" para poder agregarlo a sus amigos.  
+
   
 ### Feed
-El Feed mezcla los prompts propios y los de la gente que el usuario sigue, ordenados del más reciente al más antiguo.   También al lado del prompt puede econctrar el botón de **buscar** de esta manera si el usuario quiere buscar los resultados que puede arrojar ese prompt lo puede hacer.
+El Feed mezcla los prompts propios y los de la gente que el usuario sigue, ordenados del más reciente al más antiguo.   También al lado del prompt puede econctrar el botón de **buscar** de esta manera si el usuario quiere buscar los resultados que puede arrojar ese prompt lo puede hacer.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/feed.png" />
 
 ### Friends
-La sección Friends lista a las personas que el usuario ya sigue, así como la opcion de dejarlos de seguir si así lo decide.
+La sección Friends lista a las personas que el usuario ya sigue, así como la opcion de dejarlos de seguir si así lo decide.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/feed.png" />
   
 ### Me
 En Me se centralizan dos cosas: el perfil del usuario y la gestión de sus prompts. Para el perfil se muestra el nombre, apellido, descripción y correo.  Se permite editarlos.  
 Para los prompts propios, se muestra una lista editable con opciones para modificar o borrar el prompt. La idea con esta funcionalidad es que el usuario tenga control total de su información y contenido de manera facil.  
-Por último se presenta el botón de **logout** para cerrar sesión y redirigir a la pantalla de inicio de sesión
+Por último se presenta el botón de **logout** para cerrar sesión y redirigir a la pantalla de inicio de sesión.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/me.png" />  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/me2.png" />
 
 </details>  
 
@@ -678,6 +706,13 @@ Verifica disponibilidad del servicio para Kubernetes.
 
 4. Al desarrollar la aplicación se establece una interfaz intuitiva para la interacción con el sistema, se crea una aplicación similar a una red social para que los usuarios puedasn descubrir nuevos libros por medio de busquedas vectoriales y a la vez compartir sus busquedas con otras personas.
 
+5. El uso de Memcached mejora significativamente el rendimiento de la API, ya que evita llamadas redundantes a la base de datos y optimiza la experiencia de usuario al entregar respuestas más rápidas.
+
+6. El uso de logs mejora la capacidad de monitoreo y depuración de la aplicación, permitiendo identificar errores, clasificar el tipo y llevar un registro del tiempo de cada uno.
+
+7. Utilizar el servicio AWS S3 como fuente de datos y RabbitMQ como cola intermedia permite un flujo eficiente en el flujo y en el procesamiento, permitiendo usar esta infraestructura para datasets grandes.
+
+8. El uso de una arquitectura modular, donde el crawler y los consumidores funcionan como componentes independientes, facilita la escalabilida y el mantenimiento del sistema. 
 
 </details>
 
@@ -695,6 +730,14 @@ Se recomienda generar un script de inicialización de la base de datos, integrad
 3.  Al desarrollar la UI se recomienda separar la vista de los datos, de manera que exista un componente que se encargue unicamente de hacer las peticiones, esto permite mejor entendimiento y facilidad a la hora de detectar errores.
 
 4.  Utilizar mensajes para el usuario a la hora de que interactue con el sistema, al momento de que algo sale bien o algo sale mal.  Esto permite que tengan mejor enteindimiento de lo que se está haciendo y mejora la experiencia de uso al evitar confusiones.
+
+5.  Implementar Memcached para almacenar los resultados de consultas frecuentes permite reducir la carga sobre la base de datos y minimizar la latencia en las respuestas. También, es recomendable definir un tiempo de expiración apropiado para los datos cacheados.
+
+6.  Usar logs en lugar de prints como se hacia anteriormente, ya que este es mejor debido que se puede definir por categorias los mensajes (info, warning, error, debug). Además, de que nos indican el timestamp lo cual es muy beneficioso y no lo realizan los prints.
+
+7.  Se recomienda aprovechar los servicios cloud y los patrones de mensajería modernos, como AWS S3 y como RabbitMQ, para así poder tener escalabilidad en los proyectos, estando preparados para trabajar con datasets enormes.
+
+8. Al trabajar en procesamiento de datos grandes, se recomienda seguir el patrón producer-consumer. En el caso del proyecto esto se ve en la separación de componentes: Crawler, Ingest y una cola que los comunica, esto favorece la escalabilidad horizontal, el añadir cosas nuevas y la mantenibilidad.
 
 </details>
 
