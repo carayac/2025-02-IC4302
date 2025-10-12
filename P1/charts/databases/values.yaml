@@ -10,7 +10,7 @@ kibana:
   name: ic4302
 
 mariadb:
-  replicas: 3
+  replicas: 1
   enabled: true
   image:
     registry: docker.io
@@ -20,10 +20,15 @@ mariadb:
     database: "promptsy"
   initdbScriptsConfigMap: "configmap-initdb"
   metrics:
-    enabled: false
+    enabled: true
+    image:
+      registry: docker.io
+      repository: bitnamilegacy/mysqld-exporter  
+      tag: 0.15.0-debian-11-r17
     serviceMonitor:
-      enabled: false
+      enabled: true
       namespace: "monitoring"
+
 
 #Version before bitnami's migration:
 
