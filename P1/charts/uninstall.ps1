@@ -14,3 +14,11 @@ Start-Sleep -Seconds 15
 helm uninstall databases
 Start-Sleep -Seconds 60
 
+# Desinstalar monitoring-stack
+helm uninstall monitoring-stack
+Start-Sleep -Seconds 30
+
+# Desinstalar grafana-config
+helm uninstall grafana-config
+Start-Sleep -Seconds 15
+
