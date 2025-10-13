@@ -107,25 +107,8 @@ def crear_embedding(texto):
 
 
 #Procesar todos los documentos
-# def embedding_todos_documentos(documentos):
-#     for idx, doc in enumerate(documentos, start=1):
-#         review_summary = doc.get("review/summary")
-#         review_text = doc.get("review/text")
-        
-#         # Combinar texto y generar UN embedding
-#         texto_combinado = f"{review_summary} {review_text}".strip()
-        
-#         if texto_combinado:
-#             doc["embeddings"] = crear_embedding(texto_combinado)
-#         else:
-#             doc["embeddings"] = None
-            
-#         print(f"Documento {idx}/{len(documentos)} procesado")
-#     return documentos
-
-#Procesar hasta 5 documentos para pruebas
 def embedding_todos_documentos(documentos):
-    for idx, doc in enumerate(documentos[:5], start=1):  # Limitar a los primeros 5
+    for idx, doc in enumerate(documentos, start=1):
         review_summary = doc.get("review/summary")
         review_text = doc.get("review/text")
         
@@ -137,8 +120,25 @@ def embedding_todos_documentos(documentos):
         else:
             doc["embeddings"] = None
             
-        print(f"Documento {idx}/{min(5, len(documentos))} procesado")
+        print(f"Documento {idx}/{len(documentos)} procesado")
     return documentos
+
+#Procesar hasta 5 documentos para pruebas
+# def embedding_todos_documentos(documentos):
+#     for idx, doc in enumerate(documentos[:5], start=1):  # Limitar a los primeros 5
+#         review_summary = doc.get("review/summary")
+#         review_text = doc.get("review/text")
+        
+#         # Combinar texto y generar UN embedding
+#         texto_combinado = f"{review_summary} {review_text}".strip()
+        
+#         if texto_combinado:
+#             doc["embeddings"] = crear_embedding(texto_combinado)
+#         else:
+#             doc["embeddings"] = None
+            
+#         print(f"Documento {idx}/{min(5, len(documentos))} procesado")
+#     return documentos
 
 
 
@@ -315,13 +315,18 @@ def normalizar_price(value):
     except (ValueError, TypeError):
         objetos_error.labels(componente="ingest").inc()
         return None
-def insertar_review(conn, cursor, title=None, price=None, user_id=None,
+    
+
+
+
+def insertar_review(conn, cursor, object_key, title=None, price=None, user_id=None,
                     profile_name=None, review_helpfulness=None, review_score=None,
                     review_time=None, review_summary=None, review_text=None):
     if not title:
         print(f"[WARN] Review ignorada en mariadb: no tiene título")
         objetos_error.labels(componente="ingest").inc()
         return
+
     try:
         # Buscar si el libro ya existe
         cursor.execute(f"SELECT id FROM {MARIADB_TABLE_BOOKS} WHERE title=? LIMIT 1", (title,))
@@ -329,43 +334,44 @@ def insertar_review(conn, cursor, title=None, price=None, user_id=None,
         book_id = book_row[0] if book_row else None
 
         if book_id:
-            # Inserta review normal con FK
+            # Inserta review
             query = f"""
                 INSERT INTO {MARIADB_TABLE_REVIEWS}
-                (book_id, title, price, user_id, profile_name, 
+                (book_id, object_key, title, price, user_id, profile_name, 
                  review_helpfulness, review_score, review_time, review_summary, review_text)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
             cursor.execute(query, (
-                book_id, title, price, user_id, profile_name,
+                book_id, object_key, title, price, user_id, profile_name,
                 review_helpfulness, review_score, review_time, review_summary, review_text
             ))
         else:
-            # Inserta review sin FK
+            # Inserta review sin book_id
             query = f"""
                 INSERT INTO {MARIADB_TABLE_REVIEWS}
-                (book_id, title, price, user_id, profile_name, 
+                (book_id, object_key, title, price, user_id, profile_name, 
                  review_helpfulness, review_score, review_time, review_summary, review_text)
-                VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
             cursor.execute(query, (
-                title, price, user_id, profile_name,
+                object_key, title, price, user_id, profile_name,
                 review_helpfulness, review_score, review_time, review_summary, review_text
             ))
 
             # Obtener el ID
             review_id = cursor.lastrowid
 
-            # Guardar pendiente con el ID de la review
+            # Guardar pendiente solo con el review_id y el título 
             cursor.execute(f"""
                 INSERT INTO {MARIADB_PENDING} (review_id, book_title, processed)
                 VALUES (?, ?, FALSE)
             """, (review_id, title))
 
         conn.commit()
+
     except mariadb.Error as e:
         conn.rollback()
-        print(f"Error insertando review: {e}")
+        print(f"[ERROR] Error insertando review: {e}")
 
 
 
@@ -404,11 +410,11 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
         conn.rollback()
         print(f"Error insertando object: {e}")
 
-def thread_arreglar_pendientes(batch_size=100):
+def thread_arreglar_pendientes(batch_size=500):
     while True:
         filas = arreglar_reviews_pendientes(batch_size)
         if filas == 0:
-            time.sleep(60)  # no hay pendientes, espera antes de reintentar
+            time.sleep(60)  # no hay pendientes
         else:
             time.sleep(30)
 

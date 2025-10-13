@@ -125,35 +125,35 @@ def crear_embedding(texto):
         return None
 
 #crear embedding, cargar a elastic y meter a mariadb
-# def embedding_todos_documentos(documentos):
-#     for i, doc in enumerate(documentos, start=1):
-#         doc["embeddings"] = None
-#         if "description" in doc and doc["description"]:
-#             texto = doc["description"]
-#             embedding = crear_embedding(texto)
-#             if embedding is not None:
-#                 doc["embeddings"] = embedding
-#         print(f"Procesado documento {i}/{len(documentos)}")
-#     return documentos
-
-def embedding_todos_documentos(documentos, limite=5):
-    total = len(documentos)
-    print(f"Generando embeddings para {min(limite, total)} de {total} documentos...")
-
-    for i, doc in enumerate(documentos[:limite], start=1):  # solo los primeros 'limite'
+def embedding_todos_documentos(documentos):
+    for i, doc in enumerate(documentos, start=1):
         doc["embeddings"] = None
         if "description" in doc and doc["description"]:
             texto = doc["description"]
             embedding = crear_embedding(texto)
             if embedding is not None:
                 doc["embeddings"] = embedding
-        print(f"Procesado documento {i}/{min(limite, total)}")
-
-    # para los demás, se deja embeddings=None explícitamente
-    for doc in documentos[limite:]:
-        doc["embeddings"] = None
-
+        print(f"Procesado documento {i}/{len(documentos)}")
     return documentos
+
+# def embedding_todos_documentos(documentos, limite=5):
+#     total = len(documentos)
+#     print(f"Generando embeddings para {min(limite, total)} de {total} documentos...")
+
+#     for i, doc in enumerate(documentos[:limite], start=1):  # solo los primeros 'limite'
+#         doc["embeddings"] = None
+#         if "description" in doc and doc["description"]:
+#             texto = doc["description"]
+#             embedding = crear_embedding(texto)
+#             if embedding is not None:
+#                 doc["embeddings"] = embedding
+#         print(f"Procesado documento {i}/{min(limite, total)}")
+
+#     # para los demás, se deja embeddings=None explícitamente
+#     for doc in documentos[limite:]:
+#         doc["embeddings"] = None
+
+#     return documentos
 
 
 #Elastic
