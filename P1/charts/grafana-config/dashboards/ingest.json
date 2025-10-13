@@ -25,12 +25,20 @@
     },
     {
       "type": "graph",
-      "title": "Tiempo Promedio de Procesamiento por Objeto (segundos)",
+      "title": "Tiempo de Procesamiento por Objeto",
       "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "rate(tiempo_procesamiento_objeto_sum{componente=\"ingest\"}[1m]) / rate(tiempo_procesamiento_objeto_count{componente=\"ingest\"}[1m])",
-          "legendFormat": "Promedio (último minuto)"
+          "legendFormat": "Promedio"
+        },
+        {
+          "expr": "max_over_time(tiempo_procesamiento_objeto_sum{componente=\"ingest\"}[1m])",
+          "legendFormat": "Máximo"
+        },
+        {
+          "expr": "min_over_time(tiempo_procesamiento_objeto_sum{componente=\"ingest\"}[1m])",
+          "legendFormat": "Mínimo"
         }
       ],
       "datasource": "${DS_PROMETHEUS}"

@@ -7,6 +7,9 @@ import time
 import pandas as pd
 from elasticsearch import Elasticsearch
 from prometheus_client import Counter, Histogram, start_http_server
+from datetime import datetime, timezone
+from elasticsearch.helpers import bulk
+import threading
 
 # --- MÉTRICAS ---
 objetos_procesados = Counter('total_objetos_procesados', 'Cantidad de objetos procesados', ['componente'])
@@ -15,14 +18,13 @@ tiempo_objeto = Histogram('tiempo_procesamiento_objeto', 'Tiempo de procesamient
 
 # Iniciar servidor de métricas en el puerto 8000
 start_http_server(8000)
-print("[INFO] Servidor de métricas Prometheus iniciado en el puerto 8000")
 
 # Variables de entorno
 # General
 HOSTNAME = os.getenv('HOSTNAME')
 XPATH = os.getenv('XPATH')
 DATA = os.getenv('DATAFROMK8S')
-ENDPOINT = os.getenv("EMBEDDINGENDPOINT")
+ENDPOINT = os.getenv("EMBEDDINGENDPOINT", "http://huggingface:5000/encode")
 
 # RabbitMQ
 RABBIT_MQ = os.getenv('RABBITMQ')
@@ -74,13 +76,14 @@ def descargar_objeto(key_name):
     )
 
     download_path = os.path.join(XPATH, key_name)
+    print(download_path)
     os.makedirs(os.path.dirname(download_path), exist_ok=True)
     s3.download_file(AWS_BUCKET, key_name, download_path)
     return download_path
 
 #Procesar objeto y guardarlo en una lista de diccionarios
 def procesar_objeto(file_path):
-    dataFrame = pd.read_parquet(file_path)
+    dataFrame = pd.read_parquet(file_path) #se procesan los parquet con pandas
     dataFrame.columns = [col.lower() for col in dataFrame.columns]
     return dataFrame.to_dict(orient='records')
 
@@ -92,7 +95,7 @@ def crear_embedding(texto):
     if not texto:
         return None
     try:
-        response = requests.post(ENDPOINT, json={"text": texto}, timeout=10)
+        response = requests.post(ENDPOINT, json={"text": texto})
         if response.status_code == 200:
             return response.json().get("embedding")
         else:
@@ -104,15 +107,40 @@ def crear_embedding(texto):
 
 
 #Procesar todos los documentos
+# def embedding_todos_documentos(documentos):
+#     for idx, doc in enumerate(documentos, start=1):
+#         review_summary = doc.get("review/summary")
+#         review_text = doc.get("review/text")
+        
+#         # Combinar texto y generar UN embedding
+#         texto_combinado = f"{review_summary} {review_text}".strip()
+        
+#         if texto_combinado:
+#             doc["embeddings"] = crear_embedding(texto_combinado)
+#         else:
+#             doc["embeddings"] = None
+            
+#         print(f"Documento {idx}/{len(documentos)} procesado")
+#     return documentos
+
+#Procesar hasta 5 documentos para pruebas
 def embedding_todos_documentos(documentos):
-    for idx, doc in enumerate(documentos, start=1):
-        doc["embeddings"] = {"text": None, "summary": None}
-        if "text" in doc:
-            doc["embeddings"]["text"] = crear_embedding(doc["text"])
-        if "review_summary" in doc:
-            doc["embeddings"]["summary"] = crear_embedding(doc["review_summary"])
-        print(f"Documento {idx}/{len(documentos)} procesado")
+    for idx, doc in enumerate(documentos[:5], start=1):  # Limitar a los primeros 5
+        review_summary = doc.get("review/summary")
+        review_text = doc.get("review/text")
+        
+        # Combinar texto y generar UN embedding
+        texto_combinado = f"{review_summary} {review_text}".strip()
+        
+        if texto_combinado:
+            doc["embeddings"] = crear_embedding(texto_combinado)
+        else:
+            doc["embeddings"] = None
+            
+        print(f"Documento {idx}/{min(5, len(documentos))} procesado")
     return documentos
+
+
 
 
 # Elasticsearch
@@ -134,25 +162,49 @@ def conectar_elasticsearch(max_retries=50, delay=5):
     print("No se pudo conectar a Elasticsearch tras varios intentos")
     return None
 
+
+def formatear_review_time_para_elastic(doc):
+    review_time = doc.get("review_time")
+    if review_time:
+        from datetime import datetime, timezone
+        try:
+            valor_int = int(float(review_time))
+            if valor_int > 1e12:  # si viene en ms
+                valor_int //= 1000
+            date = datetime.fromtimestamp(valor_int, tz=timezone.utc)
+            doc["review/time"] = date.strftime("%Y-%m-%d %H:%M:%S")
+        except (ValueError, TypeError, OSError):
+            pass  # si no es numero, dejarlo como está
+    return doc
+
 #Guardar las reviws en índices de elasticsearch
 def guardar_reviews_elasticsearch(documentos):
     es = conectar_elasticsearch()
     if es is None:
+        print("No se insertarán documentos porque Elasticsearch no está disponible.")
         return
+    datos_reviews = []
+    datos_nreviews = []
 
-    for i, doc in enumerate(documentos, start=1):
-        doc_sin_embedding = doc.copy()
-        doc_sin_embedding.pop("embeddings", None)
+    for doc in documentos:
+        doc=formatear_review_time_para_elastic(doc)
+        if "title" in doc and doc["title"]:
+            dato_review = { "_index": ELASTIC_INDEX_REVIEWS, "_source": doc }
+            datos_reviews.append(dato_review)
 
-        try:
-            es.index(index=ELASTIC_INDEX_REVIEWS, document=doc)
-        except Exception as e:
-            print(f"Error insertando en {ELASTIC_INDEX_REVIEWS} (doc {i}): {e}")
-
-        try:
-            es.index(index=ELASTIC_INDEX_NREVIEWS, document=doc_sin_embedding)
-        except Exception as e:
-            print(f"Error insertando en {ELASTIC_INDEX_NREVIEWS} (doc {i}): {e}")
+            # Le hace pop al embedding para asegurarse de que no lo guarde
+            doc_sin_embedding = doc.copy()
+            doc_sin_embedding.pop("embeddings", None)
+            dato_nreview = {"_index": ELASTIC_INDEX_NREVIEWS, "_source": doc_sin_embedding}
+            datos_nreviews.append(dato_nreview)
+        else:
+            print(f"[WARN] Review ignorada en elastic: no tiene título")
+            return
+    try:
+        bulk(es, datos_reviews, raise_on_error=False)
+        bulk(es, datos_nreviews, raise_on_error=False)
+    except Exception as e:
+        print(f"[ERROR] Bulk insert falló: {e}")
 
 
 # Mariadb
@@ -168,51 +220,155 @@ def conectar_MariaDB():
     cursor.execute(f"USE {MARIADB_DB}")
     return conn, cursor
 
-#Inserta review. Si el libro ya se encuentra en la base de datos, la guarda
-#Si el libro de la review no se ha procesado, se queda en tabla auxiliar "pendientes"
-def insertar_review(conn, cursor, object_key, title=None, price=None, user_id=None,
+
+# Arregla las reviews que no tienen FK a libro
+def arreglar_reviews_pendientes(batch_size=500):
+    try:
+        conn, cursor = conectar_MariaDB()
+
+        # Obtener todos los libros existentes
+        cursor.execute(f"SELECT id, LOWER(title) FROM {MARIADB_TABLE_BOOKS}")
+        libros = {title: book_id for book_id, title in cursor.fetchall()}
+
+        # Obtener las reviews pendientes
+        cursor.execute(f"""
+            SELECT review_id, book_title
+            FROM {MARIADB_PENDING}
+            WHERE processed = FALSE
+            LIMIT {batch_size}
+        """)
+        pendientes = cursor.fetchall()
+
+        filas_actualizadas = 0
+
+        for review_id, book_title in pendientes:
+            book_id = libros.get(book_title.lower())
+            if book_id:
+                # Actualiza review con book_id
+                cursor.execute(f"""
+                    UPDATE {MARIADB_TABLE_REVIEWS}
+                    SET book_id = ?
+                    WHERE id = ?
+                """, (book_id, review_id))
+
+                # Marca pendiente como procesada
+                cursor.execute(f"""
+                    UPDATE {MARIADB_PENDING}
+                    SET processed = TRUE
+                    WHERE review_id = ?
+                """, (review_id,))
+                filas_actualizadas += 1
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print(f"[INFO] {filas_actualizadas} reviews pendientes actualizadas")
+        return filas_actualizadas
+
+    except mariadb.Error as e:
+        print(f"[ERROR] Error en arreglar_reviews_pendientes: {e}")
+        return 0
+
+
+
+# Normalizar review_time
+def normalizar_review_time(value):
+    if not value:
+        return None
+    try:
+        valor_int = int(float(value))
+        if valor_int > 1e12: #si el value es mayor a 1 billon, se connvierte a segundos
+            valor_int //= 1000
+        date = datetime.fromtimestamp(valor_int, tz=timezone.utc) #convierte el timestamp a un date time
+        return date.strftime("%Y-%m-%d %H:%M:%S")
+    except (ValueError, TypeError, OSError):
+        pass #si no lo puede convertir a int ignora el error y revisa si es un string
+
+    formatos = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d", "%d/%m/%Y", "%m/%d/%Y", "%d-%m-%Y", "%Y/%m/%d"]
+    for formato in formatos:
+        try:
+            date = datetime.strptime(str(value).strip(), formato)
+            return date.strftime("%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            continue #prueba todos los formatos
+
+    objetos_error.labels(componente="ingest").inc()
+    return None
+
+
+# Normalizar review_score
+def normalizar_review_score(value):
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        objetos_error.labels(componente="ingest").inc()
+        return None
+
+# Normalizar price
+def normalizar_price(value):
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        objetos_error.labels(componente="ingest").inc()
+        return None
+def insertar_review(conn, cursor, title=None, price=None, user_id=None,
                     profile_name=None, review_helpfulness=None, review_score=None,
                     review_time=None, review_summary=None, review_text=None):
+    if not title:
+        print(f"[WARN] Review ignorada en mariadb: no tiene título")
+        objetos_error.labels(componente="ingest").inc()
+        return
     try:
-        cursor.execute(f"SELECT id FROM {MARIADB_TABLE_BOOKS} WHERE LOWER(title)=LOWER(?) LIMIT 1", (title,))
+        # Buscar si el libro ya existe
+        cursor.execute(f"SELECT id FROM {MARIADB_TABLE_BOOKS} WHERE title=? LIMIT 1", (title,))
         book_row = cursor.fetchone()
         book_id = book_row[0] if book_row else None
 
         if book_id:
-            # Inserta review normal
+            # Inserta review normal con FK
             query = f"""
                 INSERT INTO {MARIADB_TABLE_REVIEWS}
-                (object_key, book_id, title, price, user_id, profile_name, 
+                (book_id, title, price, user_id, profile_name, 
                  review_helpfulness, review_score, review_time, review_summary, review_text)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
             cursor.execute(query, (
-                object_key, book_id, title, price, user_id, profile_name,
+                book_id, title, price, user_id, profile_name,
                 review_helpfulness, review_score, review_time, review_summary, review_text
             ))
         else:
-            # Inserta review sin fk y la marca pendiente
+            # Inserta review sin FK
             query = f"""
                 INSERT INTO {MARIADB_TABLE_REVIEWS}
-                (object_key, book_id, title, price, user_id, profile_name, 
+                (book_id, title, price, user_id, profile_name, 
                  review_helpfulness, review_score, review_time, review_summary, review_text)
-                VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
             cursor.execute(query, (
-                object_key, title, price, user_id, profile_name,
+                title, price, user_id, profile_name,
                 review_helpfulness, review_score, review_time, review_summary, review_text
             ))
 
-            # Guardar pendiente
+            # Obtener el ID
+            review_id = cursor.lastrowid
+
+            # Guardar pendiente con el ID de la review
             cursor.execute(f"""
-                INSERT INTO {MARIADB_PENDING} (review_object_key, book_title, processed)
+                INSERT INTO {MARIADB_PENDING} (review_id, book_title, processed)
                 VALUES (?, ?, FALSE)
-            """, (object_key, title))
+            """, (review_id, title))
 
         conn.commit()
     except mariadb.Error as e:
         conn.rollback()
         print(f"Error insertando review: {e}")
+
+
+
 
 #Se insertan todos los documentos
 def insertar_info(cursor, conn, object_key, documentos):
@@ -220,40 +376,17 @@ def insertar_info(cursor, conn, object_key, documentos):
         insertar_review(
             conn, cursor, object_key,
             title=doc.get("title"),
-            price=doc.get("price"),
+            price = normalizar_price(doc.get("price")),
             user_id=doc.get("user_id"),
-            profile_name=doc.get("profile_name"),
-            review_helpfulness=doc.get("review_helpfulness"),
-            review_score=doc.get("review_score"),
-            review_time=doc.get("review_time"),
-            review_summary=doc.get("review_summary"),
-            review_text=doc.get("review_text")
+            profile_name=doc.get("profilename"),
+            review_helpfulness=doc.get("review/helpfulness"),
+            review_score = normalizar_review_score(doc.get("review/score")),
+            review_time = normalizar_review_time(doc.get("review/time")),
+            review_summary=doc.get("review/summary"),
+            review_text=doc.get("review/text")
         )
 
-#Arregla las reviews que no tienen fk a libro
-def arreglar_reviews_pendientes():
-    """Actualiza los reviews sin book_id cuando el libro ya existe."""
-    conn, cursor = conectar_MariaDB()
-    query = f"""
-        SELECT p.id, r.id AS review_id, b.id AS book_id
-        FROM {MARIADB_PENDING} p
-        JOIN {MARIADB_TABLE_REVIEWS} r ON r.object_key = p.review_object_key
-        JOIN {MARIADB_TABLE_BOOKS} b ON LOWER(b.title) = LOWER(p.book_title)
-        WHERE p.processed = FALSE;
-    """
-    cursor.execute(query)
-    pendientes = cursor.fetchall()
-
-    for p_id, review_id, book_id in pendientes:
-        cursor.execute(f"UPDATE {MARIADB_TABLE_REVIEWS} SET book_id=? WHERE id=?", (book_id, review_id))
-        cursor.execute(f"UPDATE {MARIADB_PENDING} SET processed=TRUE WHERE id=?", (p_id,))
-        conn.commit()
-
-    print(f"[INFO] Reconciliadas {len(pendientes)} reviews pendientes.")
-    cursor.close()
-    conn.close()
-
-#Inserta en la tabla de objetos el objeto y numero de documentos
+#Insertar el objeto como procesado y con numero de docs
 def insertar_object(cursor, conn, key_name, documentos, procesado):
     insert_query = f"""
         INSERT INTO {MARIADB_TABLE}
@@ -261,12 +394,23 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
         VALUES (?, ?, ?)
     """
     try:
-        cursor.execute(insert_query, (key_name, len(documentos), procesado))
+        cursor.execute(insert_query, (
+            key_name,
+            len(documentos),
+            procesado
+        ))
         conn.commit()
     except mariadb.Error as e:
         conn.rollback()
         print(f"Error insertando object: {e}")
 
+def thread_arreglar_pendientes(batch_size=100):
+    while True:
+        filas = arreglar_reviews_pendientes(batch_size)
+        if filas == 0:
+            time.sleep(60)  # no hay pendientes, espera antes de reintentar
+        else:
+            time.sleep(30)
 
 #Callback
 
@@ -281,14 +425,23 @@ def callback(ch, method, properties, body):
     start_time = time.time()
     try:
         file_path = descargar_objeto(key_name)
+        print("Ya descargo")
         documentos = procesar_objeto(file_path)
+        print("Ya proceso")
         documentos = embedding_todos_documentos(documentos)
+        print("Ya hizo embedding")
         guardar_reviews_elasticsearch(documentos)
+        print("Ya elastic")
 
         insertar_info(cursor, conn, key_name, documentos)
+        print("Ya info")
         insertar_object(cursor, conn, key_name, documentos, True)
+        print("Ya object")
 
-        arreglar_reviews_pendientes()
+        cursor.close()
+        conn.close()
+
+        print("Objeto marcado como procesado")
 
 
         objetos_procesados.labels(componente="ingest").inc(len(documentos))
@@ -312,10 +465,10 @@ def main():
         heartbeat=2000,
         blocked_connection_timeout=300
     )
+    threading.Thread(target=thread_arreglar_pendientes, daemon=True).start()
     max_retries = 30
     for intento in range(max_retries):
         try:
-            print(f"[INFO] Intentando conectar a RabbitMQ... intento {intento+1}/30")
             connection = pika.BlockingConnection(parameters)
             break
         except pika.exceptions.AMQPConnectionError:

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS books (
     title VARCHAR(1000),
     description TEXT,
     published_date DATE,
-    publisher VARCHAR(1000),
+    publisher VARCHAR(3000),
     preview_link TEXT,
     info_link TEXT,
     image_link TEXT,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS books (
 -- Autores
 CREATE TABLE IF NOT EXISTS authors (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(3000) NOT NULL UNIQUE
 );
 
 -- Intermedia autores y libro
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS book_authors (
 -- Categorias
 CREATE TABLE IF NOT EXISTS categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(3000) NOT NULL UNIQUE
 );
 
 -- Intermedia categorias y libros
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS book_categories (
 -- Ayuda para procesar reviews
 CREATE TABLE pending_review_links (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    review_object_key VARCHAR(255) NOT NULL,
+    review_id INT NOT NULL,          
     book_title VARCHAR(1000) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     processed BOOLEAN DEFAULT FALSE
@@ -71,8 +71,8 @@ CREATE TABLE IF NOT EXISTS reviews (
     book_id INT,
     title VARCHAR(1000),
     price DECIMAL(10,2),
-    user_id VARCHAR(50),
-    profile_name VARCHAR(255),
+    user_id VARCHAR(200),
+    profile_name VARCHAR(2000),
     review_helpfulness VARCHAR(1000),
     review_score FLOAT,
     review_time DATETIME,
@@ -80,3 +80,18 @@ CREATE TABLE IF NOT EXISTS reviews (
     review_text TEXT,
     CONSTRAINT fk_reviews_book FOREIGN KEY (book_id) REFERENCES books(id)
 );
+
+CREATE TABLE processing_status (
+    run_id INT PRIMARY KEY AUTO_INCREMENT,
+    books_processed INT DEFAULT 0
+);
+
+ALTER TABLE books 
+ADD INDEX idx_books_title_lower ((LOWER(title)));
+
+ALTER TABLE pending_review_links
+ADD INDEX idx_pending_book_title_lower ((LOWER(book_title)));
+CREATE INDEX idx_pending_review_object_key ON pending_review_links(review_object_key);
+CREATE INDEX idx_pending_book_title ON pending_review_links(book_title);
+CREATE INDEX idx_books_title ON books(title);
+CREATE INDEX idx_reviews_object_key ON reviews(object_key);

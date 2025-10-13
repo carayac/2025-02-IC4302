@@ -1,18 +1,18 @@
 config:
-  docker_registry: carayacn # docker registry replace with your own username
+  docker_registry: helena0504 # docker registry replace with your own username
   producer:
-    enabled: false
+    enabled: true
     replicas: 1
     name: s3-crawler
     image: s3-crawler
     schedule: "0 * * * *"  #every hour
   consumerCSV:
-    enabled: false
+    enabled: true
     replicas: 2
     name: ingest-csv
     image: ingest-csv
   consumerParket:
-    enabled: false
+    enabled: true
     replicas: 2
     name: ingest-parket
     image: ingest-parket

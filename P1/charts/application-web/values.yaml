@@ -1,14 +1,14 @@
 config:
-  docker_registry: carayacn
+  docker_registry: helena0504
   backend:
-    enabled: true
+    enabled: false
     replicas: 2
     name: backend-ui
     useMemcached: false #variable to enable or disable memcached usage in backend
     image: backend-ui
     imageMemcached: backend-ui-memcached
   frontend:
-    enabled: true
+    enabled: false
     replicas: 2
     name: frontend #this is the service name of frontend which represents the web application and the user interface
     image: frontend-ui      

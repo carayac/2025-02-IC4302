@@ -16,6 +16,11 @@ grafana:
       enabled: true
       size: 5Gi
 prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: 'pushgateway'
+        static_configs:
+          - targets: ['pushgateway.monitoring.svc.cluster.local:9091']
   namespace: monitoring
   namespaceOverride: monitoring
   enabled: true

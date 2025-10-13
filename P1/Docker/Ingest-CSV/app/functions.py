@@ -7,6 +7,9 @@ import requests
 import boto3
 from elasticsearch import Elasticsearch
 from prometheus_client import Counter, Histogram, start_http_server
+import ast  # Para convertir cadenas tipo "['A', 'B']" a listas reales
+from datetime import datetime
+from elasticsearch.helpers import bulk #para cargar los datos más rápido
 
 # --- MÉTRICAS ---
 objetos_procesados = Counter('total_objetos_procesados', 'Cantidad de objetos procesados', ['componente'])
@@ -15,7 +18,6 @@ tiempo_objeto = Histogram('tiempo_procesamiento_objeto', 'Tiempo de procesamient
 
 # Iniciar servidor de métricas en el puerto 8000
 start_http_server(8000)
-print("[INFO] Servidor de métricas Prometheus iniciado en el puerto 8000")
 
 #Variables globales
 # General
@@ -60,7 +62,7 @@ AWS_REGION = os.getenv('AWS_REGION')
 #Determinar si el objeto fue procesado
 def buscar_objeto(cursor, tabla, key_buscado):
     query = f"SELECT * FROM {tabla} WHERE key_name = %s"
-    cursor.execute(query, (key_buscado,))
+    cursor.execute(query, (key_buscado,))#busca el objeto en la tabla objetos
     resultado = cursor.fetchone()
     if resultado is None:
         return False
@@ -78,11 +80,8 @@ def descargar_objeto(key_name):
 
     bucket_name = AWS_BUCKET
     object_key = key_name
-    print(key_name)
     download_path = os.path.join(XPATH, key_name)
-    print(download_path)
-    os.makedirs(os.path.dirname(download_path), exist_ok=True)
-    print(download_path)
+    os.makedirs(os.path.dirname(download_path), exist_ok=True) #se asegura que la dirección sea válida
 
     s3.download_file(bucket_name, object_key, download_path)
 
@@ -108,9 +107,11 @@ def procesar_objeto(file_path):
 # #Embeddings
 #Crea embeddings haciendo un request al endpoint
 def crear_embedding(texto):
+    if not texto or texto.strip() == "":
+        return None 
     try:
         data = {"text": texto}
-        response = requests.post(EMBEDDINGENDPOINT, json=data, timeout=10)  # timeout para no quedarse pegado
+        response = requests.post(EMBEDDINGENDPOINT, json=data)  # timeout para no quedarse pegado
         response.raise_for_status()  
         embedding = response.json().get("embedding")
         if embedding is None:
@@ -123,17 +124,37 @@ def crear_embedding(texto):
         print(f"Error inesperado generando embedding: {e}")
         return None
 
-#embedding de todos los documentos
-def embedding_todos_documentos(documentos):
-    for i, doc in enumerate(documentos, start=1):
+#crear embedding, cargar a elastic y meter a mariadb
+# def embedding_todos_documentos(documentos):
+#     for i, doc in enumerate(documentos, start=1):
+#         doc["embeddings"] = None
+#         if "description" in doc and doc["description"]:
+#             texto = doc["description"]
+#             embedding = crear_embedding(texto)
+#             if embedding is not None:
+#                 doc["embeddings"] = embedding
+#         print(f"Procesado documento {i}/{len(documentos)}")
+#     return documentos
+
+def embedding_todos_documentos(documentos, limite=5):
+    total = len(documentos)
+    print(f"Generando embeddings para {min(limite, total)} de {total} documentos...")
+
+    for i, doc in enumerate(documentos[:limite], start=1):  # solo los primeros 'limite'
         doc["embeddings"] = None
         if "description" in doc and doc["description"]:
             texto = doc["description"]
             embedding = crear_embedding(texto)
             if embedding is not None:
                 doc["embeddings"] = embedding
-        print(f"Procesado documento {i}/{len(documentos)}")
+        print(f"Procesado documento {i}/{min(limite, total)}")
+
+    # para los demás, se deja embeddings=None explícitamente
+    for doc in documentos[limite:]:
+        doc["embeddings"] = None
+
     return documentos
+
 
 #Elastic
 #Conectar a elasticsearch
@@ -154,29 +175,36 @@ def conectar_elasticsearch(max_retries=50, delay=5):
     return None
 
 
+
 #Guardar todos los libros en books y nbooks
 def guardar_libros_elasticsearch(documentos):
     es = conectar_elasticsearch()
     if es is None:
         print("No se insertarán documentos porque Elasticsearch no está disponible.")
         return
+    datos_books = []
+    datos_nbooks = []
 
-    index_books = os.getenv("ELASTIC_INDEX_BOOKS", "books")
-    index_nbooks = os.getenv("ELASTIC_INDEX_NBOOKS", "nbooks")
+    for doc in documentos:
+        if "title" in doc and doc["title"]:
+            dato_book = { "_index": ELASTIC_INDEX_BOOKS, "_source": doc }
+            datos_books.append(dato_book)
 
-    for i, doc in enumerate(documentos, start=1):
-        doc_sin_embedding = doc.copy()
-        doc_sin_embedding.pop("embeddings", None)
-
-        try:
-            es.index(index=index_books, document=doc)
-        except Exception as e:
-            print(f"Error insertando en {index_books} (documento {i}):", e)
-
-        try:
-            es.index(index=index_nbooks, document=doc_sin_embedding)
-        except Exception as e:
-            print(f"Error insertando en {index_nbooks} (documento {i}):", e)
+            # Le hace pop al embedding para asegurarse de que no lo guarde
+            doc_sin_embedding = doc.copy()
+            doc_sin_embedding.pop("embeddings", None)
+            dato_nbook = {"_index": ELASTIC_INDEX_NBOOKS, "_source": doc_sin_embedding}
+            datos_nbooks.append(dato_nbook)
+        else:
+            print(f"[WARN] Book ignorado en elastic: no tiene título")
+            objetos_error.labels(componente="ingest").inc()
+            return
+    # Enviar en bulk a elastic
+    try:
+        bulk(es, datos_books, raise_on_error=False)
+        bulk(es, datos_nbooks, raise_on_error=False)
+    except Exception as e:
+        print(f"[ERROR] Bulk insert falló: {e}")
 
 # Mariadb
 #Conexión a MariaDB
@@ -190,30 +218,49 @@ def conectar_MariaDB():
     cursor.execute(f"USE {MARIADB_DB}")
     return conn, cursor
 
-#Insertar autor (sin repetir) en la tabla
+#Insertar autores
 def insertar_author(cursor, conn, author_name):
+    if not author_name or not author_name.strip():
+        return None  # no insertamos nombres vacíos
+    
+    author_name = author_name.strip()
+
     query = f"INSERT IGNORE INTO {MARIADB_TABLE_AUTHORS} (name) VALUES (?)"
     cursor.execute(query, (author_name,))
-    conn.commit()
 
-    # Obtener el ID del autor
     cursor.execute(f"SELECT id FROM {MARIADB_TABLE_AUTHORS} WHERE name = ?", (author_name,))
-    return cursor.fetchone()[0]
+    result = cursor.fetchone()
+    if result:
+        return result[0]
+    else:
+        print(f"[WARN] No se encontró el autor '{author_name}' después de insertar.")
+        return None
 
 #Insertar categoría (sin repetir) en la tabla
 def insertar_category(cursor, conn, category_name):
+    if not category_name or not category_name.strip():
+        return None
+    
+    category_name = category_name.strip()
+
     query = f"INSERT IGNORE INTO {MARIADB_TABLE_CATEGORIES} (name) VALUES (?)"
     cursor.execute(query, (category_name,))
-    conn.commit()
 
-    # Obtener el ID de la categoría
     cursor.execute(f"SELECT id FROM {MARIADB_TABLE_CATEGORIES} WHERE name = ?", (category_name,))
-    return cursor.fetchone()[0]
+    result = cursor.fetchone()
+    if result:
+        return result[0]
+    else:
+        print(f"[WARN] No se encontró la categoría '{category_name}' después de insertar.")
+        return None
 
 #Insertar libro en la tabla
 def insertar_libro(conn, cursor, object_key, title=None, description=None,
                    published_date=None, publisher=None, preview_link=None,
                    info_link=None, image_link=None, ratings_count=None):
+    if not title:
+        print(f"[WARN] Book ignorado en mariadb: no tiene título")
+        return
     query = f"""
     INSERT INTO books
     (object_key, title, description, published_date, publisher, preview_link, info_link, image_link, ratings_count)
@@ -232,44 +279,105 @@ def insertar_libro(conn, cursor, object_key, title=None, description=None,
 def relacionar_autores_categories(cursor, conn, book_id, authors=None, categories=None):
     # Autores
     if authors:
-        for author in authors:
-            author_id = insertar_author(cursor, conn, author.strip())
+        author_name = str(authors).strip()  # convierte todo en string, por si acaso
+        author_id = insertar_author(cursor, conn, author_name)
+        if author_id:
             cursor.execute(f"""
                 INSERT IGNORE INTO {MARIADB_TABLE_AUTHORS_BOOKS} (book_id, author_id)
                 VALUES (?, ?)
             """, (book_id, author_id))
+
     # Categorías
     if categories:
-        for category in categories:
-            category_id = insertar_category(cursor, conn, category.strip())
+        category_name = str(categories).strip()
+        category_id = insertar_category(cursor, conn, category_name)
+        if category_id:
             cursor.execute(f"""
                 INSERT IGNORE INTO {MARIADB_TABLE_CATEGORIES_BOOKS} (book_id, category_id)
                 VALUES (?, ?)
             """, (book_id, category_id))
+
     conn.commit()
 
 
-#Insertar todos los documentos
-def insertar_info(cursor, conn, key_name, documentos):
+# Validar que la fecha tenga el formato YYYY-MM-DD
+def normalizar_fecha(fecha_str):
+    if not fecha_str:
+        return None
+
+    s = str(fecha_str).strip()
+    formatos = [ "%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%m-%d-%Y", "%m/%d/%Y", "%Y-%m", "%Y/%m", "%Y"]
+
+    for formato in formatos:
+        try:
+            dt = datetime.strptime(s, formato)
+            if formato in ("%Y-%m", "%Y/%m"):
+                objetos_error.labels(componente="ingest").inc()
+                dt = dt.replace(day=1)
+            elif formato == "%Y":
+                objetos_error.labels(componente="ingest").inc()
+                dt = dt.replace(month=1, day=1)
+            return dt.date()
+        except ValueError:
+            continue
+    objetos_error.labels(componente="ingest").inc()
+    return None
+
+
+
+    
+
+#Quitar ratingscount si no es un numero
+def normalizar_ratings(rating):
+    try:
+        if rating is None:
+            return None
+        return float(rating)
+    except (ValueError, TypeError):
+        objetos_error.labels(componente="ingest").inc()
+        return None
+        
+
+def limpiar_texto(texto):
+    if texto:
+        return texto.replace('""', '"').strip(' "')
+    return texto
+
+# Insertar documento
+# Insertar documento
+def insertar_info(cursor, conn, key_name, documentos, cantidad=100):
+    count = 0
     for doc in documentos:
         title = doc.get("title")
-        authors = doc.get("authors")  # Debe ser lista
         description = doc.get("description")
-        categories = doc.get("categories")  # Debe ser lista
-        published_date = doc.get("published_date")
+        published_date = normalizar_fecha(doc.get("publisheddate"))
         publisher = doc.get("publisher")
-        preview_link = doc.get("preview_link")
-        info_link = doc.get("info_link")
-        image_link = doc.get("image_link")
-        ratings_count = doc.get("ratings_count")
+        preview_link = doc.get("previewlink")
+        info_link = doc.get("infolink")
+        image_link = doc.get("image")
+        ratings_count = normalizar_ratings(doc.get("ratingscount"))
 
         # Insertar libro
-        book_id = insertar_libro(conn, cursor, key_name, title, description,
-                                 published_date, publisher, preview_link,
-                                 info_link, image_link, ratings_count)
+        book_id = insertar_libro(
+            conn, cursor, key_name, title, description,
+            published_date, publisher, preview_link,
+            info_link, image_link, ratings_count
+        )
 
-        # Relacionar autores y categorías
-        relacionar_autores_categories(cursor, conn, book_id, authors, categories)
+        if not book_id:
+            continue  # libro no insertado, saltar
+
+        # Insertar autores y categorías
+        authors = limpiar_texto(doc.get("authors"))
+        categories = limpiar_texto(doc.get("categories"))
+        relacionar_autores_categories(cursor, conn, book_id, authors=authors, categories=categories)
+
+        count += 1
+        if count % cantidad == 0:
+            conn.commit() 
+
+    conn.commit() 
+
 
 #Insertar el objeto como procesado y con numero de docs
 def insertar_object(cursor, conn, key_name, documentos, procesado):
@@ -319,6 +427,7 @@ def callback(ch, method, properties, body):
             insertar_object(cursor, conn, key_name, documentos, True)
             print("Objeto marcado como procesado")
 
+
             objetos_procesados.labels(componente="ingest").inc(len(documentos))
             tiempo_objeto.labels(componente="ingest").observe(time.time() - start_time)
 
@@ -328,6 +437,9 @@ def callback(ch, method, properties, body):
             print(f"[ERROR] Ocurrió un error: {e}")
             objetos_error.labels(componente="ingest").inc()
             ch.basic_ack(delivery_tag=method.delivery_tag)
+        finally:
+            cursor.close()
+            conn.close()
 
 #main
 def main():
@@ -343,7 +455,6 @@ def main():
     max_retries = 30
     for intento in range(max_retries):
         try:
-            print(f"[INFO] Intentando conectar a RabbitMQ... intento {intento+1}/{max_retries}")
             connection = pika.BlockingConnection(parameters)
             print("[INFO] Conexión a RabbitMQ exitosa")
             break
