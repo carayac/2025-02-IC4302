@@ -6,7 +6,7 @@ config:
     name: s3-crawler
     image: s3-crawler
     schedule: "0 * * * *"  #every hour
-  elastic-init:
+  elasticinit:
     enabled: true
     replicas: 1
     name: elastic-init
