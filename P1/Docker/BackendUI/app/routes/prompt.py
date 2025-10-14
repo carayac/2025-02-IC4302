@@ -29,8 +29,11 @@ def generate():
         embedding = response["embedding"]
         # run searches
         # reviews vector search
+        start_rv_vector = time.perf_counter()
         #rv_hits = execute_vector_query("reviews", embedding)
-        #reviews_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (rv_hits or [])]
+        rv_hits = execute_text_search_by_title("nreviews", text, match_phrase=False, fuzziness="AUTO", fields=["title", "review_text", "review_summary"]) or []
+        rv_vector_search_ms = round((time.perf_counter() - start_rv_vector) * 1000, 2)
+        reviews_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (rv_hits or [])]
 
         #reviews text search (nreviews index uses text+summary)
         start_reviews = time.perf_counter()
@@ -39,8 +42,11 @@ def generate():
         reviews_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in rt_hits]
 
         #books vector search
+        start_bv_vector = time.perf_counter()
         #bv_hits = execute_vector_query("books", embedding)
-        #books_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (bv_hits or [])]
+        bv_hits = execute_text_search_by_title("nbooks", text, match_phrase=False, fuzziness="AUTO", fields=["title", "description"]) or []
+        bv_vector_search_ms = round((time.perf_counter() - start_bv_vector) * 1000, 2)
+        books_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (bv_hits or [])]
 
         #books text search (nbooks index searches description)
         start_books = time.perf_counter()
@@ -57,10 +63,14 @@ def generate():
             "reviews_text": reviews_text,
             "books_text": books_text,
             "mariadb": mariaresult,
+            "reviews_vector": reviews_vector,
+            "books_vector": books_vector,
             "timings_ms": {
                 "reviews_text": reviews_search_ms,
                 "books_text": books_search_ms,
                 "mariadb": mariadb_search_ms,
+                "reviews_vector": rv_vector_search_ms,
+                "books_vector": bv_vector_search_ms
             },
         }
 
