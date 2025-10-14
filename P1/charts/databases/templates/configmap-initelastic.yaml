@@ -31,6 +31,8 @@ spec:
           - /bin/bash
           - -c
           - |
+            set -e
+
             apt-get update && apt-get install -y curl jq
 
             ES_HOST="http://$ELASTIC_HOST:9200"
@@ -39,19 +41,33 @@ spec:
             JSON_FILE="/config/elastic-mappings.json"
 
             echo "Esperando a Elasticsearch..."
-            until curl -s -u $ES_USER:$ES_PASS $ES_HOST >/dev/null 2>&1; do sleep 5; done
+            until curl -s -u $ES_USER:$ES_PASS $ES_HOST >/dev/null 2>&1; do
+              echo "Aún no está listo..."
+              sleep 5
+            done
             echo "Elasticsearch listo"
 
             for index in $(jq -r 'keys[]' $JSON_FILE); do
               echo "Procesando índice $index..."
               STATUS=$(curl -s -u $ES_USER:$ES_PASS -o /dev/null -w "%{http_code}" $ES_HOST/$index)
+
+              if [ "$STATUS" == "200" ]; then
+                CURRENT_TYPE=$(curl -s -u $ES_USER:$ES_PASS $ES_HOST/$index/_mapping | jq -r ".[\"$index\"].mappings.properties.embeddings.type")
+                if [ "$CURRENT_TYPE" != "dense_vector" ] && [ "$CURRENT_TYPE" != "null" ]; then
+                  echo "El índice $index tiene embeddings de tipo $CURRENT_TYPE, recreando índice..."
+                  curl -s -u $ES_USER:$ES_PASS -X DELETE "$ES_HOST/$index" >/dev/null
+                  STATUS="404"
+                fi
+              fi
+
               if [ "$STATUS" != "200" ]; then
-                curl -u $ES_USER:$ES_PASS -X PUT "$ES_HOST/$index" \
+                echo "Creando índice $index..."
+                curl -s -u $ES_USER:$ES_PASS -X PUT "$ES_HOST/$index" \
                   -H 'Content-Type: application/json' \
-                  -d "$(jq -c ".[$index]" $JSON_FILE)"
-                echo "Índice $index creado"
+                  -d "$(jq -c ".[$index]" $JSON_FILE)" >/dev/null
+                echo "Índice $index creado correctamente"
               else
-                echo "Índice $index ya existe"
+                echo "Índice $index ya existe y tiene embeddings correctos"
               fi
             done
 
@@ -63,5 +79,6 @@ spec:
       - name: config-volume
         configMap:
           name: configmap-initelastic
+
 
 
