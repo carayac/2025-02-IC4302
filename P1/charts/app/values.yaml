@@ -6,6 +6,11 @@ config:
     name: s3-crawler
     image: s3-crawler
     schedule: "0 * * * *"  #every hour
+  elastic-init:
+    enabled: true
+    replicas: 1
+    name: elastic-init
+    image: elastic-init
   consumerCSV:
     enabled: true
     replicas: 2

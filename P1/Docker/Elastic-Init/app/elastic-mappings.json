@@ -1,0 +1,74 @@
+{
+  "books": {
+    "mappings": {
+      "properties": {
+        "title": {"type": "text"},
+        "description": {"type": "text"},
+        "authors": {"type": "text"},
+        "categories": {"type": "text"},
+        "publisheddate": {"type": "date", "ignore_malformed": true},
+        "publisher": {"type": "text"},
+        "previewlink": {"type": "text"},
+        "infolink": {"type": "text"},
+        "image": {"type": "text"},
+        "ratingscount": {"type": "float", "ignore_malformed": true},
+
+        "embeddings": {"type": "dense_vector", "dims": 768}
+      }
+    }
+  },
+
+  "reviews": {
+    "mappings": {
+      "properties": {
+        "title": {"type": "text"},
+        "price": {"type": "float", "ignore_malformed": true},
+        "user_id": {"type": "keyword"},
+        "profilename": {"type": "text"},
+        "review/helpfulness": {"type": "keyword"},
+        "review/score": {"type": "float", "ignore_malformed": true},
+        "review/time": {"type": "date", "ignore_malformed": true},
+        "review/summary": {"type": "text"},
+        "review/text": {"type": "text"},
+        "book_id": {"type": "keyword"},
+
+        "embeddings": { "type": "dense_vector", "dims": 768}
+      }
+    }
+  },
+
+  "nbooks": {
+    "mappings": {
+      "properties": {
+        "title": {"type": "text"},
+        "description": {"type": "text"},
+        "authors": {"type": "text"},
+        "categories": {"type": "text"},
+        "publisheddate": {"type": "date", "ignore_malformed": true},
+        "publisher": {"type": "text"},
+        "previewlink": {"type": "text"},
+        "infolink": {"type": "text"},
+        "image": {"type": "text"},
+        "ratingscount": {"type": "float", "ignore_malformed": true }
+      }
+    }
+  },
+
+  "nreviews": {
+    "mappings": {
+      "properties": {
+        "title": {"type": "text"},
+        "price": {"type": "float", "ignore_malformed": true},
+        "user_id": {"type": "keyword"},
+        "profilename": {"type": "text"},
+        "review/helpfulness": {"type": "keyword"},
+        "review/score": {"type": "float", "ignore_malformed": true},
+        "review/time": {"type": "date", "ignore_malformed": true},
+        "review/summary": {"type": "text"},
+        "review/text": {"type": "text"},
+        "book_id": {"type": "keyword"}
+      }
+    }
+  }
+}
+
