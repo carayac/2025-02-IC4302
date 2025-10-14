@@ -19,8 +19,4 @@ spec:
                   optional: false
             - name: ELASTIC_HOST
               value: "ic4302-es-http"
-            - name: ELASTIC_INDEX_REVIEWS
-              value: "reviews"
-            - name: ELASTIC_INDEX_NREVIEWS
-              value: "nreviews"
       restartPolicy: OnFailure
