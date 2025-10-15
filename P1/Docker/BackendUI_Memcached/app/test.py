@@ -33,12 +33,11 @@ def import_app(monkeypatch):
     monkeypatch.setitem(sys.modules, "routes.prompt", prompt_mod)
     monkeypatch.setitem(sys.modules, "routes.user", user_mod)
 
-    # patch register_blueprint to collect calls
     from flask import Flask
     register_mock = MagicMock()
     monkeypatch.setattr(Flask, "register_blueprint", register_mock, raising=False)
 
-    # Load the application module from its file path (app.py in the same directory)
+    # Load the application module
     module_dir = os.path.dirname(__file__)
     module_path = os.path.join(module_dir, "app.py")
     spec = importlib.util.spec_from_file_location("tested_app", module_path)
@@ -51,7 +50,7 @@ def import_app(monkeypatch):
 
 def test_blueprints_registered(monkeypatch):
     """
-    Verifies that the application registers all expected blueprints with the correct prefixes.
+    Verifica que la aplicacion registre todos los blueprints
     """
     module, register_mock, dummy_auth_bp, dummy_friend_bp, dummy_prompt_bp, dummy_user_bp = import_app(monkeypatch)
 
@@ -69,7 +68,7 @@ def test_blueprints_registered(monkeypatch):
 
 def test_health_endpoint(monkeypatch):
     """
-    Tests that the /health endpoint returns a 200 response with expected JSON.
+    Verifica que el endpoint /healt de la respuesta esperada de 200
     """
     module, register_mock, *_ = import_app(monkeypatch)
     app = module.app
@@ -78,7 +77,8 @@ def test_health_endpoint(monkeypatch):
     response = client.get("/health")
     assert response.status_code == 200
     data = response.get_json()
-    assert data == {"status": "ok"}, f"Unexpected health response: {data}"
+    assert data == {"status": "ok"}, f"Respuesta inesperada: {data}"
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
