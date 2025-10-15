@@ -137,7 +137,7 @@ A continuación se presenta un resumen de lo componentes aplicado en el proyecto
 <summary>Desplegar información</summary>  
 
 
-Para el proyecto 01 se utiliza Inteligencia Artificial para la elaboración de la interfaz de Usuarios, específicamente para hacer el diseño de todas las pantallas que aquí se describen, para esto se utilizó Vercel V0, una inteligencia artificial que se especializa en el diseño de frontend.  
+Para el proyecto 01 se utiliza Inteligencia Artificial para la elaboración de la interfaz de Usuarios, específicamente para hacer el diseño de todas las pantallas que aquí se describen, para esto se utilizó V0, el asistene de IA de Vercel la cual está enfocada en desarrollo web y aplicaciones full-stack, está construida sobre Claude de Anthropic, específicamente Claude 3.5 Sonnet.  
 Se hace un prompt especifico para cada una de las pantallas brindando detalles de cómo se quiere que luzca, a continuación, los prompts suministrados
 
 **1.	Login y Register**  
