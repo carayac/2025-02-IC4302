@@ -130,6 +130,181 @@ A continuación se presenta un resumen de lo componentes aplicado en el proyecto
 ## UI 
   <details>
   <summary>Desplegar información</summary>  
+
+### Uso de IA para la UI  
+
+<details>
+<summary>Desplegar información</summary>  
+
+
+Para el proyecto 01 se utiliza Inteligencia Artificial para la elaboración de la interfaz de Usuarios, específicamente para hacer el diseño de todas las pantallas que aquí se describen, para esto se utilizó Vercel V0, una inteligencia artificial que se especializa en el diseño de frontend.  
+Se hace un prompt especifico para cada una de las pantallas brindando detalles de cómo se quiere que luzca, a continuación, los prompts suministrados
+
+**1.	Login y Register**  
+
+```
+Objetivo: Generar el módulo Register y login para mi aplicación React (Vite). 
+Estructura esperada:
+  o	/Login/Login.tsx
+  o	/Login/Login.module.css
+Requisitos técnicos:
+  o	Usar React con Javascript (.jsx).
+  o	Importar estilos con CSS Modules (import s from "./register.module.css";).
+UI esperada:
+  o	Card centrada con título “registro”.
+  o	Inputs para correo y contraseña, con labels.link “¿Olvidaste tu contraseña?”.
+  o	Botón principal “Ingresar”.
+  o	Estado de error: si envío vacío, mostrar mensaje en rojo o las correspondientes para register como name lastname description email y password 
+  o	Login/Register: formularios con validaciones mínimas; enlaces entre ellos.
+Output esperado:
+  o	El código completo de Login.jsx y Register.jsx
+  o	El código completo de Login.module.css y Register.module.css.
+  o	Todo debe ser en inglés.
+Importante: Devuélveme únicamente esos dos archivos.
+```
+
+**2.	Find Book**  
+```
+Objetivo: Generar el módulo Find book para mi aplicación React (Vite). 
+Estructura esperada:
+  o	/Ask/ Ask.jsx
+  o	/ Ask / Ask.module.css
+Requisitos técnicos:
+  o	Usar React con Javascript (.jsx).
+  o	Importar estilos con CSS Modules (import s from "./ask.module.css";).
+UI esperada:
+  o	Textarea de prompt + botón “Buscar”; renderiza resultados de 5 fuentes (placeholders):vector search, 2) vector reviews, 3) text books, 4)text reviews 5)mariadb Cada card muestra título, autores, descripcion, published date, previewlink, publisher, published date, más informacion, rating, categorías, etc.
+  o	Enviar prompt al Feed con botón “Publicar en mi Feed”.
+  o	Cada una de las páginas principales (esta es una principal) tendrá una barra inferior con las opciones a las que se pueden ir, find book, friends, prompts, feed y me.  Idea similar a la barra que tiene instagram con las opciones.
+  o	Dos temas disponibles: colorido (gradientes suaves, acentos índigo/morado/naranja) y formal (azul oscuro/grises/blanco). 
+  o	Estilo moderno, minimalista, accesible (labels, aria-*), sombras suaves, radios xl/2xl.
+Output esperado:
+  o	El código completo de Ask.jsx 
+  o	El código completo de Ask.module.css
+  o	Todo debe ser en inglés.
+Importante: Devuélveme únicamente esos dos archivos.
+```
+
+**3.	Search Prompts**
+
+```
+Objetivo: Generar el módulo Search Prompts para mi aplicación React (Vite). 
+Estructura esperada:
+  o	/Prompt/ prompt.jsx
+  o	/ Prompt / prompt.module.css
+Requisitos técnicos:
+  o	Usar React con Javascript (.jsx).
+  o	Importar estilos con CSS Modules (import s from "./prompt.module.css";).
+UI esperada:
+  o	Una busqueda de prompts que permita buscar por prompt o por nombre de usuario con un input de búsqueda
+  o	Debe salir listado todos los prompts con su debido texto y el nombre del usuario.
+  o	A cada prompt que salga tenga la posibilidad de darle like y el count de likes también debe estar.
+  o	Cada una de las páginas principales (esta es una principal) tendrá una barra inferior con las opciones a las que se pueden ir, find book, friends, prompts, feed y me.  Idea similar a la barra que tiene instagram con las opciones.
+  o	Dos temas disponibles: colorido (gradientes suaves, acentos índigo/morado/naranja) y formal (azul oscuro/grises/blanco). 
+  o	Estilo moderno, minimalista, accesible (labels, aria-*), sombras suaves, radios xl/2xl.
+Output esperado:
+  o	El código completo de Prompt.jsx 
+  o	El código completo de Prompt.module.css
+  o	Todo debe ser en inglés.
+Importante: Devuélveme únicamente esos dos archivos.
+```
+ 
+**4.	Search Friends**  
+```
+Objetivo: Generar el módulo Search Friends para mi aplicación React (Vite). 
+Estructura esperada:
+  o	/Friends/ friends.jsx
+  o	/ Friends / friends.module.css
+Requisitos técnicos:
+  o	Usar React con Javascript (.jsx).
+  o	Importar estilos con CSS Modules (import s from "./friends.module.css";).
+UI esperada:
+  o	Una busqueda de friends que permita buscar por por nombre de usuario con un input de búsqueda.
+  o	Debe salir listado todas las coincidencias con el nombre del usuarios, que cada usuario que salga tenga la posibilidad de darle follow y unfollow.
+  o	Cada una de las páginas principales (esta es una principal) tendrá una barra inferior con las opciones a las que se pueden ir, find book, friends, prompts, feed y me.  Idea similar a la barra que tiene instagram con las opciones.
+  o	Dos temas disponibles: colorido (gradientes suaves, acentos índigo/morado/naranja) y formal (azul oscuro/grises/blanco). 
+  o	Estilo moderno, minimalista, accesible (labels, aria-*), sombras suaves, radios xl/2xl.
+Output esperado:
+  o	El código completo de Friends.jsx 
+  o	El código completo de Friends.module.css
+  o	Todo debe ser en inglés.
+Importante: Devuélveme únicamente esos dos archivos.
+```
+
+**5.	Feed**  
+```
+Objetivo: Generar el módulo Feed para mi aplicación React (Vite). 
+Estructura esperada:
+  o	/Feed/ feed.jsx
+  o	/ Feed / feed.module.css
+Requisitos técnicos:
+  o	Usar React con Javascript (.jsx).
+  o	Importar estilos con CSS Modules (import s from "./feed.module.css";).
+UI esperada:
+  o	Feed: cards cronológicas con este diseño: 
+  - Avatar del usuario (círculo pequeño).
+  - Nombre en bold.
+  - Botón Follow/Unfollow al lado del nombre, similar a Instagram.
+  - Debajo, el texto del prompt.
+  - Al pie, las métricas de likes con un ícono ❤️ y el número.  La idea es que sea similar a un feed de instagram donde las fotos son más bien prompts.
+  o	Cada una de las páginas principales (esta es una principal) tendrá una barra inferior con las opciones a las que se pueden ir, find book, friends, prompts, feed y me.  Idea similar a la barra que tiene instagram con las opciones.
+  o	Dos temas disponibles: colorido (gradientes suaves, acentos índigo/morado/naranja) y formal (azul oscuro/grises/blanco). 
+  o	Estilo moderno, minimalista, accesible (labels, aria-*), sombras suaves, radios xl/2xl.
+Output esperado:
+  o	El código completo de Feed.jsx 
+  o	El código completo de Feed.module.css
+  o	Todo debe ser en inglés.
+Importante: Devuélveme únicamente esos dos archivos.
+```
+ 
+**6.	Me**  
+
+```
+Objetivo: Generar el módulo Me para mi aplicación React (Vite). 
+Estructura esperada:
+  o	/Me/ me.jsx
+  o	/ Me / me.module.css
+Requisitos técnicos:
+  o	Usar React con Javascript (.jsx).
+  o	Importar estilos con CSS Modules (import s from "./me.module.css";).
+UI esperada:
+  o	Me: formulario para editar perfil.
+  o	Tabla/lista de prompts propios con Edit/Delete.
+  o	Botón de logout. 
+  o	Count de followers y following con cada ususario.
+  o	Cada una de las páginas principales (esta es una principal) tendrá una barra inferior con las opciones a las que se pueden ir, find book, friends, prompts, feed y me.  Idea similar a la barra que tiene instagram con las opciones.
+  o	Dos temas disponibles: colorido (gradientes suaves, acentos índigo/morado/naranja) y formal (azul oscuro/grises/blanco). 
+  o	Estilo moderno, minimalista, accesible (labels, aria-*), sombras suaves, radios xl/2xl.
+Output esperado:
+  o	El código completo de Me.jsx 
+  o	El código completo de Me.module.css
+  o	Todo debe ser en inglés.
+Importante: Devuélveme únicamente esos dos archivos.
+
+```
+
+**7.	My Friends**  
+```
+Objetivo: Generar el módulo My friends para mi aplicación React (Vite). 
+Estructura esperada:
+  o	/MyFriends/ MyFriends.jsx
+  o	/ MyFriends / MyFriends.module.css
+Requisitos técnicos:
+  o	Usar React con Javascript (.jsx).
+  o	Importar estilos con CSS Modules (import s from "./myFriends.module.css";).
+UI esperada:
+  o	Cards con nombre en bold, avatar del usuario y botón para follow y unfollow. Diseño similar a cuando se despliegan los seguidos en Instagram.
+  o	Cada una de las páginas principales (esta es una principal) tendrá una barra inferior con las opciones a las que se pueden ir, find book, friends, prompts, feed y me.  Idea similar a la barra que tiene instagram con las opciones.
+  o	Dos temas disponibles: colorido (gradientes suaves, acentos índigo/morado/naranja) y formal (azul oscuro/grises/blanco). 
+  o	Estilo moderno, minimalista, accesible (labels, aria-*), sombras suaves, radios xl/2xl.
+Output esperado:
+  o	El código completo de MyFriends.jsx 
+  o	El código completo de MyFriends.module.css
+  o	Todo debe ser en inglés.
+Importante: Devuélveme únicamente esos dos archivos.
+```
+
+</details>
     
 ### Registro / Inicio de sesión
 Se implementan dos pantallas, una para crear cuenta y otra para iniciar sesión. En el registro se validan los campos básicos nombre completo, correo, descripcion y contraseña.  Toda la información relacionada al cliente es guardado en MariaDB. 
