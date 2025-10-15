@@ -37,6 +37,7 @@ def generate():
         #reviews text search (nreviews index uses text+summary)
         start_reviews = time.perf_counter()
         rt_hits = execute_text_search_by_title("nreviews", text, match_phrase=False, fuzziness="AUTO", fields=["title", "review_text", "review_summary"]) or []
+        rt_hits = complete_reviews(rt_hits)
         reviews_search_ms = round((time.perf_counter() - start_reviews) * 1000, 2)
         reviews_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in rt_hits]
 
@@ -88,6 +89,25 @@ def generate():
         return {"error": "Error generating prompt"}, 500
 
 
+def complete_reviews(reviews):
+
+    for review in reviews:
+        book_info = search_book(review["_source"]["title"])
+        if book_info and isinstance(book_info, list) and len(book_info) > 0:
+            book = book_info[0]
+            if isinstance(book, dict):
+                review["_source"]["book_id"] = book.get("id")
+                review["_source"]["description"] = book.get("description")
+                review["_source"]["publisher"] = book.get("publisher")
+                review["_source"]["preview_link"] = book.get("preview_link")
+                review["_source"]["info_link"] = book.get("info_link")
+                review["_source"]["image_link"] = book.get("image_link")
+                review["_source"]["ratings_count"] = book.get("ratings_count")
+                review["_source"]["authors"] = book.get("authors")
+                review["_source"]["categories"] = book.get("categories")
+            
+    return reviews
+
 #auxiliar methods for searching reviews with vectors search in elasticsearch
 def search_vector(embedding,name):
     #call the function in elastic_connection to do the vector search
@@ -122,8 +142,6 @@ def search_esText(text,name):
     except Exception as e:
         logger.error(f"Error executing text search for index {name}: {e}")
         return None
-
-
 
 
 #auxiliar methods for searching books and reviews in mariadb
@@ -172,8 +190,16 @@ def search_mariadb(text, limit=10):
         return []
 
 #auxiliar method to create a json response with the five search results
-def search_book(tittle):
-    return tittle
+def search_book(title):
+    #call the function in mariadb_connection to do the search
+    result = execute_query("SELECT * FROM books WHERE title LIKE ?", (f"%{title}%",))
+    try:
+        if result:
+            return jsonify(result)
+        return None
+    except Exception as e:
+        logger.error(f"Error converting text search results to json: {e}")
+        return None
 
 #auxiliar methods for posting a prompt
 def insert_prompt(text, id_user):
