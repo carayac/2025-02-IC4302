@@ -19,6 +19,15 @@ const Ask = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [theme, setTheme] = useState("colorful") // 'colorful' or 'formal'
 
+  //Guarda todos los reusltados distintos de los tipos
+  const [allResults, setAllResults] = useState({
+    books_text: [],
+    books_vector: [],
+    reviews_text: [],
+    reviews_vector: [],
+    mariadb: []
+  });
+  
   //Fuentes disponibles
   const sources = [
     { id: "vector-search", name: "Vector Search", icon: "🔍" },
@@ -78,23 +87,135 @@ const Ask = () => {
   }
 
   //handler de boton search
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!prompt.trim()) return;
-    setIsSearching(true); 
-    setHasSearched(true);
-    setSearchResults([]); //Limpiar resulatdos anteriores
-    setSelectedSource("");
 
-    // GENERATE ENDPOINT
-    setTimeout(() => {
+    setIsSearching(true);
+    setHasSearched(true);
+    setSearchResults([]);
+    setSelectedSource("");
+    setAllResults({
+      books_text: [],
+      books_vector: [],
+      reviews_text: [],
+      reviews_vector: [],
+      mariadb: []
+    });
+
+    try {
+      const result = await Prompts.generatePrompt(prompt.trim());
+      console.log("Result from backend:", result);
+
+      setAllResults({
+        books_text: result.books_text || [],
+        books_vector: result.books_vector || [],
+        reviews_text: result.reviews_text || [],
+        reviews_vector: result.reviews_vector || [],
+        mariadb: result.mariadb || []
+      });
+
+      setSelectedSource("text-books");
+      const formatted = formatResults(result.books_text || [], "books_text");
+      setSearchResults(formatted);
+    } catch (err) {
+      console.error("Error fetching results:", err);
+    } finally {
       setIsSearching(false);
-    }, 600);
+    }
   };
 
+  //adapta los campos 
+  const formatResults = (data, sourceType) => {
+    if (!Array.isArray(data)) return [];
+
+    return data.map((item) => {
+      const src = item._source || item;
+
+      if (sourceType.includes("book")) {
+        // results for books
+        return {
+          id: item._id || src.book_id || Math.random(),
+          type: "book",
+          title: src.title || "Untitled",
+          description: src.description || "No description available.",
+          authors: src.authors ? src.authors.split?.(",") || [src.authors] : [],
+          categories: src.categories ? src.categories.split?.(",") || [src.categories] : [],
+          publisher: src.publisher || "",
+          publishedDate: src.publisheddate || "",
+          previewLink: src.previewlink || "",
+          infoLink: src.infolink || "",
+          image: src.image || "",
+          ratings: src.ratingscount || src.review_score || 0,
+          sourceType
+        };
+      }
+
+      if (sourceType.includes("review")) {
+        // results for reviews
+        return {
+          id: item._id || Math.random(),
+          type: "review",
+          title: src.title || "No title",
+          summary: src["review/summary"] || "",
+          text: src["review/text"] || "",
+          score: src["review/score"] || 0,
+          helpfulness: src["review/helpfulness"] || "",
+          user: src.profilename || src.user_id || "",
+          time: src["review/time"] || "",
+          book_id: src.book_id || "",
+          sourceType
+        };
+      }
+
+      // Results for maria
+      return {
+        id: src.book_id || Math.random(),
+        type: "mariadb",
+        title: src.title || "Untitled",
+        description: src.description || "",
+        authors: src.authors ? src.authors.split?.(",") || [src.authors] : [],
+        categories: src.categories ? src.categories.split?.(",") || [src.categories] : [],
+        publisher: src.publisher || "",
+        publishedDate: src.review_time || "",
+        previewLink: src.preview_link || "",
+        infoLink: src.info_link || "",
+        image: src.image_link || "",
+        ratings: src.review_score || src.ratings_count || 0,
+        sourceType
+      };
+    });
+  };
+
+
+  //Muestra resultados segun fuente elegida
   const handleSourceSelect = (sourceId) => {
     setSelectedSource(sourceId);
-    setSearchResults([]);
-  }
+
+    let key = "";
+    switch (sourceId) {
+      case "vector-search":
+        key = "books_vector";
+        break;
+      case "vector-reviews":
+        key = "reviews_vector";
+        break;
+      case "text-books":
+        key = "books_text";
+        break;
+      case "text-reviews":
+        key = "reviews_text";
+        break;
+      case "mariadb":
+        key = "mariadb";
+        break;
+      default:
+        key = "books_text";
+    }
+
+    const formatted = formatResults(allResults[key], key);
+    setSearchResults(formatted);
+  };
+
 
   //Publicar prompt en el feed
   const handlePublishToFeed = async () => {
@@ -189,18 +310,8 @@ const Ask = () => {
           </button>
         </div>
 
-        { }
-        {postOk && (
-          <div className={s.successBanner}>
-            Prompt published
-          </div>
-        )}
-        {!!postError && (
-          <div className={s.errorBanner}>
-            Error when posting {postError}
-          </div>
-        )}
-
+        {postOk && <div className={s.successBanner}>Prompt published</div>}
+        {!!postError && <div className={s.errorBanner}>Error when posting {postError}</div>}
       </div>
 
       {!isSearching && hasSearched && !selectedSource && (
@@ -225,12 +336,14 @@ const Ask = () => {
       {searchResults.length > 0 && (
         <div className={s.resultsSection}>
           <div className={s.resultsHeader}>
-            <h2 className={s.sectionTitle}>Results from {sources.find((s) => s.id === selectedSource)?.name}</h2>
+            <h2 className={s.sectionTitle}>
+              Results from {sources.find((s) => s.id === selectedSource)?.name}
+            </h2>
             <button
               className={s.backButton}
               onClick={() => {
-                setSelectedSource("")
-                setSearchResults([])
+                setSelectedSource("");
+                setSearchResults([]);
               }}
               aria-label="Back to sources"
             >
@@ -239,48 +352,64 @@ const Ask = () => {
           </div>
 
           <div className={s.booksGrid}>
-            {searchResults.map((book) => (
-              <div key={book.id} className={s.bookCard}>
-                <div className={s.bookHeader}>
-                  <h3 className={s.bookTitle}>{book.title}</h3>
-                  <div className={s.rating}>
-                    <span className={s.stars}>⭐</span>
-                    <span className={s.ratingValue}>{book.rating}</span>
-                  </div>
-                </div>
+            {searchResults.map((item) => (
+              <div key={item.id} className={s.bookCard}>
+                {/* default results*/}
+                <h3 className={s.bookTitle}>{item.title}</h3>
 
-                <div className={s.bookAuthors}>By: {book.authors.join(", ")}</div>
+                {/* results for boos */}
+                {item.type === "book" && (
+                  <>
+                    {item.image && (
+                      <img src={item.image} alt={item.title} className={s.bookImage} />
+                    )}
+                    <p className={s.bookDescription}>{item.description}</p>
+                    <div><strong>Authors:</strong> {item.authors.join(", ")}</div>
+                    <div><strong>Categories:</strong> {item.categories.join(", ")}</div>
+                    <div><strong>Publisher:</strong> {item.publisher}</div>
+                    <div><strong>Published:</strong> {formatDate(item.publishedDate)}</div>
+                    <div><strong>Ratings:</strong> {item.ratings}</div>
+                    {item.previewLink && (
+                      <a href={item.previewLink} target="_blank" rel="noreferrer">Preview</a>
+                    )}
+                    {item.infoLink && (
+                      <a href={item.infoLink} target="_blank" rel="noreferrer">Info</a>
+                    )}
+                  </>
+                )}
 
-                <p className={s.bookDescription}>{book.description}</p>
+                {/* results for reviews */}
+                {item.type === "review" && (
+                  <>
+                    <p><strong>Summary:</strong> {item.summary}</p>
+                    <p>{item.text}</p>
+                    <div><strong>Score:</strong> {item.score}</div>
+                    <div><strong>User:</strong> {item.user}</div>
+                    <div><strong>Date:</strong> {formatDate(item.time)}</div>
+                    <div><strong>Book ID:</strong> {item.book_id}</div>
+                  </>
+                )}
 
-                <div className={s.bookMeta}>
-                  <div className={s.metaItem}>
-                    <strong>Publisher:</strong> {book.publisher}
-                  </div>
-                  <div className={s.metaItem}>
-                    <strong>Published:</strong> {formatDate(book.publishedDate)}
-                  </div>
-                </div>
+                {/* results from maria */}
+                {item.type === "mariadb" && (
+                  <>
+                    {item.image && (
+                      <img src={item.image} alt={item.title} className={s.bookImage} />
+                    )}
+                    <p>{item.description}</p>
+                    <div><strong>Authors:</strong> {item.authors.join(", ")}</div>
+                    <div><strong>Categories:</strong> {item.categories.join(", ")}</div>
+                    <div><strong>Publisher:</strong> {item.publisher}</div>
+                    <div><strong>Date:</strong> {formatDate(item.publishedDate)}</div>
+                    <div><strong>Ratings:</strong> {item.ratings}</div>
+                    {item.previewLink && (
+                      <a href={item.previewLink} target="_blank" rel="noreferrer">Preview</a>
+                    )}
+                  </>
+                )}
 
-                <div className={s.categories}>
-                  {book.categories.map((category, index) => (
-                    <span key={index} className={s.category}>
-                      {category}
-                    </span>
-                  ))}
-                </div>
-
-                <div className={s.bookActions}>
-                  <a
-                    href={book.previewLink}
-                    className={s.previewLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Preview ${book.title}`}
-                  >
-                    Preview
-                  </a>
-                  <button className={s.moreInfoButton}>More Information</button>
+                <div className={s.metaItem}>
+                  <strong>Source:</strong> {item.sourceType}
                 </div>
               </div>
             ))}

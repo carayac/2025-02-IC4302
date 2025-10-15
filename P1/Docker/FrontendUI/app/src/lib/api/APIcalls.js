@@ -66,6 +66,14 @@ export const Prompts = {
       method: "PUT",
       body: JSON.stringify({ id_prompt }),
     }),
+  
+  //Generate search results for a prompt
+  generatePrompt: (text) =>
+    api("/prompt/generate", {
+      method: "POST",
+      body: JSON.stringify({ text }),
+    }),
+
 };
 
 export const Likes = {
