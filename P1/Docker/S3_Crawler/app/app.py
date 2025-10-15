@@ -4,10 +4,7 @@ import pika
 import logging
 import time
 import threading
-from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
-from flask import Flask, Response
-
-app = Flask(__name__)
+from prometheus_client import Counter, Histogram, start_http_server
 
 # --- MÉTRICAS ---
 documentos_procesados = Counter(
@@ -20,6 +17,9 @@ tiempo_total = Histogram(
     'Tiempo total de ejecución del crawler',
     ['componente']
 )
+
+# Iniciar servidor de métricas en el puerto 8000
+start_http_server(8000)
 
 # Configuración de logging
 logging.basicConfig(
@@ -120,15 +120,5 @@ def crawl_bucket():
     logging.info(f"Crawler completado en {duracion:.2f} segundos.")
 
 
-@app.route("/metrics")
-def metrics():
-    """Endpoint para Prometheus."""
-    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
-
-
 if __name__ == '__main__':
-    threading.Thread(
-        target=lambda: app.run(host='0.0.0.0', port=8000, debug=False, use_reloader=False)
-    ).start()
-
     crawl_bucket()

@@ -5,7 +5,7 @@ USE promptsy;
 -- Tabla de objetos procesados
 CREATE TABLE IF NOT EXISTS objects (
     id INT AUTO_INCREMENT PRIMARY KEY,   
-    key_name VARCHAR(512) NOT NULL UNIQUE,  -- 🔹 Se agrega UNIQUE aquí
+    key_name VARCHAR(512) NOT NULL UNIQUE,  
     fecha_proceso DATETIME DEFAULT CURRENT_TIMESTAMP,
     num_documents INT,
     procesado BIT DEFAULT 0
@@ -81,17 +81,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     CONSTRAINT fk_reviews_book FOREIGN KEY (book_id) REFERENCES books(id)
 );
 
-CREATE TABLE processing_status (
-    run_id INT PRIMARY KEY AUTO_INCREMENT,
-    books_processed INT DEFAULT 0
-);
-
 ALTER TABLE books 
 ADD INDEX idx_books_title_lower ((LOWER(title)));
-
 ALTER TABLE pending_review_links
 ADD INDEX idx_pending_book_title_lower ((LOWER(book_title)));
-CREATE INDEX idx_pending_review_object_key ON pending_review_links(review_object_key);
-CREATE INDEX idx_pending_book_title ON pending_review_links(book_title);
-CREATE INDEX idx_books_title ON books(title);
-CREATE INDEX idx_reviews_object_key ON reviews(object_key);

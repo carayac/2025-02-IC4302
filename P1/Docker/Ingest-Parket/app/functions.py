@@ -10,6 +10,16 @@ from prometheus_client import Counter, Histogram, start_http_server
 from datetime import datetime, timezone
 from elasticsearch.helpers import bulk
 import threading
+import logging
+import sys
+
+# Configuración de logging
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # --- MÉTRICAS ---
 objetos_procesados = Counter('total_objetos_procesados', 'Cantidad de objetos procesados', ['componente'])
@@ -76,7 +86,7 @@ def descargar_objeto(key_name):
     )
 
     download_path = os.path.join(XPATH, key_name)
-    print(download_path)
+    logger.info(download_path)
     os.makedirs(os.path.dirname(download_path), exist_ok=True)
     s3.download_file(AWS_BUCKET, key_name, download_path)
     return download_path
@@ -99,29 +109,12 @@ def crear_embedding(texto):
         if response.status_code == 200:
             return response.json().get("embedding")
         else:
-            print(f"Error embedding {response.status_code}: {response.text}")
+            logger.error(f"Error embedding {response.status_code}: {response.text}")
             return None
     except Exception as e:
-        print(f"Error creando embedding: {e}")
+        logger.error(f"Error creando embedding: {e}")
         return None
 
-
-#Procesar todos los documentos
-# def embedding_todos_documentos(documentos):
-#     for idx, doc in enumerate(documentos, start=1):
-#         review_summary = doc.get("review/summary")
-#         review_text = doc.get("review/text")
-        
-#         # Combinar texto y generar UN embedding
-#         texto_combinado = f"{review_summary} {review_text}".strip()
-        
-#         if texto_combinado:
-#             doc["embeddings"] = crear_embedding(texto_combinado)
-#         else:
-#             doc["embeddings"] = None
-            
-#         print(f"Documento {idx}/{len(documentos)} procesado")
-#     return documentos
 
 #Procesar hasta 5 documentos para pruebas
 def embedding_todos_documentos(documentos):
@@ -137,14 +130,13 @@ def embedding_todos_documentos(documentos):
         else:
             doc["embeddings"] = None
             
-        print(f"Documento {idx}/{min(5, len(documentos))} procesado")
+        logger.info(f"Documento {idx}/{min(5, len(documentos))} procesado")
     return documentos
 
 
 
 
 # Elasticsearch
-
 #Conectar a elasticsearch
 def conectar_elasticsearch(max_retries=50, delay=5):
     for intento in range(max_retries):
@@ -154,15 +146,15 @@ def conectar_elasticsearch(max_retries=50, delay=5):
                 basic_auth=(ELASTIC_USER, ELASTIC_PASS)
             )
             if es.ping():
-                print("Conexión a Elasticsearch exitosa")
+                logger.info("Conexión a Elasticsearch exitosa")
                 return es
         except Exception as e:
-            print(f"Intento {intento+1} fallido: {e}")
+            logger.warning(f"Intento {intento+1} fallido: {e}")
         time.sleep(delay)
-    print("No se pudo conectar a Elasticsearch tras varios intentos")
+    logger.error("No se pudo conectar a Elasticsearch tras varios intentos")
     return None
 
-
+#Cambia formato timestamp a date
 def formatear_review_time_para_elastic(doc):
     review_time = doc.get("review_time")
     if review_time:
@@ -181,7 +173,7 @@ def formatear_review_time_para_elastic(doc):
 def guardar_reviews_elasticsearch(documentos):
     es = conectar_elasticsearch()
     if es is None:
-        print("No se insertarán documentos porque Elasticsearch no está disponible.")
+        logger.error("No se insertarán documentos porque Elasticsearch no está disponible.")
         return
     datos_reviews = []
     datos_nreviews = []
@@ -198,13 +190,13 @@ def guardar_reviews_elasticsearch(documentos):
             dato_nreview = {"_index": ELASTIC_INDEX_NREVIEWS, "_source": doc_sin_embedding}
             datos_nreviews.append(dato_nreview)
         else:
-            print(f"[WARN] Review ignorada en elastic: no tiene título")
+            logger.warning(f"[WARN] Review ignorada en elastic: no tiene título")
             return
     try:
         bulk(es, datos_reviews, raise_on_error=False)
         bulk(es, datos_nreviews, raise_on_error=False)
     except Exception as e:
-        print(f"[ERROR] Bulk insert falló: {e}")
+        logger.error(f"[ERROR] Bulk insert falló: {e}")
 
 
 # Mariadb
@@ -262,13 +254,12 @@ def arreglar_reviews_pendientes(batch_size=500):
         conn.commit()
         cursor.close()
         conn.close()
-        print(f"[INFO] {filas_actualizadas} reviews pendientes actualizadas")
+        logger.info(f"[INFO] {filas_actualizadas} reviews pendientes actualizadas")
         return filas_actualizadas
 
     except mariadb.Error as e:
-        print(f"[ERROR] Error en arreglar_reviews_pendientes: {e}")
+        logger.error(f"[ERROR] Error en arreglar_reviews_pendientes: {e}")
         return 0
-
 
 
 # Normalizar review_time
@@ -316,14 +307,12 @@ def normalizar_price(value):
         objetos_error.labels(componente="ingest").inc()
         return None
     
-
-
-
+#Inserta una review en Mariadb y si no esta el book la guarda en pendientes
 def insertar_review(conn, cursor, object_key, title=None, price=None, user_id=None,
                     profile_name=None, review_helpfulness=None, review_score=None,
                     review_time=None, review_summary=None, review_text=None):
     if not title:
-        print(f"[WARN] Review ignorada en mariadb: no tiene título")
+        logger.warning(f"[WARN] Review ignorada en mariadb: no tiene título")
         objetos_error.labels(componente="ingest").inc()
         return
 
@@ -371,7 +360,7 @@ def insertar_review(conn, cursor, object_key, title=None, price=None, user_id=No
 
     except mariadb.Error as e:
         conn.rollback()
-        print(f"[ERROR] Error insertando review: {e}")
+        logger.error(f"[ERROR] Error insertando review: {e}")
 
 
 
@@ -408,18 +397,19 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
         conn.commit()
     except mariadb.Error as e:
         conn.rollback()
-        print(f"Error insertando object: {e}")
+        logger.error(f"Error insertando object: {e}")
 
+
+#Aux
 def thread_arreglar_pendientes(batch_size=500):
     while True:
         filas = arreglar_reviews_pendientes(batch_size)
         if filas == 0:
-            time.sleep(60)  # no hay pendientes
+            time.sleep(30)  # no hay pendientes
         else:
-            time.sleep(30)
+            time.sleep(10)
 
 #Callback
-
 #Llama a cada función
 def callback(ch, method, properties, body):
     key_name = body.decode('utf-8')
@@ -431,24 +421,21 @@ def callback(ch, method, properties, body):
     start_time = time.time()
     try:
         file_path = descargar_objeto(key_name)
-        print("Ya descargo")
+
         documentos = procesar_objeto(file_path)
-        print("Ya proceso")
+
         documentos = embedding_todos_documentos(documentos)
-        print("Ya hizo embedding")
+
         guardar_reviews_elasticsearch(documentos)
-        print("Ya elastic")
 
         insertar_info(cursor, conn, key_name, documentos)
-        print("Ya info")
+
         insertar_object(cursor, conn, key_name, documentos, True)
-        print("Ya object")
 
         cursor.close()
         conn.close()
 
-        print("Objeto marcado como procesado")
-
+        logger.info("Objeto marcado como procesado")
 
         objetos_procesados.labels(componente="ingest").inc(len(documentos))
         tiempo_objeto.labels(componente="ingest").observe(time.time() - start_time)
@@ -456,13 +443,12 @@ def callback(ch, method, properties, body):
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     except Exception as e:
-        print(f"[ERROR] Ocurrió un error: {e}")
+        logger.error(f"[ERROR] Ocurrió un error: {e}")
         objetos_error.labels(componente="ingest").inc()
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 # Main
-
 def main():
     credentials = pika.PlainCredentials(RABBIT_MQ_USER, RABBIT_MQ_PASSWORD)
     parameters = pika.ConnectionParameters(
@@ -478,10 +464,10 @@ def main():
             connection = pika.BlockingConnection(parameters)
             break
         except pika.exceptions.AMQPConnectionError:
-            print(f"[WARN] No se pudo conectar, reintentando...")
+            logger.warning(f"[WARN] No se pudo conectar, reintentando...")
             time.sleep(10)
     else:
-        print("[ERROR] RabbitMQ no disponible.")
+        logger.error("[ERROR] RabbitMQ no disponible.")
         return
 
     channel = connection.channel()
@@ -489,7 +475,5 @@ def main():
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False)
 
-    print("[INFO] Esperando mensajes...")
+    logger.info("[INFO] Esperando mensajes...")
     channel.start_consuming()
-
-

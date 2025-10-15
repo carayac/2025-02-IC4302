@@ -1,4 +1,5 @@
 import os
+import sys
 import pika
 import json
 import time
@@ -7,9 +8,17 @@ import requests
 import boto3
 from elasticsearch import Elasticsearch
 from prometheus_client import Counter, Histogram, start_http_server
-import ast  # Para convertir cadenas tipo "['A', 'B']" a listas reales
+import ast  
 from datetime import datetime
 from elasticsearch.helpers import bulk #para cargar los datos más rápido
+import logging
+
+logging.basicConfig(
+    stream=sys.stdout, 
+    level=logging.INFO, 
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # --- MÉTRICAS ---
 objetos_procesados = Counter('total_objetos_procesados', 'Cantidad de objetos procesados', ['componente'])
@@ -101,7 +110,7 @@ def procesar_objeto(file_path):
                            valor in doc.items()} #pasa las keys a minuscula
                     documentos.append(doc)
                 except json.JSONDecodeError:
-                    print("Error decodificando línea:", line)
+                    logger.error("Error decodificando línea: %s", line)
     return documentos
 
 # #Embeddings
@@ -115,13 +124,13 @@ def crear_embedding(texto):
         response.raise_for_status()  
         embedding = response.json().get("embedding")
         if embedding is None:
-            print(f"No se recibió embedding para el texto: {texto[:50]}...")
+            logger.warning(f"No se recibió embedding para el texto: {texto[:50]}...")
         return embedding
     except requests.exceptions.RequestException as e:
-        print(f"Error en la petición al endpoint {EMBEDDINGENDPOINT}: {e}")
+        logger.error(f"Error en la petición al endpoint {EMBEDDINGENDPOINT}: {e}")
         return None
     except Exception as e:
-        print(f"Error inesperado generando embedding: {e}")
+        logger.error(f"Error inesperado generando embedding: {e}")
         return None
 
 #crear embedding, cargar a elastic y meter a mariadb
@@ -133,12 +142,12 @@ def crear_embedding(texto):
 #             embedding = crear_embedding(texto)
 #             if embedding is not None:
 #                 doc["embeddings"] = embedding
-#         print(f"Procesado documento {i}/{len(documentos)}")
+#         logger.info(f"Procesado documento {i}/{len(documentos)}")
 #     return documentos
 
 def embedding_todos_documentos(documentos, limite=5):
     total = len(documentos)
-    print(f"Generando embeddings para {min(limite, total)} de {total} documentos...")
+    logger.info(f"Generando embeddings para {min(limite, total)} de {total} documentos...")
 
     for i, doc in enumerate(documentos[:limite], start=1):  # solo los primeros 'limite'
         doc["embeddings"] = None
@@ -147,7 +156,7 @@ def embedding_todos_documentos(documentos, limite=5):
             embedding = crear_embedding(texto)
             if embedding is not None:
                 doc["embeddings"] = embedding
-        print(f"Procesado documento {i}/{min(limite, total)}")
+        logger.info(f"Procesado documento {i}/{min(limite, total)}")
 
     # para los demás, se deja embeddings=None explícitamente
     for doc in documentos[limite:]:
@@ -158,7 +167,7 @@ def embedding_todos_documentos(documentos, limite=5):
 
 #Elastic
 #Conectar a elasticsearch
-def conectar_elasticsearch(max_retries=50, delay=5):
+def conectar_elasticsearch(max_retries=10, delay=5):
     for intento in range(max_retries):
         try:
             es = Elasticsearch(
@@ -166,12 +175,12 @@ def conectar_elasticsearch(max_retries=50, delay=5):
                 basic_auth=(ELASTIC_USER, ELASTIC_PASS)
             )
             if es.ping():
-                print("Conexión a Elasticsearch exitosa")
+                logger.info("Conexión a Elasticsearch exitosa")
                 return es
         except Exception as e:
-            print(f"Intento {intento+1} fallido: {e}")
+            logger.warning(f"Intento {intento+1} fallido: {e}")
         time.sleep(delay)
-    print("No se pudo conectar a Elasticsearch tras varios intentos")
+    logger.error("No se pudo conectar a Elasticsearch tras varios intentos")
     return None
 
 
@@ -180,7 +189,7 @@ def conectar_elasticsearch(max_retries=50, delay=5):
 def guardar_libros_elasticsearch(documentos):
     es = conectar_elasticsearch()
     if es is None:
-        print("No se insertarán documentos porque Elasticsearch no está disponible.")
+        logger.error("No se insertarán documentos porque Elasticsearch no está disponible.")
         return
     datos_books = []
     datos_nbooks = []
@@ -196,7 +205,7 @@ def guardar_libros_elasticsearch(documentos):
             dato_nbook = {"_index": ELASTIC_INDEX_NBOOKS, "_source": doc_sin_embedding}
             datos_nbooks.append(dato_nbook)
         else:
-            print(f"[WARN] Book ignorado en elastic: no tiene título")
+            logger.warning(f"Book ignorado en elastic: no tiene título")
             objetos_error.labels(componente="ingest").inc()
             return
     # Enviar en bulk a elastic
@@ -204,7 +213,8 @@ def guardar_libros_elasticsearch(documentos):
         bulk(es, datos_books, raise_on_error=False)
         bulk(es, datos_nbooks, raise_on_error=False)
     except Exception as e:
-        print(f"[ERROR] Bulk insert falló: {e}")
+        logger.error(f"Bulk insert falló: {e}")
+
 
 # Mariadb
 #Conexión a MariaDB
@@ -233,7 +243,7 @@ def insertar_author(cursor, conn, author_name):
     if result:
         return result[0]
     else:
-        print(f"[WARN] No se encontró el autor '{author_name}' después de insertar.")
+        logger.warning(f"No se encontró el autor '{author_name}' después de insertar.")
         return None
 
 #Insertar categoría (sin repetir) en la tabla
@@ -251,7 +261,7 @@ def insertar_category(cursor, conn, category_name):
     if result:
         return result[0]
     else:
-        print(f"[WARN] No se encontró la categoría '{category_name}' después de insertar.")
+        logger.warning(f" No se encontró la categoría '{category_name}' después de insertar.")
         return None
 
 #Insertar libro en la tabla
@@ -259,10 +269,10 @@ def insertar_libro(conn, cursor, object_key, title=None, description=None,
                    published_date=None, publisher=None, preview_link=None,
                    info_link=None, image_link=None, ratings_count=None):
     if not title:
-        print(f"[WARN] Book ignorado en mariadb: no tiene título")
+        logger.warning(f"Book ignorado en mariadb: no tiene título")
         return
     query = f"""
-    INSERT INTO books
+    INSERT INTO {MARIADB_TABLE_BOOKS}
     (object_key, title, description, published_date, publisher, preview_link, info_link, image_link, ratings_count)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
@@ -300,7 +310,7 @@ def relacionar_autores_categories(cursor, conn, book_id, authors=None, categorie
     conn.commit()
 
 
-# Validar que la fecha tenga el formato YYYY-MM-DD
+# Validar que la fecha tenga el formato 
 def normalizar_fecha(fecha_str):
     if not fecha_str:
         return None
@@ -324,9 +334,6 @@ def normalizar_fecha(fecha_str):
     return None
 
 
-
-    
-
 #Quitar ratingscount si no es un numero
 def normalizar_ratings(rating):
     try:
@@ -343,7 +350,6 @@ def limpiar_texto(texto):
         return texto.replace('""', '"').strip(' "')
     return texto
 
-# Insertar documento
 # Insertar documento
 def insertar_info(cursor, conn, key_name, documentos, cantidad=100):
     count = 0
@@ -395,7 +401,7 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
         conn.commit()
     except mariadb.Error as e:
         conn.rollback()
-        print(f"Error insertando object: {e}")
+        logger.error(f"Error insertando object: {e}")
 
 #callback
 def callback(ch, method, properties, body):
@@ -425,7 +431,7 @@ def callback(ch, method, properties, body):
 
             # 6. Marcar como procesado
             insertar_object(cursor, conn, key_name, documentos, True)
-            print("Objeto marcado como procesado")
+            logger.info("Objeto marcado como procesado")
 
 
             objetos_procesados.labels(componente="ingest").inc(len(documentos))
@@ -434,7 +440,7 @@ def callback(ch, method, properties, body):
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
         except Exception as e:
-            print(f"[ERROR] Ocurrió un error: {e}")
+            logger.error(f" Ocurrió un error: {e}")
             objetos_error.labels(componente="ingest").inc()
             ch.basic_ack(delivery_tag=method.delivery_tag)
         finally:
@@ -456,13 +462,13 @@ def main():
     for intento in range(max_retries):
         try:
             connection = pika.BlockingConnection(parameters)
-            print("[INFO] Conexión a RabbitMQ exitosa")
+            logger.info(" Conexión a RabbitMQ exitosa")
             break
         except pika.exceptions.AMQPConnectionError as e:
-            print(f"[WARN] No se pudo conectar a RabbitMQ (intento {intento+1}): {e}")
+            logger.warning(f" No se pudo conectar a RabbitMQ (intento {intento+1}): {e}")
             time.sleep(10)
     else:
-        print("[ERROR] No se pudo conectar a RabbitMQ tras varios intentos")
+        logger.error(" No se pudo conectar a RabbitMQ tras varios intentos")
         return
 
     channel = connection.channel()
@@ -470,5 +476,5 @@ def main():
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False)
 
-    print("[INFO] Esperando mensajes...")
+    logger.info(" Esperando mensajes...")
     channel.start_consuming()
