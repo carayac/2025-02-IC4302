@@ -41,22 +41,22 @@ def test_blueprints_registered(monkeypatch):
     """
     module, register_mock, dummy_auth_bp, dummy_friend_bp, dummy_prompt_bp, dummy_user_bp = import_app(monkeypatch)
 
-    assert register_mock.call_count == 4, f"Se esperaban 4 blueprints, pero se registraron {register_mock.call_count}"
+    assert register_mock.call_count == 4, f"expected 4 blueprints, but we got {register_mock.call_count}"
 
     # Extraer argumentos
     registered_blueprints = [call.args[0] for call in register_mock.call_args_list]
     prefixes = [call.kwargs.get("url_prefix") for call in register_mock.call_args_list]
 
     # Validar presencia de blueprints
-    assert dummy_auth_bp in registered_blueprints, "Blueprint de auth no registrado"
-    assert dummy_friend_bp in registered_blueprints, "Blueprint de friend no registrado"
-    assert dummy_prompt_bp in registered_blueprints, "Blueprint de prompt no registrado"
-    assert dummy_user_bp in registered_blueprints, "Blueprint de user no registrado"
+    assert dummy_auth_bp in registered_blueprints, "Blueprint de auth was not registered"
+    assert dummy_friend_bp in registered_blueprints, "Blueprint de auth was not registered"
+    assert dummy_prompt_bp in registered_blueprints, "Blueprint de auth was not registered"
+    assert dummy_user_bp in registered_blueprints, "Blueprint de auth was not registered"
 
     # Validar prefijos
     expected_prefixes = ["/promptsy/auth", "/promptsy/friend", "/promptsy/prompt", "/promptsy/user"]
     for prefix in expected_prefixes:
-        assert prefix in prefixes, f"Falta prefijo {prefix}"
+        assert prefix in prefixes, f"not prefix {prefix}"
 
 
 def test_health_endpoint(monkeypatch):
@@ -68,6 +68,7 @@ def test_health_endpoint(monkeypatch):
     client = app.test_client()
 
     response = client.get("/health")
-    assert response.status_code == 200, f"Esperado 200, recibido {response.status_code}"
+    assert response.status_code == 200, f"got code: {response.status_code}"
     data = response.get_json()
-    assert data == {"status": "ok"}, f"Respuesta inesperada: {data}"
+    assert data == {"status": "ok"}, f"Response: {data}"
+
