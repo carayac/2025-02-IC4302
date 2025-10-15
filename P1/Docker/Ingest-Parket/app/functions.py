@@ -107,25 +107,8 @@ def crear_embedding(texto):
 
 
 #Procesar todos los documentos
-def embedding_todos_documentos(documentos):
-    for idx, doc in enumerate(documentos, start=1):
-        review_summary = doc.get("review/summary")
-        review_text = doc.get("review/text")
-        
-        # Combinar texto y generar UN embedding
-        texto_combinado = f"{review_summary} {review_text}".strip()
-        
-        if texto_combinado:
-            doc["embeddings"] = crear_embedding(texto_combinado)
-        else:
-            doc["embeddings"] = None
-            
-        print(f"Documento {idx}/{len(documentos)} procesado")
-    return documentos
-
-#Procesar hasta 5 documentos para pruebas
 # def embedding_todos_documentos(documentos):
-#     for idx, doc in enumerate(documentos[:5], start=1):  # Limitar a los primeros 5
+#     for idx, doc in enumerate(documentos, start=1):
 #         review_summary = doc.get("review/summary")
 #         review_text = doc.get("review/text")
         
@@ -137,8 +120,25 @@ def embedding_todos_documentos(documentos):
 #         else:
 #             doc["embeddings"] = None
             
-#         print(f"Documento {idx}/{min(5, len(documentos))} procesado")
+#         print(f"Documento {idx}/{len(documentos)} procesado")
 #     return documentos
+
+#Procesar hasta 5 documentos para pruebas
+def embedding_todos_documentos(documentos):
+    for idx, doc in enumerate(documentos[:5], start=1):  # Limitar a los primeros 5
+        review_summary = doc.get("review/summary")
+        review_text = doc.get("review/text")
+        
+        # Combinar texto y generar UN embedding
+        texto_combinado = f"{review_summary} {review_text}".strip()
+        
+        if texto_combinado:
+            doc["embeddings"] = crear_embedding(texto_combinado)
+        else:
+            doc["embeddings"] = None
+            
+        print(f"Documento {idx}/{min(5, len(documentos))} procesado")
+    return documentos
 
 
 
