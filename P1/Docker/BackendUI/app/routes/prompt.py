@@ -30,8 +30,7 @@ def generate():
         # run searches
         # reviews vector search
         start_rv_vector = time.perf_counter()
-        #rv_hits = execute_vector_query("reviews", embedding)
-        rv_hits = execute_text_search_by_title("nreviews", text, match_phrase=False, fuzziness="AUTO", fields=["title", "review_text", "review_summary"]) or []
+        rv_hits = execute_vector_query("reviews", embedding)
         rv_vector_search_ms = round((time.perf_counter() - start_rv_vector) * 1000, 2)
         reviews_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (rv_hits or [])]
 
@@ -43,8 +42,7 @@ def generate():
 
         #books vector search
         start_bv_vector = time.perf_counter()
-        #bv_hits = execute_vector_query("books", embedding)
-        bv_hits = execute_text_search_by_title("nbooks", text, match_phrase=False, fuzziness="AUTO", fields=["title", "description"]) or []
+        bv_hits = execute_vector_query("books", embedding)
         bv_vector_search_ms = round((time.perf_counter() - start_bv_vector) * 1000, 2)
         books_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (bv_hits or [])]
 
