@@ -6,3 +6,4 @@ bcrypt
 elasticsearch==8.13.0
 pymemcache
 prometheus_client
+pytest
