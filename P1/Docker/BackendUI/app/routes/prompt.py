@@ -472,6 +472,6 @@ def feed():
         return jsonify(feed), 200
 
     except Exception as e:
-        logger.error(f"Error aaaaaaaaaaaaaaaaaaaaaaaa {id_user}: {e}")
+        logger.error(f"Error {id_user}: {e}")
         return jsonify({"error": "Error fetching prompts"}), 500
 

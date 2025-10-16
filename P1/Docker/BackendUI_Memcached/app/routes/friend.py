@@ -246,11 +246,10 @@ def get_friends():
     try:
         friends = execute_query(
             """
-            SELECT u.id, u.name, u.lastname, u.description, u.email FROM Friend f JOIN User u ON f.id_friend = u.id WHERE f.id_user = ? AND f.enabled = TRUE
+            SELECT u.id, u.name, u.lastname, u.description, u.email, u.followers, u.following FROM Friend f JOIN User u ON f.id_friend = u.id WHERE f.id_user = ? AND f.enabled = TRUE
             """,
             (id_user,)
         )
-
         # Cache miss, so we save the user data in cache
         cache_set(cache_key, friends, CACHE_TTL_SECONDS)
         logger.info(f"Get friends for user {id_user} source=db")
