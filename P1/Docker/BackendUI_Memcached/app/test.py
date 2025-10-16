@@ -7,14 +7,6 @@ import pytest
 
 
 def import_app(monkeypatch):
-    """
-    Helper to import the target Flask application module with patched dependencies.
-
-    We stub out the blueprint modules under routes.* and patch Flask.register_blueprint
-    so that blueprint registration can be asserted. The module under test is
-    imported as "app" (the filename app.py in the service). Adjust this if
-    your module has a different name.
-    """
     # create dummy
     dummy_auth_bp = object()
     dummy_friend_bp = object()
@@ -81,4 +73,5 @@ def test_health_endpoint(monkeypatch):
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
 
