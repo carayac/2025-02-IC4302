@@ -4,3 +4,4 @@ requests
 mariadb
 bcrypt
 elasticsearch==8.13.0
+pytest
