@@ -13,7 +13,7 @@
         "image": {"type": "text"},
         "ratingscount": {"type": "float", "ignore_malformed": true},
 
-        "embeddings": {"type": "dense_vector", "dims": 768}
+        "embeddings": {"type": "dense_vector", "dims": 768, "index": true, "similarity": "cosine"}
       }
     }
   },
@@ -32,7 +32,7 @@
         "review/text": {"type": "text"},
         "book_id": {"type": "keyword"},
 
-        "embeddings": { "type": "dense_vector", "dims": 768}
+        "embeddings": { "type": "dense_vector", "dims": 768, "index": true, "similarity": "cosine"}
       }
     }
   },

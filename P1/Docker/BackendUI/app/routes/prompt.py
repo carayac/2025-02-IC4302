@@ -28,19 +28,20 @@ def generate():
         response = get_embedding(text)
         embedding = response["embedding"]
         # run searches
+        #reviews text search (nreviews index uses text+summary)
+        start_reviews = time.perf_counter()
+        rt_hits = execute_text_search_by_title("nreviews", text, match_phrase=False, fuzziness="1", fields=["title", "review_text", "review_summary"]) or []
+        reviews_search_ms = round((time.perf_counter() - start_reviews) * 1000, 2)
+        reviews_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in rt_hits]
+        rt = complete_reviews(reviews_text)
+
         # reviews vector search
         start_rv_vector = time.perf_counter()
         rv_hits = execute_vector_query("reviews", embedding)
         rv_vector_search_ms = round((time.perf_counter() - start_rv_vector) * 1000, 2)
         reviews_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (rv_hits or [])]
-
-        #reviews text search (nreviews index uses text+summary)
-        start_reviews = time.perf_counter()
-        rt_hits = execute_text_search_by_title("nreviews", text, match_phrase=False, fuzziness="AUTO", fields=["title", "review_text", "review_summary"]) or []
-        rt_hits = complete_reviews(rt_hits)
-        reviews_search_ms = round((time.perf_counter() - start_reviews) * 1000, 2)
-        reviews_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in rt_hits]
-
+        rv = complete_reviews(reviews_vector)
+        
         #books vector search
         start_bv_vector = time.perf_counter()
         bv_hits = execute_vector_query("books", embedding)
@@ -49,7 +50,7 @@ def generate():
 
         #books text search (nbooks index searches description)
         start_books = time.perf_counter()
-        bt_hits = execute_text_search_by_title("nbooks", text, match_phrase=False, fuzziness="AUTO", fields=["title", "description"]) or []
+        bt_hits = execute_text_search_by_title("nbooks", text, match_phrase=False, fuzziness="1", fields=["title", "description"]) or []
         books_search_ms = round((time.perf_counter() - start_books) * 1000, 2)
         books_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in bt_hits]
 
@@ -59,10 +60,10 @@ def generate():
         mariadb_search_ms = round((time.perf_counter() - start_maria) * 1000, 2)
 
         combined = {
-            "reviews_text": reviews_text,
+            "reviews_text": rt,
             "books_text": books_text,
             "mariadb": mariaresult,
-            "reviews_vector": reviews_vector,
+            "reviews_vector": rv,
             "books_vector": books_vector,
             "timings_ms": {
                 "reviews_text": reviews_search_ms,
@@ -73,38 +74,48 @@ def generate():
             },
         }
 
-
-        """ combined = {
-            "reviews_vector": reviews_vector,
-            "reviews_text": reviews_text,
-            "books_vector": books_vector,
-            "books_text": books_text,
-            "mariadb": mariaresult
-        } """
-
-
         return jsonify(combined), 200
     except Exception as e:
-        logger.error(f"Error posting prompt: {e}")
+        logger.error(f"Error generating prompt: {e}")
         return {"error": "Error generating prompt"}, 500
 
 
+#auxiliar method for complete reviews with the book info
 def complete_reviews(reviews):
-
+    logger.info("Completing reviews for %d reviews", len(reviews))
     for review in reviews:
-        book_info = search_book(review["_source"]["title"])
-        if book_info and isinstance(book_info, list) and len(book_info) > 0:
+        # defensive checks, validations to avoid crashes
+        if not isinstance(review, dict):
+            continue
+        src = review.get("_source")
+        if not src or not isinstance(src, dict):
+            continue
+        title = src.get("title") #get the title of the book review
+        if not title:
+            logger.debug("Skipping review without title: %r", src)
+            continue
+        # search book by title in mariadb to get book info
+        book_info = search_book(title)
+        # book_info expected as list of dicts (from search_book)
+        if not book_info:
+            logger.debug("No books found for title: %s", title)
+            continue
+        
+        # if multiple books found, take the first one
+        if isinstance(book_info, list) and len(book_info) > 0 and isinstance(book_info[0], dict):
             book = book_info[0]
-            if isinstance(book, dict):
-                review["_source"]["book_id"] = book.get("id")
-                review["_source"]["description"] = book.get("description")
-                review["_source"]["publisher"] = book.get("publisher")
-                review["_source"]["preview_link"] = book.get("preview_link")
-                review["_source"]["info_link"] = book.get("info_link")
-                review["_source"]["image_link"] = book.get("image_link")
-                review["_source"]["ratings_count"] = book.get("ratings_count")
-                review["_source"]["authors"] = book.get("authors")
-                review["_source"]["categories"] = book.get("categories")
+            # copy the fields that I need for complete the review
+            fields = [
+                ("id", "id"), ("description", "description"), ("publisher", "publisher"),
+                ("preview_link", "preview_link"), ("info_link", "info_link"), ("image_link", "image_link"),
+                ("ratings_count", "ratings_count"), ("authors", "authors"), ("categories", "categories"),
+            ]
+            #getting the fields from book to review that only exist in book
+            for src_field, target_field in fields:
+                if src_field in book:
+                    src[target_field] = book.get(src_field) #add the field to the review source
+        else:
+            logger.debug("Unexpected book_info format for title %s: %r", title, book_info)
             
     return reviews
 
@@ -133,6 +144,9 @@ def search_esText(text,name):
         else:
             fields = ["title"]
 
+        #call the function to search the books or reviews that match with the prompt
+        #fuzziness means that the search will be approximate
+        #match_phrase means that the search will be exact
         result = execute_text_search_by_title(name, text, match_phrase=False, fuzziness="AUTO", fields=fields)
 
         # result is a list of hits
@@ -182,7 +196,7 @@ def search_mariadb(text, limit=10):
         "ORDER BY results.review_time DESC "
         "LIMIT ?"
     )
-
+    #call the function in mariadb_connection to do the search given the query and the parameters in this case tha text prompt and the limit
     try:
         return execute_query(query, (like, like, like, like, like, limit))
     except Exception as exc:
@@ -192,14 +206,19 @@ def search_mariadb(text, limit=10):
 #auxiliar method to create a json response with the five search results
 def search_book(title):
     #call the function in mariadb_connection to do the search
-    result = execute_query("SELECT * FROM books WHERE title LIKE ?", (f"%{title}%",))
     try:
+        result = execute_query(
+            "SELECT * FROM books WHERE title like ?",
+            (f"%{title}%",),
+            get_id=True
+        )
+        # result is a list of dicts
         if result:
-            return jsonify(result)
-        return None
+            return result
+        return []
     except Exception as e:
-        logger.error(f"Error converting text search results to json: {e}")
-        return None
+        logger.error(f"Error searching a book: {e}")
+        return []
 
 #auxiliar methods for posting a prompt
 def insert_prompt(text, id_user):
