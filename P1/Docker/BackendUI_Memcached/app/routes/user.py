@@ -5,37 +5,16 @@ import sys
 import mariadb
 import bcrypt
 from pymemcache.client.base import Client
-from metrics import cache_hit, cache_miss
 import os, json
 from prometheus_client import Counter, Histogram
 import time
-
-# --- NUEVAS MÉTRICAS ---
-cache_hit_api = Counter("api_cache_hit", "Cache hits en API", ["componente"])
-cache_miss_api = Counter("api_cache_miss", "Cache misses en API", ["componente"])
-
-# --- MÉTRICAS DE TIEMPO Y PETICIONES POR ENDPOINT ---
-tiempo_procesamiento_api = Histogram(
-    "api_tiempo_procesamiento_segundos",
-    "Tiempo de procesamiento de requests en API",
-    ["componente", "endpoint"]
+from metrics import (
+    cache_hit, cache_miss,
+    cache_hit_api, cache_miss_api,
+    tiempo_procesamiento_api, peticiones_endpoint_api,
+    COMPONENT, BD_TYPE, CACHE_TYPE, CACHE_TTL_SECONDS,
+    MEMCACHED_HOST, MEMCACHED_PORT
 )
-
-peticiones_endpoint_api = Counter(
-    "api_total_peticiones_endpoint",
-    "Total de peticiones por endpoint en API",
-    ["componente", "endpoint"]
-)
-
-COMPONENT = "api"
-
-#Memcached variables
-BD_TYPE = "mariadb"
-CACHE_TYPE = "memcached"
-
-MEMCACHED_HOST = os.getenv("MEMCACHED_HOST")
-MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT"))
-CACHE_TTL_SECONDS = 60
 
 memcached = Client((MEMCACHED_HOST, MEMCACHED_PORT))
 
@@ -88,7 +67,7 @@ def login():
     
     try:
         res = execute_query(
-            "SELECT id, name, lastname, description, email, password FROM User WHERE id = ? LIMIT 1",
+            "SELECT id, name, lastname, description, email, followers, following FROM User WHERE id = ? LIMIT 1",
             (id,)
         )
 
@@ -102,7 +81,9 @@ def login():
             "name": user["name"],
             "lastname": user["lastname"],
             "description": user["description"],
-            "email": user["email"]
+            "email": user["email"],
+            "followers": user["followers"],
+            "following": user["following"]
         }
 
         # Cache miss, so we save the user data in cache

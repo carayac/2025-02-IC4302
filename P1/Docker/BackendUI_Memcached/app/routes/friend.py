@@ -5,37 +5,16 @@ import sys
 import mariadb
 import bcrypt
 from pymemcache.client.base import Client
-from metrics import cache_hit, cache_miss
 import os, json
 from prometheus_client import Counter, Histogram
 import time
-
-# --- NUEVAS MÉTRICAS ---
-cache_hit_api = Counter("api_cache_hit", "Cache hits en API", ["componente"])
-cache_miss_api = Counter("api_cache_miss", "Cache misses en API", ["componente"])
-
-# --- MÉTRICAS DE TIEMPO Y PETICIONES POR ENDPOINT ---
-tiempo_procesamiento_api = Histogram(
-    "api_tiempo_procesamiento_segundos",
-    "Tiempo de procesamiento de requests en API",
-    ["componente", "endpoint"]
+from metrics import (
+    cache_hit, cache_miss,
+    cache_hit_api, cache_miss_api,
+    tiempo_procesamiento_api, peticiones_endpoint_api,
+    COMPONENT, BD_TYPE, CACHE_TYPE, CACHE_TTL_SECONDS,
+    MEMCACHED_HOST, MEMCACHED_PORT
 )
-
-peticiones_endpoint_api = Counter(
-    "api_total_peticiones_endpoint",
-    "Total de peticiones por endpoint en API",
-    ["componente", "endpoint"]
-)
-
-COMPONENT = "api"
-
-#Memcached variables
-BD_TYPE = "mariadb"
-CACHE_TYPE = "memcached"
-
-MEMCACHED_HOST = os.getenv("MEMCACHED_HOST")
-MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT"))
-CACHE_TTL_SECONDS = 60
 
 memcached = Client((MEMCACHED_HOST, MEMCACHED_PORT))
 
@@ -69,6 +48,7 @@ def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
         memcached.set(key, json.dumps(value), expire=ttl)
     except Exception:
         pass
+
 
 #route for following a friend
 @friend_blueprint.route('/follow', methods=['POST'])
@@ -113,6 +93,15 @@ def follow():
             (id_user, id_friend)
         )
 
+        #update the followers and following count in the user table
+        execute_query(
+            "UPDATE User SET following = following + 1 WHERE id = ?",
+            (id_user,)
+        )
+        execute_query(
+            "UPDATE User SET followers = followers + 1 WHERE id = ?",
+            (id_friend,)
+        )
         logger.info(f"User followed successfully: {id_user} -> {id_friend}")
         return {"message": "User followed successfully"}, 201
 
@@ -166,6 +155,16 @@ def unfollow():
         res = execute_query(
             """UPDATE Friend SET enabled = FALSE WHERE id_user = ? AND id_friend = ?""",
             (id_user, id_friend)
+        )
+
+         #update the followers and following count in the user table
+        execute_query(
+            "UPDATE User SET following = following - 1 WHERE id = ?",
+            (id_user,)
+        )
+        execute_query(
+            "UPDATE User SET followers = followers - 1 WHERE id = ?",
+            (id_friend,)
         )
 
         logger.info(f"User unfollowed successfully: {id_user} -> {id_friend}")
@@ -279,6 +278,15 @@ def like():
         return jsonify({"error": "id_user and id_prompt are required"}), 400
     
     try:
+        #validate if the user has already liked the prompt
+        already_liked = execute_query(
+            "SELECT id FROM Liked WHERE id_user = ? AND id_prompt = ? AND enabled = TRUE LIMIT 1",
+            (id_user, id_prompt),
+        )
+        if already_liked:
+            logger.warning(f"User {id_user} has already liked prompt {id_prompt}")
+            return {"error": "You have already liked this prompt"}, 400
+
         # execute the insert query in the table friends
         execute_query(
             "INSERT INTO Liked (id_user, id_prompt) VALUES (?, ?)",
@@ -335,5 +343,6 @@ def unlike():
     except Exception as e:
         logger.error(f"Integrity error giving like  : {e}")
         return {"error": "Error giving like "}, 500
+
 
 

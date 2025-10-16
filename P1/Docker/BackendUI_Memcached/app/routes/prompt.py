@@ -1,42 +1,21 @@
 from flask import Blueprint, request,jsonify
 from tools.mariadb_connection import execute_query
+from tools.elastic_connection import execute_query_es, execute_vector_query, execute_text_search_by_title
 from tools.embbeding import get_embedding
 import logging
 import sys
 import mariadb
 from pymemcache.client.base import Client
-from metrics import cache_hit, cache_miss
 import os, json 
 from prometheus_client import Counter, Histogram
 import time
-
-# --- NUEVAS MÉTRICAS ---
-cache_hit_api = Counter("api_cache_hit", "Cache hits en API", ["componente"])
-cache_miss_api = Counter("api_cache_miss", "Cache misses en API", ["componente"])
-
-# --- MÉTRICAS DE TIEMPO Y PETICIONES POR ENDPOINT ---
-tiempo_procesamiento_api = Histogram(
-    "api_tiempo_procesamiento_segundos",
-    "Tiempo de procesamiento de requests en API",
-    ["componente", "endpoint"]
+from metrics import (
+    cache_hit, cache_miss,
+    cache_hit_api, cache_miss_api,
+    tiempo_procesamiento_api, peticiones_endpoint_api,
+    COMPONENT, BD_TYPE, CACHE_TYPE, CACHE_TTL_SECONDS,
+    MEMCACHED_HOST, MEMCACHED_PORT
 )
-
-peticiones_endpoint_api = Counter(
-    "api_total_peticiones_endpoint",
-    "Total de peticiones por endpoint en API",
-    ["componente", "endpoint"]
-)
-
-COMPONENT = "api"
-
-#Memcached variables
-BD_TYPE = "mariadb"
-CACHE_TYPE = "memcached"
-
-MEMCACHED_HOST = os.getenv("MEMCACHED_HOST")
-MEMCACHED_PORT = int(os.getenv("MEMCACHED_PORT"))
-CACHE_TTL_SECONDS = 60
-
 memcached = Client((MEMCACHED_HOST, MEMCACHED_PORT))
 
 logging.basicConfig(
@@ -70,6 +49,7 @@ def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
     except Exception:
         pass
 
+
 #route to generate a result by a prompt
 @prompt_blueprint.route('/generate', methods=['POST'])
 def generate():
@@ -81,17 +61,179 @@ def generate():
         #get the embedding
         response = get_embedding(text)
         embedding = response["embedding"]
+        # run searches
+        # reviews vector search
+        start_rv_vector = time.perf_counter()
+        rv_hits = execute_vector_query("reviews", embedding)
+        rv_vector_search_ms = round((time.perf_counter() - start_rv_vector) * 1000, 2)
+        reviews_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (rv_hits or [])]
 
-        #get the results by the text embedding
+        #reviews text search (nreviews index uses text+summary)
+        start_reviews = time.perf_counter()
+        rt_hits = execute_text_search_by_title("nreviews", text, match_phrase=False, fuzziness="AUTO", fields=["title", "review_text", "review_summary"]) or []
+        rt_hits = complete_reviews(rt_hits)
+        reviews_search_ms = round((time.perf_counter() - start_reviews) * 1000, 2)
+        reviews_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in rt_hits]
+
+        #books vector search
+        start_bv_vector = time.perf_counter()
+        bv_hits = execute_vector_query("books", embedding)
+        bv_vector_search_ms = round((time.perf_counter() - start_bv_vector) * 1000, 2)
+        books_vector = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in (bv_hits or [])]
+
+        #books text search (nbooks index searches description)
+        start_books = time.perf_counter()
+        bt_hits = execute_text_search_by_title("nbooks", text, match_phrase=False, fuzziness="AUTO", fields=["title", "description"]) or []
+        books_search_ms = round((time.perf_counter() - start_books) * 1000, 2)
+        books_text = [{"_id": h.get("_id"), "_score": h.get("_score"), "_source": h.get("_source")} for h in bt_hits]
+
+        #maria db search
+        start_maria = time.perf_counter()
+        mariaresult = search_mariadb(text)
+        mariadb_search_ms = round((time.perf_counter() - start_maria) * 1000, 2)
+
+        combined = {
+            "reviews_text": reviews_text,
+            "books_text": books_text,
+            "mariadb": mariaresult,
+            "reviews_vector": reviews_vector,
+            "books_vector": books_vector,
+            "timings_ms": {
+                "reviews_text": reviews_search_ms,
+                "books_text": books_search_ms,
+                "mariadb": mariadb_search_ms,
+                "reviews_vector": rv_vector_search_ms,
+                "books_vector": bv_vector_search_ms
+            },
+        }
 
 
-        
-        return jsonify(response["embedding"]), 400
+        """ combined = {
+            "reviews_vector": reviews_vector,
+            "reviews_text": reviews_text,
+            "books_vector": books_vector,
+            "books_text": books_text,
+            "mariadb": mariaresult
+        } """
+
+
+        return jsonify(combined), 200
     except Exception as e:
         logger.error(f"Error posting prompt: {e}")
         return {"error": "Error generating prompt"}, 500
 
 
+def complete_reviews(reviews):
+
+    for review in reviews:
+        book_info = search_book(review["_source"]["title"])
+        if book_info and isinstance(book_info, list) and len(book_info) > 0:
+            book = book_info[0]
+            if isinstance(book, dict):
+                review["_source"]["book_id"] = book.get("id")
+                review["_source"]["description"] = book.get("description")
+                review["_source"]["publisher"] = book.get("publisher")
+                review["_source"]["preview_link"] = book.get("preview_link")
+                review["_source"]["info_link"] = book.get("info_link")
+                review["_source"]["image_link"] = book.get("image_link")
+                review["_source"]["ratings_count"] = book.get("ratings_count")
+                review["_source"]["authors"] = book.get("authors")
+                review["_source"]["categories"] = book.get("categories")
+            
+    return reviews
+
+#auxiliar methods for searching reviews with vectors search in elasticsearch
+def search_vector(embedding,name):
+    #call the function in elastic_connection to do the vector search
+    result = execute_vector_query(name, embedding)
+    # result is a list of hit dicts
+    try:
+        if result:
+            return jsonify(result)
+        return None
+    except Exception as e:
+        logger.error(f"Error converting vector search results to json: {e}")
+        return None
+
+#auxiliar methods for searching reviews with text search in elasticsearch
+def search_esText(text,name):
+
+    # choose fields depending on index
+    try:
+        if name == "nbooks":
+            fields = ["description"]
+        elif name == "nreviews":
+            fields = ["review_text", "review_summary"]
+        else:
+            fields = ["title"]
+
+        result = execute_text_search_by_title(name, text, match_phrase=False, fuzziness="AUTO", fields=fields)
+
+        # result is a list of hits
+        if result:
+            return jsonify(result)
+        return None
+    except Exception as e:
+        logger.error(f"Error executing text search for index {name}: {e}")
+        return None
+
+
+#auxiliar methods for searching books and reviews in mariadb
+def search_mariadb(text, limit=10):
+    if not text:
+        return []
+
+    like = f"%{text}%"
+    query = (
+        "SELECT * FROM ("
+        "  SELECT b.id AS book_id, b.title, b.description, b.publisher, b.preview_link, b.info_link, b.image_link, b.ratings_count, "
+        "         COALESCE(bauth.names, '') AS authors, COALESCE(bcat.names, '') AS categories, "
+        "         r.id AS review_id, r.title AS review_title, r.review_summary, r.review_text, r.review_score, "
+        "         r.user_id, r.profile_name, r.review_time "
+        "  FROM books b "
+        "  LEFT JOIN reviews r ON r.book_id = b.id "
+        "  LEFT JOIN ("
+        "    SELECT ba.book_id, GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS names "
+        "    FROM book_authors ba "
+        "    JOIN authors a ON a.id = ba.author_id "
+        "    GROUP BY ba.book_id"
+        "  ) bauth ON bauth.book_id = b.id "
+        "  LEFT JOIN ("
+        "    SELECT bc.book_id, GROUP_CONCAT(DISTINCT c.name ORDER BY c.name SEPARATOR ', ') AS names "
+        "    FROM book_categories bc "
+        "    JOIN categories c ON c.id = bc.category_id "
+        "    GROUP BY bc.book_id"
+        "  ) bcat ON bcat.book_id = b.id "
+        "  WHERE b.description LIKE ? OR r.review_text LIKE ? OR r.review_summary LIKE ? "
+        "  UNION ALL "
+        "  SELECT NULL AS book_id, r.title, NULL AS description, NULL AS publisher, NULL AS preview_link, NULL AS info_link, NULL AS image_link, NULL AS ratings_count, "
+        "         '' AS authors, '' AS categories, r.id AS review_id, r.title AS review_title, r.review_summary, r.review_text, r.review_score, "
+        "         r.user_id, r.profile_name, r.review_time "
+        "  FROM reviews r "
+        "  LEFT JOIN books b2 ON b2.id = r.book_id "
+        "  WHERE b2.id IS NULL AND (r.review_text LIKE ? OR r.review_summary LIKE ?)"
+        ") AS results "
+        "ORDER BY results.review_time DESC "
+        "LIMIT ?"
+    )
+
+    try:
+        return execute_query(query, (like, like, like, like, like, limit))
+    except Exception as exc:
+        logger.error(f"Error searching MariaDB: {exc}")
+        return []
+
+#auxiliar method to create a json response with the five search results
+def search_book(title):
+    #call the function in mariadb_connection to do the search
+    result = execute_query("SELECT * FROM books WHERE title LIKE ?", (f"%{title}%",))
+    try:
+        if result:
+            return jsonify(result)
+        return None
+    except Exception as e:
+        logger.error(f"Error converting text search results to json: {e}")
+        return None
 
 #auxiliar methods for posting a prompt
 def insert_prompt(text, id_user):
@@ -171,6 +313,7 @@ def edit():
 
 
 #route to generate a result by a prompt
+
 @prompt_blueprint.route('/myprompts', methods=['GET'])
 def my_prompts(id_user=None):
     invocated = True
@@ -197,7 +340,7 @@ def my_prompts(id_user=None):
     try:
         #get user prompts
         prompts = execute_query(
-            "SELECT id, text, created_at, likes FROM Prompt WHERE id_user = ? AND enabled = TRUE ORDER BY created_at DESC",
+            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id_user = ? AND p.enabled = TRUE ORDER BY p.created_at DESC",
             (id_user,)
         )
 
@@ -212,6 +355,7 @@ def my_prompts(id_user=None):
     except Exception as e:
         logger.error(f"Error fetching prompts for user {id_user}: {e}")
         return jsonify({"error": "Error fetching prompts"}), 500
+
 
 #route to search prompts
 @prompt_blueprint.route('/search', methods=['GET'])
@@ -233,26 +377,26 @@ def search():
         return jsonify(cached), 200
     
     try:
-        # split the text into words to search each one
+        # split the text into words to search each one in prompts text or user name or lastname
         words = text.split()
-        query = "SELECT id, text FROM Prompt WHERE "
+        query = "SELECT p.id, p.text, u.name, u.lastname, p.likes FROM Prompt p JOIN User u ON p.id_user = u.id WHERE "
         params = []
         conditions = []
         # create a condition for each word to search in name or lastname
         for w in words:
-            conditions.append("(text LIKE CONCAT('%', ?, '%'))")
-            params.extend([w])
+            conditions.append("(p.text LIKE CONCAT('%', ?, '%') OR u.name LIKE CONCAT('%', ?, '%') OR u.lastname LIKE CONCAT('%', ?, '%'))")
+            params.extend([w, w, w])
 
         query += " AND ".join(conditions)  #all conditions must be met
         query += " AND enabled = TRUE"
         #execute the query created
         prompts = execute_query(query, tuple(params))
-
+        
         # Cache miss, so we save the prompts data in cache
         cache_set(cache_key, prompts, CACHE_TTL_SECONDS)
         logger.info(f"Search prompts text='{text}' source=db")
         return jsonify(prompts), 200
-        
+    
     except mariadb.IntegrityError as e:
         # there was an error with the query
         logger.error(f"Integrity error finding prompt : {e}")
@@ -261,6 +405,8 @@ def search():
     except Exception as e:
         logger.error(f"Integrity error finding users : {e}")
         return {"error": "Error finding prompt"}, 500
+
+
 
 #route to generate a result by a prompt
 @prompt_blueprint.route('/delete', methods=['PUT'])
@@ -320,7 +466,7 @@ def my_prompt(id_prompt=None):
     try:
         #get user prompts
         prompt = execute_query(
-            "SELECT id, text, created_at, likes FROM Prompt WHERE id = ?  AND enabled = TRUE ORDER BY created_at DESC",
+            "SELECT p.id, p.text, p.created_at, p.likes, u.name, u.lastname FROM Prompt p JOIN User u ON p.id_user = u.id WHERE p.id = ?  AND p.enabled = TRUE ORDER BY p.created_at DESC",
             (id_prompt,)
         )
 
@@ -355,10 +501,13 @@ def feed():
 
         feed = []
         for friend in friends:
-            friend_prompt = my_prompts(friend["id_friend"])
-            if friend_prompt:
-                feed.append(friend_prompt)
-                added_prompt_ids.add(friend_prompt["id"])
+            friend_prompts = my_prompts(friend["id_friend"])
+            logger.error(f"Error fetching prompts for user {friend_prompts}")
+            if friend_prompts and isinstance(friend_prompts, list):
+                for prompt in friend_prompts:
+                    if isinstance(prompt, dict) and "id" in prompt and prompt["id"] not in added_prompt_ids:
+                        feed.append(prompt)
+                        added_prompt_ids.add(prompt["id"])
             
         #get liked prompts
         likes = execute_query(
@@ -370,12 +519,16 @@ def feed():
             id_prompt = like["id_prompt"]
             if id_prompt not in added_prompt_ids:
                 like_prompt = my_prompt(id_prompt)
-                if like_prompt:
-                    feed.append(like_prompt)
+                if like_prompt and isinstance(like_prompt, list) and len(like_prompt) > 0:
+                    prompt = like_prompt[0]
+                    if isinstance(prompt, dict) and "id" in prompt and prompt["id"] not in added_prompt_ids:
+                        feed.append(prompt)
+                        added_prompt_ids.add(prompt["id"])
 
         return jsonify(feed), 200
 
     except Exception as e:
-        logger.error(f"Error fetching prompts for user {id_user}: {e}")
+        logger.error(f"Error aaaaaaaaaaaaaaaaaaaaaaaa {id_user}: {e}")
         return jsonify({"error": "Error fetching prompts"}), 500
+
 
