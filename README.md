@@ -125,7 +125,128 @@ Se realizaron tres pruebas unitarias con pytest a esta API para comprobar su fun
 <details>
   <summary>Desplegar información</summary>  
   
-A continuación se presenta un resumen de lo componentes aplicado en el proyecto  
+A continuación se presenta un resumen de lo componentes y tecnologias aplicados en el proyecto  
+
+## Implementación de MariaDB
+
+<details>
+<summary>Desplegar información</summary>
+
+Se ha implementado la base de datos `promptsy` en MariaDB, la cual utiliza dos esquemas principales para organizar la información del proyecto:
+
+- **Esquema 1:** Gestión de libros, autores, categorías y reseñas (reviews). Este esquema permite almacenar toda la información relacionada con los libros, sus autores, categorías y las reseñas asociadas. Incluye tablas como `books`, `authors`, `categories`, `reviews`, y tablas intermedias para relaciones.
+
+- **Esquema 2:** Gestión de usuarios, prompts, likes, amigos y relaciones sociales. Este esquema está enfocado en la funcionalidad social de la aplicación, permitiendo registrar usuarios, sus prompts, likes, amistades y relaciones entre ellos. Incluye tablas como `User`, `Prompt`, `Liked`, `Friend`.
+
+Las siguientes imágenes muestran la estructura de ambos esquemas:
+
+#### Esquema 1
+
+#### Esquema 2
+
+![alt text]("https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/Diagramas P1-Bases de datos- Promptsy.jpg")
+
+Cada esquema está diseñado para facilitar la integración entre la gestión de contenido (libros y reseñas) y la interacción social (usuarios y prompts), permitiendo consultas eficientes y una experiencia completa en la aplicación.
+
+</details>
+
+
+## Inicialización de Elasticsearch
+<details>
+<summary>Desplegar información</summary>
+
+
+El despliegue de Elasticsearch se realiza mediante un Job que inicializa los índices requeridos para la aplicación. Este job se encuentra en el directorio `P1/Docker/Elastic-Init` y utiliza el archivo `elastic-mappings.json` para definir el mapping de cada índice.
+
+#### Índices y su propósito
+
+- **books**: Almacena información de libros y su vector de embeddings. Se utiliza para búsquedas vectoriales (vector search) mediante el campo `embeddings`.
+- **reviews**: Almacena reseñas de libros y su vector de embeddings. También se utiliza para búsquedas vectoriales (vector search) sobre reseñas.
+- **nbooks**: Almacena información de libros pero solo para búsquedas de texto (text search), sin campo de embeddings indexado.
+- **nreviews**: Almacena reseñas de libros para búsquedas de texto (text search), sin campo de embeddings indexado.
+
+#### Mapping de los índices
+
+```json
+// books
+"books": {
+  "mappings": {
+    "properties": {
+      "title": {"type": "text"},
+      "description": {"type": "text"},
+      "authors": {"type": "text"},
+      "categories": {"type": "text"},
+      "publisheddate": {"type": "date", "ignore_malformed": true},
+      "publisher": {"type": "text"},
+      "previewlink": {"type": "text"},
+      "infolink": {"type": "text"},
+      "image": {"type": "text"},
+      "ratingscount": {"type": "float", "ignore_malformed": true},
+      "embeddings": {"type": "dense_vector", "dims": 768, "index": true, "similarity": "cosine"}
+    }
+  }
+},
+// reviews
+"reviews": {
+  "mappings": {
+    "properties": {
+      "title": {"type": "text"},
+      "price": {"type": "float", "ignore_malformed": true},
+      "user_id": {"type": "keyword"},
+      "profilename": {"type": "text"},
+      "review/helpfulness": {"type": "keyword"},
+      "review/score": {"type": "float", "ignore_malformed": true},
+      "review/time": {"type": "date", "ignore_malformed": true},
+      "review/summary": {"type": "text"},
+      "review/text": {"type": "text"},
+      "book_id": {"type": "keyword"},
+      "embeddings": {"type": "dense_vector", "dims": 768, "index": true, "similarity": "cosine"}
+    }
+  }
+},
+// nbooks
+"nbooks": {
+  "mappings": {
+    "properties": {
+      "title": {"type": "text"},
+      "description": {"type": "text"},
+      "authors": {"type": "text"},
+      "categories": {"type": "text"},
+      "publisheddate": {"type": "date", "ignore_malformed": true},
+      "publisher": {"type": "text"},
+      "previewlink": {"type": "text"},
+      "infolink": {"type": "text"},
+      "image": {"type": "text"},
+      "ratingscount": {"type": "float", "ignore_malformed": true}
+    }
+  }
+},
+// nreviews
+"nreviews": {
+  "mappings": {
+    "properties": {
+      "title": {"type": "text"},
+      "price": {"type": "float", "ignore_malformed": true},
+      "user_id": {"type": "keyword"},
+      "profilename": {"type": "text"},
+      "review/helpfulness": {"type": "keyword"},
+      "review/score": {"type": "float", "ignore_malformed": true},
+      "review/time": {"type": "date", "ignore_malformed": true},
+      "review/summary": {"type": "text"},
+      "review/text": {"type": "text"},
+      "book_id": {"type": "keyword"}
+    }
+  }
+}
+```
+
+**Notas:**
+- Los índices `books` y `reviews` permiten búsquedas vectoriales gracias al campo `embeddings` indexado y con similitud `cosine`.
+- Los índices `nbooks` y `nreviews` están optimizados para búsquedas de texto tradicional y no incluyen el campo de embeddings indexado.
+
+Esto permite a la aplicación realizar tanto búsquedas semánticas (vector search) como búsquedas clásicas de texto (text search) de manera eficiente.
+
+</details>
 
 ## UI 
   <details>
@@ -313,7 +434,6 @@ En el inicio de sesión se toma el correo y la contraseña para la validación d
 <img width="300" height="400" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/login.png" />  
 
 
-
 <img width="400" height="400" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/register.png" />
   
 ### Menú de navegación
@@ -368,9 +488,12 @@ El API REST del backend está construido con Flask y expone endpoints organizado
 - **Prompt**: Gestión de prompts y búsquedas
 - **Friend**: Gestión de relaciones sociales y likes
 
-Todos los endpoints utilizan conexión a MariaDB mediante connection pooling y bcrypt para el manejo seguro de contraseñas.
+Todos los endpoints utilizan conexión a MariaDB o ElasticSearch mediante connection pooling y bcrypt para el manejo seguro de contraseñas.
 
 ---
+
+<details>
+<summary>Ver Endpoints</summary>  
 
 ### Authentication Endpoints
 
@@ -524,12 +647,12 @@ POST /promptsy/user/change-password
 
 **Base URL:** `/promptsy/prompt`
 
-#### 1. Generate Embedding
+#### 1. Generate prompt
 ```
 POST /promptsy/prompt/generate
 ```
 
-**Descripción:** Genera embeddings para un texto utilizando HuggingFace.
+**Descripción:** Genera resultados de busquedas en cada tipo de busqueda ofrecida.
 
 **Request Body:**
 ```json
@@ -841,6 +964,8 @@ PUT /promptsy/friend/unlike
 - Conexiones reutilizables a MariaDB
 - Optimización de recursos y rendimiento
 - Implementado en `mariadb_connection.py`
+- Conexiones reutilizables a ElasticSearch
+- Implementado en `elastic_connection.py`
 
 #### Borrado Lógico
 - Campo `enabled` para soft delete
@@ -863,7 +988,7 @@ Disponible en `BackendUI_Memcached` con:
 GET /health
 ```
 Verifica disponibilidad del servicio para Kubernetes.
-
+</details>  
 </details>
 </details>
 
@@ -960,16 +1085,16 @@ Se recomienda generar un script de inicialización de la base de datos, integrad
 
 | Componente                          | Estado        | Notas / Pendientes     |
 |-------------------------------------|---------------|------------------------|
-| Hugging Face API                    |               |                        |
-| S3 Crawler Cron Job                 |               |                        |
-| Ingest                              |               |                        |
-| API                                 |               |                        |
-| API con Memcached                   |               |                        |
-| UI (Frontend)                       |               |                        |
-| Base de Datos                       |               |                        |
-| Observabilidad de componentes       |               |                        |
-| Componentes automatizados           |               |                        |
-| Pruebas (unitarias/integración)     |               |                        |
+| Hugging Face API                    |     100%      |                        |
+| S3 Crawler Cron Job                 |     100%      |                        |
+| Ingest                              |     100%      |                        |
+| API                                 |     100%      |                        |
+| API con Memcached                   |     100%      |                        |
+| UI (Frontend)                       |     100%      |                        |
+| Base de Datos                       |     100%      |                        |
+| Observabilidad de componentes       |     100%      |                        |
+| Componentes automatizados           |     100%      |                        |
+| Pruebas (unitarias/integración)     |     100%      |                        |
 
 
 </details>
