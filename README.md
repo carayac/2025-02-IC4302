@@ -176,7 +176,7 @@ Las siguientes imágenes muestran la estructura de ambos esquemas:
 
 #### Esquema 2
 
-![alt text]("https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/d1promptsy.jpg")
+![Diagramas P1-Bases de datos- Promptsy](https://github.com/user-attachments/assets/aad4b239-829e-4478-8c02-fff3fef9da1e)
 
 Cada esquema está diseñado para facilitar la integración entre la gestión de contenido (libros y reseñas) y la interacción social (usuarios y prompts), permitiendo consultas eficientes y una experiencia completa en la aplicación.
 
