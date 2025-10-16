@@ -10,15 +10,15 @@
 <details>
   <summary>Desplegar información</summary> 
 
-### 4.1 Requisitos Previos
-- Cuenta en Docker Hub
-- Docker y Docker Compose  
-- Kubernetes (Minikube o Docker Desktop)  
-- Helm Charts instalados  
-- Git
-- Lens
-
-### 4.2 Instalación de Componentes  
+### 1.1 Requisitos Previos
+- Cuenta en Docker Hub: Es un sitio web donde puedes guardar y compartir imágenes de programas listos para usar. Es como una "nube" para aplicaciones.
+- Docker y Docker Compose: Docker es una herramienta que permite ejecutar programas en "contenedores", que son como cajas que traen todo lo necesario para que el programa funcione igual en cualquier computadora. Docker Compose ayuda a iniciar varios de estos programas juntos fácilmente.
+- Kubernetes (Minikube o Docker Desktop): Kubernetes es una plataforma que ayuda a administrar y ejecutar muchos contenedores a la vez, ideal para proyectos grandes. Minikube y Docker Desktop son formas sencillas de usar Kubernetes en tu propia computadora.
+- Helm Charts instalados: Helm es una herramienta que facilita la instalación y actualización de aplicaciones en Kubernetes, usando "charts" que son como recetas pre-hechas.
+- Git: Es una herramienta para guardar y controlar los cambios en el código de un proyecto, permitiendo trabajar en equipo y mantener un historial de versiones.
+- Lens: Es un programa con interfaz gráfica que permite ver y administrar fácilmente los recursos y servicios que se están ejecutando en Kubernetes.
+  
+### 1.2 Instalación de Componentes  
 
 
 #### 1. Descargue el repositorio del proyecto en su computadora 
@@ -94,6 +94,38 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
  ```
 > NOTA: 
 > Si no necesita la instalación, ignore este paso
+
+
+#### 6. Como ingresar a la pagina WEB PROMPTSY
+<details>
+  <summary>Desplegar información</summary>
+
+### Manual de acceso a la página web PROMPTSY
+
+1. Asegúrese de que todos los servicios del proyecto estén desplegados y en ejecución (ver pasos anteriores de instalación).
+
+2. Abra su navegador web preferido (Chrome, Firefox, Edge, etc.).
+
+3. Ingrese la siguiente dirección en la barra de direcciones:
+
+  [http://localhost:52598/](http://localhost:52598/)
+
+4. Se mostrará la pantalla de inicio de sesión o registro de PROMPTSY.
+
+  - Si ya tiene una cuenta, ingrese su correo y contraseña y presione "Ingresar".
+  - Si no tiene cuenta, haga clic en "Register" o "Crear cuenta" y complete el formulario con sus datos (nombre, apellido, descripción, correo y contraseña).
+
+5. Una vez autenticado, podrá navegar por todas las funcionalidades de la aplicación:
+  - Buscar libros (Find Book)
+  - Buscar y publicar prompts
+  - Buscar amigos y gestionar su red
+  - Ver y editar su perfil
+  - Acceder al feed de actividad
+
+> Nota: Si la página no carga, verifique que el frontend esté desplegado y que no haya errores en los pods o servicios de Kubernetes/Docker.
+
+</details>
+
 
 </details>
 
