@@ -1,8 +1,4 @@
 def import_app(monkeypatch):
-    """
-    Carga el módulo app.py reemplazando dependencias externas
-    (routes.*) por objetos simulados para evitar importaciones reales.
-    """
     # Create dummies
     dummy_auth_bp = object()
     dummy_friend_bp = object()
@@ -71,4 +67,5 @@ def test_health_endpoint(monkeypatch):
     assert response.status_code == 200, f"got code: {response.status_code}"
     data = response.get_json()
     assert data == {"status": "ok"}, f"Response: {data}"
+
 
