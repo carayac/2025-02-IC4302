@@ -4,6 +4,7 @@ from tools.elastic_connection import execute_query_es, execute_vector_query, exe
 from tools.embbeding import get_embedding
 import logging
 import sys
+import time
 import mariadb
 from pymemcache.client.base import Client
 import os, json 
