@@ -149,6 +149,45 @@ Se realizaron tres pruebas unitarias con pytest a esta API para comprobar su fun
 
 </details>
 
+
+
+
+### Ingest
+<details>
+  <summary>Desplegar información</summary>
+
+#### Ingest CSV
+<details>
+  <summary>Desplegar información</summary>
+
+Se realizaron pruebas unitarias para verificar el correcto funcionamiento del procesamiento de archivos CSV. Estas pruebas incluyeron:  
+- Validación de la existencia de los objetos en el almacenamiento (S3).  
+- Descarga y procesamiento de los archivos CSV.  
+- Formateo y normalización de los datos (fechas, ratings, texto).  
+- Inserción de información en la base de datos y relaciones entre libros, autores y categorías.  
+- Generación de embeddings y almacenamiento en Elasticsearch.  
+
+![Imagen test CSV](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/pruebasUnitariasCSV.png)
+
+</details>
+
+#### Ingest Parquet
+<details>
+  <summary>Desplegar información</summary>
+
+Se realizaron pruebas unitarias para asegurar el correcto procesamiento de archivos Parquet. Estas pruebas incluyeron:  
+- Verificación de la existencia de los objetos en el almacenamiento (S3).  
+- Descarga y procesamiento de los archivos Parquet.  
+- Normalización de datos específicos de reviews (score, time, price).  
+- Inserción de información de reviews y libros en la base de datos.  
+- Generación de embeddings y almacenamiento en Elasticsearch.  
+
+![Imagen test Parquet](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/pruebasUnitariasParket.png)
+
+</details>
+
+</details>
+
   
 </details>
 
@@ -1046,6 +1085,10 @@ Verifica disponibilidad del servicio para Kubernetes.
 
 8. El uso de una arquitectura modular, donde el crawler y los consumidores funcionan como componentes independientes, facilita la escalabilida y el mantenimiento del sistema. 
 
+9. La comunicación constante dentro del equipo permitió coordinar tareas de manera efectiva, logrando así la integración de las diferentes partes del sistema de manera exitosa, permitiendo una división de responsabilidades y un desarrollo eficiente.
+
+10. La colaboración entre miembros del equipo, combinando distintas habilidades y perspectivas, resultó en soluciones para problemas que se presentaron durante la elaboración del proyecto.
+
 </details>
 
 # Recomendaciones
@@ -1070,6 +1113,10 @@ Se recomienda generar un script de inicialización de la base de datos, integrad
 7.  Se recomienda aprovechar los servicios cloud y los patrones de mensajería modernos, como AWS S3 y como RabbitMQ, para así poder tener escalabilidad en los proyectos, estando preparados para trabajar con datasets enormes.
 
 8. Al trabajar en procesamiento de datos grandes, se recomienda seguir el patrón producer-consumer. En el caso del proyecto esto se ve en la separación de componentes: Crawler, Ingest y una cola que los comunica, esto favorece la escalabilidad horizontal, el añadir cosas nuevas y la mantenibilidad.
+
+9. Fomentar reuniones periódicas dentro del equipo para mantener una comunicación clara sobre el estado de las tareas, evitando malentendidos y retrasos en el proyecto.
+
+10. Promover un ambiente de colaboración donde cada miembro del equipo pueda tomar una responsabilidad lo que fortaleciendo la cohesión y mejorando la calidad del trabajo colectivo.
 
 </details>
 
@@ -1100,6 +1147,35 @@ Se recomienda generar un script de inicialización de la base de datos, integrad
   https://mariadb.com/docs/tools/mariadb-enterprise-operator/installation/helm
 
   https://react.dev/learn/managing-state
+
+  https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-objects-GetExamples.html 
+
+  https://docs.python.org/3/library/json.html#json.loads
+
+  https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_parquet.html
+
+  https://elasticsearch-py.readthedocs.io/en/v8.11.1/helpers.html 
+
+  https://docs.python.org/3/library/datetime.html
+
+  https://docs.python.org/3/library/datetime.html
+
+  https://kinsta.com/blog/indexing-in-mysql-mariadb/ 
+
+  https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/dense-vector 
+
+  https://docs.pytest.org/en/stable/how-to/monkeypatch.html 
+
+  https://docs.python.org/3/library/threading.html 
+
+  https://prometheus.io/docs/practices/pushing/
+
+  https://prometheus.github.io/client_python/exporting/http/
+
+  https://prometheus.github.io/client_python/exporting/pushgateway/
+
+
+
 
   
   
