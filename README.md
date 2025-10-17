@@ -149,7 +149,23 @@ Se realizaron tres pruebas unitarias con pytest a esta API para comprobar su fun
 
 </details>
 
+#### Crawler
+<details>
+  <summary>Desplegar información</summary>
 
+Se realizaron pruebas unitarias para verificar el correcto funcionamiento del componente Crawler, encargado de la conexión con S3 y RabbitMQ, así como la configuración de métricas y logs.
+Estas pruebas incluyeron:
+
+-Inicialización de métricas y servidor Prometheus: se validó que el módulo registre correctamente los contadores e histogramas de Prometheus, y que el servidor de métricas se inicie en el puerto 8000.
+-Configuración de logging: se comprobó que el sistema de logging se inicialice correctamente al cargar el módulo.
+-Conexión exitosa con RabbitMQ: se verificó la creación de la conexión, canales y colas (csv y parquet), junto con la autenticación mediante credenciales configuradas en las variables de entorno.
+-Manejo de errores de conexión: se probó que, ante fallos en la conexión a RabbitMQ, se capture la excepción y se registre el error correspondiente.
+-Publicación de mensajes exitosa: se comprobó que los mensajes se publiquen correctamente en la cola indicada, con el formato esperado.
+-Manejo de errores en la publicación: se validó que, si ocurre un error al publicar, el sistema registre el mensaje de error sin interrumpir la ejecución.
+
+![Imagen test Crawler](https://github.com/cjimenez0708/prob/blob/main/Captura1.PNG)
+
+</details>
 
 
 ### Ingest
