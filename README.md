@@ -104,18 +104,18 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 
 1. Asegúrese de que todos los servicios del proyecto estén desplegados y en ejecución (ver pasos anteriores de instalación).
 
-2. Abra su navegador web preferido (Chrome, Firefox, Edge, etc.).
+2. Abra la aplicacion **Lens** y seleccione la opcion **Network** en el menú principal.
 
-3. Ingrese la siguiente dirección en la barra de direcciones:
+3. Una vez dentro, busque la opción de **services** y posteriormente busque el servicio llamado **frontend**
 
-  [http://localhost:52598/](http://localhost:52598/)
+4. Ubique la parte donde indica los puertos y utilice el botón de **Forward**
 
-4. Se mostrará la pantalla de inicio de sesión o registro de PROMPTSY.
+5. Se mostrará la pantalla de inicio de sesión o registro de PROMPTSY.
 
   - Si ya tiene una cuenta, ingrese su correo y contraseña y presione "Ingresar".
   - Si no tiene cuenta, haga clic en "Register" o "Crear cuenta" y complete el formulario con sus datos (nombre, apellido, descripción, correo y contraseña).
 
-5. Una vez autenticado, podrá navegar por todas las funcionalidades de la aplicación:
+6. Una vez autenticado, podrá navegar por todas las funcionalidades de la aplicación:
   - Buscar libros (Find Book)
   - Buscar y publicar prompts
   - Buscar amigos y gestionar su red
@@ -588,9 +588,10 @@ En el inicio de sesión se toma el correo y la contraseña para la validación d
   
 ### Find Book
 Para Find Book se presenta un campo de busqueda, donde el usuario escribe la necesidad de tipo de libros que desea buscar y con respecto a su petición podrá tener dos opciones: **Buscar** o **Publicar**
-Al buscar podrá obtener resultados de ta ta ta en los que podrá conusltar información general de los libros obtenidos.  
+Al buscar podrá obtener resultados de vector search y riviews, text books y reviews y por ultimo de MariaDB, en los que podrá conusltar información general de los libros obtenidos.  
 Al utilizar la opcion de publicar, el prompt o petición del usuario será publicado en el feed para ser consultado en un futuro o para que sea visto por sus amigos.  
-<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/findBooks.png" />
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/findBooks.png" />  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/cards.png" />
   
 ### Search Prompts
 En Search Prompts se realiza una barra de búsqueda que filtra prompts por el texto y por el nombre de usuario. Cada tarjeta de prompt mostrada incluye la acción de "like". Cuando el usuario da like, se realiza una actualización de likes en los prompts del usuario y ese prompt también se agrega al Feed del usuario que dio like.  
@@ -598,6 +599,7 @@ En Search Prompts se realiza una barra de búsqueda que filtra prompts por el te
   
 ### Find Friends
 Para Find Friends se construye un buscador por nombre. Cada resultado se presenta con un pequeño perfil con el nombre del usuarios y cantidad de followers, además de un botón de "Follow" para poder agregarlo a sus amigos.  
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/findFriends.png" />
 
   
 ### Feed
@@ -606,7 +608,7 @@ El Feed mezcla los prompts propios y los de la gente que el usuario sigue, orden
 
 ### Friends
 La sección Friends lista a las personas que el usuario ya sigue, así como la opcion de dejarlos de seguir si así lo decide.  
-<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/feed.png" />
+<img width="800" height="800" alt="login" src="https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/images/myFriends.png" />
   
 ### Me
 En Me se centralizan dos cosas: el perfil del usuario y la gestión de sus prompts. Para el perfil se muestra el nombre, apellido, descripción y correo.  Se permite editarlos.  
