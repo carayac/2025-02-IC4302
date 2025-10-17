@@ -1,5 +1,5 @@
 config:
-  docker_registry: helena0504 # docker registry replace with your own username
+  docker_registry: prosoli # docker registry replace with your own username
   backend:
     replicas: 1
     name: backend

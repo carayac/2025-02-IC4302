@@ -61,7 +61,7 @@ const Friends = () => {
   const [meId, setMeId] = useState(null)
 
   const [searchTerm, setSearchTerm] = useState("")  //Escritura de prompts
-  const [theme, setTheme] = useState("colorful")
+  const [theme, setTheme] = useState("formal")
   const [results, setResults] = useState([])  //Resultados de busqueda
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")

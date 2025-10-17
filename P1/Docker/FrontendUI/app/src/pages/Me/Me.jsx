@@ -36,7 +36,7 @@ function formatDate(d) {
 export default function Me() {
   const navigate = useNavigate()
 
-  const [theme, setTheme] = useState("colorful")
+  const [theme, setTheme] = useState("formal")
   const [isEditing, setIsEditing] = useState(false)
   const [editingPromptId, setEditingPromptId] = useState(null)
   const [isChangingPassword, setIsChangingPassword] = useState(false) 

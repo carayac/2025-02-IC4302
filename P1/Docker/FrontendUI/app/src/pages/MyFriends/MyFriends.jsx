@@ -26,7 +26,7 @@ function getUserId(u) {
 
 
 export default function MyFriends() {
-  const [theme, setTheme] = useState("colorful")
+  const [theme, setTheme] = useState("formal")
   const [friends, setFriends] = useState([]); //lista de amigos
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");

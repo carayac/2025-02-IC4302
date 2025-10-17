@@ -1,5 +1,5 @@
 config:
-  docker_registry: carayacn
+  docker_registry: prosoli
   backend:
     enabled: true
     replicas: 2

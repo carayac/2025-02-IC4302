@@ -17,7 +17,7 @@ const Ask = () => {
   const [selectedSource, setSelectedSource] = useState("")  //Fuente de busqueda
   const [isSearching, setIsSearching] = useState(false)
   const [hasSearched, setHasSearched] = useState(false);
-  const [theme, setTheme] = useState("colorful") // 'colorful' or 'formal'
+  const [theme, setTheme] = useState("formal") // 'colorful' or 'formal'
 
   //Guarda todos los reusltados distintos de los tipos
   const [allResults, setAllResults] = useState({
@@ -27,7 +27,26 @@ const Ask = () => {
     reviews_vector: [],
     mariadb: []
   });
-  
+
+  const [sourceTimes, setSourceTimes] = useState({}) //Tiempos de respuesta por fuente
+
+  const keyForSource = (sourceId) => {
+    switch (sourceId) {
+      case "vector-search": return "books_vector"
+      case "vector-reviews": return "reviews_vector"
+      case "text-books": return "books_text"
+      case "text-reviews": return "reviews_text"
+      case "mariadb": return "mariadb"
+      default: return "books_text"
+    }
+  }
+
+  const formatMs = (ms) => {
+    if (ms == null || Number.isNaN(Number(ms))) return "—"
+    const n = Number(ms)
+    return n >= 1000 ? `${(n / 1000).toFixed(2)} s` : `${Math.round(n)} ms`
+  }
+
   //Fuentes disponibles
   const sources = [
     { id: "vector-search", name: "Vector Search", icon: "🔍" },
@@ -100,7 +119,8 @@ const Ask = () => {
       reviews_text: [],
       reviews_vector: [],
       mariadb: []
-    });
+    })
+    setSourceTimes({})
 
     try {
       const result = await Prompts.generatePrompt(prompt.trim());
@@ -112,11 +132,11 @@ const Ask = () => {
         reviews_text: result.reviews_text || [],
         reviews_vector: result.reviews_vector || [],
         mariadb: result.mariadb || []
-      });
+      })
 
-      setSelectedSource("text-books");
-      const formatted = formatResults(result.books_text || [], "books_text");
-      setSearchResults(formatted);
+      setSourceTimes(result.timings_ms || {})
+
+
     } catch (err) {
       console.error("Error fetching results:", err);
     } finally {
@@ -129,7 +149,7 @@ const Ask = () => {
     if (!Array.isArray(data)) return [];
 
     return data.map((item) => {
-      const src = item._source || item;
+      const src = item._source || item; // resultados desde source
 
       if (sourceType.includes("book")) {
         // results for books
@@ -138,8 +158,8 @@ const Ask = () => {
           type: "book",
           title: src.title || "Untitled",
           description: src.description || "No description available.",
-          authors: src.authors ? src.authors.split?.(",") || [src.authors] : [],
-          categories: src.categories ? src.categories.split?.(",") || [src.categories] : [],
+          authors: src.authors,
+          categories: src.categories,
           publisher: src.publisher || "",
           publishedDate: src.publisheddate || "",
           previewLink: src.previewlink || "",
@@ -163,6 +183,19 @@ const Ask = () => {
           user: src.profilename || src.user_id || "",
           time: src["review/time"] || "",
           book_id: src.book_id || "",
+
+          image_link: src.image_link,
+          preview_link: src.preview_link,
+          info_link: src.info_link,
+          publisher: src.publisher,
+          authors: src.authors,
+          categories: src.categories,
+          description: src.description,
+
+          price: src.price,
+          asin_or_id: src.id,
+          _score: item._score,
+
           sourceType
         };
       }
@@ -173,14 +206,23 @@ const Ask = () => {
         type: "mariadb",
         title: src.title || "Untitled",
         description: src.description || "",
-        authors: src.authors ? src.authors.split?.(",") || [src.authors] : [],
-        categories: src.categories ? src.categories.split?.(",") || [src.categories] : [],
+        authors: src.authors,
+        categories: src.categories,
         publisher: src.publisher || "",
         publishedDate: src.review_time || "",
         previewLink: src.preview_link || "",
         infoLink: src.info_link || "",
         image: src.image_link || "",
         ratings: src.review_score || src.ratings_count || 0,
+
+        review_title: src.review_title,
+        review_text: src.review_text,
+        review_id: src.review_id,
+        profile_name: src.profile_name,
+        user_id: src.user_id,
+        ratings_count: src.ratings_count,
+        _score: item._score,
+
         sourceType
       };
     });
@@ -245,13 +287,7 @@ const Ask = () => {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  }
+
 
   const canPublish = useMemo(
     () => Boolean(prompt.trim()) && !isPosting,
@@ -314,21 +350,27 @@ const Ask = () => {
         {!!postError && <div className={s.errorBanner}>Error when posting {postError}</div>}
       </div>
 
+      {/* Seleccion de fuentes */}
       {!isSearching && hasSearched && !selectedSource && (
         <div className={s.sourcesSection}>
           <h2 className={s.sectionTitle}>Choose a source to search:</h2>
           <div className={s.sourceGrid}>
-            {sources.map((source) => (
-              <button
-                key={source.id}
-                className={s.sourceButton}
-                onClick={() => handleSourceSelect(source.id)}
-                aria-label={`Search in ${source.name}`}
-              >
-                <span className={s.sourceIcon}>{source.icon}</span>
-                <span className={s.sourceName}>{source.name}</span>
-              </button>
-            ))}
+            {sources.map((source) => {
+              const key = keyForSource(source.id);
+              const time = sourceTimes[key];
+              return (
+                <button
+                  key={source.id}
+                  className={s.sourceButton}
+                  onClick={() => handleSourceSelect(source.id)}
+                  aria-label={`Search in ${source.name} (${formatMs(time)})`}
+                >
+                  {/* Espacio de tiempo */}
+                  <span className={s.sourceIcon}>{formatMs(time)}</span>
+                  <span className={s.sourceName}>{source.name}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
@@ -354,20 +396,31 @@ const Ask = () => {
           <div className={s.booksGrid}>
             {searchResults.map((item) => (
               <div key={item.id} className={s.bookCard}>
-                {/* default results*/}
+                {/* score */}
+                {typeof item._score === "number" && (
+                  <div className={s.badge}>score: {item._score.toFixed(2)}</div>
+                )}
+
                 <h3 className={s.bookTitle}>{item.title}</h3>
 
-                {/* results for boos */}
+                {/* results for books */}
                 {item.type === "book" && (
                   <>
                     {item.image && (
                       <img src={item.image} alt={item.title} className={s.bookImage} />
                     )}
                     <p className={s.bookDescription}>{item.description}</p>
-                    <div><strong>Authors:</strong> {item.authors.join(", ")}</div>
-                    <div><strong>Categories:</strong> {item.categories.join(", ")}</div>
+
+                    
+                    {item.authors != null && (
+                      <div><strong>Authors:</strong> {String(item.authors)}</div>
+                    )}
+                    {item.categories != null && (
+                      <div><strong>Categories:</strong> {String(item.categories)}</div>
+                    )}
+
                     <div><strong>Publisher:</strong> {item.publisher}</div>
-                    <div><strong>Published:</strong> {formatDate(item.publishedDate)}</div>
+                    <div><strong>Date:</strong> {item.time}</div>
                     <div><strong>Ratings:</strong> {item.ratings}</div>
                     {item.previewLink && (
                       <a href={item.previewLink} target="_blank" rel="noreferrer">Preview</a>
@@ -381,29 +434,93 @@ const Ask = () => {
                 {/* results for reviews */}
                 {item.type === "review" && (
                   <>
+                    
+                    {item.image_link && (
+                      <img src={item.image_link} alt={`${item.title} cover`} className={s.bookImage} />
+                    )}
+
                     <p><strong>Summary:</strong> {item.summary}</p>
                     <p>{item.text}</p>
+
                     <div><strong>Score:</strong> {item.score}</div>
                     <div><strong>User:</strong> {item.user}</div>
-                    <div><strong>Date:</strong> {formatDate(item.time)}</div>
+                    <div><strong>Date:</strong> {item.time}</div>
                     <div><strong>Book ID:</strong> {item.book_id}</div>
+
+                    
+                    {item.publisher && (
+                      <div><strong>Publisher:</strong> {item.publisher}</div>
+                    )}
+                    {item.authors != null && (
+                      <div><strong>Authors:</strong> {String(item.authors)}</div>
+                    )}
+                    {item.categories != null && (
+                      <div><strong>Categories:</strong> {String(item.categories)}</div>
+                    )}
+                    {item.description && (
+                      <p><strong>Book description:</strong> {item.description}</p>
+                    )}
+                    {item["review/helpfulness"] && (
+                      <div><strong>Helpfulness:</strong> {item["review/helpfulness"]}</div>
+                    )}
+                    {item.asin_or_id && (
+                      <div><strong>ID:</strong> {item.asin_or_id}</div>
+                    )}
+                    {item.price != null && (
+                      <div><strong>Price:</strong> {item.price}</div>
+                    )}
+                    {item.preview_link && (
+                      <a href={item.preview_link} target="_blank" rel="noreferrer">Preview</a>
+                    )}
+                    {item.info_link && (
+                      <a href={item.info_link} target="_blank" rel="noreferrer">Info</a>
+                    )}
                   </>
                 )}
 
-                {/* results from maria */}
+                {/* results from mariadb */}
                 {item.type === "mariadb" && (
                   <>
                     {item.image && (
                       <img src={item.image} alt={item.title} className={s.bookImage} />
                     )}
                     <p>{item.description}</p>
-                    <div><strong>Authors:</strong> {item.authors.join(", ")}</div>
-                    <div><strong>Categories:</strong> {item.categories.join(", ")}</div>
+
+                    {item.authors != null && (
+                      <div><strong>Authors:</strong> {String(item.authors)}</div>
+                    )}
+                    {item.categories != null && (
+                      <div><strong>Categories:</strong> {String(item.categories)}</div>
+                    )}
+
                     <div><strong>Publisher:</strong> {item.publisher}</div>
-                    <div><strong>Date:</strong> {formatDate(item.publishedDate)}</div>
-                    <div><strong>Ratings:</strong> {item.ratings}</div>
+                    <div><strong>Date:</strong> {item.publishedDate}</div>
+                    <div><strong>Ratings / Score:</strong> {item.ratings}</div>
                     {item.previewLink && (
                       <a href={item.previewLink} target="_blank" rel="noreferrer">Preview</a>
+                    )}
+                    {item.infoLink && (
+                      <a href={item.infoLink} target="_blank" rel="noreferrer">Info</a>
+                    )}
+
+                    {/* reviews for maria */}
+                    {item.review_title && (
+                      <div><strong>Review title:</strong> {item.review_title}</div>
+                    )}
+                    {item.review_text && (
+                      <p>{item.review_text}</p>
+                    )}
+                    {item.review_id && (
+                      <div><strong>Review ID:</strong> {item.review_id}</div>
+                    )}
+                    {item.profile_name && (
+                      <div><strong>Profile:</strong> {item.profile_name}</div>
+                    )}
+                    {item.user_id && (
+                      <div><strong>User ID:</strong> {item.user_id}</div>
+                    )}
+                    {item.ratings_count != null && (
+                      <div><strong>Ratings (book):</strong> {item.ratings_count}</div>
                     )}
                   </>
                 )}
@@ -447,8 +564,6 @@ const Ask = () => {
           <span className={s.navIcon}>👤</span>
           <span className={s.navLabel}>Me</span>
         </NavLink>
-
-
       </nav>
     </div>
   )

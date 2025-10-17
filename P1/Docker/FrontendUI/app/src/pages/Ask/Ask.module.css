@@ -493,8 +493,8 @@
 .successBanner {
   margin-top: 1rem;
   padding: 0.75rem;
-  background-color: #d1fae5; 
-  color: #065f46; 
+  background-color: #d1fae5;
+  color: #065f46;
   border: 1px solid #10b981;
   border-radius: 0.5rem;
   font-size: 0.9rem;
@@ -503,9 +503,17 @@
 .errorBanner {
   margin-top: 1rem;
   padding: 0.75rem;
-  background-color: #fee2e2; 
-  color: #991b1b; 
+  background-color: #fee2e2;
+  color: #991b1b;
   border: 1px solid #ef4444;
   border-radius: 0.5rem;
   font-size: 0.9rem;
+}
+
+.sourceIcon {
+  min-width: 64px;
+  display: inline-block;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
 }

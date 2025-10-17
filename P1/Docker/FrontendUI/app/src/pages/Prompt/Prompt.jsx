@@ -158,7 +158,7 @@ function useToast(autoHideMs = 3500) {
 
 const Prompt = () => {
   const [searchTerm, setSearchTerm] = useState(""); //texto de busqueda
-  const [theme, setTheme] = useState("colorful");
+  const [theme, setTheme] = useState("formal");
   const [prompts, setPrompts] = useState([]); //lista de prompts
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");

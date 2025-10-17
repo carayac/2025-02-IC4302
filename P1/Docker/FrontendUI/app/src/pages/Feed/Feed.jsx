@@ -45,7 +45,7 @@ function timeAgo(input) {
 }
 
 export default function Feed() {
-  const [theme, setTheme] = useState("colorful");
+  const [theme, setTheme] = useState("formal");
   const [feedPosts, setFeedPosts] = useState([]); //Guarda los posts que se mostrarán
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
