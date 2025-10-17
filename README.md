@@ -244,9 +244,8 @@ Estas pruebas incluyeron:
 
 # Configuración de componenetes 
 <details>
-  <summary>Desplegar información</summary>  
   
-A continuación se presenta un resumen de lo componentes y tecnologias aplicados en el proyecto  
+  <summary>Desplegar información</summary>  
 
 ## Implementación de MariaDB
 
@@ -1110,6 +1109,61 @@ GET /health
 ```
 Verifica disponibilidad del servicio para Kubernetes.
 </details>  
+</details>
+
+## HuggingFace API
+
+<details>
+<summary>Desplegar información</summary>
+
+Esta API es la encargada de generas los embeddings, esto se logra por medio del modelo "sentence-transformers/all-mpnet-base-v2". Este modelo permite que obtenga el texto y lo transforma en vectores. La API está conformada de 3 endpoints:
+
+### 1. Generate Embedding
+```
+POST/encode
+```
+**Descripción:** Genera un embedding a partir de un texto utilizando el modelo sentence-transformers/all-mpnet-base-v2
+
+**Request Body:**
+```json
+{
+  "text": "string"
+}
+```
+
+**Response Body:**
+```json
+{
+  "text": "string",
+  "embedding": [0.123, -0.456, 0.789, ...]
+}
+```
+
+### 2. Health Check
+```
+GET /status
+```
+**Descripción:** Verifica que la API esté funcionando correctamente
+
+**Response Body:**
+```json
+{
+  "text": "string",
+  "embedding": [0.123, -0.456, 0.789, ...]
+}
+```
+
+### 3. Prometheus Metrics
+```
+GET /metrics
+```
+**Descripción:** Expone métricas de Prometheus para monitoreo de la API
+
+**Metricas Disponibles:** 
+- total_peticiones_http
+- promedio_tiempo_embedding
+
+
 </details>
 </details>
 
