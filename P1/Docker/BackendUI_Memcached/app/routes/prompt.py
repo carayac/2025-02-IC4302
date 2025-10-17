@@ -58,6 +58,14 @@ def generate():
         logger.info("Generating prompt")
         #get data from body request
         text = request.json.get("text")
+
+        cache_key = f"generate:{text.lower().strip()}"
+        # Try to get cache hit
+        cached = cache_get(cache_key)
+        if cached is not None:
+            logger.info(f"Generate prompt text='{text}' source=cache")
+            return jsonify(cached), 200
+        
         #get the embedding
         response = get_embedding(text)
         embedding = response["embedding"]
@@ -107,6 +115,10 @@ def generate():
                 "books_vector": bv_vector_search_ms
             },
         }
+
+        # Cache miss, so we save the prompt data in cache
+        cache_set(cache_key, combined, CACHE_TTL_SECONDS)
+        logger.info(f"Generate prompt text='{text}' source=db")
 
         return jsonify(combined), 200
     except Exception as e:
