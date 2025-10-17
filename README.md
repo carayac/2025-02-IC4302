@@ -202,6 +202,8 @@ Se realizaron pruebas unitarias para asegurar el correcto procesamiento de archi
 
 </details>
 
+  
+</details>
 #### Backend UI Memcached
 <details> <summary>Desplegar información</summary>
 
@@ -233,9 +235,6 @@ Estas pruebas incluyeron:
 - Uso de mocks controlados: se implementaron MagicMock y monkeypatch para aislar las dependencias externas y asegurar que las pruebas se ejecuten de manera controlada y reproducible.
 
 ![Imagen test Backend Ui Memcached](https://github.com/cjimenez0708/prob/blob/main/Captura2.PNG)
-
-  
-</details>
 
 </details>
 
