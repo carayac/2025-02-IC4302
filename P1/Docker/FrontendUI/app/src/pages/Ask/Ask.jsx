@@ -445,7 +445,6 @@ const Ask = () => {
                     <div><strong>Score:</strong> {item.score}</div>
                     <div><strong>User:</strong> {item.user}</div>
                     <div><strong>Date:</strong> {item.time}</div>
-                    <div><strong>Book ID:</strong> {item.book_id}</div>
 
                     
                     {item.publisher && (

@@ -7,4 +7,6 @@ RUN apt-get update -y
 RUN apt install build-essential -y 
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN python -u test.py
+
 CMD [ "python", "-u", "./app.py" ]

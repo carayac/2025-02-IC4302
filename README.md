@@ -149,7 +149,23 @@ Se realizaron tres pruebas unitarias con pytest a esta API para comprobar su fun
 
 </details>
 
+#### Crawler
+<details>
+  <summary>Desplegar información</summary>
 
+Se realizaron pruebas unitarias para verificar el correcto funcionamiento del componente Crawler, encargado de la conexión con S3 y RabbitMQ, así como la configuración de métricas y logs.
+Estas pruebas incluyeron:
+
+- Inicialización de métricas y servidor Prometheus: se validó que el módulo registre correctamente los contadores e histogramas de Prometheus, y que el servidor de métricas se inicie en el puerto 8000.
+- Configuración de logging: se comprobó que el sistema de logging se inicialice correctamente al cargar el módulo.
+- Conexión exitosa con RabbitMQ: se verificó la creación de la conexión, canales y colas (csv y parquet), junto con la autenticación mediante credenciales configuradas en las variables de entorno.
+- Manejo de errores de conexión: se probó que, ante fallos en la conexión a RabbitMQ, se capture la excepción y se registre el error correspondiente.
+- Publicación de mensajes exitosa: se comprobó que los mensajes se publiquen correctamente en la cola indicada, con el formato esperado.
+- Manejo de errores en la publicación: se validó que, si ocurre un error al publicar, el sistema registre el mensaje de error sin interrumpir la ejecución.
+
+![Imagen test Crawler](https://github.com/cjimenez0708/prob/blob/main/Captura1.PNG)
+
+</details>
 
 
 ### Ingest
@@ -186,17 +202,71 @@ Se realizaron pruebas unitarias para asegurar el correcto procesamiento de archi
 
 </details>
 
+  
 </details>
 
-  
+#### Backend UI Memcached
+<details> <summary>Desplegar información</summary>
+
+Se realizaron pruebas unitarias para verificar el correcto funcionamiento del componente Backend UI, encargado de la inicialización de la aplicación Flask, el registro de los blueprints y la respuesta del endpoint de salud (/health).
+Estas pruebas incluyeron:
+
+- Registro de blueprints: se validó que se registren correctamente los cuatro blueprints principales del sistema (authentication, friend, prompt, user), utilizando los prefijos esperados:
+/promptsy/auth
+/promptsy/friend
+/promptsy/prompt
+/promptsy/user
+- Verificación de inicialización de la aplicación: se comprobó que la aplicación Flask cargue correctamente los módulos de rutas y ejecute el proceso de registro sin errores.
+- Endpoint de salud: se verificó que el endpoint /health responda con un código de estado 200 OK y un cuerpo JSON con el contenido {"status": "ok"}.
+- Aislamiento mediante mocks: se emplearon monkeypatch y MagicMock para simular las dependencias externas y garantizar que las pruebas se ejecuten sin necesidad de instancias reales.
+
+![Imagen test Backend Ui Memcached](https://github.com/cjimenez0708/prob/blob/main/Captura3.PNG)
+
+</details>
+
+### Backend UI 
+<details> <summary>Desplegar información</summary>
+
+Se realizaron pruebas unitarias para verificar el correcto funcionamiento del componente Backend UI sin Memcached, el cual gestiona la inicialización de la aplicación Flask, el registro de los blueprints principales y la respuesta del endpoint /health.
+Estas pruebas incluyeron:
+
+- Registro de blueprints: se comprobó que la aplicación registre los cuatro blueprints principales del sistema (authentication, friend, prompt, user), asegurando que el método register_blueprint se invoque exactamente cuatro veces y que todos los módulos sean correctamente detectados.
+- Validación de la aplicación Flask: se verificó que la aplicación Flask se inicialice de forma correcta, cargando los módulos de rutas simulados mediante monkeypatch sin requerir dependencias reales.
+- Endpoint de salud: se validó que el endpoint /health devuelva una respuesta con código 200 OK y el cuerpo JSON {"status": "ok"}, confirmando que el servicio se encuentra activo.
+- Uso de mocks controlados: se implementaron MagicMock y monkeypatch para aislar las dependencias externas y asegurar que las pruebas se ejecuten de manera controlada y reproducible.
+
+![Imagen test Backend Ui Memcached](https://github.com/cjimenez0708/prob/blob/main/Captura2.PNG)
+
+</details>
+
 </details>
 
 
 # Configuración de componenetes 
 <details>
-  <summary>Desplegar información</summary>  
   
-A continuación se presenta un resumen de lo componentes y tecnologias aplicados en el proyecto  
+  <summary>Desplegar información</summary>  
+
+
+## S3 Crawler
+
+<details>
+<summary>Desplegar información</summary>
+
+El S3 Crawler es un Cron Job que se ejecuta cada hora, recorre el bucket con una lista de prefijos y lista los objetos .json y .parquet, publicándolos en RabbitMQ. Tiene el siguiente flujo: 
+
+![Flow Chart Crawler](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/Diagrams/Crawler%20-%20Flow%20Chart.png)
+
+- **RabbitMQ:** para ver los mensajes publicados en RabbitMQ, se puede abrir el puerto 15672, con el siguiente comando:
+
+
+    ```bash
+   kubectl port-forward svc/databases-rabbitmq 15672:15672 -n default
+   ```
+    
+    Después, se ingresa al enlace "http://localhost:15672/", y con su usuario y contraseña puede acceder a ver las colas y mensajes. 
+
+</details>
 
 ## Implementación de MariaDB
 
@@ -1060,6 +1130,61 @@ GET /health
 ```
 Verifica disponibilidad del servicio para Kubernetes.
 </details>  
+</details>
+
+## HuggingFace API
+
+<details>
+<summary>Desplegar información</summary>
+
+Esta API es la encargada de generas los embeddings, esto se logra por medio del modelo "sentence-transformers/all-mpnet-base-v2". Este modelo permite que obtenga el texto y lo transforma en vectores. La API está conformada de 3 endpoints:
+
+### 1. Generate Embedding
+```
+POST/encode
+```
+**Descripción:** Genera un embedding a partir de un texto utilizando el modelo sentence-transformers/all-mpnet-base-v2
+
+**Request Body:**
+```json
+{
+  "text": "string"
+}
+```
+
+**Response Body:**
+```json
+{
+  "text": "string",
+  "embedding": [0.123, -0.456, 0.789, ...]
+}
+```
+
+### 2. Health Check
+```
+GET /status
+```
+**Descripción:** Verifica que la API esté funcionando correctamente
+
+**Response Body:**
+```json
+{
+  "text": "string",
+  "embedding": [0.123, -0.456, 0.789, ...]
+}
+```
+
+### 3. Prometheus Metrics
+```
+GET /metrics
+```
+**Descripción:** Expone métricas de Prometheus para monitoreo de la API
+
+**Metricas Disponibles:** 
+- total_peticiones_http
+- promedio_tiempo_embedding
+
+
 </details>
 </details>
 
