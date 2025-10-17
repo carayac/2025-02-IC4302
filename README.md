@@ -258,9 +258,12 @@ El S3 Crawler es un Cron Job que se ejecuta cada hora, recorre el bucket con una
 ![Flow Chart Crawler](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/Diagrams/Crawler%20-%20Flow%20Chart.png)
 
 - **RabbitMQ:** para ver los mensajes publicados en RabbitMQ, se puede abrir el puerto 15672, con el siguiente comando:
+
+
     ```bash
    kubectl port-forward svc/databases-rabbitmq 15672:15672 -n default
    ```
+    
     Después, se ingresa al enlace "http://localhost:15672/", y con su usuario y contraseña puede acceder a ver las colas y mensajes. 
 
 </details>
