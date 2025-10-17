@@ -244,9 +244,29 @@ Estas pruebas incluyeron:
 
 # Configuración de componenetes 
 <details>
-  <summary>Desplegar información</summary>  
   
-A continuación se presenta un resumen de lo componentes y tecnologias aplicados en el proyecto  
+  <summary>Desplegar información</summary>  
+
+
+## S3 Crawler
+
+<details>
+<summary>Desplegar información</summary>
+
+El S3 Crawler es un Cron Job que se ejecuta cada hora, recorre el bucket con una lista de prefijos y lista los objetos .json y .parquet, publicándolos en RabbitMQ. Tiene el siguiente flujo: 
+
+![Flow Chart Crawler](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/Diagrams/Crawler%20-%20Flow%20Chart.png)
+
+- **RabbitMQ:** para ver los mensajes publicados en RabbitMQ, se puede abrir el puerto 15672, con el siguiente comando:
+
+
+    ```bash
+   kubectl port-forward svc/databases-rabbitmq 15672:15672 -n default
+   ```
+    
+    Después, se ingresa al enlace "http://localhost:15672/", y con su usuario y contraseña puede acceder a ver las colas y mensajes. 
+
+</details>
 
 ## Implementación de MariaDB
 
@@ -1110,6 +1130,61 @@ GET /health
 ```
 Verifica disponibilidad del servicio para Kubernetes.
 </details>  
+</details>
+
+## HuggingFace API
+
+<details>
+<summary>Desplegar información</summary>
+
+Esta API es la encargada de generas los embeddings, esto se logra por medio del modelo "sentence-transformers/all-mpnet-base-v2". Este modelo permite que obtenga el texto y lo transforma en vectores. La API está conformada de 3 endpoints:
+
+### 1. Generate Embedding
+```
+POST/encode
+```
+**Descripción:** Genera un embedding a partir de un texto utilizando el modelo sentence-transformers/all-mpnet-base-v2
+
+**Request Body:**
+```json
+{
+  "text": "string"
+}
+```
+
+**Response Body:**
+```json
+{
+  "text": "string",
+  "embedding": [0.123, -0.456, 0.789, ...]
+}
+```
+
+### 2. Health Check
+```
+GET /status
+```
+**Descripción:** Verifica que la API esté funcionando correctamente
+
+**Response Body:**
+```json
+{
+  "text": "string",
+  "embedding": [0.123, -0.456, 0.789, ...]
+}
+```
+
+### 3. Prometheus Metrics
+```
+GET /metrics
+```
+**Descripción:** Expone métricas de Prometheus para monitoreo de la API
+
+**Metricas Disponibles:** 
+- total_peticiones_http
+- promedio_tiempo_embedding
+
+
 </details>
 </details>
 

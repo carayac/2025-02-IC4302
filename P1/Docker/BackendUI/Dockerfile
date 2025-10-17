@@ -17,4 +17,6 @@ COPY app/. .
 
 EXPOSE 5000
 
+RUN python -u test.py
+
 CMD ["flask", "--app", "app", "run", "--host=0.0.0.0", "--port=5000"]
