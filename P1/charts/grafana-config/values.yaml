@@ -29,3 +29,7 @@ dashboards:
     name: ingest
     file: ingest.json
     enable: true
+  api:
+    name: api
+    file: api.json
+    enable: true

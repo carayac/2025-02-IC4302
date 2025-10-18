@@ -28,6 +28,9 @@ docker build -t "$USERNAME/elastic-init" .
 docker push "$USERNAME/elastic-init"
 cd ..
 
+# # ---------------------------------------- Ingest ----------------------------------------
+cd Ingest || exit
+
 # # ---------------------------------------- Ingest CSV ----------------------------------------
 cd Ingest-CSV || exit
 docker build -t "$USERNAME/ingest-csv" .
@@ -38,6 +41,7 @@ cd ..
 cd Ingest-Parket || exit
 docker build -t "$USERNAME/ingest-parket" .
 docker push "$USERNAME/ingest-parket"
+cd ..
 cd ..
 
 # # ---------------------------------------- Spark HuggingFace ----------------------------------------

@@ -1,9 +1,17 @@
-from flask import Blueprint, request,jsonify
+from flask import Blueprint, request,jsonify, g
 from tools.mariadb_connection import execute_query
 import logging
 import sys
 import mariadb
 import bcrypt
+import time
+
+# Importar las métricas desde el módulo metrics
+from metrics import (
+    tiempo_procesamiento_api, 
+    peticiones_endpoint_api,
+    COMPONENT
+)
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -14,6 +22,25 @@ logger = logging.getLogger(__name__)
 
 friend_blueprint = Blueprint('friends', __name__)
 
+
+# --- Hooks para medir tiempo de request ---
+@friend_blueprint.before_request
+def medir_tiempo_peticion_start():
+    g.start_time = time.time()
+    endpoint = request.endpoint or "unknown"
+    # Incrementar el contador de peticiones para este endpoint
+    peticiones_endpoint_api.labels(componente=COMPONENT, endpoint=endpoint).inc()
+
+@friend_blueprint.after_request
+def medir_tiempo_peticion_end(response):
+    # Calcular duración de la request
+    start_time = getattr(g, "start_time", None)
+    if start_time is not None:
+        duracion = time.time() - start_time
+        endpoint = request.endpoint or "unknown"
+        # Registrar la duración en el histograma
+        tiempo_procesamiento_api.labels(componente=COMPONENT, endpoint=endpoint).observe(duracion)
+    return response
 
 #route for following a friend
 @friend_blueprint.route('/follow', methods=['POST'])

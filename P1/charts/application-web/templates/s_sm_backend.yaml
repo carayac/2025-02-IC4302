@@ -1,20 +1,37 @@
-{{- if .Values.config.backend.enabled }}
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+apiVersion: v1
+kind: Service
 metadata:
-  name: {{ .Values.config.backend.name }}-monitor
-  namespace: monitoring
+  name: backend-ui-metrics
   labels:
+    app: backend-ui
     release: prometheus
 spec:
   selector:
+    app: backend-ui       # debe coincidir con las labels de tus pods
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 5000          # puerto que Prometheus scrapea
+      targetPort: 5000
+---
+# ServiceMonitor
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: backend-ui-monitor
+  namespace: monitoring
+  labels:
+    release: prometheus
+    app: backend-ui
+spec:
+  selector:
     matchLabels:
-      app: {{ .Values.config.backend.name }}
+      app: backend-ui
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace }}
+      - default
   endpoints:
-    - port: metrics3
+    - port: metrics
       path: /metrics
       interval: 15s
-{{- end }}
+      scrapeTimeout: 10s

@@ -1,10 +1,19 @@
-from flask import Blueprint, request,jsonify
+from flask import Blueprint, request,jsonify, g
 from tools.mariadb_connection import execute_query
 import logging
 import sys
 import mariadb
 import bcrypt
+import time
 
+
+
+# Importar las métricas desde el módulo metrics
+from metrics import (
+    tiempo_procesamiento_api, 
+    peticiones_endpoint_api,
+    COMPONENT
+)
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -14,6 +23,20 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 user_blueprint = Blueprint('user', __name__)
+
+# --- Hooks para medir tiempo de request ---
+@user_blueprint.before_request
+def medir_tiempo_peticion_start():
+    g.start_time = time.time()
+    endpoint = request.endpoint or "unknown"
+    peticiones_endpoint_api.labels(componente=COMPONENT, endpoint=endpoint).inc()
+
+@user_blueprint.after_request
+def medir_tiempo_peticion_end(response):
+    duracion = time.time() - getattr(g, "start_time", time.time())
+    endpoint = request.endpoint or "unknown"
+    tiempo_procesamiento_api.labels(componente=COMPONENT, endpoint=endpoint).observe(duracion)
+    return response
 
 #Route for getting user info
 @user_blueprint.route('/me',methods=['GET'])

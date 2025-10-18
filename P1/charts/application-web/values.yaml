@@ -1,5 +1,5 @@
 config:
-  docker_registry: prosoli
+  docker_registry: helena0504
   backend:
     enabled: true
     replicas: 2

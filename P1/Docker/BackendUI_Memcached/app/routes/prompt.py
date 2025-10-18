@@ -10,6 +10,8 @@ from pymemcache.client.base import Client
 import os, json 
 from prometheus_client import Counter, Histogram
 import time
+
+
 from metrics import (
     cache_hit, cache_miss,
     cache_hit_api, cache_miss_api,
@@ -49,6 +51,20 @@ def cache_set(key: str, value: dict, ttl: int = CACHE_TTL_SECONDS):
         memcached.set(key, json.dumps(value), expire=ttl)
     except Exception:
         pass
+
+
+@prompt_blueprint.before_request
+def medir_tiempo_peticion_start():
+    g.start_time = time.time()
+    endpoint = request.endpoint or "unknown"
+    peticiones_endpoint_api.labels(componente=COMPONENT, endpoint=endpoint).inc()
+
+@prompt_blueprint.after_request
+def medir_tiempo_peticion_end(response):
+    duracion = time.time() - getattr(g, "start_time", time.time())
+    endpoint = request.endpoint or "unknown"
+    tiempo_procesamiento_api.labels(componente=COMPONENT, endpoint=endpoint).observe(duracion)
+    return response
 
 
 #route to generate a result by a prompt

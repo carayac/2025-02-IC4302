@@ -3,28 +3,12 @@ import boto3
 import pika
 import logging
 import time
-import threading
 from prometheus_client import Counter, Histogram, start_http_server
 
-# --- MÉTRICAS ---
-documentos_procesados = Counter(
-    'total_documentos_procesados',
-    'Total documentos procesados',
-    ['componente']
-)
-tiempo_total = Histogram(
-    'tiempo_total_crawler',
-    'Tiempo total de ejecución del crawler',
-    ['componente']
-)
-
-# Iniciar servidor de métricas en el puerto 8000
-start_http_server(8000)
-
-# Configuración de logging
+# Configuración logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(message)s'
+    format='%(asctime)s [%(levelname)s] %(message)s'
 )
 
 # Variables de entorno
@@ -40,38 +24,19 @@ RABBITMQ_QUEUE_PARKET = os.environ['RABBITMQ_QUEUE_PARKET']
 RABBITMQ_USER = os.environ['RABBITMQ_USER']
 RABBITMQ_PASS = os.environ['RABBITMQ_PASS']
 
+# Métricas (registro global)
+documentos_procesados = Counter(
+    'total_documentos_procesados',
+    'Cantidad total de documentos procesados por el crawler',
+    ['componente']
+)
+tiempo_total = Histogram(
+    'tiempo_total_crawler',
+    'Duración total de ejecución del crawler en segundos',
+    ['componente']
+)
 
-def rabbitmq_connection():
-    """Crea conexión con RabbitMQ y asegura la existencia de ambas colas."""
-    try:
-        credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
-        parameters = pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials)
-        connection = pika.BlockingConnection(parameters)
-        channel = connection.channel()
-        channel.queue_declare(queue=RABBITMQ_QUEUE_CSV, durable=False)
-        channel.queue_declare(queue=RABBITMQ_QUEUE_PARKET, durable=False)
-        logging.info("Conexión a RabbitMQ exitosa y colas creadas")
-        return connection, channel
-    except Exception as e:
-        logging.error(f"Error conectando a RabbitMQ: {e}")
-        raise
-
-
-def publish_message(channel, queue, message):
-    """Publica un mensaje en la cola especificada."""
-    try:
-        channel.basic_publish(
-            exchange='',
-            routing_key=queue,
-            body=message,
-            properties=pika.BasicProperties(delivery_mode=1)
-        )
-        logging.info(f"Mensaje publicado en {queue}: {message}")
-    except Exception as e:
-        logging.error(f"Error publicando mensaje: {e}")
-
-
-# Inicializar S3
+# Conexión S3
 s3 = boto3.client(
     's3',
     aws_access_key_id=AWS_ACCESS_KEY,
@@ -79,9 +44,21 @@ s3 = boto3.client(
     region_name=AWS_REGION
 )
 
+def rabbitmq_connection():
+    credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
+    parameters = pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+    channel.queue_declare(queue=RABBITMQ_QUEUE_CSV, durable=False)
+    channel.queue_declare(queue=RABBITMQ_QUEUE_PARKET, durable=False)
+    logging.info("Conexión a RabbitMQ exitosa y colas creadas")
+    return connection, channel
+
+def publish_message(channel, queue, message):
+    channel.basic_publish(exchange='', routing_key=queue, body=message)
+    logging.info(f"Mensaje publicado en {queue}: {message}")
 
 def crawl_bucket():
-    """Recorre el bucket S3, filtra archivos y publica según su tipo."""
     start_time = time.time()
     connection, channel = rabbitmq_connection()
 
@@ -98,10 +75,8 @@ def crawl_bucket():
 
             for obj in response.get("Contents", []):
                 key = obj["Key"]
-
                 if key.endswith(".crc") or key.endswith("_SUCCESS"):
                     continue
-
                 if key.endswith(".json"):
                     publish_message(channel, RABBITMQ_QUEUE_CSV, key)
                     documentos_procesados.labels(componente="crawler").inc()
@@ -119,6 +94,15 @@ def crawl_bucket():
     tiempo_total.labels(componente="crawler").observe(duracion)
     logging.info(f"Crawler completado en {duracion:.2f} segundos.")
 
+if __name__ == "__main__":
+    # Servidor de métricas Prometheus en puerto 8000
+    start_http_server(8000)
+    logging.info("Servidor de métricas iniciado en puerto 8000")
 
-if __name__ == '__main__':
+    # Ejecutar crawling
     crawl_bucket()
+
+    # Mantener Job vivo 5 minutos para scrapear métricas
+    logging.info("Crawler completado, manteniendo Job activo 5 minutos para Prometheus...")
+    time.sleep(1800)
+    logging.info("Finalizando Job.")

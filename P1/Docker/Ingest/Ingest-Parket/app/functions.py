@@ -99,41 +99,67 @@ def procesar_objeto(file_path):
 
 
 # # Embeddings
+#Crea embeddings haciendo un request al endpoint en batches
+def crear_embeddings_batch(textos, batch_size=64):
+    if not textos:
+        return []
 
-#Hacer request a huggingface 
-def crear_embedding(texto):
-    if not texto:
-        return None
-    try:
-        response = requests.post(ENDPOINT, json={"text": texto})
-        if response.status_code == 200:
-            return response.json().get("embedding")
-        else:
-            logger.error(f"Error embedding {response.status_code}: {response.text}")
-            return None
-    except Exception as e:
-        logger.error(f"Error creando embedding: {e}")
-        return None
+    resultados = []
+    total = len(textos)
+    logger.info(f"Procesando {total} textos en batches de {batch_size}")
 
+    for i in range(0, total, batch_size):
+        batch = textos[i:i + batch_size]
+        data = {"text": batch}
 
-#Procesar hasta 5 documentos para pruebas
-def embedding_todos_documentos(documentos):
-    for idx, doc in enumerate(documentos[:5], start=1):  # Limitar a los primeros 5
-        review_summary = doc.get("review/summary")
-        review_text = doc.get("review/text")
-        
-        # Combinar texto y generar UN embedding
-        texto_combinado = f"{review_summary} {review_text}".strip()
-        
-        if texto_combinado:
-            doc["embeddings"] = crear_embedding(texto_combinado)
-        else:
-            doc["embeddings"] = None
-            
-        logger.info(f"Documento {idx}/{min(5, len(documentos))} procesado")
+        try:
+            response = requests.post(ENDPOINT, json=data)
+            response.raise_for_status()
+            data_json = response.json()
+            embeddings = data_json.get("embeddings") or data_json.get("embedding")
+
+            if isinstance(embeddings, list) and len(embeddings) == len(batch):
+                resultados.extend(embeddings)
+            else:
+                logger.error(
+                    f"Formato inesperado en batch {i // batch_size + 1}. Respuesta: {data_json}"
+                )
+                resultados.extend([None] * len(batch))
+
+            logger.info(
+                f"Lote {i // batch_size + 1}/{(total + batch_size - 1) // batch_size} procesado"
+            )
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error en el lote {i // batch_size + 1}: {e}")
+            resultados.extend([None] * len(batch))
+        except Exception as e:
+            logger.error(f"Error inesperado en lote {i // batch_size + 1}: {e}")
+            resultados.extend([None] * len(batch))
+
+    return resultados
+
+# Procesa todos los documentos con embeddings en batches (máx. 20 batches)
+def embedding_todos_documentos(documentos, batch_size=64, max_batches=3):
+    max_docs = batch_size * max_batches
+    if len(documentos) > max_docs:
+        logger.warning(f"Se procesarán solo los primeros {max_docs} documentos (límite de {max_batches} batches).")
+        documentos = documentos[:max_docs]
+
+    textos = []
+    for doc in documentos:
+        summary = doc.get("review/summary", "")
+        text = doc.get("review/text", "")
+        texto_combinado = f"{summary} {text}".strip()
+        textos.append(texto_combinado)
+
+    embeddings = crear_embeddings_batch(textos, batch_size=batch_size)
+
+    for i, (doc, emb) in enumerate(zip(documentos, embeddings), start=1):
+        doc["embeddings"] = emb
+        logger.info(f"Procesado documento {i}/{len(documentos)}")
+
     return documentos
-
-
 
 
 # Elasticsearch
@@ -196,7 +222,7 @@ def guardar_reviews_elasticsearch(documentos):
         bulk(es, datos_reviews, raise_on_error=False)
         bulk(es, datos_nreviews, raise_on_error=False)
     except Exception as e:
-        logger.error(f"[ERROR] Bulk insert falló: {e}")
+        logger.error(f"Bulk insert falló: {e}")
 
 
 # Mariadb
@@ -232,7 +258,6 @@ def arreglar_reviews_pendientes(batch_size=500):
         pendientes = cursor.fetchall()
 
         filas_actualizadas = 0
-
         for review_id, book_title in pendientes:
             book_id = libros.get(book_title.lower())
             if book_id:
@@ -254,11 +279,11 @@ def arreglar_reviews_pendientes(batch_size=500):
         conn.commit()
         cursor.close()
         conn.close()
-        logger.info(f"[INFO] {filas_actualizadas} reviews pendientes actualizadas")
+        logger.info(f"{filas_actualizadas} reviews pendientes actualizadas")
         return filas_actualizadas
 
     except mariadb.Error as e:
-        logger.error(f"[ERROR] Error en arreglar_reviews_pendientes: {e}")
+        logger.error(f"Error en arreglar_reviews_pendientes: {e}")
         return 0
 
 
@@ -307,12 +332,14 @@ def normalizar_price(value):
         objetos_error.labels(componente="ingest").inc()
         return None
     
-#Inserta una review en Mariadb y si no esta el book la guarda en pendientes
+
+# Inserta una review en MariaDB y si no está el book la guarda en pendientes
 def insertar_review(conn, cursor, object_key, title=None, price=None, user_id=None,
                     profile_name=None, review_helpfulness=None, review_score=None,
                     review_time=None, review_summary=None, review_text=None):
+    
     if not title:
-        logger.warning(f"[WARN] Review ignorada en mariadb: no tiene título")
+        logger.warning(f"Review ignorada en mariadb: no tiene título")
         objetos_error.labels(componente="ingest").inc()
         return
 
@@ -356,30 +383,41 @@ def insertar_review(conn, cursor, object_key, title=None, price=None, user_id=No
                 VALUES (?, ?, FALSE)
             """, (review_id, title))
 
+        # Commit solo de esta review
         conn.commit()
 
     except mariadb.Error as e:
-        conn.rollback()
-        logger.error(f"[ERROR] Error insertando review: {e}")
+        conn.rollback()  # solo deshace esta inserción
+        logger.error(f"Error insertando review '{title}': {e}")
+        objetos_error.labels(componente="ingest").inc()
+    except Exception as e:
+        logger.error(f"Error inesperado insertando review '{title}': {e}")
+        objetos_error.labels(componente="ingest").inc()
+
 
 
 
 
 #Se insertan todos los documentos
 def insertar_info(cursor, conn, object_key, documentos):
-    for doc in documentos:
-        insertar_review(
-            conn, cursor, object_key,
-            title=doc.get("title"),
-            price = normalizar_price(doc.get("price")),
-            user_id=doc.get("user_id"),
-            profile_name=doc.get("profilename"),
-            review_helpfulness=doc.get("review/helpfulness"),
-            review_score = normalizar_review_score(doc.get("review/score")),
-            review_time = normalizar_review_time(doc.get("review/time")),
-            review_summary=doc.get("review/summary"),
-            review_text=doc.get("review/text")
-        )
+    for i, doc in enumerate(documentos, start=1):
+        try:
+            insertar_review(
+                conn, cursor, object_key,
+                title=doc.get("title"),
+                price=normalizar_price(doc.get("price")),
+                user_id=doc.get("user_id"),
+                profile_name=doc.get("profilename"),
+                review_helpfulness=doc.get("review/helpfulness"),
+                review_score=normalizar_review_score(doc.get("review/score")),
+                review_time=normalizar_review_time(doc.get("review/time")),
+                review_summary=doc.get("review/summary"),
+                review_text=doc.get("review/text")
+            )
+        except Exception as e:
+            logger.error(f"Error procesando documento {i}: {e}")
+            objetos_error.labels(componente="ingest").inc()
+
 
 #Insertar el objeto como procesado y con numero de docs
 def insertar_object(cursor, conn, key_name, documentos, procesado):
@@ -402,12 +440,13 @@ def insertar_object(cursor, conn, key_name, documentos, procesado):
 
 #Aux
 def thread_arreglar_pendientes(batch_size=500):
+    time.sleep(300)
     while True:
         filas = arreglar_reviews_pendientes(batch_size)
         if filas == 0:
             time.sleep(30)  # no hay pendientes
         else:
-            time.sleep(10)
+            time.sleep(5)
 
 #Callback
 #Llama a cada función
@@ -437,13 +476,13 @@ def callback(ch, method, properties, body):
 
         logger.info("Objeto marcado como procesado")
 
-        objetos_procesados.labels(componente="ingest").inc(len(documentos))
+        objetos_procesados.labels(componente="ingest").inc()
         tiempo_objeto.labels(componente="ingest").observe(time.time() - start_time)
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     except Exception as e:
-        logger.error(f"[ERROR] Ocurrió un error: {e}")
+        logger.error(f"Ocurrió un error: {e}")
         objetos_error.labels(componente="ingest").inc()
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
@@ -464,16 +503,20 @@ def main():
             connection = pika.BlockingConnection(parameters)
             break
         except pika.exceptions.AMQPConnectionError:
-            logger.warning(f"[WARN] No se pudo conectar, reintentando...")
+            logger.warning(f"No se pudo conectar, reintentando...")
             time.sleep(10)
     else:
-        logger.error("[ERROR] RabbitMQ no disponible.")
+        logger.error("RabbitMQ no disponible.")
         return
+    #
+    #
+    #
+    #
 
     channel = connection.channel()
     channel.queue_declare(queue=QUEUE_NAME)
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback, auto_ack=False)
 
-    logger.info("[INFO] Esperando mensajes...")
+    logger.info("Esperando mensajes...")
     channel.start_consuming()

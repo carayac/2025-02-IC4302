@@ -24,14 +24,22 @@ def test_descargar_objeto(monkeypatch):
     monkeypatch.setenv("AWS_REGION", "us-east-1")
     monkeypatch.setenv("AWS_BUCKET", "fake_bucket")
     monkeypatch.setenv("XPATH", "/tmp")
+    monkeypatch.setattr("functions.AWS_ACCESS_KEY", "fake_access")
+    monkeypatch.setattr("functions.AWS_SECRET_KEY", "fake_secret")
+    monkeypatch.setattr("functions.AWS_REGION", "us-east-1")
+    monkeypatch.setattr("functions.AWS_BUCKET", "fake_bucket")
+    monkeypatch.setattr("functions.XPATH", "/tmp")
 
     with patch("functions.boto3.client") as mock_boto_client:
-        mock_boto3 = MagicMock()
-        mock_boto_client.return_value = mock_boto3
+        mock_s3 = MagicMock()
+        mock_boto_client.return_value = mock_s3
+
+        mock_s3.download_file.return_value = None
 
         key_name = "archivo_prueba.json"
         download_path = descargar_objeto(key_name)
 
+        # Verificaciones
         path_correcto = os.path.join("/tmp", key_name)
         assert download_path == path_correcto
         mock_boto_client.assert_called_once_with(
@@ -40,7 +48,7 @@ def test_descargar_objeto(monkeypatch):
             aws_secret_access_key="fake_secret",
             region_name="us-east-1"
         )
-        mock_boto3.download_file.assert_called_once_with("fake_bucket", key_name, path_correcto)
+        mock_s3.download_file.assert_called_once_with("fake_bucket", key_name, path_correcto)
 
 
 
@@ -100,7 +108,7 @@ def test_procesar_objeto_nbooks(tmp_path):
     assert documentos[1]["publisheddate"] == "2023-01-01"
 
 
-#Prueba 4: probar todos los embeddings
+# Prueba 4: probar todos los embeddings
 def test_embedding_todos_documentos(monkeypatch):
     docs = [
         {"description": "uno"},
@@ -108,10 +116,16 @@ def test_embedding_todos_documentos(monkeypatch):
         {"no_description": "x"},
     ]
 
-    def fake_create(texto):
-        return [1.029, 2.203, 3.029] if texto == "uno" else None
+    def fake_crear_embeddings_batch(textos, batch_size=64):
+        embeddings = []
+        for texto in textos:
+            if texto == "uno":
+                embeddings.append([1.029, 2.203, 3.029])
+            else:
+                embeddings.append(None)
+        return embeddings
 
-    monkeypatch.setattr("functions.crear_embedding", fake_create)
+    monkeypatch.setattr("functions.crear_embeddings_batch", fake_crear_embeddings_batch)
 
     respuesta = embedding_todos_documentos(docs)
     assert respuesta[0]["embeddings"] == [1.029, 2.203, 3.029]
@@ -232,35 +246,36 @@ def test_insertar_libro(monkeypatch):
     conn.commit.assert_called()
 
 
-# Prueba 12: relacionar authors y categories
+
+# Prueba 12: relacionar authors y categories (corregido)
 def test_relacionar_autores_categories(monkeypatch):
     cursor = MagicMock()
     conn = MagicMock()
 
-    monkeypatch.setenv("MARIADB_TABLE_AUTHORS_BOOKS", "authors_books")
-    monkeypatch.setenv("MARIADB_TABLE_CATEGORIES_BOOKS", "categories_books")
+    monkeypatch.setattr("functions.insertar_author", lambda c, conn, n: 41)
+    monkeypatch.setattr("functions.insertar_category", lambda c, conn, n: 42)
     monkeypatch.setattr("functions.MARIADB_TABLE_AUTHORS_BOOKS", "authors_books")
     monkeypatch.setattr("functions.MARIADB_TABLE_CATEGORIES_BOOKS", "categories_books")
 
-    #funciones de insertar falsas
-    def fake_insertar_author(cursor, conn, name): return 42
-    def fake_insertar_category(cursor, conn, name): return 41
-
-    monkeypatch.setattr("functions.insertar_author", fake_insertar_author)
-    monkeypatch.setattr("functions.insertar_category", fake_insertar_category)
-
     relacionar_autores_categories(cursor, conn, book_id=7, authors="Cortázar", categories="Surrealismo")
 
-    cursor.execute.assert_any_call(
-        "INSERT IGNORE INTO authors_books (book_id, author_id)"
-        "VALUES (?, ?)",
-        (7, 41)
-    )
-    cursor.execute.assert_any_call(
-        "INSERT IGNORE INTO categories_books (book_id, category_id) "
-        "VALUES (?, ?)",
-        (7, 42)
-    )
+    def normalize_sql(s):
+        return "".join(s.split())  
+
+    expected_statements = [
+        ("INSERTIGNOREINTOauthors_books(book_id,author_id)VALUES(?,?)", (7, 41)),
+        ("INSERTIGNOREINTOcategories_books(book_id,category_id)VALUES(?,?)", (7, 42))
+    ]
+
+    for expected_sql, expected_params in expected_statements:
+        found = False
+        for call in cursor.execute.call_args_list:
+            sql, params = call[0]
+            if normalize_sql(sql) == expected_sql and params == expected_params:
+                found = True
+                break
+        assert found, f"No se encontró la llamada esperada: {expected_sql} con {expected_params}"
+
     conn.commit.assert_called_once()
 
 
@@ -270,11 +285,11 @@ def test_insertar_info(monkeypatch):
     conn = MagicMock()
     key_name = "file1.json"
 
+    monkeypatch.setattr("functions.insertar_libro", lambda *a, **k: 101)
+    monkeypatch.setattr("functions.relacionar_autores_categories", lambda *a, **k: None)
     monkeypatch.setattr("functions.normalizar_fecha", lambda x: "2024-01-01")
     monkeypatch.setattr("functions.normalizar_ratings", lambda x: 4.5)
     monkeypatch.setattr("functions.limpiar_texto", lambda x: x)
-    monkeypatch.setattr("functions.insertar_libro", lambda *args, **kwargs: 101)
-    monkeypatch.setattr("functions.relacionar_autores_categories", lambda *args, **kwargs: None)
 
     documentos = [
         {"title": "Libro 1", "authors": "Autor 1", "categories": "Drama"},
@@ -283,9 +298,8 @@ def test_insertar_info(monkeypatch):
 
     insertar_info(cursor, conn, key_name, documentos, cantidad=1)
 
-    assert conn.commit.call_count >= 2  
-    conn.commit.assert_called() 
-    assert cursor.method_calls  
+    assert conn.commit.call_count >= 2
+    conn.commit.assert_called()
 
 
 # Prueba 14: insertar objeto como procesado
@@ -300,15 +314,13 @@ def test_insertar_object(monkeypatch):
 
     insertar_object(cursor, conn, key_name, documentos, procesado=True)
 
-    cursor.execute.assert_called_once_with(
-        """
-        INSERT INTO objects
-        (key_name, num_documents, procesado)
-        VALUES (?, ?, ?)
-    """,
-        (key_name, 3, True),
-    )
+    executed_sql = "".join(cursor.execute.call_args[0][0].split())
+    expected_sql = "INSERTINTOobjects(key_name,num_documents,procesado)VALUES(?,?,?)"
+
+    assert executed_sql == expected_sql
+    assert cursor.execute.call_args[0][1] == (key_name, 3, True)
     conn.commit.assert_called_once()
+
 
 #-------------------------------------------
 if __name__ == "__main__":

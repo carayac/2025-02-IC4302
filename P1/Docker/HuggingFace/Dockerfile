@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir --retries 5 --timeout 120 -r requirements.txt
 
 COPY app/. .
 
-# RUN python -m pytest test.py -v
+RUN python -m pytest test.py -v
 
 EXPOSE 5000
 

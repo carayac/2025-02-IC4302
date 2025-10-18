@@ -4,19 +4,24 @@ kind: CronJob
 metadata:
   name: {{ .Values.config.producer.name }}
 spec:
-  schedule: {{ .Values.config.producer.schedule}}
+  schedule: "{{ .Values.config.producer.schedule }}"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       backoffLimit: 3
       template:
+        metadata:
+          labels:
+            app: {{ .Values.config.producer.name }}
         spec:
-          terminationGracePeriodSeconds: 0
           restartPolicy: OnFailure
           containers:
             - name: {{ .Values.config.producer.name }}
               image: {{ .Values.config.docker_registry }}/{{ .Values.config.producer.image }}
+              ports:
+                - name: metrics
+                  containerPort: 8000
               env:
                 - name: S3_BUCKET
                   value: "ic-tec-dataset"

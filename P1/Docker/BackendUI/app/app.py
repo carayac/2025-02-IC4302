@@ -1,3 +1,4 @@
+# backend/app/app.py
 from flask import Flask, jsonify
 from flask_cors import CORS
 from routes.authentication import auth_blueprint
@@ -6,6 +7,10 @@ from routes.prompt import prompt_blueprint
 from routes.user import user_blueprint
 import logging
 import sys
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, CollectorRegistry
+
+# Configuración centralizada de métricas
+from metrics import REGISTRY
 
 # Set up logging to output to stdout
 logging.basicConfig(
@@ -26,12 +31,14 @@ app.register_blueprint(friend_blueprint, url_prefix='/promptsy/friend')
 app.register_blueprint(prompt_blueprint, url_prefix='/promptsy/prompt')
 app.register_blueprint(user_blueprint, url_prefix='/promptsy/user')
 
-
 @app.route('/health', methods=['GET'])
 def health_check():
     logger.info("Health check endpoint accessed")
     return jsonify({"status": "ok"}), 200
 
+@app.route("/metrics")
+def metrics():
+    return generate_latest(REGISTRY), 200, {"Content-Type": CONTENT_TYPE_LATEST}
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

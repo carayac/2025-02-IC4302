@@ -6,6 +6,10 @@ from routes.prompt import prompt_blueprint
 from routes.user import user_blueprint
 import logging
 import sys
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, CollectorRegistry
+
+# Configuración centralizada de métricas
+registry = CollectorRegistry()
 
 # Set up logging to output to stdout
 logging.basicConfig(
@@ -31,6 +35,10 @@ app.register_blueprint(user_blueprint, url_prefix='/promptsy/user')
 def health_check():
     logger.info("Health check endpoint accessed")
     return jsonify({"status": "ok"}), 200
+
+@app.route("/metrics")
+def metrics():
+    return generate_latest(), 200, {"Content-Type": CONTENT_TYPE_LATEST}
 
 
 if __name__ == "__main__":

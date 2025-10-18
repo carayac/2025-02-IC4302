@@ -31,11 +31,17 @@ def encode():
         return jsonify({'error': 'Falta el campo text'}), 400
 
     text = data['text']
-    embedding = model.encode(text)
-    return jsonify({
-        'text': text,
-        'embedding': embedding.tolist()
-    })
+
+    if isinstance(text, str):
+        embedding = model.encode(text)
+        return jsonify({'text': text, 'embedding': embedding.tolist()})
+
+    elif isinstance(text, list):
+        embeddings = model.encode(text, batch_size=64, show_progress_bar=False)
+        return jsonify({'embeddings': [e.tolist() for e in embeddings]})
+
+    else:
+        return jsonify({'error': 'Formato inválido'}), 400
 
 @app.route('/status', methods=['GET'])
 def status():

@@ -114,53 +114,60 @@ def procesar_objeto(file_path):
     return documentos
 
 # #Embeddings
-#Crea embeddings haciendo un request al endpoint
-def crear_embedding(texto):
-    if not texto or texto.strip() == "":
-        return None 
-    try:
-        data = {"text": texto}
-        response = requests.post(EMBEDDINGENDPOINT, json=data)  # timeout para no quedarse pegado
-        response.raise_for_status()  
-        embedding = response.json().get("embedding")
-        if embedding is None:
-            logger.warning(f"No se recibió embedding para el texto: {texto[:50]}...")
-        return embedding
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Error en la petición al endpoint {EMBEDDINGENDPOINT}: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Error inesperado generando embedding: {e}")
-        return None
+#Crea embeddings haciendo un request al endpoint en batches
+def crear_embeddings_batch(textos, batch_size=64):
+    if not textos:
+        return []
 
-#crear embedding, cargar a elastic y meter a mariadb
-# def embedding_todos_documentos(documentos):
-#     for i, doc in enumerate(documentos, start=1):
-#         doc["embeddings"] = None
-#         if "description" in doc and doc["description"]:
-#             texto = doc["description"]
-#             embedding = crear_embedding(texto)
-#             if embedding is not None:
-#                 doc["embeddings"] = embedding
-#         logger.info(f"Procesado documento {i}/{len(documentos)}")
-#     return documentos
+    resultados = []
+    total = len(textos)
+    logger.info(f"Procesando {total} textos en batches de {batch_size}")
+    for i in range(0, total, batch_size):
+        batch = textos[i:i + batch_size]
+        data = {"text": batch}
+        try:
+            response = requests.post(EMBEDDINGENDPOINT, json=data)
+            response.raise_for_status()
 
-def embedding_todos_documentos(documentos, limite=5):
-    total = len(documentos)
-    logger.info(f"Generando embeddings para {min(limite, total)} de {total} documentos...")
+            data_json = response.json()
+            embeddings = data_json.get("embeddings") or data_json.get("embedding")
+            if isinstance(embeddings, list) and len(embeddings) == len(batch):
+                resultados.extend(embeddings)
+            else:
+                logger.error(f"Formato inesperado en batch {i // batch_size + 1}. Respuesta: {data_json}")
+                resultados.extend([None] * len(batch))
 
-    for i, doc in enumerate(documentos[:limite], start=1):  # solo los primeros 'limite'
-        doc["embeddings"] = None
+            logger.info(f"Lote {i // batch_size + 1}/{(total + batch_size - 1) // batch_size} procesado")
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error en el lote {i // batch_size + 1}: {e}")
+            resultados.extend([None] * len(batch))
+        except Exception as e:
+            logger.error(f"Error inesperado en lote {i // batch_size + 1}: {e}")
+            resultados.extend([None] * len(batch))
+
+    return resultados
+
+
+# Procesa todos los documentos con embeddings en batches (máx. 8 batches)
+def embedding_todos_documentos(documentos, batch_size=64, max_batches=2):
+    max_docs = batch_size * max_batches
+    if len(documentos) > max_docs:
+        logger.warning(f"Se procesarán solo los primeros {max_docs} documentos (límite de {max_batches} batches).")
+        documentos = documentos[:max_docs]
+
+    textos = []
+    for doc in documentos:
         if "description" in doc and doc["description"]:
-            texto = doc["description"]
-            embedding = crear_embedding(texto)
-            if embedding is not None:
-                doc["embeddings"] = embedding
-        logger.info(f"Procesado documento {i}/{min(limite, total)}")
+            textos.append(doc["description"])
+        else:
+            textos.append("")
 
-    # para los demás, se deja embeddings=None explícitamente
-    for doc in documentos[limite:]:
-        doc["embeddings"] = None
+    embeddings = crear_embeddings_batch(textos, batch_size=batch_size)
+
+    for i, (doc, emb) in enumerate(zip(documentos, embeddings), start=1):
+        doc["embeddings"] = emb
+        logger.info(f"Procesado documento {i}/{len(documentos)}")
 
     return documentos
 
@@ -269,21 +276,29 @@ def insertar_libro(conn, cursor, object_key, title=None, description=None,
                    published_date=None, publisher=None, preview_link=None,
                    info_link=None, image_link=None, ratings_count=None):
     if not title:
-        logger.warning(f"Book ignorado en mariadb: no tiene título")
-        return
+        logger.warning(f"Book ignorado en MariaDB: no tiene título")
+        objetos_error.labels(componente="ingest").inc()
+        return None
+
     query = f"""
     INSERT INTO {MARIADB_TABLE_BOOKS}
     (object_key, title, description, published_date, publisher, preview_link, info_link, image_link, ratings_count)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
-    cursor.execute(query, (
-        object_key, title, description, published_date,
-        publisher, preview_link, info_link, image_link, ratings_count
-    ))
-    conn.commit()
-
-    cursor.execute("SELECT LAST_INSERT_ID()")
-    return cursor.fetchone()[0]  # ID del libro insertado
+    try:
+        cursor.execute(query, (
+            object_key, title, description, published_date,
+            publisher, preview_link, info_link, image_link, ratings_count
+        ))
+        conn.commit()
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        return cursor.fetchone()[0]
+    except mariadb.Error as e:
+        conn.rollback()  # solo deshace esta inserción
+        logger.error(f"Error insertando libro '{title}': {e}")
+        objetos_error.labels(componente="ingest").inc()
+        return None
+    
 
 #Relacionar los autores y las categorías a los libros
 def relacionar_autores_categories(cursor, conn, book_id, authors=None, categories=None):
@@ -354,35 +369,47 @@ def limpiar_texto(texto):
 def insertar_info(cursor, conn, key_name, documentos, cantidad=100):
     count = 0
     for doc in documentos:
-        title = doc.get("title")
-        description = doc.get("description")
-        published_date = normalizar_fecha(doc.get("publisheddate"))
-        publisher = doc.get("publisher")
-        preview_link = doc.get("previewlink")
-        info_link = doc.get("infolink")
-        image_link = doc.get("image")
-        ratings_count = normalizar_ratings(doc.get("ratingscount"))
+        try:
+            title = doc.get("title")
+            description = doc.get("description")
+            published_date = normalizar_fecha(doc.get("publisheddate"))
+            publisher = doc.get("publisher")
+            preview_link = doc.get("previewlink")
+            info_link = doc.get("infolink")
+            image_link = doc.get("image")
+            ratings_count = normalizar_ratings(doc.get("ratingscount"))
 
-        # Insertar libro
-        book_id = insertar_libro(
-            conn, cursor, key_name, title, description,
-            published_date, publisher, preview_link,
-            info_link, image_link, ratings_count
-        )
+            # Insertar libro
+            book_id = insertar_libro(
+                conn, cursor, key_name, title, description,
+                published_date, publisher, preview_link,
+                info_link, image_link, ratings_count
+            )
 
-        if not book_id:
-            continue  # libro no insertado, saltar
+            if not book_id:
+                continue  # libro no insertado, saltar
 
-        # Insertar autores y categorías
-        authors = limpiar_texto(doc.get("authors"))
-        categories = limpiar_texto(doc.get("categories"))
-        relacionar_autores_categories(cursor, conn, book_id, authors=authors, categories=categories)
+            # Insertar autores y categorías
+            authors = limpiar_texto(doc.get("authors"))
+            categories = limpiar_texto(doc.get("categories"))
+            try:
+                relacionar_autores_categories(cursor, conn, book_id, authors=authors, categories=categories)
+            except mariadb.Error as e:
+                conn.rollback()
+                logger.error(f"Error insertando autores/categorías para libro '{title}': {e}")
+                objetos_error.labels(componente="ingest").inc()
 
-        count += 1
-        if count % cantidad == 0:
-            conn.commit() 
+            count += 1
+            if count % cantidad == 0:
+                conn.commit() 
+
+        except Exception as e:
+            logger.error(f"Error procesando documento: {e}")
+            objetos_error.labels(componente="ingest").inc()
+            continue  
 
     conn.commit() 
+
 
 
 #Insertar el objeto como procesado y con numero de docs
@@ -433,8 +460,7 @@ def callback(ch, method, properties, body):
             insertar_object(cursor, conn, key_name, documentos, True)
             logger.info("Objeto marcado como procesado")
 
-
-            objetos_procesados.labels(componente="ingest").inc(len(documentos))
+            objetos_procesados.labels(componente="ingest").inc()
             tiempo_objeto.labels(componente="ingest").observe(time.time() - start_time)
 
             ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -465,10 +491,10 @@ def main():
             logger.info(" Conexión a RabbitMQ exitosa")
             break
         except pika.exceptions.AMQPConnectionError as e:
-            logger.warning(f" No se pudo conectar a RabbitMQ (intento {intento+1}): {e}")
+            logger.warning(f"No se pudo conectar a RabbitMQ (intento {intento+1})")
             time.sleep(10)
     else:
-        logger.error(" No se pudo conectar a RabbitMQ tras varios intentos")
+        logger.error("No se pudo conectar a RabbitMQ tras varios intentos")
         return
 
     channel = connection.channel()

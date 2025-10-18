@@ -51,4 +51,4 @@ def test_encode_missing_field(client):
 
     assert response.status_code == 400
     data = response.get_json()
-    assert data['Error'] == 'Falta el campo text'
+    assert data['error'] == 'Falta el campo text'

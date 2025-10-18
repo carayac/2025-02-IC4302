@@ -28,6 +28,7 @@ docker push "$Username/frontend-ui"
  docker push "$Username/s3-crawler"
 
 # #----------------------------------------Ingest----------------------------------------
+ Set-Location ../Ingest
 
  Set-Location ../Ingest-CSV
  docker build -t "$Username/ingest-csv" .

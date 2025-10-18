@@ -1,4 +1,4 @@
-from flask import Blueprint, request,jsonify
+from flask import Blueprint, request,jsonify, g
 from tools.mariadb_connection import execute_query
 from tools.elastic_connection import execute_query_es, execute_vector_query, execute_text_search_by_title
 from tools.embbeding import get_embedding
@@ -6,6 +6,15 @@ import logging
 import sys
 import time
 import mariadb
+import time
+
+# Importar las métricas desde el módulo metrics
+from metrics import (
+    tiempo_procesamiento_api, 
+    peticiones_endpoint_api,
+    COMPONENT
+)
+
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -15,6 +24,22 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 prompt_blueprint = Blueprint('prompt', __name__)
+
+
+# --- Hooks para medir tiempo de request ---
+@prompt_blueprint.before_request
+def medir_tiempo_peticion_start():
+    g.start_time = time.time()
+    endpoint = request.endpoint or "unknown"
+    peticiones_endpoint_api.labels(componente=COMPONENT, endpoint=endpoint).inc()
+
+@prompt_blueprint.after_request
+def medir_tiempo_peticion_end(response):
+    duracion = time.time() - getattr(g, "start_time", time.time())
+    endpoint = request.endpoint or "unknown"
+    tiempo_procesamiento_api.labels(componente=COMPONENT, endpoint=endpoint).observe(duracion)
+    return response
+
 
 #route to generate a result by a prompt
 @prompt_blueprint.route('/generate', methods=['POST'])
