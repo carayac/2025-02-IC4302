@@ -268,6 +268,17 @@ El S3 Crawler es un Cron Job que se ejecuta cada hora, recorre el bucket con una
 
 </details>
 
+
+## Ingest
+
+<details>
+<summary>Desplegar información</summary>
+
+El ingest se divide en dos componentes, el Ingest CSV y el Ingest Parket. El Ingest CSV se encarga de procesar los books. Estos vienen en la cola de rabbitmq como una key de un AWS bucket, en formato .json.
+El Ingest CSV se encarga de descargar los archivos, guardarlos en una lista de diccionarios, conseguir los embeddings, subir los datos a elasticsearch y a mariadb. El ingest Parket funciona de la misma manera, solo que hace el mismo proceso con las reviews que vienen en formato .parquet.
+
+</details>
+
 ## Implementación de MariaDB
 
 <details>
@@ -1188,6 +1199,31 @@ GET /metrics
 
 
 </details>
+</details>
+
+# Observabilidad
+
+<details>
+<summary>Desplegar información</summary>
+
+![Api](https://github.com/cjimenez0708/prob/blob/main/Captura3.PNG)
+
+![Crawler](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20194748.png)
+
+![Ingest](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20194602.png)
+
+![HuggingFace](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20194811.png)
+
+![MariaDB](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20194936.png)
+
+![MariaDB/SQL](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20194917.png)
+
+![Memcached](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20194952.png)
+
+![RabbitMQ](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20195016.png)
+
+![Elasticsearch](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20194855.png)
+
 </details>
 
 
