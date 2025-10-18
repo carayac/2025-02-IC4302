@@ -1206,7 +1206,7 @@ GET /metrics
 <details>
 <summary>Desplegar información</summary>
 
-![Api](https://github.com/cjimenez0708/prob/blob/main/Captura3.PNG)
+![Api](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20215359.png)
 
 ![Crawler](https://github.com/carayac/2025-02-IC4302/blob/proyecto-01/P1/tests/Screenshot%202025-10-17%20194748.png)
 
