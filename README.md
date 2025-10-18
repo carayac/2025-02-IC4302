@@ -292,9 +292,7 @@ Se ha implementado la base de datos `promptsy` en MariaDB, la cual utiliza dos e
 
 - **Esquema 2:** Gestión de usuarios, prompts, likes, amigos y relaciones sociales. Este esquema está enfocado en la funcionalidad social de la aplicación, permitiendo registrar usuarios, sus prompts, likes, amistades y relaciones entre ellos. Incluye tablas como `User`, `Prompt`, `Liked`, `Friend`.
 
-Las siguientes imágenes muestran la estructura de ambos esquemas:
-
-#### Esquema 1
+La siguiente imágen muestran la estructura del esquema de promptsy (red social):
 
 #### Esquema 2
 
