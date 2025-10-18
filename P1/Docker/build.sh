@@ -10,6 +10,13 @@ docker build -t "$USERNAME/backend-ui" .
 docker push "$USERNAME/backend-ui"
 cd ..
 
+
+cd BackendUI_Memcached || exit
+docker build -t "$USERNAME/backend-ui-memcached" .
+docker push "$USERNAME/backend-ui-memcached"
+cd ..
+
+
 # # # ---------------------------------------- UI ----------------------------------------
 cd FrontendUI || exit
 docker build -t "$USERNAME/frontend-ui" .
