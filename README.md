@@ -4,6 +4,8 @@
 **Semestre:** Segundo Semestre 2025  
 **Institución:** Tecnológico de Costa Rica – Escuela de Ingeniería en Computación  
 
+### VIDEO INFORMATIVO
+[Que es PROMPTSY?](https://estudianteccr-my.sharepoint.com/:v:/g/personal/c_araya_1_estudiantec_cr/EVbOGHO4wN5Hv9H5BVl9Vf4Be0NBLEikKd7UE4bqZmI3Cw)
 
 # Instrucciones de Ejecución
   
