@@ -1,0 +1,35 @@
+{{- if .Values.config.spacyEntityExtractor.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.config.spacyEntityExtractor.name }}
+  labels:
+    app: {{ .Values.config.spacyEntityExtractor.name }}
+spec:
+  replicas: {{ .Values.config.spacyEntityExtractor.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.config.spacyEntityExtractor.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.config.spacyEntityExtractor.name }}
+    spec:
+      containers:
+        - name: {{ .Values.config.spacyEntityExtractor.name }}
+          image: "{{ .Values.config.docker_registry }}/{{ .Values.config.spacyEntityExtractor.image }}"
+          env:
+            - name: RABBITMQ
+              value: "databases-rabbitmq"
+            - name: RABBITMQ_QUEUE
+              value: "queue_beautifulsoup"
+            - name: RABBITMQ_USER
+              value: "user"
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: databases-rabbitmq
+                  key: rabbitmq-password
+                  optional: false
+{{- end }}

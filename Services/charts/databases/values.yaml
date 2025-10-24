@@ -1,0 +1,6 @@
+rabbitmq:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/rabbitmq
+    tag: 3.12.12-debian-11-r15

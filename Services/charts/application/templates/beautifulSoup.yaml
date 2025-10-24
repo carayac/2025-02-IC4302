@@ -1,0 +1,35 @@
+{{- if .Values.config.beautifulSoup.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.config.beautifulSoup.name }}
+  labels:
+    app: {{ .Values.config.beautifulSoup.name }}
+spec:
+  replicas: {{ .Values.config.beautifulSoup.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.config.beautifulSoup.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.config.beautifulSoup.name }}
+    spec:
+      containers:
+        - name: {{ .Values.config.beautifulSoup.name }}
+          image: "{{ .Values.config.docker_registry }}/{{ .Values.config.beautifulSoup.image }}"
+          env:
+            - name: RABBITMQ
+              value: "databases-rabbitmq"
+            - name: RABBITMQ_QUEUE
+              value: "queue_beautifulsoup"
+            - name: RABBITMQ_USER
+              value: "user"
+            - name: RABBITMQ_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: databases-rabbitmq
+                  key: rabbitmq-password
+                  optional: false
+{{- end }}

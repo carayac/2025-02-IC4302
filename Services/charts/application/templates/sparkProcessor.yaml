@@ -1,0 +1,41 @@
+{{- if .Values.config.spark-processor-job.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.config.spark-processor-job.name }}
+spec:
+  schedule: "{{ .Values.config.spark-processor-job.schedule }}"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        metadata:
+          labels:
+            app: {{ .Values.config.spark-processor-job.name }}
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: {{ .Values.config.spark-processor-job.name }}
+              image: {{ .Values.config.docker_registry }}/{{ .Values.config.spark-processor-job.image }}
+              env:
+                - name: S3_BUCKET
+                  value: "ic-tec-dataset"
+                - name: S3_PREFIXES
+                  value: "amazon-books,amazon-book-reviews"
+                - name: AWS_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-secret
+                      key: AWS_ACCESS_KEY
+                      optional: false
+                - name: AWS_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-secret
+                      key: AWS_SECRET_KEY
+                      optional: false
+                - name: AWS_REGION
+                  value: "us-east-1"
+{{- end }}
