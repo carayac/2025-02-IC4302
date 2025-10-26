@@ -1,0 +1,25 @@
+{
+  "titulo": "Curso de Ventas de Servicios Financieros",
+  "descripcion": "Desarrolla habilidades para vender servicios financieros, comprendiendo el mercado, las necesidades del cliente y las estrategias de ventas efectivas.",
+  "caracteristicas": [
+    "Modalidad 100% virtual",
+    "Contenido disponible las 24 horas",
+    "Certificado internacional",
+    "Incluye evaluaciones y proyectos prácticos"
+  ],
+  "comentarios": [
+    {
+      "usuario": "Estudiante 3",
+      "comentario": "Muy útil para mejorar mis habilidades en ventas."
+    },
+    {
+      "usuario": "Estudiante 4",
+      "comentario": "Los ejemplos prácticos fueron especialmente valiosos."
+    }
+  ],
+  "fecha": "2025-10-25",
+  "entities": [
+    {"texto": "Servicios Financieros", "tipo": "PRODUCT"},
+    {"texto": "2025-10-25", "tipo": "DATE"}
+  ]
+}

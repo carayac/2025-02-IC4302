@@ -1,0 +1,26 @@
+{
+  "titulo": "Curso de Nutrición",
+  "descripcion": "Aprende a determinar las necesidades nutricionales de un adulto y a diseñar una dieta personalizada basada en la evidencia científica.",
+  "caracteristicas": [
+    "Modalidad 100% virtual",
+    "Contenido disponible las 24 horas",
+    "Certificado internacional",
+    "Incluye técnicas basadas en la evidencia científica"
+  ],
+  "comentarios": [
+    {
+      "usuario": "Estudiante 5",
+      "comentario": "Muy informativo, me ayudó a mejorar mis hábitos alimenticios."
+    },
+    {
+      "usuario": "Estudiante 6",
+      "comentario": "Los contenidos son claros y aplicables."
+    }
+  ],
+  "fecha": "2025-10-25",
+  "entities": [
+    {"texto": "Nutrición", "tipo": "PRODUCT"},
+    {"texto": "adulto", "tipo": "PERSON"},
+    {"texto": "2025-10-25", "tipo": "DATE"}
+  ]
+}
