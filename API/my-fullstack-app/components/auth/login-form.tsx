@@ -26,7 +26,7 @@ export function LoginForm() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCredential.user.getIdToken();
       document.cookie = `auth-token=${token}; path=/; max-age=3600`; // Establece cookie
-      router.push("/"); // Redirige al dashboard (cambiado de "/dashboard" a "/")
+      router.push("/"); 
     } catch (err: any) {
       setError(err.message || "Error al iniciar sesión");
     } finally {
