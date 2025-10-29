@@ -4,6 +4,7 @@ import sys
 import logging
 import re
 import time
+from selenium import webdriver
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -16,6 +17,16 @@ logger = logging.getLogger(__name__)
 headers = {"User-Agent": "Mozilla/5.0"}  #para evitar ser detectado como bot
 url = "https://app.edutin.com/search/courses?q=programacion"
 folder = "productos"
+
+#obtiene html base
+def obtenerBusqueda(url):
+    from selenium import webdriver
+    driver = webdriver.Chrome()
+    driver.get(url)
+    driver.implicitly_wait(5)
+    html = driver.page_source
+    driver.quit() 
+    return html
 
 #hace request en la url y obtiene html
 def obtenerProductos(url):
@@ -55,7 +66,7 @@ def descargarHtml(html, num):
 
 
 def main():
-    htmlBase = obtenerProductos(url)
+    htmlBase = obtenerBusqueda(url)
     cursos = obtenerLinks(htmlBase)
     for num, curso in enumerate (cursos, start = 1):
         htmlCurso = obtenerProductos(curso)
