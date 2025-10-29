@@ -1,7 +1,14 @@
-from venv import logger
 import requests
 import os
-import re
+import sys
+import logging
+
+logging.basicConfig(
+    stream=sys.stdout, 
+    level=logging.INFO, 
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 #Variables
 url = "https://app.edutin.com/academy/"
@@ -26,7 +33,7 @@ def obtenerProducto(url):
         return html_content
 
     else:
-        logger(f"Request failed: {response.status_code}")
+        logger.error(f"Request failed: {response.status_code}")
         return None
     
 
