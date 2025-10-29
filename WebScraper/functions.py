@@ -3,6 +3,7 @@ import os
 import sys
 import logging
 import re
+import time
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -15,10 +16,6 @@ logger = logging.getLogger(__name__)
 headers = {"User-Agent": "Mozilla/5.0"}  #para evitar ser detectado como bot
 url = "https://app.edutin.com/search/courses?q=programacion"
 folder = "productos"
-cursos = []
-
-descargados = 0
-MAX_CURSOS = 500
 
 #hace request en la url y obtiene html
 def obtenerProductos(url):
@@ -48,9 +45,16 @@ def descargarHtml(html, num):
     file_path = os.path.join(folder, f"curso_{num:03d}.html")
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"Guardado: {file_path}")
+    logger.info(f"Guardado: {file_path}")
 
 
 def main():
+    htmlBase = obtenerProductos(url)
+    cursos = obtenerLinks(htmlBase)
+    for num, curso in enumerate (cursos, start = 1):
+        htmlCurso = obtenerProductos(curso)
+        descargarHtml(htmlCurso, num)
+        time.sleep(1)
 
-
+if __name__ == "__main__":
+    main()
