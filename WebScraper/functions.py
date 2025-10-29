@@ -2,6 +2,7 @@ import requests
 import os
 import sys
 import logging
+import re
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -12,37 +13,44 @@ logger = logging.getLogger(__name__)
 
 #Variables
 headers = {"User-Agent": "Mozilla/5.0"}  #para evitar ser detectado como bot
-url = "https://app.edutin.com/academy/"
+url = "https://app.edutin.com/search/courses?q=programacion"
 folder = "productos"
-os.makedirs(folder, exist_ok=True)
+cursos = []
 
-categorias = {
-    "programacion": "67",
-    "cocina": "71",
-    "marketing": "77",
-    "deporte": "78",
-    "psicologia": "80",
-    "ciencias": "82",
-}
+descargados = 0
+MAX_CURSOS = 500
 
-
-
-def obtenerProducto(url):
+#hace request en la url y obtiene html
+def obtenerProductos(url):
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        html_content = response.content
-        return html_content
+        return response.text
 
     else:
         logger.error(f"Request failed: {response.status_code}")
         return None
-    
 
 
-def descargarHtml(html, category, num):
-    file_path = os.path.join(folder, f"{category}_{num:03d}.html")
+#obtiene los links para scrapear todos los links de los cursos a partir de html base
+def obtenerLinks(htmlBase):
+    if not htmlBase:
+        return []
+    # Busca todos los href que empiecen con https://edutin.com/
+    links = re.findall(r'href="(https://edutin\.com/[^"]+)"', htmlBase)
+
+    cursos = [l for l in links if not any(ext in l for ext in [".jpg", ".png", ".svg", "facebook", "twitter"])]
+    return list(set(cursos))[:500]  # eliminar duplicados y solo los primeros 500
+
+
+#guarda en archivo
+def descargarHtml(html, num):
+    os.makedirs(folder, exist_ok=True)
+    file_path = os.path.join(folder, f"curso_{num:03d}.html")
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(html)
     print(f"Guardado: {file_path}")
+
+
+def main():
 
 
