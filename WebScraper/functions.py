@@ -19,12 +19,15 @@ folder = "productos"
 
 #hace request en la url y obtiene html
 def obtenerProductos(url):
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        return response.text
-
-    else:
-        logger.error(f"Request failed: {response.status_code}")
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.text
+        else:
+            logger.error(f"Request failed: {response.status_code} para link: {url}")
+            return None
+    except Exception as e:
+        logger.error(f"Error obteniendo {url}: {e}")
         return None
 
 
@@ -41,6 +44,9 @@ def obtenerLinks(htmlBase):
 
 #guarda en archivo
 def descargarHtml(html, num):
+    if not html:
+        logger.warning(f"HTML vacío para el curso #{num}")
+        return
     os.makedirs(folder, exist_ok=True)
     file_path = os.path.join(folder, f"curso_{num:03d}.html")
     with open(file_path, "w", encoding="utf-8") as f:
