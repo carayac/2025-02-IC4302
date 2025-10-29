@@ -48,7 +48,7 @@ def descargarHtml(html, num):
         logger.warning(f"HTML vacío para el curso #{num}")
         return
     os.makedirs(folder, exist_ok=True)
-    file_path = os.path.join(folder, f"curso_{num:03d}.html")
+    file_path = os.path.join(os.path.expanduser("~"), "Downloads", folder, f"curso_{num:03d}.html")
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(html)
     logger.info(f"Guardado: {file_path}")
