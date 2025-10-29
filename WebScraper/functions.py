@@ -39,3 +39,10 @@ def obtenerProducto(url):
     
 
 
+def descargarHtml(html, category, num):
+    file_path = os.path.join(folder, f"{category}_{num:03d}.html")
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"Guardado: {file_path}")
+
+
