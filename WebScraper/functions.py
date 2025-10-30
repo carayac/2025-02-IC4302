@@ -127,6 +127,7 @@ def main():
             descargarHtml(htmlCurso, cursoId)
             cursoId += 1
             time.sleep(1)
+    subirBucket()
 
 if __name__ == "__main__":
     main()
