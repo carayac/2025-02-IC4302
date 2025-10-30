@@ -5,6 +5,7 @@ import logging
 import re
 import time
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -17,13 +18,30 @@ logger = logging.getLogger(__name__)
 headers = {"User-Agent": "Mozilla/5.0"}  #para evitar ser detectado como bot
 url = "https://app.edutin.com/search/courses?q=programacion"
 folder = "productos"
+scroll_pause_time = 10
+
+
 
 #obtiene html base
 def obtenerBusqueda(url):
-    from selenium import webdriver
     driver = webdriver.Chrome()
     driver.get(url)
     driver.implicitly_wait(5)
+
+    #en la pagina hay que hacer scroll para que se carguen los cursos 
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    while True:
+        # Scroll down
+        scrollable_div = driver.find_element(By.ID, "main-scroll")
+        driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", scrollable_div)
+        # Esperar a que cargue
+        time.sleep(scroll_pause_time)
+        # Comparar si ya llegamos al final
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
+
     html = driver.page_source
     driver.quit() 
     return html
@@ -49,7 +67,8 @@ def obtenerLinks(htmlBase):
     # Busca todos los href que empiecen con https://edutin.com/
     links = re.findall(r'href="(https://edutin\.com/[^"]+)"', htmlBase)
 
-    cursos = [l for l in links if not any(ext in l for ext in [".jpg", ".png", ".svg", "facebook", "twitter"])]
+    cursos = [l for l in links 
+              if "curso-de-" in l and not any(ext in l for ext in [".jpg", ".png", ".svg", "facebook", "twitter"])]
     return list(set(cursos))[:500]  # eliminar duplicados y solo los primeros 500
 
 
@@ -58,11 +77,18 @@ def descargarHtml(html, num):
     if not html:
         logger.warning(f"HTML vacío para el curso #{num}")
         return
-    os.makedirs(folder, exist_ok=True)
-    file_path = os.path.join(os.path.expanduser("~"), "Downloads", folder, f"curso_{num:03d}.html")
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(html)
-    logger.info(f"Guardado: {file_path}")
+    folder_path = os.path.join(os.path.expanduser("~"), "Downloads", folder)
+    os.makedirs(folder_path, exist_ok=True)
+
+    file_path = os.path.join(folder_path, f"curso_{num:03d}.html")
+    try:
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(html)
+        logger.info(f"Guardado: {file_path}")
+    except Exception as e:
+        logger.error(f"Error guardando {file_path}: {e}")
+        return None
+
 
 
 def main():
