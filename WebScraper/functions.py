@@ -6,6 +6,8 @@ import re
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import subprocess 
+
 
 logging.basicConfig(
     stream=sys.stdout, 
@@ -14,13 +16,20 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+#credenciales
+AWS_ACCESS_KEY = "AKIAQ2VOGXQD2ICLMJXL"
+AWS_SECRET_KEY = "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"
+AWS_REGION = "us-east-1"
+
+
 #Variables
 headers = {"User-Agent": "Mozilla/5.0"}  #para evitar ser detectado como bot
 urlBase = "https://app.edutin.com/search/courses?q="
-categories = ["programacion", "cocina", "moda", "idiomas", "marketing"]
+categories = ["programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas", "marketing"]
 folder = "productos"
 scroll_pause_time = 15
 cursoId = 1
+carpeta_grupo = "CARPETA_HCDCP"
 
 
 
@@ -79,7 +88,7 @@ def descargarHtml(html, num):
     if not html:
         logger.warning(f"HTML vacío para el curso #{num}")
         return
-    folder_path = os.path.join(os.path.expanduser("~"), "Downloads", folder)
+    folder_path = os.path.join(folder)
     os.makedirs(folder_path, exist_ok=True)
 
     file_path = os.path.join(folder_path, f"curso_{num:03d}.html")
@@ -91,12 +100,25 @@ def descargarHtml(html, num):
         logger.error(f"Error guardando {file_path}: {e}")
         return None
 
+#guarda en archivo
+def subirBucket():
+    folder_path = os.path.join(folder)
+    try:
+
+        comando = ["aws", "s3", "sync", folder_path, f"s3://ic-tec-dataset/{carpeta_grupo}/"]
+
+        result = subprocess.run(comando, shell=True, capture_output=True, text=True) 
+
+    except Exception as e:
+        logger.error(f"Error subiendo al bucket: {e}")
+        return None
+
 
 
 def main():
     global cursoId
-    for categorie in categories:
-        url = f'{urlBase}{categorie}'
+    for category in categories:
+        url = f'{urlBase}{category}'
         htmlBase = obtenerBusqueda(url)
         cursos = obtenerLinks(htmlBase)
         for curso in cursos:
