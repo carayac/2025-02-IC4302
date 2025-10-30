@@ -16,9 +16,11 @@ logger = logging.getLogger(__name__)
 
 #Variables
 headers = {"User-Agent": "Mozilla/5.0"}  #para evitar ser detectado como bot
-url = "https://app.edutin.com/search/courses?q=programacion"
+urlBase = "https://app.edutin.com/search/courses?q="
+categories = ["programacion", "cocina", "moda", "idiomas", "marketing"]
 folder = "productos"
-scroll_pause_time = 10
+scroll_pause_time = 15
+cursoId = 1
 
 
 
@@ -30,7 +32,7 @@ def obtenerBusqueda(url):
 
     #en la pagina hay que hacer scroll para que se carguen los cursos 
     last_height = driver.execute_script("return document.body.scrollHeight")
-    while True:
+    for i in range(50):
         # Scroll down
         scrollable_div = driver.find_element(By.ID, "main-scroll")
         driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", scrollable_div)
@@ -92,12 +94,16 @@ def descargarHtml(html, num):
 
 
 def main():
-    htmlBase = obtenerBusqueda(url)
-    cursos = obtenerLinks(htmlBase)
-    for num, curso in enumerate (cursos, start = 1):
-        htmlCurso = obtenerProductos(curso)
-        descargarHtml(htmlCurso, num)
-        time.sleep(1)
+    global cursoId
+    for categorie in categories:
+        url = f'{urlBase}{categorie}'
+        htmlBase = obtenerBusqueda(url)
+        cursos = obtenerLinks(htmlBase)
+        for curso in cursos:
+            htmlCurso = obtenerProductos(curso)
+            descargarHtml(htmlCurso, cursoId)
+            cursoId += 1
+            time.sleep(1)
 
 if __name__ == "__main__":
     main()
