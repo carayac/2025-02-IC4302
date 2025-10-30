@@ -105,10 +105,10 @@ def descargarHtml(html, num):
 def subirBucket():
     folder_path = os.path.join(folder)
     try:
-
         comando = ["aws", "s3", "sync", folder_path, f"s3://ic-tec-dataset/{carpeta_grupo}/"]
 
-        result = subprocess.run(comando, shell=True, capture_output=True, text=True) 
+        result = subprocess.run(comando, capture_output=True, text=True, check=True) 
+        logger.info(result.stdout)
 
     except Exception as e:
         logger.error(f"Error subiendo al bucket: {e}")
