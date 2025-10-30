@@ -17,9 +17,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 #credenciales
-AWS_ACCESS_KEY = "AKIAQ2VOGXQD2ICLMJXL"
-AWS_SECRET_KEY = "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"
-AWS_REGION = "us-east-1"
+os.environ["AWS_ACCESS_KEY_ID"] = "AKIAQ2VOGXQD2ICLMJXL"
+os.environ["AWS_SECRET_ACCESS_KEY"] = "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"
+os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
 
 
 #Variables
@@ -99,6 +99,7 @@ def descargarHtml(html, num):
     except Exception as e:
         logger.error(f"Error guardando {file_path}: {e}")
         return None
+
 
 #guarda en archivo
 def subirBucket():
