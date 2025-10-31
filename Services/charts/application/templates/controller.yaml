@@ -26,14 +26,14 @@ spec:
                 - name: S3_BUCKET
                   value: "ic-tec-dataset"
                 - name: S3_PREFIXES
-                  value: "amazon-books,amazon-book-reviews"
-                - name: AWS_ACCESS_KEY
+                  value: "CARPETA_HCDCP/"
+                - name: AWS_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
                       name: aws-secret
                       key: AWS_ACCESS_KEY
                       optional: false
-                - name: AWS_SECRET_KEY
+                - name: AWS_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
                       name: aws-secret
@@ -44,10 +44,8 @@ spec:
 
                 - name: RABBITMQ
                   value: "databases-rabbitmq"
-                - name: RABBITMQ_QUEUE_CSV
-                  value: "queue_csv"
-                - name: RABBITMQ_QUEUE_PARKET
-                  value: "queue_parket"
+                - name: RABBITMQ_QUEUE_PARSE
+                  value: "queue_parse"
                 - name: RABBITMQ_USER
                   value: "user"
                 - name: RABBITMQ_PASS
