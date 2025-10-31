@@ -1,23 +1,19 @@
-import { LogoutButton } from "@/components/auth/logout-button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; 
+import { Navbar } from "@/components/home/navbar";
+import { CourseSearch } from "@/components/home/course-search";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/80 p-4">
-      <div className="mx-auto max-w-2xl">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <LogoutButton />
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/80">
+      <Navbar /> {/* Navbar con logout */}
+      <div className="p-4">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold">Buscar Cursos</h1>
+            <p className="text-muted-foreground">Encuentra el curso perfecto para ti.</p>
+          </div>
+          <CourseSearch /> {/* Componente de búsqueda normal y avanzada */}
         </div>
-
-        <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle>Bienvenido</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p>Contenido del dashboard aquí.</p>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
