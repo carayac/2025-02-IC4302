@@ -1,1 +1,2 @@
-pyspark==3.5.0  # incluye pyspark.sql
+pytest
+pyspark==3.4.2 # incluye pyspark.sql
