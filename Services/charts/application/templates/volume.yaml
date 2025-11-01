@@ -7,8 +7,6 @@ spec:
     storage: 2Gi
   accessModes:
     - ReadWriteMany
-  hostPath:
-    path: /run/desktop/mnt/host/c/Users/caray/k8s-data
   storageClassName: manual
 ---
 apiVersion: v1
