@@ -15,4 +15,6 @@ COPY app/functions.py .
 # Ejecutar la aplicación con Spark y el conector: usar los JAR locales en /opt/spark/jars
 # Evitar --packages para que no intente descargar de Maven en tiempo de ejecución
 #CMD ["spark-submit","--master","local[*]","--jars","/opt/spark/jars/mongo-spark-connector_2.13-10.3.0.jar,/opt/spark/jars/mongodb-driver-sync-4.11.0.jar","app.py"]
+RUN python -u test.py
+
 CMD ["spark-submit","--master", "local[*]","--packages", "org.mongodb.spark:mongo-spark-connector_2.12:10.2.1","app.py"]

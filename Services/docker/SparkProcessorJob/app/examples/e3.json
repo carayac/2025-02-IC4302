@@ -1,6 +1,6 @@
 {
   "titulo": "Curso de Urgencias Obstétricas",
-  "descripcion": "Dirigido a profesionales de la salud, este curso aborda los fundamentos teóricos y protocolos clínicos actualizados en urgencias obstétricas.",
+  "descripcion": "Aprende los fundamentos de la programación utilizando Python, uno de los lenguajes más versátiles. Verás desde estructuras de datos y control de flujo hasta funciones, manejo de errores y una introducción a la programación orientada a objetos y librerías comunes.",
   "caracteristicas": [
     "Modalidad 100% virtual",
     "Contenido disponible las 24 horas",
@@ -20,7 +20,7 @@
   "fecha": "2025-10-25",
   "entities": [
     {"texto": "Urgencias Obstétricas", "tipo": "PRODUCT"},
-    {"texto": "profesionales de la salud", "tipo": "ORG"},
+    {"texto": "fitoterapia", "tipo": "ORG"},
     {"texto": "2025-10-25", "tipo": "DATE"}
   ]
 }

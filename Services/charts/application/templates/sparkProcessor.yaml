@@ -22,6 +22,10 @@ spec:
               env:
                 - name: S3_BUCKET
                   value: "ic-tec-dataset"
+                - name: URI_MONGODB
+                  value: "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm.documents?appName=ProductsSearch"
+                - name: VOLUMEN_PVC
+                  value: "/app/data"
                 - name: S3_PREFIXES
                   value: "amazon-books,amazon-book-reviews"
                 - name: AWS_ACCESS_KEY

@@ -1,9 +1,11 @@
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import initcap, col, expr, when, date_format
+from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql.functions import initcap, col, expr, when, date_format,to_date , regexp_replace, udf, explode, collect_list, slice, array_contains, struct, monotonically_increasing_id, flatten, array_distinct
 from pyspark.sql.types import ArrayType, StructType, StringType, DateType, TimestampType
+from sklearn.feature_extraction.text import TfidfVectorizer
 import logging
 import sys
 import os
+import re
 
 # Set up logging to output to stdout
 logging.basicConfig(
@@ -13,8 +15,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-uri = "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm.documents?appName=ProductsSearch"
+#Env variables
+uri = os.getenv("URI_MONGODB")
+input_path = os.getenv("VOLUMEN_PVC")
 
+
+#creatre spark session with mongo conection to write
 def createSession():
     """Crea una sesión Spark reutilizable"""
     spark = SparkSession.builder \
@@ -23,14 +29,18 @@ def createSession():
         .getOrCreate()
     return spark
 
-
+#read augmented data from json. This is a data volume
 def read_augmented_data(spark, input_path):
     """Lee datos augmented desde JSON y registra como tabla temporal"""
     df = spark.read.option("multiline","true").json(input_path)
     df.createOrReplaceTempView("augmented_data")
+    df.show(5)
+    logger.info("Augmented data loaded and registered as temporary view")
     return df
 
 
+#Transformation #1
+#Convert all text columns to start with uppercase
 def uppercase_first_letter(dataframe):
     """Normaliza textos para que comiencen con mayúscula"""
 
@@ -44,14 +54,8 @@ def uppercase_first_letter(dataframe):
     return dataframe
 
 
-
+#This function put the intial capital letter in nested struct and array of struct text fields for example entities and comments
 def normalize_entities(dataframe):
-    """Normaliza textos dentro de estructuras anidadas.
-
-    - Recorre el esquema y para cada columna que sea ArrayType(StructType) o StructType
-      aplica initcap a los campos de tipo string dentro del struct.
-    - Preserva los campos no-texto.
-    """
     try:
         schema = dataframe.schema
 
@@ -59,7 +63,7 @@ def normalize_entities(dataframe):
             fname = field.name
             ftype = field.dataType
 
-            # Manejar array<struct>
+            # Manage array<struct>
             if isinstance(ftype, ArrayType) and isinstance(ftype.elementType, StructType):
                 elem_fields = ftype.elementType.fields
                 parts = []
@@ -74,12 +78,12 @@ def normalize_entities(dataframe):
                 transformed = expr(f"transform({fname}, x -> named_struct({named}))")
                 dataframe = dataframe.withColumn(fname, when(col(fname).isNotNull(), transformed).otherwise(col(fname)))
 
-            # Manejar array<string> (ej. "caracteristicas")
+            # Manage array<string> (ej. "caracteristicas")
             elif isinstance(ftype, ArrayType) and isinstance(ftype.elementType, StringType):
                 transformed = expr(f"transform({fname}, x -> initcap(x))")
                 dataframe = dataframe.withColumn(fname, when(col(fname).isNotNull(), transformed).otherwise(col(fname)))
 
-            # Manejar struct directo
+            # Manage struct 
             elif isinstance(ftype, StructType):
                 parts = []
                 for sf in ftype.fields:
@@ -100,77 +104,140 @@ def normalize_entities(dataframe):
     return dataframe
 
 
+# Transformation #2
+# Format dates to DD/MM/YYYY throughout the schema using Spark SQL
 def format_dates_ddmmyyyy_sql(dataframe):
-    spark = dataframe.sparkSession
-    dataframe.createOrReplaceTempView("__tmp_format_dates")
+    df_formatted = dataframe.withColumn(
+        "fecha",
+        date_format(
+            to_date(regexp_replace(col("fecha"), "/", "-"), "yyyy-MM-dd"),
+            "dd/MM/yyyy"
+        )
+    )
+    logger.info("Date fields formatted to DD/MM/YYYY")
+    return df_formatted
 
-    def sel(colname, dtype):
-        q = f"`{colname}`"
-        if isinstance(dtype, (DateType, TimestampType)):
-            return f"date_format({q}, 'dd/MM/yyyy') as {q}"
-        if isinstance(dtype, StringType):
-            return (
-                f"CASE WHEN to_date({q}, 'yyyy-MM-dd') IS NOT NULL THEN date_format(to_date({q}, 'yyyy-MM-dd'),'dd/MM/yyyy') "
-                f"WHEN to_date({q}, 'dd/MM/yyyy') IS NOT NULL THEN date_format(to_date({q}, 'dd/MM/yyyy'),'dd/MM/yyyy') "
-                f"ELSE initcap({q}) END as {q}"
-            )
-        if isinstance(dtype, ArrayType) and isinstance(dtype.elementType, StringType):
-            return f"transform({q}, x -> CASE WHEN to_date(x,'yyyy-MM-dd') IS NOT NULL THEN date_format(to_date(x,'yyyy-MM-dd'),'dd/MM/yyyy') WHEN to_date(x,'dd/MM/yyyy') IS NOT NULL THEN date_format(to_date(x,'dd/MM/yyyy'),'dd/MM/yyyy') ELSE initcap(x) END) as {q}"
-        if isinstance(dtype, ArrayType) and isinstance(dtype.elementType, StructType):
-            parts = []
-            for f in dtype.elementType.fields:
-                if isinstance(f.dataType, (DateType, TimestampType)):
-                    parts.append(f"'{f.name}', date_format(x.{f.name}, 'dd/MM/yyyy')")
-                elif isinstance(f.dataType, StringType):
-                    parts.append(
-                        f"'{f.name}', CASE WHEN to_date(x.{f.name}, 'yyyy-MM-dd') IS NOT NULL THEN date_format(to_date(x.{f.name}, 'yyyy-MM-dd'),'dd/MM/yyyy') WHEN to_date(x.{f.name}, 'dd/MM/yyyy') IS NOT NULL THEN date_format(to_date(x.{f.name}, 'dd/MM/yyyy'),'dd/MM/yyyy') ELSE initcap(x.{f.name}) END"
-                    )
-                else:
-                    parts.append(f"'{f.name}', x.{f.name}")
-            return f"transform({q}, x -> named_struct({', '.join(parts)})) as {q}"
-        if isinstance(dtype, StructType):
-            parts = []
-            for f in dtype.fields:
-                if isinstance(f.dataType, (DateType, TimestampType)):
-                    parts.append(f"'{f.name}', date_format({q}.{f.name}, 'dd/MM/yyyy')")
-                elif isinstance(f.dataType, StringType):
-                    parts.append(
-                        f"'{f.name}', CASE WHEN to_date({q}.{f.name}, 'yyyy-MM-dd') IS NOT NULL THEN date_format(to_date({q}.{f.name}, 'yyyy-MM-dd'),'dd/MM/yyyy') WHEN to_date({q}.{f.name}, 'dd/MM/yyyy') IS NOT NULL THEN date_format(to_date({q}.{f.name}, 'dd/MM/yyyy'),'dd/MM/yyyy') ELSE initcap({q}.{f.name}) END"
-                    )
-                else:
-                    parts.append(f"'{f.name}', {q}.{f.name}")
-            return f"named_struct({', '.join(parts)}) as {q}"
-        return f"{q}"
+# Transformation #3
+# Generate short summary using TF-IDF
+# TF-IDF based summary UDF, that means it will extract the most relevant sentence based on TF-IDF scores
+def resumen_tfidf_inteligente(texto, max_len=140):
+    if not texto:
+        return ""
+    
+    #Divide sentences
+    sentences = re.split(r'(?<=[.!?]) +', texto)
 
-    select_list = [sel(f.name, f.dataType) for f in dataframe.schema.fields]
-    sql = f"SELECT {', '.join(select_list)} FROM __tmp_format_dates"
-    return spark.sql(sql)
+    # If there is only one sentence
+    if len(sentences) == 1:
+        return texto if len(texto) <= max_len else ' '.join(texto[:max_len].split(' ')[:-1]) + "..."
 
+    # TF-IDF Vectorization
+    vectorizer = TfidfVectorizer(stop_words="spanish").fit_transform(sentences)
+    scores = vectorizer.sum(axis=1).A1
+    best_sentence = sentences[scores.argmax()].strip()
 
+    # If the sentence fits completely:
+    if len(best_sentence) <= max_len:
+        return best_sentence
+
+    # If not, cut intelligently using complete words to avoid inclomplete words
+    palabras = best_sentence.split()
+    resumen = ""
+    for palabra in palabras:
+        # add space before the word if not the first word
+        if len(resumen) + len(palabra) + 1 <= max_len:
+            resumen += " " + palabra if resumen else palabra
+        else:
+            break
+    return resumen
+
+# converte to UDF in Spark
+resumen_udf = udf(resumen_tfidf_inteligente, StringType())
+
+#main function to add summary column
+def summary(dataframe):
+    return dataframe.withColumn("descripcion_corta", resumen_udf(col("descripcion")))
+
+# Transformation #4
+# Add related products based on entities
+def add_related_products(df, max_relacionados: int = 10) -> DataFrame:
+    # 1. Add internal id to identify products and avoid self-matching
+    df_with_id = df.withColumn("_product_id", monotonically_increasing_id())
+
+    # Build global mapping: for every product/entity produce (entity_text, full_product)
+    product_struct_cols = [col(c) for c in df.columns] + [col("_product_id")]
+    full_struct = struct(*product_struct_cols).alias("full_product")
+
+    exploded_global = df_with_id.withColumn("entity", explode(col("entities"))) \
+                               .withColumn("entity_text", col("entity.texto")) \
+                               .withColumn("entity_tipo", col("entity.tipo")) \
+                               .filter((col("entity_text").isNotNull())) \
+                               .select(col("entity_text"), full_struct)
+
+    df_grouped = exploded_global.groupBy("entity_text").agg(collect_list(col("full_product")).alias("related_per_entity"))
+
+    # For each product, explode its entities and join to the grouped related list, then aggregate back
+    left_exploded = df_with_id.select("_product_id", "entities") \
+                             .withColumn("entity", explode(col("entities"))) \
+                             .withColumn("entity_text", col("entity.texto")) \
+                             .filter(col("entity_text").isNotNull()) \
+                             .select("_product_id", "entity_text")
+
+    joined = left_exploded.join(df_grouped, on="entity_text", how="left")
+
+    # Aggregate per product id into array<array<struct>> then flatten
+    agg = joined.groupBy("_product_id").agg(collect_list(col("related_per_entity")).alias("related_lists")) \
+                .withColumn("related_flat", flatten(col("related_lists")))
+
+    # Exclude self (by matching _product_id inside struct), deduplicate by titulo and limit
+    # the full_struct included _product_id as a field named '_product_id'
+    agg = agg.withColumn(
+        "productos_relacionados",
+        expr("slice(array_distinct(filter(related_flat, x -> x._product_id IS NOT NULL AND x._product_id <> _product_id)), 1, %d)" % max_relacionados)
+    )
+
+    # Join back to original dataframe on _product_id and select original cols + productos_relacionados
+    df_final = df_with_id.join(agg.select("_product_id", "productos_relacionados"), on="_product_id", how="left")
+
+    # Remove internal id column and keep original ordering of columns
+    original_cols = [col(c) for c in df.columns]
+    df_final = df_final.select(*original_cols, col("productos_relacionados"))
+
+    logger.info("Related products added based on entities, excluding self and deduplicated")
+    return df_final
+
+# Main normalization pipeline using Spark SQL
 def normalize_data(spark):
     """
     Pipeline completo de normalización usando Spark SQL:
-    1. Extraer entidades normalizadas
-    2. Añadir productos relacionados
-    3. Normalizar textos con mayúscula inicial
-    4. Normalizar fechas a DD/MM/YYYY
-    5. Generar descripción corta (140 chars)
+    1.1 Verificar que las cadenas de texto comiencen con mayúscula
+    1.2 Verificar y normalizar textos en campos anidados (Comiencen en mayuscula) estos son las entities y los comentarios
+    2. Verificar el formato de fechas a DD/MM/YYYY en todo el esquema
+    3. Generar resumen corto usando TF-IDF
+    4. Agregar productos relacionados basados en entidades
     """
-    #1 Convertir todos los textos para que comiencen con mayúscula
+    # Transformation 1 convierte all text to start with uppercase
     df = spark.sql("SELECT * FROM augmented_data")
     df = uppercase_first_letter(df)
 
-    # 2 Normalizar textos en campos anidados
+    # Normalice nested struct and array text fields with uppercase first letter
     df = normalize_entities(df)
 
-    # 3 Formatear fechas a DD/MM/YYYY en todo el esquema
-    # Usamos la versión basada en Spark SQL para aplicar el formato a todo el esquema
-    #df = format_dates_ddmmyyyy_sql(df)
+    # Formate dates to DD/MM/YYYY throughout the schema
+    #if use the sql version to apply the format throughout the schema
+    df = format_dates_ddmmyyyy_sql(df)
 
+    #genereate the short version of the description
+    df = summary(df)
+    #create temp view again TO see the new column in sql
+    df.createOrReplaceTempView("productos")
+    #add related products
+    df = add_related_products(df)
+    
     logger.info("Data normalization completed")
     return df
 
-
+#Function to save to mongodb 
 def save_to_mongodb(df):
     """
     Guarda DataFrame en MongoDB Atlas.
@@ -178,36 +245,23 @@ def save_to_mongodb(df):
     """
     df.write \
         .format("mongodb") \
-        .mode("append") \
+        .mode("overwrite") \
         .option("uri", uri) \
         .save()
+    logger.info("Datos procesados guardados en MongoDB Atlas")
 
-def save_processed_data(df, output_path):
-    """Guarda DataFrame procesado en JSON"""
-    df.write.mode("overwrite").json(output_path)
-
-
+#main execute function
 def execute():
-
-    """Función principal del CronJob"""
+    #global session function for the cronjob to use spark
     spark = createSession()
     
-    # Paths (ajustar según tu estructura)
-    input_path = "/app/data"  # Carpeta augmented
-    
-    # Leer datos y registrar como tabla temporal
+    # read the augmented data in the pvc
     read_augmented_data(spark, input_path)
-    df = spark.sql("SELECT * FROM augmented_data")
-    # Ejecutar pipeline de normalización (todo con Spark SQL)
+    # execute the normalization pipeline
     normalized_df = normalize_data(spark)
     
-    # Guardar en MongoDB Atlas
+    # save to MongoDB Atlas
     save_to_mongodb(normalized_df)
-
-    # Opcional: guardar JSON local para debug
-    save_processed_data(normalized_df, "/app/examples/processed")
-
-    logger.info("Datos procesados guardados en MongoDB Atlas")
-    
+    # stop the Spark session
     spark.stop()
-    logger.info("SNormalización completada y datos guardados en MongoDB")
+    logger.info("Normalización completada y datos guardados en MongoDB")
