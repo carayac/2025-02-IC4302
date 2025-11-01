@@ -6,7 +6,7 @@ spec:
   capacity:
     storage: 2Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   hostPath:
     path: /run/desktop/mnt/host/c/Users/caray/k8s-data
   storageClassName: manual
@@ -18,7 +18,7 @@ metadata:
 spec:
   volumeName: augmented-pvc
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 2Gi
