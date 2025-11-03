@@ -19,11 +19,34 @@ spec:
       containers:
         - name: {{ .Values.config.beautifulSoup.name }}
           image: "{{ .Values.config.docker_registry }}/{{ .Values.config.beautifulSoup.image }}"
+          
+          # --- ENVIRONMENT VARIABLES ---
           env:
+            # AWS / S3 configuration
+            - name: S3_BUCKET
+              value: "ic-tec-dataset"
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: AWS_ACCESS_KEY
+                  optional: false
+            - name: AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: AWS_SECRET_KEY
+                  optional: false
+            - name: AWS_REGION
+              value: "us-east-1"
+
+            # RabbitMQ configuration
             - name: RABBITMQ
               value: "databases-rabbitmq"
-            - name: RABBITMQ_QUEUE
-              value: "queue_beautifulsoup"
+            - name: RABBITMQ_QUEUE_HTML     # queue to consume from (controller sends here)
+              value: "queue_parse"
+            - name: RABBITMQ_QUEUE_ENTITY   # queue to publish to (entity extractor listens)
+              value: "queue_entity"
             - name: RABBITMQ_USER
               value: "user"
             - name: RABBITMQ_PASS
@@ -32,4 +55,19 @@ spec:
                   name: databases-rabbitmq
                   key: rabbitmq-password
                   optional: false
+
+            # Shared volume path
+            - name: SHARED_VOLUME_PATH
+              value: "/xdata"
+
+          # --- VOLUME MOUNT ---
+          volumeMounts:
+            - name: augmented-volume
+              mountPath: /xdata
+
+      # --- VOLUME CLAIM ---
+      volumes:
+        - name: augmented-volume
+          persistentVolumeClaim:
+            claimName: augmented-pvc
 {{- end }}
