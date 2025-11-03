@@ -14,7 +14,7 @@ S3_PREFIXES = [p.strip() for p in os.getenv("S3_PREFIXES").split(",") if p.strip
 AWS_REGION = os.getenv("AWS_REGION")
 
 # MongoDB
-MONGO_URI = "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ProductsSearch?appName=ProductsSearch"
+MONGO_URI = "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm?appName=ProductsSearch"
 
 INGESTION_COLLECTION = "ingestion"
 
@@ -56,12 +56,13 @@ def calculate_md5(bucket: str, key: str, chunk_size: int = 8192) -> str:
 def s3_client():
     return boto3.client("s3", region_name=AWS_REGION)
 
+#Conexion a MongoDB
 def mongo_collection():
-    # Incluir uri completa!!!!!!!!!!!!!!!
+
     client = MongoClient(MONGO_URI)
     db = client.get_default_database()
     return db[INGESTION_COLLECTION]
-
+# Conexion a RabbitMQ
 def rabbit_channel():
     credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
     params = pika.ConnectionParameters(host=RABBIT_HOST, credentials=credentials)
@@ -186,6 +187,9 @@ def run():
         for prefix in S3_PREFIXES:
             log.info(f"Revisando s3://{S3_BUCKET}/{prefix}")
             for obj in list_s3(s3, S3_BUCKET, prefix):
+
+                log.info("Revisando objeto: %s", obj["Key"])
+
                 state = publish(coll, ch, obj, S3_BUCKET)
                 totals[state] = totals.get(state, 0) + 1
     finally:
@@ -194,4 +198,4 @@ def run():
         except Exception:
             pass
 
-    log.info(f"Nuevos={totals['new']} modificados={totals['modified']} sin cambios={totals['unchanged']}")
+    log.info(f"Nuevos: {totals['new']} modificados: {totals['modified']} sin cambios: {totals['unchanged']}")
