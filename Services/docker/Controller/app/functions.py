@@ -102,13 +102,7 @@ def build_message(doc: dict, state: str):
     Mensaje que se publica en rabbitmq y que será utilizado por el BeautifulSoup.
     """
     return {
-        "s3Bucket": doc["s3Bucket"],
-        "s3Key": doc["s3Key"],
-        "fileName": doc["fileName"],
-        "sizeBytes": doc["sizeBytes"],
-        "md5": doc["md5"],
-        "state": state,
-        "publishedAt": now()
+        "s3Key": doc["s3Key"]
     }
 
 
