@@ -6,6 +6,7 @@ import pika
 import logging
 from bs4 import BeautifulSoup
 from datetime import datetime
+from pymongo import MongoClient
 
 # LOGGING CONFIGURATION
 logging.basicConfig(
@@ -13,7 +14,6 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
 logger = logging.getLogger("beautifulsoup_parser")
-
 
 # ENVIRONMENT VARIABLES
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
@@ -29,6 +29,11 @@ RABBITMQ_QUEUE_ENTITY = os.getenv("RABBITMQ_QUEUE_ENTITY")
 
 SHARED_VOLUME_PATH = os.getenv("SHARED_VOLUME_PATH", "/xdata")
 
+# MongoDB
+MONGO_URI = "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ProductsSearch?appName=ProductsSearch"
+INGESTION_COLLECTION = "ingestion"
+
+# S3 CLIENT
 s3 = boto3.client(
     "s3",
     aws_access_key_id=AWS_ACCESS_KEY,
@@ -36,10 +41,12 @@ s3 = boto3.client(
     region_name=AWS_REGION
 )
 
+def mongo_collection():
+    client = MongoClient(MONGO_URI)
+    db = client.get_default_database()
+    return db[INGESTION_COLLECTION]
 
-# RABBITMQ CONNECTION
 def connect_rabbitmq():
-    """Establish connection with RabbitMQ and declare required queues."""
     credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
     parameters = pika.ConnectionParameters(host=RABBITMQ_HOST, credentials=credentials)
     connection = pika.BlockingConnection(parameters)
@@ -50,7 +57,6 @@ def connect_rabbitmq():
 
 # DOWNLOAD HTML FROM S3
 def download_html_from_s3(file_key: str) -> str:
-    """Downloads an HTML file from S3"""
     try:
         obj = s3.get_object(Bucket=S3_BUCKET, Key=file_key)
         return obj["Body"].read().decode("utf-8")
@@ -58,8 +64,8 @@ def download_html_from_s3(file_key: str) -> str:
         logger.error(f"Error downloading {file_key} from S3: {e}")
         return None
 
+# PARSE COURSE DATA
 def extract_course_data(html: str, filename: str) -> dict:
-    """Extracts course information using BeautifulSoup"""
     soup = BeautifulSoup(html, "lxml")
 
     data = {
@@ -79,68 +85,65 @@ def extract_course_data(html: str, filename: str) -> dict:
         "date_extracted": datetime.utcnow().strftime("%d/%m/%Y")
     }
 
-    #JSON-LD 
+    # JSON-LD Extraction
     json_ld_tag = soup.find("script", type="application/ld+json")
     if json_ld_tag and json_ld_tag.string:
         try:
-            cleaned = json_ld_tag.string.strip()
-            cleaned = cleaned.replace("// <![CDATA[", "").replace("// ]]>", "")
+            cleaned = json_ld_tag.string.strip().replace("// <![CDATA[", "").replace("// ]]>", "")
             ld_data = json.loads(cleaned)
             if isinstance(ld_data, list):
                 ld_data = ld_data[0]
 
-            # Title and description
+            # Basic info
             data["title"] = ld_data.get("name")
             desc = ld_data.get("description")
             if desc:
                 data["description"] = BeautifulSoup(desc, "lxml").get_text(" ", strip=True)
-
-            # Image
             data["image"] = ld_data.get("image")
 
-            # Price and currency
             offers = ld_data.get("offers", {})
             data["price"] = float(offers.get("price", 0.0))
             data["currency"] = offers.get("priceCurrency", "USD")
 
             # Reviews
-            reviews = ld_data.get("review", [])
-            if isinstance(reviews, list):
-                for r in reviews:
-                    author = "Anónimo"
-                    if isinstance(r.get("author"), dict):
-                        author = r["author"].get("name", "Anónimo")
-                    elif isinstance(r.get("author"), str):
-                        author = r["author"]
+            for r in ld_data.get("review", []):
+                author = "Anónimo"
+                if isinstance(r.get("author"), dict):
+                    author = r["author"].get("name", "Anónimo")
+                elif isinstance(r.get("author"), str):
+                    author = r["author"]
 
-                    review_text = r.get("description") or r.get("reviewBody") or None
-                    rating_value = None
-                    if "reviewRating" in r and isinstance(r["reviewRating"], dict):
-                        val = r["reviewRating"].get("ratingValue")
-                        try:
-                            rating_value = float(val)
-                        except (ValueError, TypeError):
-                            rating_value = None
+                comment = r.get("description") or r.get("reviewBody")
+                rating = None
+                if "reviewRating" in r and isinstance(r["reviewRating"], dict):
+                    val = r["reviewRating"].get("ratingValue")
+                    try:
+                        rating = float(val)
+                    except Exception:
+                        pass
 
-        
-                    review_date = r.get("datePublished")
-                    formatted_date = None
-                    if review_date:
-                        try:
-                            formatted_date = datetime.strptime(review_date, "%Y-%m-%d").strftime("%d/%m/%Y")
-                        except ValueError:
-                            formatted_date = review_date  # keep original if parsing fails
+                date = None
+                if r.get("datePublished"):
+                    try:
+                        date = datetime.strptime(r["datePublished"], "%Y-%m-%d").strftime("%d/%m/%Y")
+                    except Exception:
+                        date = r["datePublished"]
 
-                    data["reviews"].append({
-                        "user": author or "Anónimo",
-                        "comment": review_text,
-                        "rating": rating_value,
-                        "date": formatted_date
-                    })
+                data["reviews"].append({
+                    "user": author or "Anónimo",
+                    "comment": comment,
+                    "rating": rating,
+                    "date": date
+                })
+
+            if "aggregateRating" in ld_data:
+                try:
+                    data["rating_value"] = float(ld_data["aggregateRating"]["ratingValue"])
+                except Exception:
+                    pass
 
         except Exception as e:
             logger.warning(f"Error parsing JSON-LD in {filename}: {e}")
-
 
     # Title fallback
     if not data["title"]:
@@ -148,7 +151,7 @@ def extract_course_data(html: str, filename: str) -> dict:
         if title_tag:
             data["title"] = title_tag.get_text(strip=True)
 
-    # Description fallback 
+    # Description fallback
     if not data["description"]:
         meta_desc = soup.find("meta", attrs={"name": "description"})
         if meta_desc and meta_desc.get("content"):
@@ -164,7 +167,7 @@ def extract_course_data(html: str, filename: str) -> dict:
         if meta_img and meta_img.get("content"):
             data["image"] = meta_img["content"]
 
-    # General category
+    # Categories
     related_block = soup.find("div", class_="t-related")
     if related_block:
         h4_tag = related_block.find("h4")
@@ -177,27 +180,17 @@ def extract_course_data(html: str, filename: str) -> dict:
     if area_match:
         data["specific_category"] = area_match.group(2).strip()
 
-    #RATING Y STUDENTS
+    # Stats (students + rating)
     stats = soup.find("div", class_="statsc")
     if stats:
-        # Buscar rating (ej. "4.8" antes de "opiniones")
-        rating_div = stats.find(string=re.compile(r"^\s*\d+[.,]?\d*\s*$"))
-        if rating_div:
-            try:
-                data["rating_value"] = float(rating_div.strip().replace(",", "."))
-            except ValueError:
-                pass
-
-        # Buscar número de estudiantes
-        students_div = stats.find(string=re.compile(r"estudiantes", re.IGNORECASE))
-        if students_div:
-            match = re.search(r"(\d+[.,]?\d*)", students_div)
-            if match:
-                num_str = match.group(1).replace(".", "").replace(",", "")
-                try:
-                    data["students"] = int(num_str)
-                except ValueError:
-                    pass
+        text = stats.get_text(" ", strip=True)
+        numbers = re.findall(r"\d+", text)
+        if numbers:
+            if len(numbers) > 5:  # Example: "495689" (rating + students)
+                data["rating_value"] = float(str(numbers[0])[0])
+                data["students"] = int(str(numbers[0])[1:])
+            else:
+                data["students"] = int(numbers[0])
 
     # Certificate info
     cert = soup.find("div", class_="st-certificate")
@@ -215,10 +208,20 @@ def extract_course_data(html: str, filename: str) -> dict:
 
 
 def process_message(ch, method, properties, body):
-    """Processes each message received from controller."""
-    file_key = body.decode("utf-8")
+    """Process message from controller queue."""
+    if not body or not body.strip():
+        logger.warning("Empty message received, skipping.")
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+        return
+
+    file_key = body.decode("utf-8").strip()
     filename = os.path.basename(file_key)
     logger.info(f"Processing HTML file: {file_key}")
+
+    coll = mongo_collection()
+
+    #Mark as started
+    coll.update_one({"_id": file_key}, {"$set": {"processing": "started"}}, upsert=True)
 
     html_content = download_html_from_s3(file_key)
     if not html_content:
@@ -228,32 +231,30 @@ def process_message(ch, method, properties, body):
 
     data = extract_course_data(html_content, filename)
 
-    # Save JSON to shared volume
+    # Save JSON
     raw_dir = os.path.join(SHARED_VOLUME_PATH, "raw")
     os.makedirs(raw_dir, exist_ok=True)
     json_path = os.path.join(raw_dir, filename.replace(".html", ".json"))
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    logger.info(f"JSON file saved: {json_path}")
 
-    try:
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        logger.info(f"JSON file saved: {json_path}")
-    except Exception as e:
-        logger.error(f"Error saving JSON for {filename}: {e}")
+    #Mark as completed
+    coll.update_one({"_id": file_key}, {"$set": {"processing": "completed"}})
 
-    # Publish message to entity queue
-    try:
-        ch.basic_publish(
-            exchange="",
-            routing_key=RABBITMQ_QUEUE_ENTITY,
-            body=json_path
-        )
-        logger.info(f"Published to {RABBITMQ_QUEUE_ENTITY}: {json_path}")
-    except Exception as e:
-        logger.error(f"Error publishing to RabbitMQ: {e}")
+    # Publish to entity queue
+    msg_to_entity = {"s3Key": file_key, "jsonPath": json_path}
+    ch.basic_publish(
+        exchange="",
+        routing_key=RABBITMQ_QUEUE_ENTITY,
+        body=json.dumps(msg_to_entity)
+    )
+    logger.info(f"Published to {RABBITMQ_QUEUE_ENTITY}: {msg_to_entity}")
 
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
-# MAIN 
+
+# MAIN
 def main():
     logger.info("Starting BeautifulSoup Parser")
     connection, channel = connect_rabbitmq()
@@ -272,3 +273,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
