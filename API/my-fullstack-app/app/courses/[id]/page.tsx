@@ -3,99 +3,95 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { BookOpen, Clock, Star, Calendar, Globe, GraduationCap, User, ArrowLeft, Play } from "lucide-react"
+import { Star, Calendar, Globe, User, ArrowLeft, Play, Users, Award } from "lucide-react"
 import Link from "next/link"
 
-// Mock data - En producción esto vendría de una API o base de datos
 const coursesData: Record<string, any> = {
   "1": {
     id: "1",
-    title: "Desarrollo Web Full Stack con React y Node.js",
+    title: "Curso de C#",
+    general_category: "Programación",
+    specific_category: null,
     description:
-      "Aprende a construir aplicaciones web modernas desde cero. Este curso completo te llevará desde los fundamentos de HTML, CSS y JavaScript hasta la creación de aplicaciones full stack profesionales utilizando React para el frontend y Node.js con Express para el backend. Incluye proyectos prácticos, mejores prácticas de la industria y técnicas avanzadas de desarrollo.",
-    category: "Programación",
-    instructor: "María González",
-    difficulty: "Intermedio",
-    duration: "12 semanas",
-    lessons: 48,
-    rating: 4.8,
-    reviewCount: 1234,
-    date: "2024-01-15",
-    language: "Español",
-    price: 49.99,
-    image: "/web-development-coding.png",
-    learningPoints: [
-      "Fundamentos de HTML5, CSS3 y JavaScript moderno",
-      "React y sus hooks para interfaces dinámicas",
-      "Node.js y Express para crear APIs RESTful",
-      "Bases de datos con MongoDB",
-      "Autenticación y autorización de usuarios",
-      "Despliegue de aplicaciones en producción",
+      "Este curso de C# está dirigido a programadores principiantes y avanzados, así como a estudiantes de informática que deseen aprender a programar en C#, uno de los lenguajes de programación más utilizados para el desarrollo de aplicaciones en plataformas Windows. Este curso de C# incluye un proyecto práctico con el que podrás desarrollar una aplicación de escritorio utilizando C#.",
+    image: "https://d3puay5pkxu9s4.cloudfront.net/courses/12632/img/web/800_imagen.jpg",
+    price: 0.0,
+    currency: "USD",
+    language: "es",
+    students: 3947,
+    certificate_info:
+      "Puedes compartir tu Certificado en LinkedIn, en tu currículum impreso o en otros documentos. Obtenga un certificado de estudios Validez internacional Evidencie su aprendizaje ante cualquier empleador o institución. Tareas calificadas Reciba calificaciones y observaciones de todas sus actividades resueltas. Asistencia académica Solicite asesoría sobre su proceso de certificación. C# Language Programmer 120 horas certificables Al finalizar el Curso de C# puede obtener un certificado de estudios para evidenciar sus nuevos conocimientos y habilidades.",
+    authorComment: "Sergio Obredor Arquitecto de Infraestructura en la Nube, Equipo de TI en Edutin Academy Profesor",
+    reviews: [
+      {
+        user: "Fabian",
+        comment: "cool",
+        rating: 5.0,
+        date: "07/09/2025",
+      },
+      {
+        user: "Inti",
+        comment: null,
+        rating: 5.0,
+        date: "30/08/2025",
+      },
+      {
+        user: "Antonio",
+        comment:
+          "Lo he utilizado a modo de repaso ya que realice mis practicas de DAM en C# y tengo varios proyectos en mi GitHub en C# también, pero tras una temporada sin usarlo mucho me ha servido para refrescar un poco todo.",
+        rating: 5.0,
+        date: "18/08/2025",
+      },
     ],
+    rating_value: 5.0,
+    date_extracted: "03/11/2025",
   },
   "2": {
     id: "2",
-    title: "Machine Learning con Python",
+    title: "Curso de oftalmología",
+    general_category: "Salud",
+    specific_category: null,
     description:
-      "Domina los conceptos fundamentales del aprendizaje automático y aplícalos usando Python. Aprenderás algoritmos de clasificación, regresión, clustering y redes neuronales.",
-    category: "Ciencia",
-    instructor: "Dr. Carlos Ruiz",
-    difficulty: "Avanzado",
-    duration: "16 semanas",
-    lessons: 64,
-    rating: 4.9,
-    reviewCount: 892,
-    date: "2024-02-01",
-    language: "Español",
-    price: 79.99,
-    image: "/machine-learning-artificial-intelligence.jpg",
-    learningPoints: [
-      "Fundamentos de Machine Learning",
-      "Algoritmos de clasificación y regresión",
-      "Redes neuronales y Deep Learning",
-      "Procesamiento de datos con Pandas",
-      "Visualización con Matplotlib y Seaborn",
-      "Proyectos reales de ML",
+      "Este curso de oftalmología está dirigido a médicos, residentes en oftalmología, optómetras, estudiantes de medicina y personal relacionado al área de la salud que desean desarrollar conocimientos y habilidades en el campo de la oftalmología y brindar un cuidado integral y de calidad a sus pacientes. Este curso de oftalmología incluye actividades prácticas basadas en casos clínicos.",
+    image: "https://d3puay5pkxu9s4.cloudfront.net/courses/12559/img/web/800_imagen.jpg",
+    price: 0.0,
+    currency: "USD",
+    language: "es",
+    students: 1138,
+    certificate_info:
+      "Puedes compartir tu Certificado en LinkedIn, en tu currículum impreso o en otros documentos. Validez internacional Tareas calificadas Asistencia académica Actualización en Oftalmología Clínica 120 horas certificables",
+    authorComment:
+      "Este curso de oftalmología ha sido estructurado pedagógicamente mediante recursos educativos compartidos directamente desde YouTube, bajo Licencia YouTube Estándar.",
+    reviews: [
+      {
+        user: "Marybel",
+        comment:
+          "Fundamental, para seguir aprendiendo y dar un mejor servicio de información y consulta a mis pacientes., gracias 10 de 10",
+        rating: 5.0,
+        date: "17/10/2025",
+      },
+      {
+        user: "Yanelkys",
+        comment: null,
+        rating: 5.0,
+        date: "18/09/2025",
+      },
+      {
+        user: "Any",
+        comment: "Me encanta tener nuevos conocimientos",
+        rating: 5.0,
+        date: "21/08/2025",
+      },
     ],
-  },
-  "3": {
-    id: "3",
-    title: "Diseño UX/UI Profesional",
-    description:
-      "Aprende a diseñar experiencias de usuario excepcionales. Desde la investigación hasta el prototipado y testing.",
-    category: "Creativo",
-    instructor: "Ana Martínez",
-    difficulty: "Principiante",
-    duration: "8 semanas",
-    lessons: 32,
-    rating: 4.7,
-    reviewCount: 567,
-    date: "2024-03-10",
-    language: "Español",
-    price: 39.99,
-    image: "/ux-ui-design-interface.png",
-    learningPoints: [
-      "Principios de diseño UX/UI",
-      "Investigación de usuarios",
-      "Wireframing y prototipado",
-      "Herramientas: Figma y Adobe XD",
-      "Testing de usabilidad",
-      "Portfolio profesional",
-    ],
+    rating_value: 4.9,
+    date_extracted: "03/11/2025",
   },
 }
 
-// Cursos relacionados basados en categoría
 const getRelatedCourses = (currentId: string, category: string) => {
   return Object.values(coursesData)
-    .filter((course) => course.id !== currentId && course.category === category)
+    .filter((course) => course.id !== currentId && course.general_category === category)
     .slice(0, 3)
-}
-
-const difficultyColors: Record<string, string> = {
-  Principiante: "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20",
-  Intermedio: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
-  Avanzado: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20",
 }
 
 export default async function CoursePage({ params }: { params: Promise<{ id: string }> }) {
@@ -106,7 +102,8 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
     notFound()
   }
 
-  const relatedCourses = getRelatedCourses(course.id, course.category)
+  const relatedCourses = getRelatedCourses(course.id, course.general_category)
+  const ratingPercentage = (course.rating_value / 5) * 100
 
   return (
     <main className="min-h-screen bg-background">
@@ -130,7 +127,7 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
             <div className="space-y-6 lg:col-span-2">
               <div className="space-y-4">
                 <Badge variant="outline" className="w-fit">
-                  {course.category}
+                  {course.general_category}
                 </Badge>
                 <h1 className="text-4xl font-bold tracking-tight text-balance lg:text-5xl">{course.title}</h1>
                 <p className="text-lg text-muted-foreground text-pretty leading-relaxed">{course.description}</p>
@@ -140,18 +137,29 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
               <div className="flex flex-wrap gap-4 text-sm">
                 <div className="flex items-center gap-2">
                   <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                  <span className="font-semibold">{course.rating}</span>
-                  <span className="text-muted-foreground">({course.reviewCount} reseñas)</span>
+                  <span className="font-semibold">{course.rating_value}</span>
+                  <span className="text-muted-foreground">({course.reviews.length} reseñas)</span>
                 </div>
                 <Separator orientation="vertical" className="h-5" />
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <User className="h-4 w-4" />
-                  <span>{course.instructor}</span>
+                  <Users className="h-4 w-4" />
+                  <span>{course.students.toLocaleString()} estudiantes</span>
+                </div>
+                <Separator orientation="vertical" className="h-5" />
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Globe className="h-4 w-4" />
+                  <span>{course.language.toUpperCase()}</span>
                 </div>
                 <Separator orientation="vertical" className="h-5" />
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <span>{new Date(course.date).toLocaleDateString("es-ES", { year: "numeric", month: "long" })}</span>
+                  <span>
+                    {new Date(course.date_extracted).toLocaleDateString("es-ES", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -169,8 +177,8 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold">${course.price}</span>
-                      <span className="text-sm text-muted-foreground">USD</span>
+                      <span className="text-3xl font-bold">{course.price === 0 ? "Gratis" : `$${course.price}`}</span>
+                      {course.price > 0 && <span className="text-sm text-muted-foreground">{course.currency}</span>}
                     </div>
                   </div>
                 </CardHeader>
@@ -185,28 +193,10 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
                   <div className="space-y-3 text-sm">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-muted-foreground">
-                        <GraduationCap className="h-4 w-4" />
-                        <span>Dificultad</span>
+                        <Users className="h-4 w-4" />
+                        <span>Estudiantes</span>
                       </div>
-                      <Badge variant="outline" className={difficultyColors[course.difficulty]}>
-                        {course.difficulty}
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>Duración</span>
-                      </div>
-                      <span className="font-medium">{course.duration}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <BookOpen className="h-4 w-4" />
-                        <span>Lecciones</span>
-                      </div>
-                      <span className="font-medium">{course.lessons} lecciones</span>
+                      <span className="font-medium">{course.students.toLocaleString()}</span>
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -214,7 +204,15 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
                         <Globe className="h-4 w-4" />
                         <span>Idioma</span>
                       </div>
-                      <span className="font-medium">{course.language}</span>
+                      <span className="font-medium">{course.language.toUpperCase()}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Award className="h-4 w-4" />
+                        <span>Rating</span>
+                      </div>
+                      <span className="font-medium">{course.rating_value}/5.0</span>
                     </div>
                   </div>
                 </CardContent>
@@ -228,21 +226,12 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-12 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
-            {/* Lo que aprenderás */}
+            {/* Información del certificado */}
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold tracking-tight">Lo que aprenderás</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Certificación</h2>
               <Card className="border-border/50 bg-card/50">
                 <CardContent className="pt-6">
-                  <ul className="grid gap-3 sm:grid-cols-2">
-                    {course.learningPoints.map((point: string, index: number) => (
-                      <li key={index} className="flex gap-3">
-                        <div className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                          <div className="h-2 w-2 rounded-full bg-primary" />
-                        </div>
-                        <span className="text-sm leading-relaxed">{point}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{course.certificate_info}</p>
                 </CardContent>
               </Card>
             </section>
@@ -257,15 +246,37 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
                       <User className="h-8 w-8 text-primary" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-lg">{course.instructor}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        Instructor profesional con más de 10 años de experiencia en la industria. Ha trabajado con
-                        empresas líderes y ha ayudado a miles de estudiantes a alcanzar sus objetivos.
-                      </p>
+                      <h3 className="font-semibold text-lg">Instructor del Curso</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{course.authorComment}</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+            </section>
+
+            {/* Reseñas */}
+            <section className="space-y-4">
+              <h2 className="text-2xl font-bold tracking-tight">Reseñas de estudiantes</h2>
+              <div className="space-y-3">
+                {course.reviews.map((review: any, index: number) => (
+                  <Card key={index} className="border-border/50 bg-card/50">
+                    <CardContent className="pt-6">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-semibold">{review.user}</h4>
+                          <div className="flex items-center gap-1">
+                            {[...Array(Math.round(review.rating))].map((_, i) => (
+                              <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                            ))}
+                          </div>
+                        </div>
+                        {review.comment && <p className="text-sm text-muted-foreground">{review.comment}</p>}
+                        <p className="text-xs text-muted-foreground/70">{review.date}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </section>
           </div>
         </div>
@@ -275,7 +286,7 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
           <section className="mt-16 space-y-6">
             <div className="space-y-2">
               <h2 className="text-2xl font-bold tracking-tight">Cursos relacionados</h2>
-              <p className="text-muted-foreground">Otros cursos que podrían interesarte</p>
+              <p className="text-muted-foreground">Otros cursos de {course.general_category} que podrían interesarte</p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {relatedCourses.map((relatedCourse) => (
@@ -296,9 +307,11 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1 text-sm">
                           <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-                          <span className="font-medium">{relatedCourse.rating}</span>
+                          <span className="font-medium">{relatedCourse.rating_value}</span>
                         </div>
-                        <span className="text-sm font-semibold">${relatedCourse.price}</span>
+                        <span className="text-sm font-semibold">
+                          {relatedCourse.price === 0 ? "Gratis" : `$${relatedCourse.price}`}
+                        </span>
                       </div>
                     </CardContent>
                   </Card>
