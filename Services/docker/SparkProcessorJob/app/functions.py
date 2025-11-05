@@ -1,11 +1,12 @@
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.functions import initcap, col, expr, when, date_format,to_date , regexp_replace, udf, explode, collect_list, slice, array_contains, struct, monotonically_increasing_id, flatten, array_distinct
 from pyspark.sql.types import ArrayType, StructType, StringType, DateType, TimestampType
-from sklearn.feature_extraction.text import TfidfVectorizer
 import logging
 import sys
 import os
 import re
+
+
 
 # Set up logging to output to stdout
 logging.basicConfig(
@@ -108,9 +109,9 @@ def normalize_entities(dataframe):
 # Format dates to DD/MM/YYYY throughout the schema using Spark SQL
 def format_dates_ddmmyyyy_sql(dataframe):
     df_formatted = dataframe.withColumn(
-        "fecha",
+        "date_extracted",
         date_format(
-            to_date(regexp_replace(col("fecha"), "/", "-"), "yyyy-MM-dd"),
+            to_date(regexp_replace(col("date_extracted"), "/", "-"), "yyyy-MM-dd"),
             "dd/MM/yyyy"
         )
     )
@@ -119,48 +120,37 @@ def format_dates_ddmmyyyy_sql(dataframe):
 
 # Transformation #3
 # Generate short summary using TF-IDF
-# TF-IDF based summary UDF, that means it will extract the most relevant sentence based on TF-IDF scores
-def resumen_tfidf_inteligente(texto, max_len=140):
+# Summary helper that trims text to max_len preserving whole words
+def resumen_simple(texto, max_len=140):
     if not texto:
         return ""
     
-    #Divide sentences
-    sentences = re.split(r'(?<=[.!?]) +', texto)
+    texto = texto.strip()
+    if len(texto) <= max_len:
+        return texto
 
-    # If there is only one sentence
-    if len(sentences) == 1:
-        return texto if len(texto) <= max_len else ' '.join(texto[:max_len].split(' ')[:-1]) + "..."
+    snippet = texto[: max_len + 1]
+    last_space = snippet.rfind(" ")
 
-    # TF-IDF Vectorization
-    vectorizer = TfidfVectorizer(stop_words="spanish").fit_transform(sentences)
-    scores = vectorizer.sum(axis=1).A1
-    best_sentence = sentences[scores.argmax()].strip()
+    if last_space == -1:
+        return texto[:max_len].rstrip() + "..."
 
-    # If the sentence fits completely:
-    if len(best_sentence) <= max_len:
-        return best_sentence
-
-    # If not, cut intelligently using complete words to avoid inclomplete words
-    palabras = best_sentence.split()
-    resumen = ""
-    for palabra in palabras:
-        # add space before the word if not the first word
-        if len(resumen) + len(palabra) + 1 <= max_len:
-            resumen += " " + palabra if resumen else palabra
-        else:
-            break
-    return resumen
+    return snippet[:last_space].rstrip() + "..."
 
 # converte to UDF in Spark
-resumen_udf = udf(resumen_tfidf_inteligente, StringType())
+resumen_udf = udf(resumen_simple, StringType())
 
 #main function to add summary column
 def summary(dataframe):
-    return dataframe.withColumn("descripcion_corta", resumen_udf(col("descripcion")))
+    return dataframe.withColumn("short-description", resumen_udf(col("description")))
 
 # Transformation #4
 # Add related products based on entities
 def add_related_products(df, max_relacionados: int = 10) -> DataFrame:
+    if "entities" not in df.columns:
+        logger.warning("Entities column missing; skipping related products enrichment")
+        return df
+
     # 1. Add internal id to identify products and avoid self-matching
     df_with_id = df.withColumn("_product_id", monotonically_increasing_id())
 
