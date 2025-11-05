@@ -1,10 +1,10 @@
-{{- if .Values.config.spark-processor-job.enabled }}
+{{- if .Values.config.sparkProcessorJob.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ .Values.config.spark-processor-job.name }}
+  name: {{ .Values.config.sparkProcessorJob.name }}
 spec:
-  schedule: "{{ .Values.config.spark-processor-job.schedule }}"
+  schedule: "{{ .Values.config.sparkProcessorJob.schedule }}"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -13,15 +13,19 @@ spec:
       template:
         metadata:
           labels:
-            app: {{ .Values.config.spark-processor-job.name }}
+            app: {{ .Values.config.sparkProcessorJob.name }}
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: {{ .Values.config.spark-processor-job.name }}
-              image: {{ .Values.config.docker_registry }}/{{ .Values.config.spark-processor-job.image }}
+            - name: {{ .Values.config.sparkProcessorJob.name }}
+              image: {{ .Values.config.docker_registry }}/{{ .Values.config.sparkProcessorJob.image }}
               env:
                 - name: S3_BUCKET
                   value: "ic-tec-dataset"
+                - name: URI_MONGODB
+                  value: "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm.documents?appName=ProductsSearch"
+                - name: VOLUMEN_PVC
+                  value: "/app/data"
                 - name: S3_PREFIXES
                   value: "amazon-books,amazon-book-reviews"
                 - name: AWS_ACCESS_KEY
@@ -38,4 +42,11 @@ spec:
                       optional: false
                 - name: AWS_REGION
                   value: "us-east-1"
+              volumeMounts:
+                - name: augmented-data
+                  mountPath: /app/data
+          volumes:
+            - name: augmented-data
+              persistentVolumeClaim:
+                claimName: augmented-pvc
 {{- end }}

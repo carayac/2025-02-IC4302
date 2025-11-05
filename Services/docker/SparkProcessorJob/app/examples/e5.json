@@ -1,0 +1,26 @@
+{
+  "titulo": "Curso de Programación en Python",
+  "descripcion": "Desarrolla habilidades clave para vender productos y servicios financieros de forma ética y efectiva, comprendiendo las necesidades del cliente, el análisis de mercado, las estrategias de cierre y el uso de herramientas digitales para la fidelización.",
+  "caracteristicas": [
+    "Modalidad 100% virtual",
+    "Contenido disponible las 24 horas",
+    "Certificado internacional",
+    "Proyectos prácticos incluidos"
+  ],
+  "comentarios": [
+    {
+      "usuario": "Estudiante 7",
+      "comentario": "Excelente curso para empezar a programar desde cero."
+    },
+    {
+      "usuario": "Estudiante 8",
+      "comentario": "Los ejemplos son claros y fáciles de seguir."
+    }
+  ],
+  "fecha": "2025-10-25",
+  "entities": [
+    {"texto": "Python", "tipo": "PRODUCT"},
+    {"texto": "programación", "tipo": "SKILL"},
+    {"texto": "2025-10-25", "tipo": "DATE"}
+  ]
+}

@@ -30,3 +30,8 @@ cd ..
 # docker push "$USERNAME/spark-processor-job"
 # cd ..
 
+# ---------------------------------------- Spark Processor Job ----------------------------------------
+Set-Location SparkProcessorJob
+docker build -t "$Username/spark-processor-job" .
+docker push "$Username/spark-processor-job"
+Set-Location ..

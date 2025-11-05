@@ -1,0 +1,26 @@
+{
+  "titulo": "Curso de Fitoterapia",
+  "descripcion": "Aprende a utilizar plantas medicinales para apoyar el bienestar físico y emocional, comprendiendo sus propiedades, usos, precauciones y métodos de preparación.",
+  "caracteristicas": [
+    "Modalidad 100% virtual",
+    "Contenido disponible las 24 horas",
+    "Certificado internacional",
+    "Incluye actividades prácticas"
+  ],
+  "comentarios": [
+    {
+      "usuario": "Estudiante 1",
+      "comentario": "Excelente curso, muy informativo y práctico."
+    },
+    {
+      "usuario": "Estudiante 2",
+      "comentario": "Me ayudó a comprender mejor el uso de las plantas medicinales."
+    }
+  ],
+  "fecha": "2025-10-25",
+  "entities": [
+    {"texto": "Fitoterapia", "tipo": "ORG"},
+    {"texto": "plantas medicinales", "tipo": "PRODUCT"},
+    {"texto": "2025-10-25", "tipo": "DATE"}
+  ]
+}
