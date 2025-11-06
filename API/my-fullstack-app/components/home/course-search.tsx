@@ -1,289 +1,380 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Search, SlidersHorizontal, X, Star } from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import Link from "next/link"
+import { useState, useEffect } from 'react'
+import { Search, Filter, X } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import { fetchCourses, formatPrice, formatStudents, type CourseFilters } from '@/lib/utils'
+import Link from 'next/link'
 
-const categories = [
-  { id: "programacion", label: "Programación", group: "Tecnología" },
-  { id: "cloud", label: "Cloud Computing", group: "Tecnología" },
-  { id: "ciencia", label: "Ciencia", group: "Académico" },
-  { id: "idiomas", label: "Idiomas", group: "Académico" },
-  { id: "psicologia", label: "Psicología", group: "Académico" },
-  { id: "negocio", label: "Negocio", group: "Profesional" },
-  { id: "marketing", label: "Marketing", group: "Profesional" },
-  { id: "cocina", label: "Cocina", group: "Estilo de Vida" },
-  { id: "salud", label: "Salud", group: "Estilo de Vida" },
-  { id: "deporte", label: "Deporte", group: "Estilo de Vida" },
-  { id: "creativo", label: "Creativo", group: "Arte y Diseño" },
-  { id: "arte", label: "Arte", group: "Arte y Diseño" },
-  { id: "moda", label: "Moda", group: "Arte y Diseño" },
-  { id: "mantenimiento", label: "Mantenimiento", group: "Otros" },
-]
+interface CourseSearchProps {
+  initialCategories: string[]
+  initialLanguages: string[]
+}
 
-const groupedCategories = categories.reduce(
-  (acc, category) => {
-    if (!acc[category.group]) {
-      acc[category.group] = []
+export function CourseSearch({ initialCategories, initialLanguages }: CourseSearchProps) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filters, setFilters] = useState<CourseFilters>({
+    limit: 20,
+    page: 1,
+  })
+  const [courses, setCourses] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [pagination, setPagination] = useState<any>(null)
+
+  // Cargar cursos cuando cambian los filtros
+  useEffect(() => {
+    loadCourses()
+  }, [filters])
+
+  const loadCourses = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await fetchCourses(filters)
+      setCourses(response.data)
+      setPagination(response.pagination)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al cargar cursos')
+      console.error('Error loading courses:', err)
+    } finally {
+      setLoading(false)
     }
-    acc[category.group].push(category)
-    return acc
-  },
-  {} as Record<string, typeof categories>,
-)
-
-const mockCourses = [
-  {
-    id: "1",
-    title: "Desarrollo Web Full Stack con React y Node.js",
-    description: "Aprende a construir aplicaciones web modernas desde cero con React y Node.js",
-    category: "Programación",
-    price: 49.99,
-    rating: 4.8,
-    image: "/web-development-coding.png",
-  },
-  {
-    id: "2",
-    title: "Machine Learning con Python",
-    description: "Domina los conceptos fundamentales del aprendizaje automático y aplícalos usando Python",
-    category: "Ciencia",
-    price: 79.99,
-    rating: 4.9,
-    image: "/machine-learning-artificial-intelligence.jpg",
-  },
-  {
-    id: "3",
-    title: "Diseño UX/UI Profesional",
-    description: "Aprende a diseñar experiencias de usuario excepcionales desde la investigación hasta el prototipado",
-    category: "Creativo",
-    price: 39.99,
-    rating: 4.7,
-    image: "/ux-ui-design-interface.png",
-  },
-  {
-    id: "4",
-    title: "Marketing Digital Avanzado",
-    description: "Estrategias modernas de marketing digital para hacer crecer tu negocio online",
-    category: "Marketing",
-    price: 59.99,
-    rating: 4.6,
-    image: "/digital-marketing-social-media.png",
-  },
-  {
-    id: "5",
-    title: "Cloud Computing con AWS",
-    description: "Aprende a diseñar y desplegar aplicaciones escalables en Amazon Web Services",
-    category: "Cloud Computing",
-    price: 69.99,
-    rating: 4.8,
-    image: "/cloud-computing-aws-servers.jpg",
-  },
-  {
-    id: "6",
-    title: "Inglés para Negocios",
-    description: "Mejora tu inglés profesional para destacar en el mundo empresarial internacional",
-    category: "Idiomas",
-    price: 44.99,
-    rating: 4.5,
-    image: "/business-english-language-learning.jpg",
-  },
-]
-
-export function CourseSearch() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
-
-  const handleCategoryToggle = (categoryId: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId],
-    )
   }
 
-  const handleRemoveCategory = (categoryId: string) => {
-    setSelectedCategories((prev) => prev.filter((id) => id !== categoryId))
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    setFilters(prev => ({ ...prev, search: searchQuery, page: 1 }))
   }
 
-  const handleClearFilters = () => {
-    setSelectedCategories([])
+  const handleFilterChange = (key: keyof CourseFilters, value: any) => {
+    setFilters(prev => ({ ...prev, [key]: value, page: 1 }))
   }
 
-  const handleSearch = () => {
-    console.log("[v0] Searching for:", searchQuery, "Categories:", selectedCategories)
-    // Aquí implementarías la lógica de búsqueda
+  const clearFilters = () => {
+    setSearchQuery('')
+    setFilters({ limit: 20, page: 1 })
+  }
+
+  const handlePageChange = (newPage: number) => {
+    setFilters(prev => ({ ...prev, page: newPage }))
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
     <div className="space-y-6">
-      {/* Search Bar */}
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+      {/* Barra de búsqueda */}
+      <Card>
         <CardContent className="pt-6">
-          <div className="flex gap-2">
+          <form onSubmit={handleSearch} className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Buscar cursos..."
+                type="text"
+                placeholder="Buscar cursos por título, descripción o categoría..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 className="pl-10"
               />
             </div>
-            <Sheet open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Buscando...' : 'Buscar'}
+            </Button>
+            
+            {/* Filtros avanzados */}
+            <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="relative shrink-0 bg-transparent">
-                  <SlidersHorizontal className="h-4 w-4" />
-                  {selectedCategories.length > 0 && (
-                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
-                      {selectedCategories.length}
-                    </span>
-                  )}
+                <Button variant="outline" size="icon">
+                  <Filter className="h-4 w-4" />
                 </Button>
               </SheetTrigger>
-              <SheetContent className="w-full sm:max-w-md">
-                <SheetHeader className="space-y-3 pb-6">
-                  <div className="flex items-center justify-between">
-                    <SheetTitle className="text-2xl">Filtros</SheetTitle>
-                    {selectedCategories.length > 0 && (
-                      <Badge variant="secondary" className="text-xs">
-                        {selectedCategories.length} seleccionado{selectedCategories.length !== 1 ? "s" : ""}
-                      </Badge>
-                    )}
-                  </div>
-                  <SheetDescription className="text-balance">
-                    Refina tu búsqueda seleccionando las categorías que te interesan
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Filtros Avanzados</SheetTitle>
+                  <SheetDescription>
+                    Refina tu búsqueda con filtros adicionales
                   </SheetDescription>
                 </SheetHeader>
-
-                <Separator className="my-4" />
-
-                <ScrollArea className="h-[calc(100vh-280px)] pr-4">
-                  <div className="space-y-6">
-                    {Object.entries(groupedCategories).map(([group, groupCategories]) => (
-                      <div key={group} className="space-y-3">
-                        <h3 className="text-sm font-semibold tracking-tight text-foreground">{group}</h3>
-                        <div className="space-y-2">
-                          {groupCategories.map((category) => (
-                            <div
-                              key={category.id}
-                              className="group flex items-center gap-3 rounded-lg border border-transparent p-2 transition-colors hover:border-border hover:bg-accent/50"
-                            >
-                              <Checkbox
-                                id={category.id}
-                                checked={selectedCategories.includes(category.id)}
-                                onCheckedChange={() => handleCategoryToggle(category.id)}
-                                className="data-[state=checked]:border-primary data-[state=checked]:bg-primary"
-                              />
-                              <Label
-                                htmlFor={category.id}
-                                className="flex-1 cursor-pointer text-sm font-medium leading-none transition-colors group-hover:text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                {category.label}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-
-                <Separator className="my-4" />
-
-                <div className="flex gap-2">
-                  {selectedCategories.length > 0 && (
-                    <Button
-                      variant="outline"
-                      onClick={handleClearFilters}
-                      className="flex-1 transition-all hover:bg-destructive/10 hover:text-destructive bg-transparent"
+                <div className="space-y-4 py-4">
+                  {/* Categoría */}
+                  <div className="space-y-2">
+                    <Label>Categoría</Label>
+                    <Select
+                      value={filters.category || 'all'}
+                      onValueChange={(value) =>
+                        handleFilterChange('category', value === 'all' ? undefined : value)
+                      }
                     >
-                      Limpiar
-                    </Button>
-                  )}
-                  <Button
-                    onClick={() => {
-                      handleSearch()
-                      setIsAdvancedOpen(false)
-                    }}
-                    className="flex-1"
-                  >
-                    Aplicar filtros
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todas las categorías" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todas las categorías</SelectItem>
+                        {initialCategories.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Idioma */}
+                  <div className="space-y-2">
+                    <Label>Idioma</Label>
+                    <Select
+                      value={filters.language || 'all'}
+                      onValueChange={(value) =>
+                        handleFilterChange('language', value === 'all' ? undefined : value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todos los idiomas" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todos los idiomas</SelectItem>
+                        {initialLanguages.map((lang) => (
+                          <SelectItem key={lang} value={lang}>
+                            {lang}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Rating mínimo */}
+                  <div className="space-y-2">
+                    <Label>Rating Mínimo</Label>
+                    <Select
+                      value={filters.minRating?.toString() || 'all'}
+                      onValueChange={(value) =>
+                        handleFilterChange('minRating', value === 'all' ? undefined : parseFloat(value))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Cualquier rating" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Cualquier rating</SelectItem>
+                        <SelectItem value="4.5">4.5+ ⭐</SelectItem>
+                        <SelectItem value="4.0">4.0+ ⭐</SelectItem>
+                        <SelectItem value="3.5">3.5+ ⭐</SelectItem>
+                        <SelectItem value="3.0">3.0+ ⭐</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Ordenar por */}
+                  <div className="space-y-2">
+                    <Label>Ordenar por</Label>
+                    <Select
+                      value={filters.sortBy || 'rating_value'}
+                      onValueChange={(value: any) => handleFilterChange('sortBy', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="rating_value">Rating</SelectItem>
+                        <SelectItem value="students">Estudiantes</SelectItem>
+                        <SelectItem value="price">Precio</SelectItem>
+                        <SelectItem value="title">Título</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Orden */}
+                  <div className="space-y-2">
+                    <Label>Orden</Label>
+                    <Select
+                      value={filters.order || 'desc'}
+                      onValueChange={(value: any) => handleFilterChange('order', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="desc">Mayor a menor</SelectItem>
+                        <SelectItem value="asc">Menor a mayor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Button onClick={clearFilters} variant="outline" className="w-full">
+                    <X className="mr-2 h-4 w-4" />
+                    Limpiar Filtros
                   </Button>
                 </div>
               </SheetContent>
             </Sheet>
-            <Button onClick={handleSearch}>Buscar</Button>
-          </div>
-
-          {/* Active Filters */}
-          {selectedCategories.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {selectedCategories.map((categoryId) => {
-                const category = categories.find((c) => c.id === categoryId)
-                return (
-                  <Badge key={categoryId} variant="secondary" className="gap-1 pr-1">
-                    {category?.label}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-4 w-4 rounded-full hover:bg-background/80"
-                      onClick={() => handleRemoveCategory(categoryId)}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </Badge>
-                )
-              })}
-            </div>
-          )}
+          </form>
         </CardContent>
       </Card>
 
-      {/* Search Results */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {mockCourses.map((course) => (
-          <Link key={course.id} href={`/courses/${course.id}`}>
-            <Card className="group h-full cursor-pointer border-border/50 bg-card/50 backdrop-blur-sm transition-all hover:border-primary/50 hover:shadow-lg">
-              <CardHeader>
-                <div className="mb-3 aspect-video overflow-hidden rounded-md bg-gradient-to-br from-primary/20 to-primary/5">
-                  <img
-                    src={course.image || "/placeholder.svg"}
-                    alt={course.title}
-                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                  />
-                </div>
-                <CardTitle className="line-clamp-2 text-lg group-hover:text-primary transition-colors">
-                  {course.title}
-                </CardTitle>
-                <CardDescription className="line-clamp-2">{course.description}</CardDescription>
+      {/* Filtros activos */}
+      {(filters.search || filters.category || filters.language || filters.minRating) && (
+        <div className="flex flex-wrap gap-2">
+          {filters.search && (
+            <Badge variant="secondary">
+              Búsqueda: {filters.search}
+              <X
+                className="ml-1 h-3 w-3 cursor-pointer"
+                onClick={() => handleFilterChange('search', undefined)}
+              />
+            </Badge>
+          )}
+          {filters.category && (
+            <Badge variant="secondary">
+              Categoría: {filters.category}
+              <X
+                className="ml-1 h-3 w-3 cursor-pointer"
+                onClick={() => handleFilterChange('category', undefined)}
+              />
+            </Badge>
+          )}
+          {filters.language && (
+            <Badge variant="secondary">
+              Idioma: {filters.language}
+              <X
+                className="ml-1 h-3 w-3 cursor-pointer"
+                onClick={() => handleFilterChange('language', undefined)}
+              />
+            </Badge>
+          )}
+          {filters.minRating && (
+            <Badge variant="secondary">
+              Rating: {filters.minRating}+ ⭐
+              <X
+                className="ml-1 h-3 w-3 cursor-pointer"
+                onClick={() => handleFilterChange('minRating', undefined)}
+              />
+            </Badge>
+          )}
+        </div>
+      )}
+
+      {/* Resultados */}
+      {error && (
+        <Card className="border-destructive">
+          <CardContent className="pt-6">
+            <p className="text-destructive">{error}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {loading ? (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <Card key={i} className="animate-pulse">
+              <CardHeader className="space-y-2">
+                <div className="h-4 bg-muted rounded w-3/4" />
+                <div className="h-3 bg-muted rounded w-1/2" />
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-xs">
-                      {course.category}
-                    </Badge>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-                      <span className="font-medium">{course.rating}</span>
-                    </div>
-                  </div>
-                  <span className="text-sm font-semibold">${course.price}</span>
+                <div className="space-y-2">
+                  <div className="h-3 bg-muted rounded" />
+                  <div className="h-3 bg-muted rounded w-5/6" />
                 </div>
               </CardContent>
             </Card>
-          </Link>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : courses.length === 0 ? (
+        <Card>
+          <CardContent className="pt-6 text-center">
+            <p className="text-muted-foreground">
+              No se encontraron cursos con los filtros seleccionados.
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-muted-foreground">
+              Mostrando {courses.length} de {pagination?.totalCount || 0} cursos
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {courses.map((course) => (
+              <Link key={course._id} href={`/courses/${course._id}`}>
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
+                  <CardHeader>
+                    <img
+                      src={course.image || '/placeholder-course.jpg'}
+                      alt={course.title}
+                      className="w-full h-40 object-cover rounded-md mb-2"
+                    />
+                    <CardTitle className="line-clamp-2">{course.title}</CardTitle>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {course['short-description']}
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span>⭐ {course.rating_value.toFixed(1)}</span>
+                      <span className="text-muted-foreground">
+                        👥 {formatStudents(course.students)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">{course.general_category}</Badge>
+                      <span className="font-bold">
+                        {formatPrice(course.price, course.currency)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      🌐 {course.language}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          {/* Paginación */}
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex justify-center gap-2">
+              <Button
+                variant="outline"
+                disabled={!pagination.hasPrevPage || loading}
+                onClick={() => handlePageChange(pagination.currentPage - 1)}
+              >
+                Anterior
+              </Button>
+              <span className="flex items-center px-4">
+                Página {pagination.currentPage} de {pagination.totalPages}
+              </span>
+              <Button
+                variant="outline"
+                disabled={!pagination.hasNextPage || loading}
+                onClick={() => handlePageChange(pagination.currentPage + 1)}
+              >
+                Siguiente
+              </Button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }
