@@ -1,186 +1,272 @@
-# Products Search V2
+# IC4302 - Proyecto 01: Products Search V2
 
-Repositorio del Proyecto 02 de Bases de Datos II. El objetivo es construir un motor de búsqueda de productos sobre datos obtenidos de un ecommerce, integrando scraping, pipelines de procesamiento distribuido, microservicios y despliegue automatizado en Kubernetes.
+**Curso:** Bases de Datos II (IC4302)  
+**Semestre:** Segundo Semestre 2025  
+**Institución:** Tecnológico de Costa Rica – Escuela de Ingeniería en Computación  
 
-## Índice rápido
-- [Products Search V2](#products-search-v2)
-  - [Índice rápido](#índice-rápido)
-    - [Flujo general](#flujo-general)
-    - [Componentes](#componentes)
-    - [Pruebas unitarias](#pruebas-unitarias)
-    - [Recomendaciones](#recomendaciones)
-    - [Conclusiones](#conclusiones)
+### VIDEO INFORMATIVO
+[Que es NOMBRE DE LA UI?](poner link)
 
-
+# Instrucciones de Ejecución
+  
 <details>
-<summary id="datos-generales">Datos Generales del Proyecto</summary>
+  <summary>Desplegar información</summary> 
 
-- **Nombre:** Products Search V2
-- **Valor:** 20 % de la nota del curso
-- **Modalidad:** Trabajo en equipo (máx. 5 integrantes)
-- **Entrega:** Viernes 07 de noviembre 2025, 11:59 p. m.
-- **Requerimientos clave:** automatización completa, documentación en Markdown, pruebas unitarias visibles, envío en repositorio + artefacto `.tar.gz`.
-- **Política anti-plagio:** cualquier copia implica nota 0 y acciones disciplinarias.
+### 1.1 Requisitos Previos
+- Cuenta en Docker Hub: Es un sitio web donde puedes guardar y compartir imágenes de programas listos para usar. Es como una "nube" para aplicaciones.
+- Docker y Docker Compose: Docker es una herramienta que permite ejecutar programas en "contenedores", que son como cajas que traen todo lo necesario para que el programa funcione igual en cualquier computadora. Docker Compose ayuda a iniciar varios de estos programas juntos fácilmente.
+- Kubernetes (Minikube o Docker Desktop): Kubernetes es una plataforma que ayuda a administrar y ejecutar muchos contenedores a la vez, ideal para proyectos grandes. Minikube y Docker Desktop son formas sencillas de usar Kubernetes en tu propia computadora.
+- Helm Charts instalados: Helm es una herramienta que facilita la instalación y actualización de aplicaciones en Kubernetes, usando "charts" que son como recetas pre-hechas.
+- Git: Es una herramienta para guardar y controlar los cambios en el código de un proyecto, permitiendo trabajar en equipo y mantener un historial de versiones.
+- Lens: Es un programa con interfaz gráfica que permite ver y administrar fácilmente los recursos y servicios que se están ejecutando en Kubernetes.
+  
+### 1.2 Instalación de Componentes  
 
-</details>
 
+#### 1. Descargue el repositorio del proyecto en su computadora 
+  
+   ```bash
+   git clone <URL_REPO>
+   ```
+
+Después ingrese a la carpeta del repositorio por medio de la terminal bash:  
+
+   ```
+cd 2025-02-IC4302
+   ```
+  
+#### 2. Construya la imagenes de docker
+Para poder realizar la construcción de las imágenes Docker. debe ingresar a la carpeta **docker** desde una terminal Bash y ejecutar el siguiente comando: 
+
+ ```
+./build.sh usuario 
+ ```  
+  
+> NOTA: 
+> Sustituya la palabra usuario con su usario de Docker Hub
+
+#### 3. Configure el registro de  las imágenes para el chart
+En su proyecto, ingrese a la carpeta de charts **-->** app **-->** templates **-->** values.yaml y registre el nombre de usuario en docker hub que desea utilizar en el campo **docker_registry**  
+  
+ ```yaml
+config:
+  docker_registry: SU_USUARIO # docker registry replace with your own username
+  producer:
+    enabled: true
+ ```
+
+#### 4. Instale el Helm Chart del proyecto  
+
+En su proyecto, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./install.sh
+ ```
+
+#### 5. Desinstalación del Helm Chart del proyecto
+
+En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./uninstall.sh
+ ```
+> NOTA: 
+> Si no necesita la instalación, ignore este paso
+
+
+#### 6. Como ingresar a la pagina WEB 
 <details>
-<summary id="descripción-detallada">Descripción Detallada y Componentes</summary>
+  <summary>Desplegar información</summary>
 
-### Flujo general
-1. Un web scraper obtiene HTML de productos desde un ecommerce y los sube a `s3://ic-tec-dataset/<grupo>/`.
-2. El Controller (CronJob) monitorea el bucket, registra archivos en MongoDB (`ingestion`) y encola tareas en RabbitMQ.
-3. El BeautifulSoup Parser (Deployment) procesa cada archivo, genera JSON normalizado en `raw/` y avisa a RabbitMQ.
-4. El spaCy Entity Extractor (Deployment) agrega entidades NER y guarda resultados en `augmented/`.
-5. El Spark Processor Job (CronJob) normaliza texto/fechas, genera descripciones cortas, relaciones entre productos y persiste en `documents` (MongoDB Atlas).
-6. Atlas Search aplica un índice con facets y highlighting sobre `documents`.
-7. Una REST API (Node.js en Vercel) expone endpoints hacia la UI consumiendo Atlas Search y Firestore.
-8. La UI (React + Vite + Tailwind en Vercel) permite autenticación, filtrado por facets, búsqueda y navegación.
+### Manual de acceso a la página web 
 
-### Componentes
 
-Cada componente se documenta con su organización en el repositorio, estructura interna principal y el flujo de ejecución.
 
+</details>
+
+
+</details>
+
+
+# Pruebas Unitarias
+  
 <details>
-<summary>Web Scraper (Selenium)</summary>
+  <summary>Desplegar información</summary> 
 
-</details>
-
+### Controller  
 <details>
-<summary>Controller (Kubernetes CronJob)</summary>
+  <summary>Desplegar información</summary>
 
 
 
 </details>
 
+#### Web Scraper
 <details>
-<summary>BeautifulSoup Parser (Deployment)</summary>
+  <summary>Desplegar información</summary>
 
 
 </details>
 
+
+### Beautiful Soup
 <details>
-<summary>spaCy Entity Extractor (Deployment)</summary>
+  <summary>Desplegar información</summary>
+  
+</details>
+
+#### Spacy Entity Extractor
+<details> <summary>Desplegar información</summary>
 
 
 </details>
 
-<details open>
-<summary>Spark Processor Job (Kubernetes CronJob)</summary>
+### Spark Processor Job 
+<details> <summary>Desplegar información</summary>
+
 
 </details>
 
+</details>
+
+
+# Configuración de componenetes 
 <details>
-<summary>Atlas Search</summary>
+  
+  <summary>Desplegar información</summary>  
 
-
-</details>
-
+### Controller  
 <details>
-<summary>REST API (Node.js en Vercel)</summary>
+  <summary>Desplegar información</summary>
 
 
 
 </details>
 
+#### Web Scraper
 <details>
-<summary>UI (React + Vite + Tailwind + Firestore)</summary>
+  <summary>Desplegar información</summary>
+
 
 </details>
 
-</details>
 
+### Beautiful Soup
 <details>
-<summary id="arquitectura-y-automatización">Arquitectura y Automatización</summary>
+  <summary>Desplegar información</summary>
+  
+</details>
 
-- **Infraestructura principal:** Kubernetes (Docker Desktop/Minikube), RabbitMQ, MongoDB Atlas, Firestore, Vercel.
-- **Automatización:**
-	- Dockerfiles para cada microservicio en `Services/docker/*`.
-	- Scripts `build.ps1`, `install.ps1`, `uninstall.ps1` para orquestar imágenes y Helm Charts.
-	- Helm Charts organizados en `Services/charts` para desplegar Controller, Parser, spaCy, Spark Job y dependencias.
-	- Pipelines de CI/CD (configuración sugerida con GitHub Actions) para validar linting y pruebas.
-- **Almacenamiento compartido:** PVC RWX montado en pods que comparten `raw/` y `augmented/`.
-- **Buckets S3:** cada grupo cuenta con carpeta propia (`s3://ic-tec-dataset/<grupo>/`).
-- **Servicios gestionados:**
-	- MongoDB Atlas (colecciones `ingestion`, `documents`).
-	- Firestore (usuarios, favoritos, sesiones).
-	- RabbitMQ (colas para procesamiento y NER).
+#### Spacy Entity Extractor
+<details> <summary>Desplegar información</summary>
+
 
 </details>
 
+### Spark Processor Job 
+<details> <summary>Desplegar información</summary>
+
+
+</details>
+
+### Configuración Firestore
+<details> <summary>Desplegar información</summary>
+
+
+</details>
+
+### Configuración Mongo Atlas
+<details> <summary>Desplegar información</summary>
+
+
+</details>
+
+### Configuración RabbitMQ
+<details> <summary>Desplegar información</summary>
+
+
+</details>
+
+### UI
+<details> <summary>Desplegar información</summary>
+
+#### Uso de la AI
+<details> <summary>Desplegar información</summary>
+
+
+</details>
+
+
+</details>
+
+### Rest API
+<details> <summary>Desplegar información</summary>
+
+#### Uso de la AI
+<details> <summary>Desplegar información</summary>
+
+
+</details>
+
+</details>
+
+</details>
+
+
+# Conclusiones
+  
 <details>
-<summary id="ejecución-paso-a-paso">Ejecución Paso a Paso</summary>
+  <summary>Desplegar información</summary> 
 
-1. **Preparación del scraper**
-	 - Configurar variables de entorno (S3, credenciales).
-	 - Ejecutar Selenium para generar HTML de productos.
-	 - Sincronizar a S3: `aws s3 sync ./data s3://ic-tec-dataset/<grupo>/`.
-2. **Construcción de imágenes Docker**
-	 - `cd Services/docker`
-	 - `./build.ps1 <dockerhub-user>` o `./build.sh <dockerhub-user>`
-3. **Despliegue con Helm**
-	 - `cd Services/charts`
-	 - `./install.ps1` (o `./install.sh`) para instalar todos los charts.
-	 - Verificar pods: `kubectl get pods`.
-4. **Ejecución de pipelines**
-	 - Esperar CronJobs (Controller, Spark); revisar `kubectl get jobs`.
-	 - Confirmar JSON en PVC y registros en MongoDB (`ingestion`, `documents`).
-5. **Atlas Search**
-	 - Crear índice `default` vía Atlas (mapping personalizado  y facets/highlight).
-	 - Validar búsqueda con `$search` (ver [Pruebas](#pruebas-y-validación)).
-6. **REST API y UI**
-	 - Deploy automático en Vercel (configurar variables de entorno: Mongo URI, Firestore, API keys).
-	 - Validar endpoints (`/search`, `/auth`, `/favorites`).
-	 - Acceder a la UI y probar flujo completo de búsqueda.
+1. El Spark Processor centraliza la normalización del dataset en una sola ejecución hace en mayuscula textos, formatea fechas, genera resúmenes y construye relaciones basadas en entidades, dejando la colección documents lista para indexarse en Atlas Search.
+2. Gracias al empaquetado de componentes como CronJob con imagen Docker parametizable por Helm, el componente puede reejecutarse de forma controlada ante nuevas ingestas sin afectar a otros microservicios.
 
 </details>
 
+# Recomendaciones
+  
 <details>
-<summary id="pruebas-y-validación">Pruebas y Validación</summary>
+  <summary>Desplegar información</summary> 
 
-### Pruebas unitarias
+1. Uso de variables de entorno
+Se recomienda centralizar la configuración del sistema mediante variables de entorno, lo cual facilita la mantenibilidad y portabilidad de la aplicación. Estas variables deben incluir, entre otros aspectos, las credenciales y parámetros de conexión a la base de datos, así como las direcciones y claves necesarias para el consumo de endpoints externos.
+
+2. Añadir métricas y alertas simples (por ejemplo, contador de registros procesados y tiempo de ejecución) para detectar rápidamente anomalías en pipelines futuros y facilitar el monitoreo en producción.
 
 </details>
 
+# Referencias
+  
 <details>
-<summary id="estado-de-la-implementación">Estado de la Implementación</summary>
+  <summary>Desplegar información</summary> 
 
-| Componente | Estado | Observaciones |
-| --- | --- | --- |
-| Web Scraper (Selenium) | En progreso | Definir sitio objetivo, automatizar subida a S3. |
-| Controller (CronJob) | En progreso | Falta finalizar reconciliación MD5 y colas. |
-| BeautifulSoup Parser | En progreso | Pipeline de parseo funcional, requiere pruebas masivas. |
-| spaCy Entity Extractor | En progreso | Configurar modelo spaCy y pruebas sobre batch. |
-| Spark Processor Job | Implementado parcialmente | Normalización avanzada en `Services/docker/SparkProcessorJob/app/functions.py`. |
-| Atlas Search | Configurado | Índice `default` con facets/highlight pendientes de validación automática. |
-| REST API (Node.js) | Pendiente | Definir endpoints y seguridad. |
-| UI (React/Vite) | Pendiente | Montar diseño e integración con API. |
-| Automatización Helm/Vercel | En progreso | Scripts disponibles, falta documentar pipeline CI/CD. |
-| Pruebas unitarias | En progreso | Pytest para Spark, pendientes suites API/UI. |
+https://spark.apache.org/docs/latest/api/python/index.html
+
+https://www.mongodb.com/docs/spark-connector/current/
+
+https://www.mongodb.com/products/platform/atlas-search
+
+https://www.mongodb.com/docs/atlas/atlas-search/define-field-mappings/
+
+https://www.mongodb.com/docs/atlas/atlas-search/facet/
+
+https://www.mongodb.com/docs/atlas/atlas-search/highlighting/
 
 </details>
 
+# Tabla de Estado
+  
 <details>
-<summary id="recomendaciones-y-conclusiones">Recomendaciones y Conclusiones</summary>
+  <summary>Desplegar información</summary>  
 
-### Recomendaciones
-1. 
 
-### Conclusiones
-1. Al centralizar la lógica de normalización en Spark y exponer los datos mediante Atlas Search, el proyecto consiguió una experiencia de búsqueda rica (facets + highlighting) sin necesidad de motores adicionales.
 
-</details>
-
-<details>
-<summary id="referencias">Referencias</summary>
-
-- Documentación Selenium WebDriver: https://www.selenium.dev/documentation/
-- AWS CLI & S3 Sync: https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html
-- Apache Spark SQL: https://spark.apache.org/sql/
-- spaCy NER: https://spacy.io/usage/linguistic-features#named-entities
-- MongoDB Atlas Search: https://www.mongodb.com/docs/atlas/atlas-search/
-- RabbitMQ Tutorials: https://www.rabbitmq.com/getstarted.html
-- Vercel Docs: https://vercel.com/docs
-- TailwindCSS: https://tailwindcss.com/docs
-
-</details>
+| Componente | % Evaluación | Estado | Observaciones |
+| --- | --- | --- | --- |
+| Controller | 5 % | Implementado | Flujo de reconciliación y mensajería operativo. |
+| Web Scraper | 15 % | Implementado | Dataset de ≥500 productos almacenado en S3. |
+| Beautiful Soup Parser | 15 % | Implementado | Parsing HTML a JSON estable en despliegue de 2 réplicas. |
+| spaCy Entity Extractor | 10 % | Implementado | Entidades entities generadas y persistidas en augmented/. |
+| Spark Processor Job | 15 % | Implementado | Normalización completa y escritura en documents. |
+| Configuración Firestore / Mongo Atlas Search / RabbitMQ | 10 % | Implementado | Servicios gestionados configurados y accesibles desde los microservicios. |
+| UI y REST API | 20 % | Implementado | UI en Vercel con autenticación y consumo de API segura. |
