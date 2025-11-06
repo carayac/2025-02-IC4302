@@ -68,29 +68,6 @@ Cada componente se documenta con su organización en el repositorio, estructura 
 <details open>
 <summary>Spark Processor Job (Kubernetes CronJob)</summary>
 
-- Ubicación: `Services/docker/SparkProcessorJob/` y plantilla Helm `Services/charts/application/templates/sparkProcessor.yaml`.
-- Estructura de carpetas:
-	- `app/app.py`: punto de entrada; crea la sesión Spark, invoca lectura de datos y pipeline.
-	- `app/functions.py`: concentra la lógica de transformación.
-	- `app/test.py`: pruebas PyTest que validan funciones de normalización.
-	- `dockerfile` y `requirements.txt`: definen la imagen y dependencias (pyspark, scikit-learn opcional, boto3).
-- Flujo de ejecución detallado:
-	1. Inicialización: la plantilla Helm monta el PVC `augmented-data` en `/app/data` y pasa variables (`URI_MONGODB`, `VOLUMEN_PVC`, credenciales S3, `S3_PREFIXES`). El contenedor usa `cron` según la programación configurada (`schedule`).
-	2. Lectura: `read_augmented_data` carga JSON multilinea desde el PVC (poblado por el extractor de entidades) y crea la vista temporal `augmented_data` para consultas SQL.
-	3. Transformaciones:
-		 - `uppercase_first_letter` aplica `initcap` a columnas string superiores.
-		 - `normalize_entities` recorre estructuras anidadas (arrays/structs) y capitaliza texto interno.
-		 - `format_dates_ddmmyyyy_sql` asegura formato `DD/MM/YYYY` en `date_extracted`.
-		 - `summary` usa `resumen_simple` (140 caracteres máx.) para `short-description`.
-		 - `add_related_products` genera `productos_relacionados` comparando entidades, excluyendo el mismo producto y limitando a 10.
-	4. Escritura:`save_to_mongodb` guarda el DataFrame final en MongoDB Atlas (colección `documents`) vía conector Spark + URI proporcionada.
-	5. Logging: todo el pipeline registra progreso en stdout para seguimiento mediante `kubectl logs`.
-- Automatización y despliegue:
-	- Construcción de imagen con `./build.ps1 <dockerhub-user>`.
-	- Despliegue via Helm (`Services/charts/application`) donde `config.sparkProcessorJob` controla habilitación, imagen, schedule y secrets.
-	- Job tolera reintentos (`backoffLimit: 3`) y conserva historial minimal de ejecuciones exitosas/fallidas.
-- Pruebas: ejecutar `pytest` dentro del directorio `app/` (o mediante CI) para asegurar la validez de las transformaciones antes de desplegar.
-
 </details>
 
 <details>
