@@ -164,12 +164,10 @@ Cada componente se documenta con su organización en el repositorio, estructura 
 <summary id="recomendaciones-y-conclusiones">Recomendaciones y Conclusiones</summary>
 
 ### Recomendaciones
-1. Documentar y versionar los valores de Helm (`values.yaml`) junto con ejemplos de secretos dummy; esto facilita reproducir despliegues y reduce errores al incorporar nuevos miembros al equipo.
-2. Incorporar un pipeline de CI que ejecute `pytest` de los componentes y validaciones de formato antes de permitir merges en `main`, garantizando calidad continua. La salida de esta tarea son las pruebas unitarias.
+1. 
 
 ### Conclusiones
-1. La orquestación con CronJobs y Deployments permitió desacoplar cada fase del pipeline, haciendo posible escalar módulos críticos (parser, extractor) sin impactar al resto.
-2. Al centralizar la lógica de normalización en Spark y exponer los datos mediante Atlas Search, el proyecto consiguió una experiencia de búsqueda rica (facets + highlighting) sin necesidad de motores adicionales.
+1. Al centralizar la lógica de normalización en Spark y exponer los datos mediante Atlas Search, el proyecto consiguió una experiencia de búsqueda rica (facets + highlighting) sin necesidad de motores adicionales.
 
 </details>
 
