@@ -77,7 +77,7 @@ export async function GET(
       }
     )
   } catch (error) {
-    console.error('❌ Error fetching course:', error)
+    console.error('Error fetching course:', error)
     return NextResponse.json(
       {
         success: false,

@@ -5,21 +5,7 @@ import Course from '@/lib/models/course'
 // Desactivar cache estático para datos dinámicos
 export const dynamic = 'force-dynamic'
 
-/**
- * GET /api/courses
- * Obtiene todos los cursos con filtros opcionales
- * Query params:
- * - search: búsqueda por texto (title, description)
- * - category: filtrar por categoría
- * - language: filtrar por idioma
- * - minRating: rating mínimo
- * - minPrice: precio mínimo
- * - maxPrice: precio máximo
- * - sortBy: ordenar por (rating, price, students, title)
- * - order: orden (asc, desc)
- * - limit: límite de resultados
- * - page: página (para paginación)
- */
+
 export async function GET(request: NextRequest) {
   try {
     // Conectar a la base de datos
@@ -127,7 +113,7 @@ export async function GET(request: NextRequest) {
       }
     )
   } catch (error) {
-    console.error('❌ Error fetching courses:', error)
+    console.error('Error fetching courses:', error)
     return NextResponse.json(
       {
         success: false,
