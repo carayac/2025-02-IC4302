@@ -84,12 +84,10 @@ def list_s3(s3, bucket: str, prefix: str):
 
 
 #Contruccion del documento que se guardará en colección ingestion 
-def build_doc(bucket: str, key: str, size: int, md5: str):
+def build_doc(key: str, size: int, md5: str):
     file_name = key.split("/")[-1]
     return {
         "_id": key,                          
-        "s3Bucket": bucket,
-        "s3Key": key,                        # ruta exacta dentro del bucket CARPETA_HCDCP/producto.html
         "fileName": file_name,
         "sizeBytes": size,
         "md5": md5,
@@ -102,7 +100,7 @@ def build_message(doc: dict, state: str):
     Mensaje que se publica en rabbitmq y que será utilizado por el BeautifulSoup.
     """
     return {
-        "s3Key": doc["s3Key"]
+        "id": doc["_id"]
     }
 
 
@@ -118,7 +116,7 @@ def publish(coll, ch, obj, bucket: str) -> str:
     md5 = calculate_md5(bucket, key)
 
     # Documento base para insercion a mongo y mensaje a rabbit
-    doc = build_doc(bucket, key, size, md5)
+    doc = build_doc(key, size, md5)
 
     # Busca documento existente
     current = coll.find_one({"_id": key}, {"md5": 1, "state": 1})

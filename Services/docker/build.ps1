@@ -12,7 +12,7 @@ docker login
 # docker push "$USERNAME/beautiful-soup"
 # cd ..
 
-# # ----------------------------------------Controller----------------------------------------
+# ----------------------------------------Controller----------------------------------------
 Set-Location Controller
 docker build -t "$USERNAME/controller" .
 docker push "$USERNAME/controller"
@@ -30,8 +30,8 @@ cd ..
 # docker push "$USERNAME/spark-processor-job"
 # cd ..
 
-# ---------------------------------------- Spark Processor Job ----------------------------------------
-Set-Location SparkProcessorJob
-docker build -t "$Username/spark-processor-job" .
-docker push "$Username/spark-processor-job"
-Set-Location ..
+# # ---------------------------------------- Spark Processor Job ----------------------------------------
+# Set-Location SparkProcessorJob
+# docker build -t "$Username/spark-processor-job" .
+# docker push "$Username/spark-processor-job"
+# Set-Location ..
