@@ -1,4 +1,4 @@
-# IC4302 - Proyecto 01: Products Search V2
+# IC4302 - Proyecto 02: Products Search V2
 
 **Curso:** Bases de Datos II (IC4302)  
 **Semestre:** Segundo Semestre 2025  
