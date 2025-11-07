@@ -1,11 +1,22 @@
 FROM python:3.12.4-slim-bookworm
 
+#paquetes del spycy
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY app/requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
+
+#modelo spycy dentro de la imagen 
+RUN python -m spacy download es_core_news_lg
+
 COPY app/. .
 
-RUN python -u test.py
+#RUN python -u test.py
 
-CMD ["python", "-u", "./app.py"]
+CMD ["python", "-u", "app.py"]

@@ -17,7 +17,7 @@ config:
     name: spark-processor-job
     image: spark-processor-job
   spacyEntityExtractor:
-    enabled: false
-    replicas: 1
+    enabled: true
+    replicas: 2
     name: spacy-entity-extractor
     image: spacy-entity-extractor

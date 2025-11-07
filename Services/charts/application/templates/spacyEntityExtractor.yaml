@@ -23,7 +23,7 @@ spec:
             - name: RABBITMQ
               value: "databases-rabbitmq"
             - name: RABBITMQ_QUEUE
-              value: "queue_beautifulsoup"
+              value: "queue_entity"
             - name: RABBITMQ_USER
               value: "user"
             - name: RABBITMQ_PASS
@@ -32,4 +32,19 @@ spec:
                   name: databases-rabbitmq
                   key: rabbitmq-password
                   optional: false
+
+            # Datos para leer y escribir
+            - name: RAW_DIR
+              value: "/xdata/raw"
+            - name: AUGMENTED_DIR
+              value: "/xdata/augmented"
+          volumeMounts:
+            - name: augmented-volume
+              mountPath: /xdata
+
+      # Volumen 
+      volumes:
+        - name: augmented-volume
+          persistentVolumeClaim:
+            claimName: augmented-pvc
 {{- end }}
