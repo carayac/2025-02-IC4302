@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/home/navbar'
 import { Button } from '@/components/ui/button'
+import { HighlightedText } from '@/components/ui/highlighted-text'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -11,15 +12,18 @@ export const dynamic = 'force-dynamic'
 
 export default async function CoursePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ search?: string }>
 }) {
   const { id } = await params
+  const { search } = await searchParams
 
   let course: any = null
 
   try {
-    const response = await fetchCourse(id)
+    const response = await fetchCourse(id, search)
     course = response.data
   } catch (error) {
     console.error('Error loading course:', error)
@@ -35,7 +39,7 @@ export default async function CoursePage({
       <Navbar />
       <div className="p-4">
         <div className="mx-auto max-w-4xl">
-          <Link href="/">
+          <Link href={`/${search ? `?search=${encodeURIComponent(search)}` : ''}`}>
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Volver a cursos
@@ -51,9 +55,19 @@ export default async function CoursePage({
               />
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
-                  <CardTitle className="text-3xl mb-2">{course.title}</CardTitle>
+                  <CardTitle className="text-3xl mb-2">
+                    <HighlightedText
+                      text={course.title}
+                      highlights={course.highlights}
+                      path="title"
+                    />
+                  </CardTitle>
                   <p className="text-lg text-muted-foreground">
-                    {course['short-description']}
+                    <HighlightedText
+                      text={course['short-description']}
+                      highlights={course.highlights}
+                      path="short-description"
+                    />
                   </p>
                 </div>
                 <div className="text-right">
@@ -89,6 +103,11 @@ export default async function CoursePage({
               <div className="flex flex-wrap gap-2">
                 <Badge>{course.general_category}</Badge>
                 <Badge variant="outline">🌐 {course.language}</Badge>
+                {search && (
+                  <Badge variant="secondary">
+                    🔍 Búsqueda: {search}
+                  </Badge>
+                )}
               </div>
 
               {/* Certificate Info - Sección separada */}
@@ -106,7 +125,11 @@ export default async function CoursePage({
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Descripción</h3>
                   <p className="text-muted-foreground whitespace-pre-line">
-                    {course.description}
+                    <HighlightedText
+                      text={course.description}
+                      highlights={course.highlights}
+                      path="description"
+                    />
                   </p>
                 </div>
               )}
@@ -115,7 +138,13 @@ export default async function CoursePage({
               {course.authorComment && (
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Comentario del Instructor</h3>
-                  <p className="text-muted-foreground">{course.authorComment}</p>
+                  <p className="text-muted-foreground">
+                    <HighlightedText
+                      text={course.authorComment}
+                      highlights={course.highlights}
+                      path="authorComment"
+                    />
+                  </p>
                 </div>
               )}
 

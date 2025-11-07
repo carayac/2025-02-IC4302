@@ -73,17 +73,17 @@ export async function fetchCourses(
 /**
  * Obtener un curso específico por ID
  */
-export async function fetchCourse(id: string): Promise<ApiResponse<any>> {
-  const response = await fetch(`${API_URL}/api/courses/${id}`, {
-    cache: 'force-cache',
-    next: { revalidate: 60 },
+export async function fetchCourse(id: string, searchQuery?: string): Promise<ApiResponse<any>> {
+  const url = searchQuery 
+    ? `${API_URL}/api/courses/${id}?search=${encodeURIComponent(searchQuery)}`
+    : `${API_URL}/api/courses/${id}`
+    
+  const response = await fetch(url, {
+    cache: 'no-store',
   })
 
   if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error('Curso no encontrado')
-    }
-    throw new Error(`Error al obtener curso: ${response.statusText}`)
+    throw new Error(`Error ${response.status}: ${response.statusText}`)
   }
 
   return response.json()

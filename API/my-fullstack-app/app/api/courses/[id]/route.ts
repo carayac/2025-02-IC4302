@@ -15,6 +15,8 @@ export async function GET(
 ) {
   try {
     const { id } = await params
+    const { searchParams } = new URL(request.url)
+    const searchQuery = searchParams.get('search') || ''
 
     // Validar que el ID sea un ObjectId válido de MongoDB
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -31,10 +33,61 @@ export async function GET(
     // Conectar a la base de datos
     await connectDB()
 
-    // Buscar curso por ID
-    const course = await Course.findById(id)
-      .select('-__v') // Excluir campo __v
-      .lean() // Retornar objeto plano
+    let course: any = null
+    let highlights: any = null
+
+    // Si hay búsqueda, usar Atlas Search con highlighting
+    if (searchQuery) {
+      const pipeline = [
+        {
+          $search: {
+            index: 'default',
+            compound: {
+              must: [
+                {
+                  equals: {
+                    path: '_id',
+                    value: new mongoose.Types.ObjectId(id)
+                  }
+                }
+              ],
+              should: [
+                {
+                  text: {
+                    query: searchQuery,
+                    path: ['title', 'description', 'short-description', 'authorComment'],
+                    fuzzy: {
+                      maxEdits: 2,
+                      prefixLength: 3
+                    }
+                  }
+                }
+              ]
+            },
+            highlight: {
+              path: ['title', 'description', 'short-description', 'authorComment']
+            }
+          }
+        },
+        {
+          $addFields: {
+            highlights: { $meta: 'searchHighlights' }
+          }
+        },
+        {
+          $project: { __v: 0 }
+        }
+      ]
+
+      const results = await Course.aggregate(pipeline)
+      course = results[0] || null
+      highlights = course?.highlights
+    } else {
+      // Sin búsqueda, usar findById normal
+      course = await Course.findById(id)
+        .select('-__v')
+        .lean()
+    }
 
     // Verificar si el curso existe
     if (!course) {
@@ -50,14 +103,14 @@ export async function GET(
 
     // Calcular estadísticas adicionales de las reviews
     const reviewStats = {
-      totalReviews: course.reviews.length,
+      totalReviews: course.reviews?.length || 0,
       averageRating: course.rating_value,
       ratingDistribution: {
-        5: course.reviews.filter((r) => r.rating === 5).length,
-        4: course.reviews.filter((r) => r.rating === 4).length,
-        3: course.reviews.filter((r) => r.rating === 3).length,
-        2: course.reviews.filter((r) => r.rating === 2).length,
-        1: course.reviews.filter((r) => r.rating === 1).length,
+        5: course.reviews?.filter((r: any) => r.rating === 5).length || 0,
+        4: course.reviews?.filter((r: any) => r.rating === 4).length || 0,
+        3: course.reviews?.filter((r: any) => r.rating === 3).length || 0,
+        2: course.reviews?.filter((r: any) => r.rating === 2).length || 0,
+        1: course.reviews?.filter((r: any) => r.rating === 1).length || 0,
       },
     }
 
@@ -67,6 +120,7 @@ export async function GET(
         data: {
           ...course,
           reviewStats,
+          highlights: highlights || undefined,
         },
       },
       {

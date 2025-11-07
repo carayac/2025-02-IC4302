@@ -1,5 +1,6 @@
 'use client'
 
+import { HighlightedText } from '@/components/ui/highlighted-text'
 import { useState, useEffect } from 'react'
 import { Search, Filter, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -40,8 +41,8 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pagination, setPagination] = useState<any>(null)
+  const [facets, setFacets] = useState<any>(null)
 
-  // Cargar cursos cuando cambian los filtros
   useEffect(() => {
     loadCourses()
   }, [filters])
@@ -53,6 +54,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       const response = await fetchCourses(filters)
       setCourses(response.data)
       setPagination(response.pagination)
+      setFacets(response.facets)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar cursos')
       console.error('Error loading courses:', err)
@@ -80,6 +82,49 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Obtener rangos de rating con conteos
+  const getRatingRanges = () => {
+    if (!facets?.ratingDistribution) return []
+    
+    return facets.ratingDistribution
+      .filter((bucket: any) => bucket._id !== 'Other' && bucket._id !== 'other')
+      .map((bucket: any) => ({
+        value: bucket._id,
+        label: `${bucket._id} - ${bucket._id + 1} ⭐`,
+        count: bucket.count
+      }))
+      .sort((a: any, b: any) => a.value - b.value)
+  }
+
+  // Obtener rangos de precio con conteos - CORREGIDO
+  const getPriceRanges = () => {
+    if (!facets?.priceRange?.buckets) return []
+    
+    // Mapeo de rangos con sus límites superiores
+    const priceLabels: { [key: number]: string } = {
+      0: '$0 - $25',
+      25: '$25 - $50',
+      50: '$50 - $75',
+      75: '$75 - $100',
+      100: '$100+'
+    }
+    
+    return facets.priceRange.buckets
+      .filter((bucket: any) => typeof bucket.range === 'number')
+      .map((bucket: any) => ({
+        value: bucket.range,
+        label: priceLabels[bucket.range] || `$${bucket.range}+`,
+        count: bucket.count
+      }))
+      .sort((a: any, b: any) => a.value - b.value)
+  }
+
+  const ratingRanges = getRatingRanges()
+  const priceRanges = getPriceRanges()
+  const totalRatings = ratingRanges.reduce((sum, r) => sum + r.count, 0)
+  const totalPrices = priceRanges.reduce((sum, p) => sum + p.count, 0)
+
+
   return (
     <div className="space-y-6">
       {/* Barra de búsqueda */}
@@ -90,7 +135,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Buscar cursos por título, descripción o categoría..."
+                placeholder="Buscar cursos por título, descripción..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -109,15 +154,16 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
               </SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle>Filtros Avanzados</SheetTitle>
+                  <SheetTitle>Facets de Búsqueda</SheetTitle>
                   <SheetDescription>
-                    Refina tu búsqueda con filtros adicionales
+                    Filtra por categoría, idioma, rating y precio
                   </SheetDescription>
                 </SheetHeader>
-                <div className="space-y-4 py-4">
-                  {/* Categoría */}
+                <div className="space-y-6 py-4 overflow-y-auto max-h-[calc(100vh-120px)]">
+                  
+                  {/* Facet 1: Categoría (stringFacet) */}
                   <div className="space-y-2">
-                    <Label>Categoría</Label>
+                    <Label className="text-sm font-semibold">📚 Categoría</Label>
                     <Select
                       value={filters.category || 'all'}
                       onValueChange={(value) =>
@@ -127,20 +173,24 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                       <SelectTrigger>
                         <SelectValue placeholder="Todas las categorías" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Todas las categorías</SelectItem>
-                        {initialCategories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
+                      <SelectContent className="max-h-[300px]">
+                        <SelectItem value="all">
+                          Todas las categorías
+                          {facets?.categories && ` (${facets.categories.reduce((sum: number, c: any) => sum + c.count, 0)})`}
+                        </SelectItem>
+                        {(facets?.categories || initialCategories.map(c => ({ name: c, count: 0 }))).map((cat: any) => (
+                          <SelectItem key={cat.name} value={cat.name}>
+                            {cat.name} 
+                            {cat.count > 0 && <span className="text-muted-foreground ml-1">({cat.count})</span>}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Idioma */}
+                  {/* Facet 2: Idioma (stringFacet) */}
                   <div className="space-y-2">
-                    <Label>Idioma</Label>
+                    <Label className="text-sm font-semibold">🌐 Idioma</Label>
                     <Select
                       value={filters.language || 'all'}
                       onValueChange={(value) =>
@@ -151,19 +201,23 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                         <SelectValue placeholder="Todos los idiomas" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Todos los idiomas</SelectItem>
-                        {initialLanguages.map((lang) => (
-                          <SelectItem key={lang} value={lang}>
-                            {lang}
+                        <SelectItem value="all">
+                          Todos los idiomas
+                          {facets?.languages && ` (${facets.languages.reduce((sum: number, l: any) => sum + l.count, 0)})`}
+                        </SelectItem>
+                        {(facets?.languages || initialLanguages.map(l => ({ name: l, count: 0 }))).map((lang: any) => (
+                          <SelectItem key={lang.name} value={lang.name}>
+                            {lang.name}
+                            {lang.count > 0 && <span className="text-muted-foreground ml-1">({lang.count})</span>}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Rating mínimo */}
+                  {/* Facet 3: Rating (numberFacet) */}
                   <div className="space-y-2">
-                    <Label>Rating Mínimo</Label>
+                    <Label className="text-sm font-semibold">⭐ Rating</Label>
                     <Select
                       value={filters.minRating?.toString() || 'all'}
                       onValueChange={(value) =>
@@ -171,55 +225,79 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Cualquier rating" />
+                        <SelectValue placeholder="Todos los ratings" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Cualquier rating</SelectItem>
-                        <SelectItem value="4.5">4.5+ ⭐</SelectItem>
-                        <SelectItem value="4.0">4.0+ ⭐</SelectItem>
-                        <SelectItem value="3.5">3.5+ ⭐</SelectItem>
-                        <SelectItem value="3.0">3.0+ ⭐</SelectItem>
+                        <SelectItem value="all">
+                          Todos los ratings
+                          {totalRatings > 0 && ` (${totalRatings})`}
+                        </SelectItem>
+                        {ratingRanges.length > 0 ? (
+                          ratingRanges.map((range) => (
+                            <SelectItem key={range.value} value={range.value.toString()}>
+                              {range.label}
+                              <span className="text-muted-foreground ml-1">({range.count})</span>
+                            </SelectItem>
+                          ))
+                        ) : (
+                          // Opciones por defecto si no hay facets
+                          <>
+                            <SelectItem value="0">0 - 1 ⭐</SelectItem>
+                            <SelectItem value="1">1 - 2 ⭐</SelectItem>
+                            <SelectItem value="2">2 - 3 ⭐</SelectItem>
+                            <SelectItem value="3">3 - 4 ⭐</SelectItem>
+                            <SelectItem value="4">4 - 5 ⭐</SelectItem>
+                          </>
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Ordenar por */}
+                  {/* Facet 4: Precio (numberFacet) - CORREGIDO */}
                   <div className="space-y-2">
-                    <Label>Ordenar por</Label>
+                    <Label className="text-sm font-semibold">💰 Rango de Precio</Label>
                     <Select
-                      value={filters.sortBy || 'rating_value'}
-                      onValueChange={(value: any) => handleFilterChange('sortBy', value)}
+                      value={filters.minPrice?.toString() || 'all'}
+                      onValueChange={(value) => {
+                        if (value === 'all') {
+                          handleFilterChange('minPrice', undefined)
+                          handleFilterChange('maxPrice', undefined)
+                        } else {
+                          handleFilterChange('minPrice', parseFloat(value))
+                        }
+                      }}
                     >
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Todos los precios" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="rating_value">Rating</SelectItem>
-                        <SelectItem value="students">Estudiantes</SelectItem>
-                        <SelectItem value="price">Precio</SelectItem>
-                        <SelectItem value="title">Título</SelectItem>
+                        <SelectItem value="all">
+                          Todos los precios
+                          {totalPrices > 0 && ` (${totalPrices})`}
+                        </SelectItem>
+                        {priceRanges.length > 0 ? (
+                          priceRanges.map((range) => (
+                            <SelectItem key={range.value} value={range.value.toString()}>
+                              {range.label}
+                              <span className="text-muted-foreground ml-1">({range.count})</span>
+                            </SelectItem>
+                          ))
+                        ) : (
+                          // Opciones por defecto si no hay facets
+                          <>
+                            <SelectItem value="0">$0 - $25</SelectItem>
+                            <SelectItem value="25">$25 - $50</SelectItem>
+                            <SelectItem value="50">$50 - $75</SelectItem>
+                            <SelectItem value="75">$75 - $100</SelectItem>
+                            <SelectItem value="100">$100+</SelectItem>
+                          </>
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Orden */}
-                  <div className="space-y-2">
-                    <Label>Orden</Label>
-                    <Select
-                      value={filters.order || 'desc'}
-                      onValueChange={(value: any) => handleFilterChange('order', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="desc">Mayor a menor</SelectItem>
-                        <SelectItem value="asc">Menor a mayor</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Button onClick={clearFilters} variant="outline" className="w-full">
+                  {/* Botón limpiar filtros */}
+                  <Button onClick={clearFilters} variant="outline" className="w-full mt-4">
                     <X className="mr-2 h-4 w-4" />
                     Limpiar Filtros
                   </Button>
@@ -231,41 +309,56 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       </Card>
 
       {/* Filtros activos */}
-      {(filters.search || filters.category || filters.language || filters.minRating) && (
+      {(filters.search || filters.category || filters.language || filters.minRating || filters.minPrice) && (
         <div className="flex flex-wrap gap-2">
           {filters.search && (
-            <Badge variant="secondary">
-              Búsqueda: {filters.search}
+            <Badge variant="secondary" className="cursor-pointer">
+              🔍 {filters.search}
               <X
-                className="ml-1 h-3 w-3 cursor-pointer"
-                onClick={() => handleFilterChange('search', undefined)}
+                className="ml-1 h-3 w-3"
+                onClick={() => {
+                  setSearchQuery('')
+                  handleFilterChange('search', undefined)
+                }}
               />
             </Badge>
           )}
           {filters.category && (
-            <Badge variant="secondary">
-              Categoría: {filters.category}
+            <Badge variant="secondary" className="cursor-pointer">
+              📚 {filters.category}
               <X
-                className="ml-1 h-3 w-3 cursor-pointer"
+                className="ml-1 h-3 w-3"
                 onClick={() => handleFilterChange('category', undefined)}
               />
             </Badge>
           )}
           {filters.language && (
-            <Badge variant="secondary">
-              Idioma: {filters.language}
+            <Badge variant="secondary" className="cursor-pointer">
+              🌐 {filters.language}
               <X
-                className="ml-1 h-3 w-3 cursor-pointer"
+                className="ml-1 h-3 w-3"
                 onClick={() => handleFilterChange('language', undefined)}
               />
             </Badge>
           )}
           {filters.minRating && (
-            <Badge variant="secondary">
-              Rating: {filters.minRating}+ ⭐
+            <Badge variant="secondary" className="cursor-pointer">
+              ⭐ {filters.minRating}+
               <X
-                className="ml-1 h-3 w-3 cursor-pointer"
+                className="ml-1 h-3 w-3"
                 onClick={() => handleFilterChange('minRating', undefined)}
+              />
+            </Badge>
+          )}
+          {filters.minPrice && (
+            <Badge variant="secondary" className="cursor-pointer">
+              💰 ${filters.minPrice}+
+              <X
+                className="ml-1 h-3 w-3"
+                onClick={() => {
+                  handleFilterChange('minPrice', undefined)
+                  handleFilterChange('maxPrice', undefined)
+                }}
               />
             </Badge>
           )}
@@ -286,6 +379,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
           {[...Array(6)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardHeader className="space-y-2">
+                <div className="h-40 bg-muted rounded" />
                 <div className="h-4 bg-muted rounded w-3/4" />
                 <div className="h-3 bg-muted rounded w-1/2" />
               </CardHeader>
@@ -311,12 +405,20 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
           <div className="flex justify-between items-center">
             <p className="text-sm text-muted-foreground">
               Mostrando {courses.length} de {pagination?.totalCount || 0} cursos
+              {filters.search && courses[0]?.searchScore && (
+                <span className="ml-2 text-xs">
+                  (ordenado por relevancia)
+                </span>
+              )}
             </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {courses.map((course) => (
-              <Link key={course._id} href={`/courses/${course._id}`}>
+              <Link 
+                key={course._id} 
+                href={`/courses/${course._id}${filters.search ? `?search=${encodeURIComponent(filters.search)}` : ''}`}
+              >
                 <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
                   <CardHeader>
                     <img
@@ -324,9 +426,19 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                       alt={course.title}
                       className="w-full h-40 object-cover rounded-md mb-2"
                     />
-                    <CardTitle className="line-clamp-2">{course.title}</CardTitle>
+                    <CardTitle className="line-clamp-2">
+                      <HighlightedText
+                        text={course.title}
+                        highlights={course.highlights}
+                        path="title"
+                      />
+                    </CardTitle>
                     <p className="text-sm text-muted-foreground line-clamp-2">
-                      {course['short-description']}
+                      <HighlightedText
+                        text={course['short-description']}
+                        highlights={course.highlights}
+                        path="short-description"
+                      />
                     </p>
                   </CardHeader>
                   <CardContent className="space-y-2">
