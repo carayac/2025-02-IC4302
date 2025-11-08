@@ -24,6 +24,9 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const skip = (page - 1) * limit
 
+    // Convertir order a tipo estricto 1 | -1
+    const sortOrder: 1 | -1 = order === 'asc' ? 1 : -1
+
     // Si hay búsqueda de texto, usar Atlas Search con facets
     if (search) {
       // Construir filtros adicionales
@@ -114,45 +117,38 @@ export async function GET(request: NextRequest) {
                 }
               },
               facets: {
-                // Facet: general_category (stringFacet)
                 categoryFacet: {
                   type: 'string' as const,
                   path: 'general_category',
                   numBuckets: 50
                 },
-                // Facet: specific_category (stringFacet) - NUEVO
                 specificCategoryFacet: {
                   type: 'string' as const,
                   path: 'specific_category',
                   numBuckets: 100
                 },
-                // Facet: language (stringFacet)
                 languageFacet: {
                   type: 'string' as const,
                   path: 'language',
                   numBuckets: 20
                 },
-                // Facet: currency (stringFacet) - NUEVO
                 currencyFacet: {
                   type: 'string' as const,
                   path: 'currency',
                   numBuckets: 20
                 },
-                // Facet: price (numberFacet)
                 priceFacet: {
                   type: 'number' as const,
                   path: 'price',
                   boundaries: [0, 25, 50, 75, 100, 10000],
                   default: 'other'
                 },
-                // Facet: rating_value (numberFacet)
                 ratingFacet: {
                   type: 'number' as const,
                   path: 'rating_value',
                   boundaries: [0, 1, 2, 3, 4, 5, 6],
                   default: 'other'
                 },
-                // Facet: students (numberFacet) - NUEVO
                 studentsFacet: {
                   type: 'number' as const,
                   path: 'students',
@@ -172,7 +168,13 @@ export async function GET(request: NextRequest) {
       const totalCount = searchMeta.count?.lowerBound || 0
 
       // 2. Pipeline para obtener documentos con highlighting
-      const docsPipeline = [
+      // Construir el objeto de sort dinámicamente
+      const sortObject: Record<string, any> = {
+        searchScore: -1,
+        [sortBy]: sortOrder
+      }
+
+      const docsPipeline: any[] = [
         {
           $search: {
             index: 'default',
@@ -203,7 +205,7 @@ export async function GET(request: NextRequest) {
           }
         },
         {
-          $sort: { searchScore: -1, [sortBy]: order === 'asc' ? 1 : -1 }
+          $sort: sortObject
         },
         { $skip: skip },
         { $limit: limit },
@@ -251,7 +253,7 @@ export async function GET(request: NextRequest) {
         .map(([range, count]) => ({ range, count }))
         .sort((a, b) => a.range - b.range)
 
-      // Procesar facets de students - NUEVO
+      // Procesar facets de students
       const studentsBuckets = facetsData.studentsFacet?.buckets || []
       const studentsMap = new Map<number, number>()
       
@@ -354,7 +356,7 @@ export async function GET(request: NextRequest) {
         basePipeline.push({ $match: matchQuery })
       }
 
-      const pipeline = [
+      const pipeline: any[] = [
         ...basePipeline,
         {
           $facet: {
@@ -421,7 +423,7 @@ export async function GET(request: NextRequest) {
               }
             ],
             results: [
-              { $sort: { [sortBy]: order === 'asc' ? 1 : -1 } },
+              { $sort: { [sortBy]: sortOrder } },
               { $skip: skip },
               { $limit: limit },
               { $project: { __v: 0 } }
