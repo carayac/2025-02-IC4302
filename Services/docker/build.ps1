@@ -16,13 +16,13 @@ docker login
 Set-Location Controller
 docker build -t "$USERNAME/controller" .
 docker push "$USERNAME/controller"
-cd ..
+Set-Location ..
 
-# # # # ---------------------------------------- Spacy Entity Extractor ----------------------------------------
-# Set-Location SpacyEntityExtractor
-# docker build -t "$USERNAME/spacy-entity-extractor" .
-# docker push "$USERNAME/spacy-entity-extractor"
-# cd ..
+# ---------------------------------------- Spacy Entity Extractor ----------------------------------------
+Set-Location SpacyEntityExtractor
+docker build -t "$USERNAME/spacy-entity-extractor" .
+docker push "$USERNAME/spacy-entity-extractor"
+Set-Location ..
 
 # # # ---------------------------------------- Spark Processor Job ----------------------------------------
 # Set-Location SparkProcessorJob

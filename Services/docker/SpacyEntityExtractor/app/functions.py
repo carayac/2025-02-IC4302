@@ -135,7 +135,7 @@ def extract_entities(text: str) -> List[Dict[str, str]]:
 def message(coll, msg: dict):
 
     
-    s3_key = msg["s3Key"]
+    s3_key = msg["_id"]
     raw_path = msg["jsonPath"] 
     doc_id = s3_key  # Usar s3_key como _id en MongoDB porque es lo equivalente
 
@@ -208,7 +208,7 @@ def run():
             
             try:
                 parsed = json.loads(body.decode("utf-8"))
-                s3_key = parsed.get("s3Key", "unknown")
+                s3_key = parsed.get("_id", "unknown")
                 entities_status(coll, s3_key, "error", str(e))    #mapear error en colección
             except Exception:
                 pass
