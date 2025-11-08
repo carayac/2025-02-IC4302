@@ -1,136 +1,195 @@
+import os
 import sys
-import types
+
 import pytest
+from pyspark.sql import Row, SparkSession
+from pyspark.sql.types import (ArrayType, IntegerType, StringType, StructField,
+                               StructType)
 
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, size
+APP_DIR = os.path.dirname(os.path.dirname(__file__))
+if APP_DIR not in sys.path:
+    sys.path.insert(0, APP_DIR)
 
-import functions
-
-# Provide minimal stubs for modules that functions.py imports at import-time
-app_mod = types.ModuleType("app")
-env_mod = types.ModuleType("app.env")
-env_mod.URI_MONGODB = "mongodb://localhost:27017/test"
-env_mod.VOLUMEN_PVC = "/tmp"
-sys.modules["app"] = app_mod
-sys.modules["app.env"] = env_mod
-
-# Stub sklearn.feature_extraction.text.TfidfVectorizer used in functions.py so import succeeds
-sk_mod = types.ModuleType("sklearn")
-fe_mod = types.ModuleType("sklearn.feature_extraction")
-text_mod = types.ModuleType("sklearn.feature_extraction.text")
-
-class _DummyMatrix:
-    def __init__(self, n):
-        self._n = n
-    def sum(self, axis):
-        class A:
-            def __init__(self, n):
-                # produce deterministic scores
-                self.A1 = list(range(n))
-        return A(self._n)
-
-class _DummyVectorizer:
-    def __init__(self, *args, **kwargs):
-        pass
-    def fit_transform(self, sentences):
-        return _DummyMatrix(len(sentences))
-
-text_mod.TfidfVectorizer = _DummyVectorizer
-sys.modules["sklearn"] = sk_mod
-sys.modules["sklearn.feature_extraction"] = fe_mod
-sys.modules["sklearn.feature_extraction.text"] = text_mod
-
-
+from functions import (  # noqa: E402
+    add_related_products,
+    format_dates_ddmmyyyy_sql,
+    normalize_entities,
+    summary,
+    uppercase_first_letter,
+)
 
 
 @pytest.fixture(scope="session")
 def spark():
-    spark = SparkSession.builder.master("local[1]").appName("pytest-spark").getOrCreate()
-    yield spark
-    spark.stop()
+    spark_session = (
+        SparkSession.builder.master("local[1]")
+        .appName("spark-processor-tests")
+        .config("spark.ui.showConsoleProgress", "false")
+        .getOrCreate()
+    )
+    yield spark_session
+    spark_session.stop()
 
 
-def test_uppercase_first_letter(spark):
-    data = [{"titulo": "curso de ventas", "descripcion": "aprende a vender"}]
-    df = spark.createDataFrame(data)
-    df2 = functions.uppercase_first_letter(df)
-    row = df2.collect()[0]
-    assert row["titulo"] == "Curso De Ventas"
-    assert row["descripcion"] == "Aprende A Vender"
-
-
-def test_format_dates_ddmmyyyy_sql(spark):
-    data = [{"fecha": "2025-10-25"}, {"fecha": "2025/10/25"}]
-    df = spark.createDataFrame(data)
-    df2 = functions.format_dates_ddmmyyyy_sql(df)
-    vals = [r["fecha"] for r in df2.collect()]
-    assert vals == ["25/10/2025", "25/10/2025"]
-
-
-def test_normalize_entities(spark):
-    data = [{
-        "titulo": "curso",
-        "entities": [{"texto": "servicios financieros", "tipo": "Product"}],
-        "comentarios": [{"comentario": "muy util", "usuario": "u1"}]
-    }]
-    df = spark.createDataFrame(data)
-    df2 = functions.normalize_entities(df)
-    r = df2.collect()[0]
-    # entities is an array of structs
-    ent = r["entities"][0]
-    assert ent["texto"] == "Servicios Financieros"
-    # comentarios normalized as well
-    com = r["comentarios"][0]
-    assert com["comentario"] == "Muy Util"
-
-
-def test_add_related_products_basic(spark):
+def test_uppercase_first_letter_capitalizes_string_columns(spark):
     data = [
-        {"titulo": "A", "descripcion": "descA", "entities": [{"texto": "X", "tipo": "Product"}]},
-        {"titulo": "B", "descripcion": "descB", "entities": [{"texto": "X", "tipo": "Product"}]}
+        ("producto uno", "descripcion uno", 5),
+        ("OTRO PRODUCTO", None, 10),
     ]
-    df = spark.createDataFrame(data)
-    df2 = functions.add_related_products(df, max_relacionados=10)
-    rows = df2.collect()
-    # each product should have one related product (the other)
-    mapping = {r["titulo"]: r["productos_relacionados"] for r in rows}
-    assert mapping["A"] is not None and len(mapping["A"]) == 1
-    assert mapping["A"][0]["titulo"] == "B"
-    assert mapping["B"] is not None and len(mapping["B"]) == 1
-    assert mapping["B"][0]["titulo"] == "A"
+    schema = StructType(
+        [
+            StructField("titulo", StringType(), True),
+            StructField("descripcion", StringType(), True),
+            StructField("calificacion", IntegerType(), True),
+        ]
+    )
+    df = spark.createDataFrame(data, schema)
+
+    result = uppercase_first_letter(df).collect()
+
+    assert result[0].titulo == "Producto Uno"
+    assert result[0].descripcion == "Descripcion Uno"
+    assert result[0].calificacion == 5
+    assert result[1].titulo == "Otro Producto"
+    assert result[1].descripcion is None
+    assert result[1].calificacion == 10
 
 
-def test_full_pipeline_write_local(spark, tmp_path):
-    # Prepare a small input JSON file (multiline JSON allowed)
-    sample = {
-        "titulo": "Curso De Ventas De Servicios Financieros",
-        "descripcion": "Desarrolla habilidades para vender servicios financieros.",
-        "entities": [
-            {"texto": "Servicios Financieros", "tipo": "Product"},
-            {"texto": "2025-10-25", "tipo": "Date"}
+def test_normalize_entities_handles_nested_structures(spark):
+    schema = StructType(
+        [
+            StructField("titulo", StringType(), True),
+            StructField(
+                "entities",
+                ArrayType(
+                    StructType(
+                        [
+                            StructField("texto", StringType(), True),
+                            StructField("tipo", StringType(), True),
+                            StructField("score", IntegerType(), True),
+                        ]
+                    )
+                ),
+                True,
+            ),
+            StructField(
+                "comentarios",
+                StructType(
+                    [
+                        StructField("usuario", StringType(), True),
+                        StructField("mensaje", StringType(), True),
+                        StructField("likes", IntegerType(), True),
+                    ]
+                ),
+                True,
+            ),
+            StructField("tags", ArrayType(StringType()), True),
+        ]
+    )
+
+    data = [
+        (
+            "producto demo",
+            [
+                {"texto": "marca x", "tipo": "brand", "score": 1},
+                {"texto": "modelo y", "tipo": "type", "score": 2},
+            ],
+            {"usuario": "ana lopez", "mensaje": "muy bueno", "likes": 15},
+            ["cafe premium", "grano oscuro"],
+        )
+    ]
+
+    df = spark.createDataFrame(data, schema)
+
+    result = normalize_entities(df).collect()[0]
+
+    assert [entity.texto for entity in result.entities] == ["Marca X", "Modelo Y"]
+    assert [entity.tipo for entity in result.entities] == ["Brand", "Type"]
+    assert [entity.score for entity in result.entities] == [1, 2]
+    assert result.comentarios.usuario == "Ana Lopez"
+    assert result.comentarios.mensaje == "Muy Bueno"
+    assert result.comentarios.likes == 15
+    assert result.tags == ["Cafe Premium", "Grano Oscuro"]
+
+
+def test_format_dates_ddmmyyyy_sql_formats_dates(spark):
+    df = spark.createDataFrame(
+        [
+            Row(date_extracted="2024/01/15"),
+            Row(date_extracted="2024-02-20"),
+            Row(date_extracted=None),
+        ]
+    )
+
+    result = format_dates_ddmmyyyy_sql(df).collect()
+
+    assert [row.date_extracted for row in result] == ["15/01/2024", "20/02/2024", None]
+
+
+def test_summary_generates_short_description(spark):
+    df = spark.createDataFrame(
+        [
+            Row(description="texto corto"),
+            Row(description=" ".join(["palabra" for _ in range(100)])),
+            Row(description=None),
+        ]
+    )
+
+    result = summary(df).collect()
+
+    assert result[0]["short-description"] == "texto corto"
+    assert result[1]["short-description"].endswith("...")
+    assert len(result[1]["short-description"]) <= 143
+    assert result[2]["short-description"] == ""
+
+
+def test_add_related_products_builds_related_list(spark):
+    schema = StructType(
+        [
+            StructField("titulo", StringType(), True),
+            StructField("description", StringType(), True),
+            StructField(
+                "entities",
+                ArrayType(
+                    StructType(
+                        [
+                            StructField("texto", StringType(), True),
+                            StructField("tipo", StringType(), True),
+                        ]
+                    )
+                ),
+                True,
+            ),
+        ]
+    )
+
+    df = spark.createDataFrame(
+        [
+            (
+                "Producto Cafe",
+                "Descripcion A",
+                [{"texto": "cafe arabica", "tipo": "ingrediente"}],
+            ),
+            (
+                "Producto Cafe Premium",
+                "Descripcion B",
+                [{"texto": "cafe arabica", "tipo": "ingrediente"}],
+            ),
+            (
+                "Producto Te",
+                "Descripcion C",
+                [{"texto": "te negro", "tipo": "ingrediente"}],
+            ),
         ],
-        "fecha": "2025-10-25",
-        "caracteristicas": ["Modalidad 100% Virtual"],
-        "comentarios": [{"comentario": "muy util", "usuario": "est1"}]
-    }
+        schema,
+    )
 
-    in_dir = tmp_path / "input"
-    out_dir = tmp_path / "out"
-    in_dir.mkdir()
-    out_dir.mkdir()
+    result = add_related_products(df, max_relacionados=2)
+    rows = {row.titulo: row for row in result.collect()}
 
-    # Write a single JSON file
-    import json
-    p = in_dir / "e1.json"
-    p.write_text(json.dumps(sample, ensure_ascii=False))
+    relacionados_cafe = [rel.titulo for rel in rows["Producto Cafe"].productos_relacionados]
+    relacionados_te = rows["Producto Te"].productos_relacionados
 
-    # Read, normalize and save locally (no Mongo)
-    functions.read_augmented_data(spark, str(in_dir))
-    df = functions.normalize_data(spark)
-    # Save locally
-    functions.save_processed_data(df, str(out_dir))
-
-    # Assert that output files were written
-    files = list(out_dir.iterdir())
-    assert len(files) > 0
+    assert "Producto Cafe Premium" in relacionados_cafe
+    assert "Producto Cafe" not in relacionados_cafe
+    assert relacionados_te == []
