@@ -31,6 +31,12 @@ interface CourseSearchProps {
   initialLanguages: string[]
 }
 
+interface RangeItem {
+  value: number
+  label: string
+  count: number
+}
+
 export function CourseSearch({ initialCategories, initialLanguages }: CourseSearchProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState<CourseFilters>({
@@ -84,7 +90,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
   }
 
   // Obtener rangos de rating con conteos
-  const getRatingRanges = () => {
+  const getRatingRanges = (): RangeItem[] => {
     if (!facets?.ratingDistribution) return []
     
     return facets.ratingDistribution
@@ -98,7 +104,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
   }
 
   // Obtener rangos de estudiantes con conteos
-  const getStudentsRanges = () => {
+  const getStudentsRanges = (): RangeItem[] => {
     if (!facets?.studentsRange?.buckets) return []
     
     const studentsLabels: { [key: number]: string } = {
@@ -124,12 +130,12 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
 
   const ratingRanges = getRatingRanges()
   const studentsRanges = getStudentsRanges()
-  const totalRatings = ratingRanges.reduce((sum, r) => sum + r.count, 0)
-  const totalStudents = studentsRanges.reduce((sum, s) => sum + s.count, 0)
+  const totalRatings = ratingRanges.reduce((sum: number, r: RangeItem) => sum + r.count, 0)
+  const totalStudents = studentsRanges.reduce((sum: number, s: RangeItem) => sum + s.count, 0)
 
   return (
     <div className="space-y-6">
-      {/* Barra de búsqueda */}
+      {/* Resto del código sin cambios... */}
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSearch} className="flex gap-2">
