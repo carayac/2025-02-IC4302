@@ -227,6 +227,10 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 
 4. Se ganaron conocimientos prácticos sobre web scraping, manipulación de archivos, carga mediante CLI y buenas prácticas de registro de errores.
 
+5. La forma en que se diseña el controller evita que se procesen archivos que ya están en la base de datos y no han cambiado, brindando ahorro de recursos y tiempo de procesamiento.
+
+6. La utilización de Spacy logra identificar correctamente entidades importantes sobre los productos de cursos, brindando así una mejor organización de la información dentro de cada uno de los productos que se mostrarán
+
 </details>
 
 # Recomendaciones
@@ -242,6 +246,10 @@ Se recomienda centralizar la configuración del sistema mediante variables de en
 3. Agregar un proceso de validación de los datos extraídos para asegurar calidad, eliminar duplicados y facilitar etapas de análisis.
 
 4. Se recomienda implementar mejores prácticas de seguridad para el manejo de credenciales para evitar fallos en la seguridad del proyecto.
+
+5. Se recomienda validar que los archivos HTML realmente contengan información para de esta manera evitar que el componenyte que los consume procese archivos innecesarios y mantener la calidad de los datos.
+
+6. Se recomienda analizar bien el contexto en el que será utilizado el modelo Spacy, ya que este contiene modelos con diferentes caracteristicas, algunos consumen más memoria lo cual puede ser no tan factible cuando se tienen recursos limitados, otros son más ligeros pero tienen peor redimiento, por esto se requiere un analisis de cuál podría ser el más adecuado.
 
 </details>
 
@@ -278,7 +286,11 @@ https://www.codecademy.com/article/python-subprocess-tutorial-master-run-and-pop
 
 https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html 
 
-https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html 
+https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html  
+
+https://spacy.io/models/es
+
+https://spacy.io/usage/models
 
 </details>
 
