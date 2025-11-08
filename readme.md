@@ -124,13 +124,26 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 ### Spark Processor Job 
 <details> <summary>Desplegar información</summary>
 
-- **Cobertura funcional:** el archivo `Services/docker/SparkProcessorJob/app/test.py` ejecuta suites de PySpark sobre `functions.py` para validar que cada transformación del pipeline se comporte como se espera.
-- **Normalización de textos:** `test_uppercase_first_letter` confirma que todas las columnas de texto se capitalizan sin alterar el resto del contenido.
-- **Formato de fechas:** `test_format_dates_ddmmyyyy_sql` garantiza que fechas con distintos separadores se conviertan al patrón `DD/MM/YYYY`.
-- **Entidades anidadas:** `test_normalize_entities` comprueba que arreglos y estructuras internas (entities, comentarios) también se transformen con mayúsculas iniciales.
-- **Productos relacionados:** `test_add_related_products_basic` genera dos documentos con la misma entidad y verifica que se recomienden mutuamente sin auto-referencias.
-- **Pipeline integral:** `test_full_pipeline_write_local` orquesta lectura, normalización y persistencia local para asegurar que el flujo completo produce archivos listos para publicarse.
-- **Ejecución en PySpark:** las pruebas usan una sesión Spark local (`SparkSession.builder.master("local[1]")`) lo que permite reproducir el comportamiento en CI/CD o de forma manual sin requerir el clúster de producción.
+Para validar las transformaciones de Spark sin tocar la escritura en Mongo Atlas se añadió un conjunto de pruebas unitarias en `Services/docker/SparkProcessorJob/app/test.py`. Ejecutan un SparkSession local y cubren:
+
+- `test_uppercase_first_letter_capitalizes_string_columns`: verifica que las columnas texto de primer nivel se conviertan a *Title Case* sin alterar tipos numéricos ni `None`.
+- `test_normalize_entities_handles_nested_structures`: comprueba la capitalización dentro de arreglos y estructuras anidadas (`entities`, `comentarios`, `tags`).
+- `test_format_dates_ddmmyyyy_sql_formats_dates`: asegura que `date_extracted` acepte variantes (`YYYY/MM/DD`, `YYYY-MM-DD`) y se normalice a `DD/MM/YYYY` preservando nulos.
+- `test_summary_generates_short_description`: valida la creación de `short-description`, truncando textos largos con sufijo `...` y manteniendo cadenas vacías para valores nulos.
+- `test_add_related_products_builds_related_list`: garantiza que las entidades comunes generen recomendaciones sin duplicados ni auto-referencias.
+
+
+#### Resultado más reciente
+
+```
+ => [8/8] RUN pytest -s -vv test.py && sleep 20                                                                                       21.2s 
+ => => # PASSED                                                                                                                            
+ => => # test.py::test_normalize_entities_handles_nested_structures PASSED                                                                  
+ => => # test.py::test_format_dates_ddmmyyyy_sql_formats_dates PASSED                                                                       
+ => => # test.py::test_summary_generates_short_description PASSED                                                                           
+ => => # test.py::test_add_related_products_builds_related_list PASSED                                                                      
+ => => # ============================== 5 passed in 18.76s ==============================
+```
 
 </details>
 
