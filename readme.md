@@ -138,8 +138,26 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 
 ### Controller  
 <details>
-  <summary>Desplegar información</summary>
+  <summary>Desplegar información</summary>  
 
+El Controller es el primer componente del pipeline y actúa como coordinador general del sistema. Su función principal es revisar periódicamente los archivos HTML almacenados en AWS S3 y decidir cuáles deben ser procesados.  
+Sus funciones principales son:  
+
+-	Busca archivos HTML en carpetas específicas del bucket de AWS S3
+-	Compara los archivos usando hash MD5 para saber si son nuevos o han sido modificados
+-	Guarda información de cada archivo como el nombre, tamaño, estado en la base de datos, especificamente en la colección ingestion dentro de Mongo
+-	Envía mensajes a RabbitMQ solo para archivos nuevos o modificados, iniciando el procesamiento para que el siguiente componente pueda utilizarlo.
+
+Este componente se ejecuta como un CronJob de Kubernetes, esto quiere decir que tiene ejecución automática dependiendo de la configuración establecida, en este caso se ejecuta cada hora, pero puede ser adaptado según la necesidad.  
+
+```
+controller:
+    enabled: true
+    replicas: 1
+    name: controller
+    image: controller
+    schedule: "0 * * * *"  #every hour
+```
 
 
 </details>
@@ -159,7 +177,32 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 </details>
 
 #### Spacy Entity Extractor
-<details> <summary>Desplegar información</summary>
+<details> 
+  <summary>Desplegar información</summary>  
+
+El Spacy Entity Extractor es el tercer componente del pipeline y se encarga de analizar los textos procesados por BeautifulSoup para identificar y extraer entidades importantes como nombres de productos, organizaciones, fechas, y otros datos relevantes.  
+
+Este componente trabaja de forma continúa escuchando mensajes enviados por RabbitMQ y realiza las siguientes tareas:  
+
+-	Escucha mensaje sde RabbitMQ que indican que el archivo está listo para procesar.
+-	Obtiene los archivos JSON de la carpeta raw que se encuentra en el disco compartido del proyecto y que fue creada por el componente de BeautifulSoup.
+-	Usa el modelo de Spacy y su función NER (Named Entity Recognition) para identificar entidades en diferentes campos establecidos en los documentos obtenidos como.
+-	Después de crear las entidades, crea nuevos archivos JSON y los almacena en la carpeta augmented para que sean procesados posteriormente por el componente de Spark
+-	Por último, actualiza la base de datos estableciendo que el procesamiento de entidades ha finalizado y llevar un control de trazabilidad sobre los documentos.
+
+Este componente se ejecuta como un deployment en kubernetes con un mínimo de dos replicas para aumentar la velocidad de procesamiento, a diferencia del controller, este componente está siempre activo y esperando por nuevos mensajes.
+
+```
+controller:
+    enabled: true
+    replicas: 1
+    name: controller
+    image: controller
+    schedule: "0 * * * *"  #every hour
+```
+
+
+Para la implementación del modelo de Spacy se elige el modelo *es_core_news_lg* el cual está diseñado para manejar el idioma español y se utiliza su versión large, la cual tiene mucho mayor alcance a la hora de hacer la extracción de entidades.  Algunas de las entidades que reconoce son PER (personas), ORG (organizaciones), LOC (lugares), DATE (fechas), MONEY (cantidades monetarias)
 
 
 </details>
