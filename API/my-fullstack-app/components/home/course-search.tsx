@@ -55,6 +55,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       setCourses(response.data)
       setPagination(response.pagination)
       setFacets(response.facets)
+      console.log('📊 Facets recibidos:', response.facets)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar cursos')
       console.error('Error loading courses:', err)
@@ -96,34 +97,35 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       .sort((a: any, b: any) => a.value - b.value)
   }
 
-  // Obtener rangos de precio con conteos - CORREGIDO
-  const getPriceRanges = () => {
-    if (!facets?.priceRange?.buckets) return []
+  // Obtener rangos de estudiantes con conteos
+  const getStudentsRanges = () => {
+    if (!facets?.studentsRange?.buckets) return []
     
-    // Mapeo de rangos con sus límites superiores
-    const priceLabels: { [key: number]: string } = {
-      0: '$0 - $25',
-      25: '$25 - $50',
-      50: '$50 - $75',
-      75: '$75 - $100',
-      100: '$100+'
+    const studentsLabels: { [key: number]: string } = {
+      0: '0 - 100',
+      100: '100 - 500',
+      500: '500 - 1K',
+      1000: '1K - 5K',
+      5000: '5K - 10K',
+      10000: '10K - 50K',
+      50000: '50K - 100K',
+      100000: '100K - 1M'
     }
     
-    return facets.priceRange.buckets
+    return facets.studentsRange.buckets
       .filter((bucket: any) => typeof bucket.range === 'number')
       .map((bucket: any) => ({
         value: bucket.range,
-        label: priceLabels[bucket.range] || `$${bucket.range}+`,
+        label: studentsLabels[bucket.range] || `${bucket.range}+`,
         count: bucket.count
       }))
       .sort((a: any, b: any) => a.value - b.value)
   }
 
   const ratingRanges = getRatingRanges()
-  const priceRanges = getPriceRanges()
+  const studentsRanges = getStudentsRanges()
   const totalRatings = ratingRanges.reduce((sum, r) => sum + r.count, 0)
-  const totalPrices = priceRanges.reduce((sum, p) => sum + p.count, 0)
-
+  const totalStudents = studentsRanges.reduce((sum, s) => sum + s.count, 0)
 
   return (
     <div className="space-y-6">
@@ -156,14 +158,14 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                 <SheetHeader>
                   <SheetTitle>Facets de Búsqueda</SheetTitle>
                   <SheetDescription>
-                    Filtra por categoría, idioma, rating y precio
+                    Filtra por categoría, idioma, moneda, rating y estudiantes
                   </SheetDescription>
                 </SheetHeader>
                 <div className="space-y-6 py-4 overflow-y-auto max-h-[calc(100vh-120px)]">
                   
-                  {/* Facet 1: Categoría (stringFacet) */}
+                  {/* Facet 1: Categoría General (stringFacet) */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold">📚 Categoría</Label>
+                    <Label className="text-sm font-semibold">📚 Categoría General</Label>
                     <Select
                       value={filters.category || 'all'}
                       onValueChange={(value) =>
@@ -188,7 +190,34 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                     </Select>
                   </div>
 
-                  {/* Facet 2: Idioma (stringFacet) */}
+                  {/* Facet 2: Categoría Específica (stringFacet) */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">🎯 Categoría Específica</Label>
+                    <Select
+                      value={filters.specificCategory || 'all'}
+                      onValueChange={(value) =>
+                        handleFilterChange('specificCategory', value === 'all' ? undefined : value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todas las subcategorías" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[300px]">
+                        <SelectItem value="all">
+                          Todas las subcategorías
+                          {facets?.specificCategories && ` (${facets.specificCategories.reduce((sum: number, c: any) => sum + c.count, 0)})`}
+                        </SelectItem>
+                        {(facets?.specificCategories || []).map((cat: any) => (
+                          <SelectItem key={cat.name} value={cat.name}>
+                            {cat.name}
+                            {cat.count > 0 && <span className="text-muted-foreground ml-1">({cat.count})</span>}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Facet 3: Idioma (stringFacet) */}
                   <div className="space-y-2">
                     <Label className="text-sm font-semibold">🌐 Idioma</Label>
                     <Select
@@ -215,9 +244,36 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                     </Select>
                   </div>
 
-                  {/* Facet 3: Rating (numberFacet) */}
+                  {/* Facet 4: Moneda (stringFacet) */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold">⭐ Rating</Label>
+                    <Label className="text-sm font-semibold">💱 Moneda</Label>
+                    <Select
+                      value={filters.currency || 'all'}
+                      onValueChange={(value) =>
+                        handleFilterChange('currency', value === 'all' ? undefined : value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todas las monedas" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">
+                          Todas las monedas
+                          {facets?.currencies && ` (${facets.currencies.reduce((sum: number, c: any) => sum + c.count, 0)})`}
+                        </SelectItem>
+                        {(facets?.currencies || []).map((curr: any) => (
+                          <SelectItem key={curr.name} value={curr.name}>
+                            {curr.name}
+                            {curr.count > 0 && <span className="text-muted-foreground ml-1">({curr.count})</span>}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Facet 5: Rating (numberFacet) */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">⭐ Rating Mínimo</Label>
                     <Select
                       value={filters.minRating?.toString() || 'all'}
                       onValueChange={(value) =>
@@ -240,7 +296,6 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                             </SelectItem>
                           ))
                         ) : (
-                          // Opciones por defecto si no hay facets
                           <>
                             <SelectItem value="0">0 - 1 ⭐</SelectItem>
                             <SelectItem value="1">1 - 2 ⭐</SelectItem>
@@ -253,43 +308,44 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                     </Select>
                   </div>
 
-                  {/* Facet 4: Precio (numberFacet) - CORREGIDO */}
+                  {/* Facet 6: Número de Estudiantes (numberFacet) */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold">💰 Rango de Precio</Label>
+                    <Label className="text-sm font-semibold">👥 Mínimo de Estudiantes</Label>
                     <Select
-                      value={filters.minPrice?.toString() || 'all'}
+                      value={filters.minStudents?.toString() || 'all'}
                       onValueChange={(value) => {
                         if (value === 'all') {
-                          handleFilterChange('minPrice', undefined)
-                          handleFilterChange('maxPrice', undefined)
+                          handleFilterChange('minStudents', undefined)
                         } else {
-                          handleFilterChange('minPrice', parseFloat(value))
+                          handleFilterChange('minStudents', parseInt(value))
                         }
                       }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Todos los precios" />
+                        <SelectValue placeholder="Todos los cursos" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">
-                          Todos los precios
-                          {totalPrices > 0 && ` (${totalPrices})`}
+                          Todos los cursos
+                          {totalStudents > 0 && ` (${totalStudents})`}
                         </SelectItem>
-                        {priceRanges.length > 0 ? (
-                          priceRanges.map((range) => (
+                        {studentsRanges.length > 0 ? (
+                          studentsRanges.map((range) => (
                             <SelectItem key={range.value} value={range.value.toString()}>
                               {range.label}
                               <span className="text-muted-foreground ml-1">({range.count})</span>
                             </SelectItem>
                           ))
                         ) : (
-                          // Opciones por defecto si no hay facets
                           <>
-                            <SelectItem value="0">$0 - $25</SelectItem>
-                            <SelectItem value="25">$25 - $50</SelectItem>
-                            <SelectItem value="50">$50 - $75</SelectItem>
-                            <SelectItem value="75">$75 - $100</SelectItem>
-                            <SelectItem value="100">$100+</SelectItem>
+                            <SelectItem value="0">0 - 100</SelectItem>
+                            <SelectItem value="100">100 - 500</SelectItem>
+                            <SelectItem value="500">500 - 1K</SelectItem>
+                            <SelectItem value="1000">1K - 5K</SelectItem>
+                            <SelectItem value="5000">5K - 10K</SelectItem>
+                            <SelectItem value="10000">10K - 50K</SelectItem>
+                            <SelectItem value="50000">50K - 100K</SelectItem>
+                            <SelectItem value="100000">100K - 1M</SelectItem>
                           </>
                         )}
                       </SelectContent>
@@ -309,7 +365,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       </Card>
 
       {/* Filtros activos */}
-      {(filters.search || filters.category || filters.language || filters.minRating || filters.minPrice) && (
+      {(filters.search || filters.category || filters.specificCategory || filters.language || filters.currency || filters.minRating || filters.minStudents) && (
         <div className="flex flex-wrap gap-2">
           {filters.search && (
             <Badge variant="secondary" className="cursor-pointer">
@@ -332,12 +388,30 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
               />
             </Badge>
           )}
+          {filters.specificCategory && (
+            <Badge variant="secondary" className="cursor-pointer">
+              🎯 {filters.specificCategory}
+              <X
+                className="ml-1 h-3 w-3"
+                onClick={() => handleFilterChange('specificCategory', undefined)}
+              />
+            </Badge>
+          )}
           {filters.language && (
             <Badge variant="secondary" className="cursor-pointer">
               🌐 {filters.language}
               <X
                 className="ml-1 h-3 w-3"
                 onClick={() => handleFilterChange('language', undefined)}
+              />
+            </Badge>
+          )}
+          {filters.currency && (
+            <Badge variant="secondary" className="cursor-pointer">
+              💱 {filters.currency}
+              <X
+                className="ml-1 h-3 w-3"
+                onClick={() => handleFilterChange('currency', undefined)}
               />
             </Badge>
           )}
@@ -350,15 +424,12 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
               />
             </Badge>
           )}
-          {filters.minPrice && (
+          {filters.minStudents && (
             <Badge variant="secondary" className="cursor-pointer">
-              💰 ${filters.minPrice}+
+              👥 {filters.minStudents}+ estudiantes
               <X
                 className="ml-1 h-3 w-3"
-                onClick={() => {
-                  handleFilterChange('minPrice', undefined)
-                  handleFilterChange('maxPrice', undefined)
-                }}
+                onClick={() => handleFilterChange('minStudents', undefined)}
               />
             </Badge>
           )}

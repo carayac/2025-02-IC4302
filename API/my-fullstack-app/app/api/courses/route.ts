@@ -11,10 +11,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category')
+    const specificCategory = searchParams.get('specificCategory')
     const language = searchParams.get('language')
+    const currency = searchParams.get('currency')
     const minRating = searchParams.get('minRating')
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
+    const minStudents = searchParams.get('minStudents')
     const sortBy = searchParams.get('sortBy') || 'rating_value'
     const order = searchParams.get('order') || 'desc'
     const limit = parseInt(searchParams.get('limit') || '20')
@@ -34,12 +37,30 @@ export async function GET(request: NextRequest) {
           }
         })
       }
+
+      if (specificCategory && specificCategory !== 'all') {
+        mustClauses.push({
+          text: {
+            query: specificCategory,
+            path: 'specific_category'
+          }
+        })
+      }
       
       if (language && language !== 'all') {
         mustClauses.push({
           text: {
             query: language,
             path: 'language'
+          }
+        })
+      }
+
+      if (currency && currency !== 'all') {
+        mustClauses.push({
+          text: {
+            query: currency,
+            path: 'currency'
           }
         })
       }
@@ -58,6 +79,15 @@ export async function GET(request: NextRequest) {
         if (minPrice) priceRange.gte = parseFloat(minPrice)
         if (maxPrice) priceRange.lte = parseFloat(maxPrice)
         mustClauses.push({ range: priceRange })
+      }
+
+      if (minStudents) {
+        mustClauses.push({
+          range: {
+            path: 'students',
+            gte: parseInt(minStudents)
+          }
+        })
       }
 
       // 1. Pipeline para obtener metadata con facets
@@ -90,13 +120,25 @@ export async function GET(request: NextRequest) {
                   path: 'general_category',
                   numBuckets: 50
                 },
+                // Facet: specific_category (stringFacet) - NUEVO
+                specificCategoryFacet: {
+                  type: 'string' as const,
+                  path: 'specific_category',
+                  numBuckets: 100
+                },
                 // Facet: language (stringFacet)
                 languageFacet: {
                   type: 'string' as const,
                   path: 'language',
                   numBuckets: 20
                 },
-                // Facet: price (numberFacet) - NUEVO: 0-25, 25-50, 50-75, 75-100, 100+
+                // Facet: currency (stringFacet) - NUEVO
+                currencyFacet: {
+                  type: 'string' as const,
+                  path: 'currency',
+                  numBuckets: 20
+                },
+                // Facet: price (numberFacet)
                 priceFacet: {
                   type: 'number' as const,
                   path: 'price',
@@ -108,6 +150,13 @@ export async function GET(request: NextRequest) {
                   type: 'number' as const,
                   path: 'rating_value',
                   boundaries: [0, 1, 2, 3, 4, 5, 6],
+                  default: 'other'
+                },
+                // Facet: students (numberFacet) - NUEVO
+                studentsFacet: {
+                  type: 'number' as const,
+                  path: 'students',
+                  boundaries: [0, 100, 500, 1000, 5000, 10000, 50000, 100000, 1000000],
                   default: 'other'
                 }
               }
@@ -121,8 +170,6 @@ export async function GET(request: NextRequest) {
       const searchMeta = metadataResult[0] || {}
       const facetsData = searchMeta.facet || {}
       const totalCount = searchMeta.count?.lowerBound || 0
-
-      console.log('🔍 Rating Facets desde Atlas:', JSON.stringify(facetsData.ratingFacet, null, 2))
 
       // 2. Pipeline para obtener documentos con highlighting
       const docsPipeline = [
@@ -166,10 +213,8 @@ export async function GET(request: NextRequest) {
       const courses = await Course.aggregate(docsPipeline)
       const totalPages = Math.ceil(totalCount / limit)
 
-      // Procesar facets de rating - COMBINAR BUCKETS 4 Y 5
+      // Procesar facets de rating
       const ratingBuckets = facetsData.ratingFacet?.buckets || []
-      
-      // Crear un mapa para combinar los conteos
       const ratingMap = new Map<number, number>()
       
       ratingBuckets
@@ -178,7 +223,6 @@ export async function GET(request: NextRequest) {
           ratingMap.set(b._id, (ratingMap.get(b._id) || 0) + b.count)
         })
       
-      // Encontrar y combinar el bucket de 5-6 con el de 4-5
       const bucket5 = ratingBuckets.find((b: any) => b._id === 5)
       if (bucket5) {
         ratingMap.set(4, (ratingMap.get(4) || 0) + bucket5.count)
@@ -188,11 +232,8 @@ export async function GET(request: NextRequest) {
         .map(([id, count]) => ({ _id: id, count }))
         .sort((a, b) => a._id - b._id)
 
-      console.log('📊 Rating Distribution procesado:', JSON.stringify(ratingDistribution, null, 2))
-
-      // Procesar facets de precio - COMBINAR BUCKET 100-10000 como "100+"
+      // Procesar facets de precio
       const priceBuckets = facetsData.priceFacet?.buckets || []
-      
       const priceMap = new Map<number, number>()
       
       priceBuckets
@@ -201,7 +242,6 @@ export async function GET(request: NextRequest) {
           priceMap.set(b._id, (priceMap.get(b._id) || 0) + b.count)
         })
       
-      // Combinar bucket 100-10000 como bucket 100
       const bucket100 = priceBuckets.find((b: any) => b._id === 100)
       if (bucket100) {
         priceMap.set(100, (priceMap.get(100) || 0) + bucket100.count)
@@ -211,20 +251,19 @@ export async function GET(request: NextRequest) {
         .map(([range, count]) => ({ range, count }))
         .sort((a, b) => a.range - b.range)
 
-      const priceStats = {
-        minPrice: 0,
-        maxPrice: 0,
-        avgPrice: 0,
-        buckets: priceBucketsProcessed
-      }
-
-      if (priceBucketsProcessed.length > 0) {
-        const prices = priceBucketsProcessed.map(b => b.range)
-        if (prices.length > 0) {
-          priceStats.minPrice = Math.min(...prices)
-          priceStats.maxPrice = Math.max(...prices)
-        }
-      }
+      // Procesar facets de students - NUEVO
+      const studentsBuckets = facetsData.studentsFacet?.buckets || []
+      const studentsMap = new Map<number, number>()
+      
+      studentsBuckets
+        .filter((b: any) => b._id !== 'other' && typeof b._id === 'number')
+        .forEach((b: any) => {
+          studentsMap.set(b._id, (studentsMap.get(b._id) || 0) + b.count)
+        })
+      
+      const studentsBucketsProcessed = Array.from(studentsMap.entries())
+        .map(([range, count]) => ({ range, count }))
+        .sort((a, b) => a.range - b.range)
 
       return NextResponse.json({
         success: true,
@@ -242,20 +281,41 @@ export async function GET(request: NextRequest) {
             name: b._id,
             count: b.count
           })),
+          specificCategories: (facetsData.specificCategoryFacet?.buckets || [])
+            .filter((b: any) => b._id !== null)
+            .map((b: any) => ({
+              name: b._id,
+              count: b.count
+            })),
           languages: (facetsData.languageFacet?.buckets || []).map((b: any) => ({
             name: b._id,
             count: b.count
           })),
-          priceRange: priceStats,
-          ratingDistribution: ratingDistribution
+          currencies: (facetsData.currencyFacet?.buckets || []).map((b: any) => ({
+            name: b._id,
+            count: b.count
+          })),
+          priceRange: {
+            minPrice: 0,
+            maxPrice: 0,
+            avgPrice: 0,
+            buckets: priceBucketsProcessed
+          },
+          ratingDistribution: ratingDistribution,
+          studentsRange: {
+            buckets: studentsBucketsProcessed
+          }
         },
         filters: {
           search,
           category,
+          specificCategory,
           language,
+          currency,
           minRating,
           minPrice,
           maxPrice,
+          minStudents,
           sortBy,
           order,
         },
@@ -268,8 +328,14 @@ export async function GET(request: NextRequest) {
       if (category && category !== 'all') {
         matchQuery.general_category = category
       }
+      if (specificCategory && specificCategory !== 'all') {
+        matchQuery.specific_category = specificCategory
+      }
       if (language && language !== 'all') {
         matchQuery.language = language
+      }
+      if (currency && currency !== 'all') {
+        matchQuery.currency = currency
       }
       if (minRating) {
         matchQuery.rating_value = { $gte: parseFloat(minRating) }
@@ -278,6 +344,9 @@ export async function GET(request: NextRequest) {
         matchQuery.price = {}
         if (minPrice) matchQuery.price.$gte = parseFloat(minPrice)
         if (maxPrice) matchQuery.price.$lte = parseFloat(maxPrice)
+      }
+      if (minStudents) {
+        matchQuery.students = { $gte: parseInt(minStudents) }
       }
 
       const basePipeline: any[] = []
@@ -294,8 +363,17 @@ export async function GET(request: NextRequest) {
               { $sortByCount: '$general_category' },
               { $limit: 50 }
             ],
+            specificCategories: [
+              { $match: { specific_category: { $ne: null } } },
+              { $sortByCount: '$specific_category' },
+              { $limit: 100 }
+            ],
             languages: [
               { $sortByCount: '$language' },
+              { $limit: 20 }
+            ],
+            currencies: [
+              { $sortByCount: '$currency' },
               { $limit: 20 }
             ],
             priceStats: [
@@ -330,6 +408,18 @@ export async function GET(request: NextRequest) {
                 }
               }
             ],
+            studentsDistribution: [
+              {
+                $bucket: {
+                  groupBy: '$students',
+                  boundaries: [0, 100, 500, 1000, 5000, 10000, 50000, 100000, 1000000],
+                  default: 'other',
+                  output: {
+                    count: { $sum: 1 }
+                  }
+                }
+              }
+            ],
             results: [
               { $sort: { [sortBy]: order === 'asc' ? 1 : -1 } },
               { $skip: skip },
@@ -347,9 +437,7 @@ export async function GET(request: NextRequest) {
       const courses = data.results
       const totalPages = Math.ceil(totalCount / limit)
 
-      console.log('📊 Rating Distribution (sin búsqueda):', JSON.stringify(data.ratingDistribution, null, 2))
-
-      // Procesar ratings para combinar bucket 5 con bucket 4
+      // Procesar ratings
       const ratingMapNormal = new Map<number, number>()
       
       data.ratingDistribution
@@ -358,7 +446,6 @@ export async function GET(request: NextRequest) {
           ratingMapNormal.set(b._id, (ratingMapNormal.get(b._id) || 0) + b.count)
         })
       
-      // Combinar bucket 5 con bucket 4
       const bucket5Normal = data.ratingDistribution.find((b: any) => b._id === 5)
       if (bucket5Normal) {
         ratingMapNormal.set(4, (ratingMapNormal.get(4) || 0) + bucket5Normal.count)
@@ -368,7 +455,7 @@ export async function GET(request: NextRequest) {
         .map(([id, count]) => ({ _id: id, count }))
         .sort((a, b) => a._id - b._id)
 
-      // Procesar precios para combinar bucket 100-10000 como "100+"
+      // Procesar precios
       const priceMapNormal = new Map<number, number>()
       
       data.priceDistribution
@@ -377,13 +464,25 @@ export async function GET(request: NextRequest) {
           priceMapNormal.set(b._id, (priceMapNormal.get(b._id) || 0) + b.count)
         })
       
-      // Combinar bucket 100-10000 como bucket 100
       const bucket100Normal = data.priceDistribution.find((b: any) => b._id === 100)
       if (bucket100Normal) {
         priceMapNormal.set(100, (priceMapNormal.get(100) || 0) + bucket100Normal.count)
       }
       
       const processedPriceDistribution = Array.from(priceMapNormal.entries())
+        .map(([range, count]) => ({ range, count }))
+        .sort((a, b) => a.range - b.range)
+
+      // Procesar students
+      const studentsMapNormal = new Map<number, number>()
+      
+      data.studentsDistribution
+        .filter((b: any) => b._id !== 'other' && typeof b._id === 'number')
+        .forEach((b: any) => {
+          studentsMapNormal.set(b._id, (studentsMapNormal.get(b._id) || 0) + b.count)
+        })
+      
+      const processedStudentsDistribution = Array.from(studentsMapNormal.entries())
         .map(([range, count]) => ({ range, count }))
         .sort((a, b) => a.range - b.range)
 
@@ -403,23 +502,37 @@ export async function GET(request: NextRequest) {
             name: c._id,
             count: c.count
           })),
+          specificCategories: data.specificCategories.map((c: any) => ({
+            name: c._id,
+            count: c.count
+          })),
           languages: data.languages.map((l: any) => ({
             name: l._id,
             count: l.count
+          })),
+          currencies: data.currencies.map((c: any) => ({
+            name: c._id,
+            count: c.count
           })),
           priceRange: {
             ...(data.priceStats[0] || { minPrice: 0, maxPrice: 0, avgPrice: 0 }),
             buckets: processedPriceDistribution
           },
-          ratingDistribution: processedRatingDistribution
+          ratingDistribution: processedRatingDistribution,
+          studentsRange: {
+            buckets: processedStudentsDistribution
+          }
         },
         filters: {
           search,
           category,
+          specificCategory,
           language,
+          currency,
           minRating,
           minPrice,
           maxPrice,
+          minStudents,
           sortBy,
           order,
         },
