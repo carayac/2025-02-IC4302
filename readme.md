@@ -105,7 +105,6 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 <details>
   <summary>Desplegar información</summary>
 
-  El web scraper es un pequeño código en python que se corre localmente fuera de kubernetes. Se encarga de recorrer la página de cursos online "edutin". Recorre las categorías "programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas" y "marketing". Para esto, se usa selenium para hacer scroll en la página principal de edutin, y una vez que se hayan cargado suficientes cursos, se recupera el html de la página. Luego, se recorre el html en busca de la dirección que lleva a la información espcífica de cada curso. Cuando se encuentra, se extrae el html de esa dirección. Los html se descargan localmente en la carpeta "productos", y van numerados del 001 al 505. Una vez se han descargado los 505 cursos, estos se suben a la carpeta del bucket de aws, ic-tec-dataset/CARPETA_HCDCP/. Desde ahí se podrán recuperar los datos posteriormente.
 
 </details>
 
@@ -125,6 +124,13 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 ### Spark Processor Job 
 <details> <summary>Desplegar información</summary>
 
+- **Cobertura funcional:** el archivo `Services/docker/SparkProcessorJob/app/test.py` ejecuta suites de PySpark sobre `functions.py` para validar que cada transformación del pipeline se comporte como se espera.
+- **Normalización de textos:** `test_uppercase_first_letter` confirma que todas las columnas de texto se capitalizan sin alterar el resto del contenido.
+- **Formato de fechas:** `test_format_dates_ddmmyyyy_sql` garantiza que fechas con distintos separadores se conviertan al patrón `DD/MM/YYYY`.
+- **Entidades anidadas:** `test_normalize_entities` comprueba que arreglos y estructuras internas (entities, comentarios) también se transformen con mayúsculas iniciales.
+- **Productos relacionados:** `test_add_related_products_basic` genera dos documentos con la misma entidad y verifica que se recomienden mutuamente sin auto-referencias.
+- **Pipeline integral:** `test_full_pipeline_write_local` orquesta lectura, normalización y persistencia local para asegurar que el flujo completo produce archivos listos para publicarse.
+- **Ejecución en PySpark:** las pruebas usan una sesión Spark local (`SparkSession.builder.master("local[1]")`) lo que permite reproducir el comportamiento en CI/CD o de forma manual sin requerir el clúster de producción.
 
 </details>
 
@@ -165,6 +171,8 @@ controller:
 #### Web Scraper
 <details>
   <summary>Desplegar información</summary>
+
+  El web scraper es un pequeño código en python que se corre localmente fuera de kubernetes. Se encarga de recorrer la página de cursos online "edutin". Recorre las categorías "programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas" y "marketing". Para esto, se usa selenium para hacer scroll en la página principal de edutin, y una vez que se hayan cargado suficientes cursos, se recupera el html de la página. Luego, se recorre el html en busca de la dirección que lleva a la información espcífica de cada curso. Cuando se encuentra, se extrae el html de esa dirección. Los html se descargan localmente en la carpeta "productos", y van numerados del 001 al 505. Una vez se han descargado los 505 cursos, estos se suben a la carpeta del bucket de aws, ic-tec-dataset/CARPETA_HCDCP/. Desde ahí se podrán recuperar los datos posteriormente.
 
 
 </details>
@@ -210,6 +218,18 @@ Para la implementación del modelo de Spacy se elige el modelo *es_core_news_lg*
 ### Spark Processor Job 
 <details> <summary>Desplegar información</summary>
 
+Este proceso automático toma la información enriquecida de los cursos y la deja ordenada para que pueda buscarse fácilmente. No se requiere intervención humana: el componente se ejecuta de forma periódica, limpia los datos y los publica, de modo que otros sistemas solo consumen información coherente y homogénea.
+
+El Spark Processor Job se despliega como un CronJob de Kubernetes y ejecuta el pipeline definido en `Services/docker/SparkProcessorJob/app/functions.py`. Utiliza como parámetros las variables de entorno `URI_MONGODB` (destino en Atlas) y `VOLUMEN_PVC` (ruta del volumen compartido) y registra cada etapa con `logging` para que el monitoreo se realice desde los logs del contenedor. Su ejecución completa aborda los siguientes pasos operativos:
+
+- **Ingesta controlada:** `createSession` inicializa Spark con la conexión a MongoDB y `read_augmented_data` carga la carpeta `augmented`, creando la vista `augmented_data` para habilitar consultas SQL durante la sesión.
+- **Estandarización de textos:** `uppercase_first_letter` recorre todas las columnas de tipo string y `normalize_entities` se encarga de arreglos y estructuras anidadas, asegurando que cada texto comience con mayúscula sin perder información contextual.
+- **Normalización temporal:** `format_dates_ddmmyyyy_sql` transforma `date_extracted` al formato `DD/MM/YYYY`, unificando criterios de reporting y control de versiones de los documentos procesados.
+- **Resumen ejecutivo:** se expone el UDF `resumen_simple` mediante `summary`, que genera la columna `short-description` con un máximo de 140 caracteres conservando palabras completas, lo cual mejora el consumo en interfaces de búsqueda.
+- **Contexto relacional:** `add_related_products` identifica coincidencias de entidades entre productos, elimina auto-referencias y deduplica resultados, dejando en `productos_relacionados` hasta 10 recomendaciones directamente utilizables por la UI.
+- **Publicación confiable:** `save_to_mongodb` persiste el resultado final en la colección `documents` de MongoDB Atlas con modo `overwrite`, garantizando que la versión más reciente del dataset esté disponible para Atlas Search.
+
+De esta manera, cada ejecución del CronJob entrega datos limpios, resumidos y enriquecidos con relaciones, listos para ser indexados y consumidos por el resto de la plataforma.
 
 </details>
 
@@ -220,8 +240,79 @@ Para la implementación del modelo de Spacy se elige el modelo *es_core_news_lg*
 </details>
 
 ### Configuración Mongo Atlas
-<details> <summary>Desplegar información</summary>
+<details>
+  <summary>Desplegar información</summary>
 
+#### Índice Atlas Search `default`
+- **Colección:** `ecomm.documents`
+- **Objetivo:** habilitar búsqueda full-text con facets y highlighting sobre los productos normalizados por Spark.
+- **Mapping utilizado:**
+  ```json
+  {
+    "mappings": {
+      "dynamic": true,
+      "fields": {
+        "authorComment": { "type": "string" },
+        "currency": [
+          { "analyzer": "lucene.keyword", "searchAnalyzer": "lucene.keyword", "type": "string" },
+          { "type": "stringFacet" }
+        ],
+        "date_extracted": { "type": "date" },
+        "description": { "type": "string" },
+        "general_category": [
+          { "type": "string" },
+          { "analyzer": "lucene.keyword", "type": "autocomplete" },
+          { "type": "stringFacet" }
+        ],
+        "language": [
+          { "type": "string" },
+          { "type": "stringFacet" }
+        ],
+        "price": [
+          { "type": "number" },
+          { "type": "numberFacet" }
+        ],
+        "rating_value": [
+          { "type": "number" },
+          { "type": "numberFacet" }
+        ],
+        "reviews": {
+          "dynamic": true,
+          "fields": {
+            "comment": { "type": "string" },
+            "rating": [
+              { "type": "number" },
+              { "type": "numberFacet" }
+            ]
+          },
+          "type": "document"
+        },
+        "short-description": { "type": "string" },
+        "specific_category": [
+          { "type": "string" },
+          { "type": "stringFacet" }
+        ],
+        "students": [
+          { "type": "number" },
+          { "type": "numberFacet" }
+        ],
+        "title": { "type": "string" }
+      }
+    }
+  }
+  ```
+
+#### Facets configurados
+- `currency`, `general_category`, `language`, `specific_category`: facets de texto para filtros de navegación.
+- `price`, `rating_value`, `students`, `reviews.rating`: facets numéricos que permiten agrupar resultados por rangos.
+
+#### Highlighting
+- Las consultas `$search` incluyen `highlight` sobre `title`, `description`, `short-description` y `reviews.comment`, devolviendo coincidencias resaltadas (`searchHighlights`).
+
+#### Verificación
+1. **Mapping:** revisado en Atlas UI → Search Indexes → `default` → JSON.
+2. **Facets:** consultas `$searchMeta` retornan buckets para categorías y rangos numéricos verificando los `stringFacet` y `numberFacet` definidos.
+3. **Highlighting:** consultas `$search` en Data Explorer muestran texto marcado en los campos configurados, cumpliendo el requisito de resaltado.
 
 </details>
 
