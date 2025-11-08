@@ -226,7 +226,17 @@ Para la implementación del modelo de Spacy se elige el modelo *es_core_news_lg*
 </details>
 
 ### Configuración RabbitMQ
-<details> <summary>Desplegar información</summary>
+<details> 
+  <summary>Desplegar información</summary>  
+  
+Es el sistema que sirve como intermediario para que los servicios se pasen mensajes y realizar sus funciones correspondientes. Permite que el controller, BeautifulSoup y Spacy Entity Extractor trabajen de forma asíncrona, equilibrada en caso de que haya más de un Spacy Entity Extractor y soportando reinicio en caso de que algun mensaje no se procese.  El pipeline utiliza 2 colas:
+
+**- queue_parse**  
+Es producida por el Controller y consumida por el BeautifulSoup.  Su propósito principal es notificar que hay archivos HTML nuevos o modificados en S3 que deben ser parseados.  
+
+**- queue_entity**  
+Es producida por el BeautifulSoup y consumida por el Spacy Entity Extractor.  Su propósito principal es notificar que hay archivos JSON procesados listos para extracción de entidades.  
+
 
 
 </details>
