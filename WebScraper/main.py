@@ -7,6 +7,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import subprocess 
+from dotenv import load_dotenv
+load_dotenv()
 
 
 logging.basicConfig(
@@ -17,9 +19,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 #credenciales
-os.environ["AWS_ACCESS_KEY_ID"] = "AKIAQ2VOGXQD2ICLMJXL"
-os.environ["AWS_SECRET_ACCESS_KEY"] = "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"
-os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_DEFAULT_REGION = os.getenv("AWS_DEFAULT_REGION")
 
 
 #Variables
