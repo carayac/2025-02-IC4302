@@ -1,0 +1,12 @@
+config:
+    
+    dataseeder: # Added configuration for DataSeeder
+        enabled: false
+        name: dataseeder
+        replicas: 1
+        image: carayacn/dataseeder # To charge with data the database
+        openSearchEnable: true
+        mariaDBEnable: false
+        elasticSearchEnable: false
+        chromaDBEnable: false
+        postgresEnable: false

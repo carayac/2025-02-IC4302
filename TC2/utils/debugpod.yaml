@@ -1,0 +1,36 @@
+# docker image pull public.ecr.aws/aws-cli/aws-cli
+# kubectl exec --stdin --tty debug-pod -- /bin/bash
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-pod
+  labels:
+    app: debug-pod
+spec:
+  volumes:
+  - name: scripts
+    configMap:
+      name: mongo-backups-script
+      defaultMode: 0700
+  - name: mongo-snapshotter
+    persistentVolumeClaim:
+      claimName: mongo-snapshotter
+  - name: aws-credential
+    secret: 
+      secretName: aws-credential
+  containers:
+  - image: public.ecr.aws/aws-cli/aws-cli
+    command:
+      - "tail"
+      - "-f"
+      - "/dev/null"
+    imagePullPolicy: IfNotPresent
+    name: debug-pod
+    volumeMounts:
+      - mountPath: "/mongodump"
+        name: mongo-snapshotter
+      - name: scripts
+        mountPath: /scripts
+      - name: aws-credential
+        mountPath: /root/.aws
+  restartPolicy: Always

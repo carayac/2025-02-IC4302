@@ -1,0 +1,22 @@
+mongodb:
+  image:
+    repository: bitnamilegacy/mongodb
+  global:
+    security:
+      allowInsecureImages: true
+  enabled: true
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+  extraEnvVars:
+    - name: EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU
+      value: "1"
+elastic:
+  version: 8.6.1
+  replicas: 1
+  name: ic4302
+kibana:
+  version: 8.6.1
+  replicas: 1
+  name: ic4302

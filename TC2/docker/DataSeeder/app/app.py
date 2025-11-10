@@ -1,0 +1,551 @@
+import os
+import kagglehub
+from kagglehub import KaggleDatasetAdapter
+import pandas as pd
+from os import getenv
+import psycopg2
+import psycopg2.pool
+import sys
+import mysql.connector
+from mysql.connector import pooling
+from elasticsearch import Elasticsearch, helpers
+from openSearch import OpenSearch, helpers as os_helpers
+import requests
+
+#Variables de entorno, enable en el deployment.yaml
+POSTGRES_ENABLE = os.getenv("POSTGRES_ENABLE", "true").lower() == "true"
+MARIADB_ENABLE = os.getenv("MARIADB_ENABLE", "true").lower() == "true"
+ELASTICSEARCH_ENABLE = os.getenv("ELASTICSEARCH_ENABLE", "true").lower() == "true"
+OPENSEARCH_ENABLE = os.getenv("OPENSEARCH_ENABLE", "true").lower() == "true"
+CHROMADB_ENABLE = os.getenv("CHROMADB_ENABLE", "true").lower() == "true"
+
+if POSTGRES_ENABLE:
+    # Variables de entorno
+    POSTGRES = getenv("POSTGRES")
+    POSTGRES_USER = getenv("POSTGRES_USER")
+    POSTGRES_PASSWORD = getenv("POSTGRES_PASSWORD")
+    POSTGRES_DB = getenv("POSTGRES_DB")
+
+if MARIADB_ENABLE:
+    # Variables de entorno
+    MARIADB = getenv("MARIADB")
+    MARIADB_USER = getenv("MARIADB_USER")
+    MARIADB_PASS = getenv("MARIADB_PASS")
+    MARIADB_DB = getenv("MARIADB_DB")
+
+if ELASTICSEARCH_ENABLE:
+    # Variables de entorno
+    ELASTIC = getenv("ELASTIC")        
+    ELASTIC_USER = getenv("ELASTIC_USER")
+    ELASTIC_PASS = getenv("ELASTIC_PASS")
+    ES_PORT = getenv("ES_PORT", "9200")
+
+if CHROMADB_ENABLE:
+    CHROMA_ENDPOINT = getenv("CHROMA_ENDPOINT", "http://localhost:8000")
+    CHROMA_COLLECTION = getenv("CHROMA_COLLECTION", "animals")
+    CHROMA_EMBED_MODEL = getenv("CHROMA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+
+if OPENSEARCH_ENABLE:
+    OPENSEARCH_ENDPOINT = getenv("OPENSEARCH_ENDPOINT", "http://localhost:9200")
+    OPENSEARCH_USER = getenv("OPENSEARCH_USER", "admin")
+    OPENSEARCH_PASS = getenv("OPENSEARCH_PASS")
+    OPENSEARCH_COLLECTION = getenv("OPENSEARCH_COLLECTION", "animales")
+
+
+def load_dataset():
+    try:
+        df = kagglehub.load_dataset(
+            KaggleDatasetAdapter.PANDAS,
+            "iamsouravbanerjee/animal-information-dataset",
+            "Animal Dataset.csv"
+        )
+        print(f"Dataset cargado: {len(df)} registros")
+        return df
+    except Exception as e:
+        print(f"Error cargando dataset: {e}")
+        raise
+
+#---------------------------------------PostgreSQL-------------------------------------
+if POSTGRES_ENABLE:
+    # Crear pool de conexiones PostgreSQL
+    try:
+        pg_pool = psycopg2.pool.SimpleConnectionPool(
+            minconn=1,
+            maxconn=5,
+            host=POSTGRES,
+            user=POSTGRES_USER,
+            password=POSTGRES_PASSWORD,
+            database=POSTGRES_DB
+        )
+        print("Pool de conexiones PostgreSQL creado")
+    except Exception as e:
+        print(f"Error creando pool PostgreSQL: {e}")
+        sys.exit(1)
+
+def execute_postgress_from_file():    
+    # Construir la ruta al archivo
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    schema_path = os.path.join(script_dir, 'schemas', 'postgres.sql')    
+    try:
+        with open(schema_path, 'r', encoding='utf-8') as file:
+            schema_sql = file.read()
+        print("Archivo leído correctamente")
+    except FileNotFoundError:
+        print(f"Archivo no encontrado en: {schema_path}")
+        return False
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+    
+    conn = pg_pool.getconn()
+    cur = conn.cursor()
+    
+    try:
+        cur.execute(schema_sql)
+        conn.commit()
+        print("Tablas creadas exitosamente en PostgreSQL")
+        return True
+    except Exception as e:
+        conn.rollback()
+        return False
+    finally:
+        cur.close()
+        pg_pool.putconn(conn)
+
+def insert_data_postgres(df):    
+    conn = pg_pool.getconn()
+    cur = conn.cursor()
+    
+    try:
+        for index, row in df.iterrows():
+            cur.execute("""
+                INSERT INTO dieta (tipo_dieta) VALUES (%s) 
+                ON CONFLICT (tipo_dieta) DO NOTHING
+            """, (row["Diet"],))
+            cur.execute("SELECT id FROM dieta WHERE tipo_dieta=%s", (row["Diet"],))
+            dieta_id = cur.fetchone()[0]
+
+            cur.execute("""
+                INSERT INTO familia (nombre_familia) VALUES (%s) 
+                ON CONFLICT (nombre_familia) DO NOTHING
+            """, (row["Family"],))
+            cur.execute("SELECT id FROM familia WHERE nombre_familia=%s", (row["Family"],))
+            familia_id = cur.fetchone()[0]
+
+            cur.execute("""
+                INSERT INTO animal (nombre, altura_cm, peso_kg, color, esperanza_vida_años, dieta_id, familia_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id
+            """, (
+                row["Animal"], row["Height (cm)"], row["Weight (kg)"], row["Color"],
+                row["Lifespan (years)"], dieta_id, familia_id
+            ))
+            animal_id = cur.fetchone()[0]
+
+            habitats = [h.strip() for h in str(row["Habitat"]).split(",") if h.strip()]
+            for h in habitats:
+                if h and h.lower() != 'nan':
+                    cur.execute("""
+                        INSERT INTO habitat (nombre_habitat) VALUES (%s) 
+                        ON CONFLICT (nombre_habitat) DO NOTHING
+                    """, (h,))
+                    cur.execute("SELECT id FROM habitat WHERE nombre_habitat=%s", (h,))
+                    habitat_id = cur.fetchone()[0]
+                    cur.execute("""
+                        INSERT INTO animal_habitat (animal_id, habitat_id) VALUES (%s, %s) 
+                        ON CONFLICT (animal_id, habitat_id) DO NOTHING
+                    """, (animal_id, habitat_id))
+
+            predadores = [p.strip() for p in str(row["Predators"]).split(",") if p.strip()]
+            for p in predadores:
+                if p and p.lower() != 'nan':
+                    cur.execute("""
+                        INSERT INTO predador (nombre_predador) VALUES (%s) 
+                        ON CONFLICT (nombre_predador) DO NOTHING
+                    """, (p,))
+                    cur.execute("SELECT id FROM predador WHERE nombre_predador=%s", (p,))
+                    predador_id = cur.fetchone()[0]
+                    cur.execute("""
+                        INSERT INTO animal_predador (animal_id, predador_id) VALUES (%s, %s) 
+                        ON CONFLICT (animal_id, predador_id) DO NOTHING
+                    """, (animal_id, predador_id))
+
+            cur.execute("""
+                INSERT INTO info_extra (animal_id, velocidad_prom_kmh, velocidad_max_kmh, paises_encontrado,
+                estado_conservacion, gestacion_dias, estructura_social, crias_por_parto)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                animal_id, row["Average Speed (km/h)"], row["Top Speed (km/h)"], row["Countries Found"],
+                row["Conservation Status"], row["Gestation Period (days)"], row["Social Structure"], row["Offspring per Birth"]
+            ))
+
+        conn.commit()
+        print(f"Registros insertados exitosamente")
+        return True
+        
+    except Exception as e:
+        print(f"Error insertando datos: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cur.close()
+        pg_pool.putconn(conn)
+
+#-------------------------------------Maria DB------------------------------------- 
+mariadb_pool = None
+
+# Crear conexion MariaDB
+def conection_mariadb():
+    global mariadb_pool
+    try:
+        # Conexión inicial sin base seleccionada
+        conn = mysql.connector.connect(
+            host=MARIADB,
+            user=MARIADB_USER,
+            password=MARIADB_PASS,
+            charset="utf8mb4",
+            collation="utf8mb4_general_ci"
+        )
+        cur = conn.cursor()
+        # Crear la base de datos con charset y collation explícitos
+        cur.execute(f"""
+            CREATE DATABASE IF NOT EXISTS {MARIADB_DB}
+            DEFAULT CHARACTER SET utf8mb4
+            DEFAULT COLLATE utf8mb4_general_ci;
+        """)
+        conn.commit()
+        cur.close()
+        conn.close()
+        print(f"Base de datos {MARIADB_DB} creada o ya existente.")
+    except Exception as e:
+        print(f"Error creando la base de datos: {e}")
+        sys.exit(1)
+
+    # Crear pool de conexiones 
+    try:
+        mariadb_pool = pooling.MySQLConnectionPool(
+            pool_name="mariadb_pool",
+            pool_size=5,
+            host=MARIADB,
+            user=MARIADB_USER,
+            password=MARIADB_PASS,
+            database=MARIADB_DB,
+            charset='utf8mb4',
+            collation='utf8mb4_general_ci',
+            autocommit=True
+        )
+        print("Pool de conexiones MariaDB creado")
+    except Exception as e:
+        print(f"Error creando pool MariaDB: {e}")
+        sys.exit(1)
+
+
+def execute_MariaDB_from_file():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    schema_path = os.path.join(script_dir, 'schemas', 'mariadb.sql')    
+    try:
+        with open(schema_path, 'r', encoding='utf-8') as file:
+            schema_sql = file.read()
+        print("Archivo leído correctamente")
+    except FileNotFoundError:
+        print(f"Archivo no encontrado en: {schema_path}")
+        return False
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+    
+    conn = mariadb_pool.get_connection()
+    cur = conn.cursor()
+    
+    try:
+        for statement in schema_sql.split(";"):
+            stmt = statement.strip()
+            if stmt:
+                cur.execute(stmt)
+        conn.commit()
+        print("Tablas creadas exitosamente en MariaDB")
+        return True
+    except Exception as e:
+        conn.rollback()
+        print(f"Error creando tablas de MariaDB: {e}")
+        return False
+    finally:
+        cur.close()
+        conn.close()
+
+def insert_data_mariadb(df):
+    conn = mariadb_pool.get_connection()
+    cur = conn.cursor()
+    try:
+        for index, row in df.iterrows():
+            cur.execute("""
+                INSERT IGNORE INTO dieta (tipo_dieta) VALUES (%s)
+            """, (row["Diet"],))
+            cur.execute("SELECT id FROM dieta WHERE tipo_dieta=%s", (row["Diet"],))
+            dieta_id = cur.fetchone()[0]
+
+            cur.execute("""
+                INSERT IGNORE INTO familia (nombre_familia) VALUES (%s)
+            """, (row["Family"],))
+            cur.execute("SELECT id FROM familia WHERE nombre_familia=%s", (row["Family"],))
+            familia_id = cur.fetchone()[0]
+
+            cur.execute("""
+                INSERT INTO animal (nombre, altura_cm, peso_kg, color, esperanza_vida_años, dieta_id, familia_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (
+                row["Animal"], row["Height (cm)"], row["Weight (kg)"], row["Color"],
+                row["Lifespan (years)"], dieta_id, familia_id
+            ))
+            animal_id = cur.lastrowid  
+
+            habitats = [h.strip() for h in str(row["Habitat"]).split(",") if h.strip()]
+            for h in habitats:
+                if h and h.lower() != 'nan':
+                    cur.execute("""
+                        INSERT IGNORE INTO habitat (nombre_habitat) VALUES (%s)
+                    """, (h,))
+                    cur.execute("SELECT id FROM habitat WHERE nombre_habitat=%s", (h,))
+                    habitat_id = cur.fetchone()[0]
+                    cur.execute("""
+                        INSERT IGNORE INTO animal_habitat (animal_id, habitat_id) VALUES (%s, %s)
+                    """, (animal_id, habitat_id))
+
+            predadores = [p.strip() for p in str(row["Predators"]).split(",") if p.strip()]
+            for p in predadores:
+                if p and p.lower() != 'nan':
+                    cur.execute("""
+                        INSERT IGNORE INTO predador (nombre_predador) VALUES (%s)
+                    """, (p,))
+                    cur.execute("SELECT id FROM predador WHERE nombre_predador=%s", (p,))
+                    predador_id = cur.fetchone()[0]
+                    cur.execute("""
+                        INSERT IGNORE INTO animal_predador (animal_id, predador_id) VALUES (%s, %s)
+                    """, (animal_id, predador_id))
+
+            cur.execute("""
+                INSERT INTO info_extra (animal_id, velocidad_prom_kmh, velocidad_max_kmh, paises_encontrado,
+                estado_conservacion, gestacion_dias, estructura_social, crias_por_parto)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                animal_id, row["Average Speed (km/h)"], row["Top Speed (km/h)"], row["Countries Found"],
+                row["Conservation Status"], row["Gestation Period (days)"], row["Social Structure"], row["Offspring per Birth"]
+            ))
+
+        conn.commit()
+        print("Registros insertados exitosamente en MariaDB")
+        return True
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Error insertando datos en MariaDB: {e}")
+        return False
+    finally:
+        cur.close()
+        conn.close()
+
+#-------------------------------------Elastic Search-------------------------------------
+# Crear conexión Elasticsearch
+def get_connectionElastic():
+    try:
+        conn = Elasticsearch(
+            [f"http://{ELASTIC}:{ES_PORT}"],
+            basic_auth=(ELASTIC_USER, ELASTIC_PASS)
+        )
+        if not conn.ping():
+            raise Exception("No se pudo conectar a Elasticsearch")
+        return conn
+    except Exception as e:
+        print(f"Error creando conexión Elasticsearch: {e}")
+        sys.exit(1)
+
+
+def create_index_elastic():
+    index_name = "animals"
+    es = get_connectionElastic()
+    if not es.indices.exists(index=index_name):
+        es.indices.create(index=index_name, body={
+            "mappings": {
+                "properties": {
+                    "name": {"type": "keyword"},
+                    "height_cm": {"type": "keyword"},
+                    "weight_kg": {"type": "keyword"},
+                    "color": {"type": "keyword"},
+                    "lifespan_years": {"type": "keyword"},
+                    "diet": {"type": "keyword"},
+                    "habitat": {"type": "text"},
+                    "predators": {"type": "text"},
+                    "average_speed_kmh": {"type": "keyword"},
+                    "countries_found": {"type": "text"},
+                    "conservation_status": {"type": "keyword"},
+                    "family": {"type": "keyword"},
+                    "gestation_period_days": {"type": "keyword"},
+                    "top_speed_kmh": {"type": "keyword"},
+                    "social_structure": {"type": "text"},
+                    "offspring_per_birth": {"type": "keyword"}
+                }
+            }
+        })
+        print("Índice animal creado en ElasticSearch")
+        return True
+    else:
+        print("Índice animals ya existe en ElasticSearch")
+        return True
+
+def insert_data_elastic(df):
+    actions = []
+    es = get_connectionElastic()
+    for _, row in df.iterrows():
+        doc = {
+            "_index": "animals",
+            "_source": {
+                "name": row["Animal"],
+                "height_cm": row["Height (cm)"],
+                "weight_kg": row["Weight (kg)"],
+                "color": row["Color"],
+                "lifespan_years": row["Lifespan (years)"],
+                "diet": row["Diet"],
+                "habitat": row["Habitat"],
+                "predators": row["Predators"],
+                "average_speed_kmh": row["Average Speed (km/h)"],
+                "countries_found": row["Countries Found"],
+                "conservation_status": row["Conservation Status"],
+                "family": row["Family"],
+                "gestation_period_days": row["Gestation Period (days)"],
+                "top_speed_kmh": row["Top Speed (km/h)"],
+                "social_structure": row["Social Structure"],
+                "offspring_per_birth": row["Offspring per Birth"]
+            }
+        }
+        actions.append(doc)
+
+    try:
+        helpers.bulk(es, actions)
+        print(f"{len(actions)} documentos insertados en ElasticSearch")
+        return True
+    except Exception as e:
+        print(f"Error insertando en ElasticSearch: {e}")
+        return False
+
+#-------------------------------------OPEN SEARCH-------------------------------------
+
+def init_opensearch():
+    try:
+        os_client = OpenSearch(
+            hosts=[OPENSEARCH_ENDPOINT],
+            http_auth=(OPENSEARCH_USER, OPENSEARCH_PASS),
+            use_ssl=False,
+            verify_certs=False
+        )
+        if not os_client.ping():
+            raise Exception("No se pudo conectar a OpenSearch")
+        print("Conexión a OpenSearch exitosa")
+        return True
+    except Exception as e:
+        print(f"Error creando conexión OpenSearch: {e}")
+        return False
+
+def upsert_data_opensearch(df):
+    os_client = OpenSearch(
+        hosts=[OPENSEARCH_ENDPOINT],
+        http_auth=(OPENSEARCH_USER, OPENSEARCH_PASS),
+        use_ssl=False,
+        verify_certs=False
+    )
+
+    actions = []
+    for _, row in df.iterrows():
+        doc = {
+            "_index": OPENSEARCH_COLLECTION,
+            "_source": {
+                "name": row["Animal"],
+                "height_cm": row["Height (cm)"],
+                "weight_kg": row["Weight (kg)"],
+                "color": row["Color"],
+                "lifespan_years": row["Lifespan (years)"],
+                "diet": row["Diet"],
+                "habitat": row["Habitat"],
+                "predators": row["Predators"],
+                "average_speed_kmh": row["Average Speed (km/h)"],
+                "countries_found": row["Countries Found"],
+                "conservation_status": row["Conservation Status"],
+                "family": row["Family"],
+                "gestation_period_days": row["Gestation Period (days)"],
+                "top_speed_kmh": row["Top Speed (km/h)"],
+                "social_structure": row["Social Structure"],
+                "offspring_per_birth": row["Offspring per Birth"]
+            }
+        }
+        actions.append(doc)
+
+    try:
+        os_helpers.bulk(os_client, actions)
+        print(f"{len(actions)} documentos insertados en OpenSearch")
+        return True
+    except Exception as e:
+        print(f"Error insertando en OpenSearch: {e}")
+        return False
+
+#-------------------------------------FIN OPEN SEARCH-------------------------------------
+
+if __name__ == "__main__":    
+    try:
+        if MARIADB_ENABLE :
+            # Crear base de datos MariaDB si no existe
+            conection_mariadb()
+        # Ejecutar schema 
+        if POSTGRES_ENABLE:
+            if not execute_postgress_from_file():
+                print("No se pudieron crear las tablas en PostgreSQL")
+                sys.exit(1)
+        if MARIADB_ENABLE:
+            if not execute_MariaDB_from_file():
+                print("No se pudieron crear las tablas en MariaDB")
+                sys.exit(1)
+        if ELASTICSEARCH_ENABLE:
+            if not create_index_elastic():
+                print("No se pudo crear el índice en ElasticSearch")
+                sys.exit(1)
+
+        if OPENSEARCH_ENABLE:
+            if not init_opensearch():
+                print("No se pudo inicializar OpenSearch")
+                sys.exit(1)
+        
+        # Cargar dataset
+        df = load_dataset()
+        
+        # Insertar datos
+        if POSTGRES_ENABLE:
+            if not insert_data_postgres(df):
+                print("No se pudo cargar PostgreSQL")
+                sys.exit(1)
+        if MARIADB_ENABLE:
+            if not insert_data_mariadb(df):
+                print("No se pudo cargar MariaDB")
+                sys.exit(1)
+        if ELASTICSEARCH_ENABLE:
+            if not insert_data_elastic(df):
+                print("No se pudo cargar ElasticSearch")
+                sys.exit(1)
+
+        if OPENSEARCH_ENABLE:
+            if not upsert_data_opensearch(df):
+                print("No se pudo cargar OpenSearch")
+                sys.exit(1)
+
+
+        print("DataSeeder completado exitosamente en todas las bases")
+        # if (insert_data_postgres(df) and insert_data_mariadb(df) 
+        # and insert_data_elastic(df) and upsert_data_chroma(df) and insert_data_vespa(df)):
+        #     print("DataSeeder completado exitosamente en todas las bases")
+        # else:
+        #     print("Error insertando datos")
+        #     sys.exit(1)
+            
+    except Exception as e:
+        print(f"Error general: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+    
+    print("DataSeeder terminado")
