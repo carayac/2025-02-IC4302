@@ -85,9 +85,8 @@ def spacy_load():
 # Se guarda el pipeline del modelo elegido 
 NLP = spacy_load()
 
-# Allowed labels para evitar entity MISC
-ALLOWED_LABELS = {"PER","ORG","LOC","GPE", "DATE",     
-    "TIME","MONEY","PERCENT","QUANTITY","ORDINAL","CARDINAL",}
+# Etiqueta bloqueada 
+BLOCKED = {"MISC"}
 
 #Verifica que el PVC exista y tenga las carpetas raw y augmented de lo contrario las crea
 def ensure_volume(base_path: str):
@@ -140,7 +139,8 @@ def extract_entities(text: str) -> List[Dict[str, str]]:
         label = e["type"]
         val = e["value"].strip()  # Normaliza
 
-        if label not in ALLOWED_LABELS:
+        # Filtrar etiquetas bloqueadas
+        if label in BLOCKED:
             continue
 
         if "\n" in val: #descartar entidades con salto de linea
