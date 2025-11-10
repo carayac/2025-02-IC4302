@@ -146,15 +146,15 @@ def test_summary_generates_short_description(spark):
 def test_add_related_products_builds_related_list(spark):
     schema = StructType(
         [
-            StructField("titulo", StringType(), True),
+            StructField("title", StringType(), True),
             StructField("description", StringType(), True),
             StructField(
                 "entities",
                 ArrayType(
                     StructType(
                         [
-                            StructField("texto", StringType(), True),
-                            StructField("tipo", StringType(), True),
+                            StructField("value", StringType(), True),
+                            StructField("type", StringType(), True),
                         ]
                     )
                 ),
@@ -168,26 +168,26 @@ def test_add_related_products_builds_related_list(spark):
             (
                 "Producto Cafe",
                 "Descripcion A",
-                [{"texto": "cafe arabica", "tipo": "ingrediente"}],
+                [{"value": "cafe arabica", "type": "ingrediente"}],
             ),
             (
                 "Producto Cafe Premium",
                 "Descripcion B",
-                [{"texto": "cafe arabica", "tipo": "ingrediente"}],
+                [{"value": "cafe arabica", "type": "ingrediente"}],
             ),
             (
                 "Producto Te",
                 "Descripcion C",
-                [{"texto": "te negro", "tipo": "ingrediente"}],
+                [{"value": "te negro", "type": "ingrediente"}],
             ),
         ],
         schema,
     )
 
     result = add_related_products(df, max_relacionados=2)
-    rows = {row.titulo: row for row in result.collect()}
+    rows = {row.title: row for row in result.collect()}
 
-    relacionados_cafe = [rel.titulo for rel in rows["Producto Cafe"].productos_relacionados]
+    relacionados_cafe = [rel.title for rel in rows["Producto Cafe"].productos_relacionados]
     relacionados_te = rows["Producto Te"].productos_relacionados
 
     assert "Producto Cafe Premium" in relacionados_cafe

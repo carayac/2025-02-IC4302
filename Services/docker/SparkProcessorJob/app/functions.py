@@ -159,21 +159,21 @@ def add_related_products(df, max_relacionados: int = 10) -> DataFrame:
     full_struct = struct(*product_struct_cols).alias("full_product")
 
     exploded_global = df_with_id.withColumn("entity", explode(col("entities"))) \
-                               .withColumn("entity_text", col("entity.texto")) \
-                               .withColumn("entity_tipo", col("entity.tipo")) \
-                               .filter((col("entity_text").isNotNull())) \
-                               .select(col("entity_text"), full_struct)
+                               .withColumn("entity_value", col("entity.value")) \
+                               .withColumn("entity_type", col("entity.type")) \
+                               .filter((col("entity_value").isNotNull())) \
+                               .select(col("entity_value"), full_struct)
 
-    df_grouped = exploded_global.groupBy("entity_text").agg(collect_list(col("full_product")).alias("related_per_entity"))
+    df_grouped = exploded_global.groupBy("entity_value").agg(collect_list(col("full_product")).alias("related_per_entity"))
 
     # For each product, explode its entities and join to the grouped related list, then aggregate back
     left_exploded = df_with_id.select("_product_id", "entities") \
                              .withColumn("entity", explode(col("entities"))) \
-                             .withColumn("entity_text", col("entity.texto")) \
-                             .filter(col("entity_text").isNotNull()) \
-                             .select("_product_id", "entity_text")
+                             .withColumn("entity_value", col("entity.value")) \
+                             .filter(col("entity_value").isNotNull()) \
+                             .select("_product_id", "entity_value")
 
-    joined = left_exploded.join(df_grouped, on="entity_text", how="left")
+    joined = left_exploded.join(df_grouped, on="entity_value", how="left")
 
     # Aggregate per product id into array<array<struct>> then flatten
     agg = joined.groupBy("_product_id").agg(collect_list(col("related_per_entity")).alias("related_lists")) \

@@ -259,57 +259,138 @@ De esta manera, cada ejecución del CronJob entrega datos limpios, resumidos y e
 #### Índice Atlas Search `default`
 - **Colección:** `ecomm.documents`
 - **Objetivo:** habilitar búsqueda full-text con facets y highlighting sobre los productos normalizados por Spark.
+- Nota: Se asignaron de tipo facet las caracterist6icas mas relevantes que seran utilizadas.
 - **Mapping utilizado:**
   ```json
-  {
+    {
     "mappings": {
       "dynamic": true,
       "fields": {
-        "authorComment": { "type": "string" },
+        "authorComment": {
+          "type": "string"
+        },
         "currency": [
-          { "analyzer": "lucene.keyword", "searchAnalyzer": "lucene.keyword", "type": "string" },
-          { "type": "stringFacet" }
+          {
+            "analyzer": "lucene.keyword",
+            "searchAnalyzer": "lucene.keyword",
+            "type": "string"
+          },
+          {
+            "type": "stringFacet"
+          }
         ],
-        "date_extracted": { "type": "date" },
-        "description": { "type": "string" },
-        "general_category": [
-          { "type": "string" },
-          { "analyzer": "lucene.keyword", "type": "autocomplete" },
-          { "type": "stringFacet" }
-        ],
-        "language": [
-          { "type": "string" },
-          { "type": "stringFacet" }
-        ],
-        "price": [
-          { "type": "number" },
-          { "type": "numberFacet" }
-        ],
-        "rating_value": [
-          { "type": "number" },
-          { "type": "numberFacet" }
-        ],
-        "reviews": {
-          "dynamic": true,
+        "date_extracted": {
+          "type": "date"
+        },
+        "description": {
+          "type": "string"
+        },
+        "entities": {
           "fields": {
-            "comment": { "type": "string" },
-            "rating": [
-              { "type": "number" },
-              { "type": "numberFacet" }
+            "type": {
+              "analyzer": "lucene.keyword",
+              "searchAnalyzer": "lucene.keyword",
+              "type": "string"
+            },
+            "value": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "stringFacet"
+              }
             ]
           },
           "type": "document"
         },
-        "short-description": { "type": "string" },
+        "general_category": [
+          {
+            "type": "string"
+          },
+          {
+            "analyzer": "lucene.keyword",
+            "type": "autocomplete"
+          },
+          {
+            "type": "stringFacet"
+          }
+        ],
+        "language": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "stringFacet"
+          }
+        ],
+        "price": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "numberFacet"
+          }
+        ],
+        "productos_relacionados": {
+          "fields": {
+            "entities": {
+              "fields": {
+                "type": {
+                  "type": "stringFacet"
+                }
+              },
+              "type": "document"
+            }
+          },
+          "type": "document"
+        },
+        "rating_value": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "numberFacet"
+          }
+        ],
+        "reviews": {
+          "dynamic": true,
+          "fields": {
+            "comment": {
+              "type": "string"
+            },
+            "rating": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "numberFacet"
+              }
+            ]
+          },
+          "type": "document"
+        },
+        "short-description": {
+          "type": "string"
+        },
         "specific_category": [
-          { "type": "string" },
-          { "type": "stringFacet" }
+          {
+            "type": "string"
+          },
+          {
+            "type": "stringFacet"
+          }
         ],
         "students": [
-          { "type": "number" },
-          { "type": "numberFacet" }
+          {
+            "type": "number"
+          },
+          {
+            "type": "numberFacet"
+          }
         ],
-        "title": { "type": "string" }
+        "title": {
+          "type": "string"
+        }
       }
     }
   }
