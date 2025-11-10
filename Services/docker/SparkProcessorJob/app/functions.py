@@ -32,7 +32,16 @@ def createSession():
 
 #read augmented data from json. This is a data volume
 def read_augmented_data(spark, input_path):
-    """Lee datos augmented desde JSON y registra como tabla temporal"""
+    if not input_path:
+        raise ValueError("VOLUMEN_PVC no definido; no se puede leer datos augmentados")
+
+    if not os.path.exists(input_path):
+        raise FileNotFoundError(f"Ruta de datos {input_path} no existe")
+
+    if os.path.isdir(input_path):
+        if not any(entry for entry in os.scandir(input_path)):
+            raise FileNotFoundError(f"Ruta de datos {input_path} no contiene archivos para procesar")
+
     df = spark.read.option("multiline","true").json(input_path)
     df.createOrReplaceTempView("augmented_data")
     df.show(5)
@@ -243,15 +252,20 @@ def save_to_mongodb(df):
 #main execute function
 def execute():
     #global session function for the cronjob to use spark
-    spark = createSession()
-    
-    # read the augmented data in the pvc
-    read_augmented_data(spark, input_path)
-    # execute the normalization pipeline
-    normalized_df = normalize_data(spark)
-    
-    # save to MongoDB Atlas
-    save_to_mongodb(normalized_df)
-    # stop the Spark session
-    spark.stop()
-    logger.info("Normalización completada y datos guardados en MongoDB")
+    spark = None
+    try:
+        spark = createSession()
+
+        # read the augmented data in the pvc
+        read_augmented_data(spark, input_path)
+        # execute the normalization pipeline
+        normalized_df = normalize_data(spark)
+
+        # save to MongoDB Atlas
+        save_to_mongodb(normalized_df)
+        logger.info("Normalización completada y datos guardados en MongoDB")
+    except Exception:
+        logger.exception("Error durante la ejecución del pipeline de Spark")
+    finally:
+        if spark is not None:
+            spark.stop()
