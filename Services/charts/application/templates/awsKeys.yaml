@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: aws-secret
-type: Opaque
-stringData:
-  AWS_ACCESS_KEY: "AKIAQ2VOGXQD7BBRX7UE"
-  AWS_SECRET_KEY: "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"
