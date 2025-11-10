@@ -14,9 +14,8 @@ S3_PREFIXES = [p.strip() for p in os.getenv("S3_PREFIXES").split(",") if p.strip
 AWS_REGION = os.getenv("AWS_REGION")
 
 # MongoDB
-MONGO_URI = "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm?appName=ProductsSearch"
-
-INGESTION_COLLECTION = "ingestion"
+MONGO_URI = os.getenv("MONGO_URI")
+INGESTION_COLLECTION = os.getenv("INGESTION_COLLECTION")
 
 # RabbitMQ
 RABBIT_HOST = os.getenv("RABBITMQ")
@@ -124,7 +123,10 @@ def publish(coll, ch, obj, bucket: str) -> str:
     #Si current es None, no existe el documento y debe insertarse
     if not current:
         
-        coll.update_one({"_id": key}, {"$set": doc}, upsert=True) # Actualiza/inserta en collección
+        doc_set = dict (doc)
+        doc_set.pop("_id", None)
+
+        coll.update_one({"_id": key}, {"$set": doc_set}, upsert=True) # Actualiza/inserta en collección
         state = "new"
         msg = build_message(doc, state)
 

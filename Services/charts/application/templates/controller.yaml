@@ -23,6 +23,11 @@ spec:
                 - name: metrics
                   containerPort: 8000
               env:
+                - name: MONGO_URI
+                  value: "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm?appName=ProductsSearch"
+                - name: INGESTION_COLLECTION
+                  value: "ingestion"
+                
                 - name: S3_BUCKET
                   value: "ic-tec-dataset"
                 - name: S3_PREFIXES
