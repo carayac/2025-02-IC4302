@@ -32,7 +32,16 @@ def createSession():
 
 #read augmented data from json. This is a data volume
 def read_augmented_data(spark, input_path):
-    """Lee datos augmented desde JSON y registra como tabla temporal"""
+    if not input_path:
+        raise ValueError("VOLUMEN_PVC no definido; no se puede leer datos augmentados")
+
+    if not os.path.exists(input_path):
+        raise FileNotFoundError(f"Ruta de datos {input_path} no existe")
+
+    if os.path.isdir(input_path):
+        if not any(entry for entry in os.scandir(input_path)):
+            raise FileNotFoundError(f"Ruta de datos {input_path} no contiene archivos para procesar")
+
     df = spark.read.option("multiline","true").json(input_path)
     df.createOrReplaceTempView("augmented_data")
     df.show(5)
@@ -159,21 +168,21 @@ def add_related_products(df, max_relacionados: int = 10) -> DataFrame:
     full_struct = struct(*product_struct_cols).alias("full_product")
 
     exploded_global = df_with_id.withColumn("entity", explode(col("entities"))) \
-                               .withColumn("entity_text", col("entity.texto")) \
-                               .withColumn("entity_tipo", col("entity.tipo")) \
-                               .filter((col("entity_text").isNotNull())) \
-                               .select(col("entity_text"), full_struct)
+                               .withColumn("entity_value", col("entity.value")) \
+                               .withColumn("entity_type", col("entity.type")) \
+                               .filter((col("entity_value").isNotNull())) \
+                               .select(col("entity_value"), full_struct)
 
-    df_grouped = exploded_global.groupBy("entity_text").agg(collect_list(col("full_product")).alias("related_per_entity"))
+    df_grouped = exploded_global.groupBy("entity_value").agg(collect_list(col("full_product")).alias("related_per_entity"))
 
     # For each product, explode its entities and join to the grouped related list, then aggregate back
     left_exploded = df_with_id.select("_product_id", "entities") \
                              .withColumn("entity", explode(col("entities"))) \
-                             .withColumn("entity_text", col("entity.texto")) \
-                             .filter(col("entity_text").isNotNull()) \
-                             .select("_product_id", "entity_text")
+                             .withColumn("entity_value", col("entity.value")) \
+                             .filter(col("entity_value").isNotNull()) \
+                             .select("_product_id", "entity_value")
 
-    joined = left_exploded.join(df_grouped, on="entity_text", how="left")
+    joined = left_exploded.join(df_grouped, on="entity_value", how="left")
 
     # Aggregate per product id into array<array<struct>> then flatten
     agg = joined.groupBy("_product_id").agg(collect_list(col("related_per_entity")).alias("related_lists")) \
@@ -243,15 +252,20 @@ def save_to_mongodb(df):
 #main execute function
 def execute():
     #global session function for the cronjob to use spark
-    spark = createSession()
-    
-    # read the augmented data in the pvc
-    read_augmented_data(spark, input_path)
-    # execute the normalization pipeline
-    normalized_df = normalize_data(spark)
-    
-    # save to MongoDB Atlas
-    save_to_mongodb(normalized_df)
-    # stop the Spark session
-    spark.stop()
-    logger.info("Normalización completada y datos guardados en MongoDB")
+    spark = None
+    try:
+        spark = createSession()
+
+        # read the augmented data in the pvc
+        read_augmented_data(spark, input_path)
+        # execute the normalization pipeline
+        normalized_df = normalize_data(spark)
+
+        # save to MongoDB Atlas
+        save_to_mongodb(normalized_df)
+        logger.info("Normalización completada y datos guardados en MongoDB")
+    except Exception:
+        logger.exception("Error durante la ejecución del pipeline de Spark")
+    finally:
+        if spark is not None:
+            spark.stop()

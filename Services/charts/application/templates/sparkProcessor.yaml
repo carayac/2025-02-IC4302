@@ -25,7 +25,7 @@ spec:
                 - name: URI_MONGODB
                   value: "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm.documents?appName=ProductsSearch"
                 - name: VOLUMEN_PVC
-                  value: "/app/data"
+                  value: "/app/data/augmented"
                 - name: S3_PREFIXES
                   value: "amazon-books,amazon-book-reviews"
                 - name: AWS_ACCESS_KEY
@@ -43,10 +43,10 @@ spec:
                 - name: AWS_REGION
                   value: "us-east-1"
               volumeMounts:
-                - name: augmented-data
-                  mountPath: /app/data
+                - name: data
+                  mountPath: /app/data/
           volumes:
-            - name: augmented-data
+            - name: data
               persistentVolumeClaim:
-                claimName: augmented-pvc
+                claimName: data
 {{- end }}
