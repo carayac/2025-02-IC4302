@@ -1,7 +1,7 @@
 config:
-  docker_registry: prosoli # docker registry replace with your own username
+  docker_registry: carayacn # docker registry replace with your own username
   controller:
-    enabled: true
+    enabled: false
     replicas: 1
     name: controller
     image: controller
@@ -12,12 +12,13 @@ config:
     name: beautiful-soup
     image: beautiful-soup
   sparkProcessorJob:
-    enabled: false
+    enabled: true
     replicas: 1
     name: spark-processor-job
     image: spark-processor-job
+    schedule: "0 * * * *"  #every hour
   spacyEntityExtractor:
-    enabled: true
+    enabled: false
     replicas: 2
     name: spacy-entity-extractor
     image: spacy-entity-extractor
