@@ -11,8 +11,8 @@ from pymongo import MongoClient
 import spacy  # SPACY para procesamiento de lenguaje natural entities
 
 
-MONGO_URI = "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm?appName=ProductsSearch"
-INGESTION_COLLECTION = "ingestion"
+MONGO_URI = os.getenv("MONGO_URI")
+INGESTION_COLLECTION = os.getenv("INGESTION_COLLECTION")
 
 # RabbitMQ 
 RABBIT_HOST = os.getenv("RABBITMQ")
@@ -53,8 +53,14 @@ def rabbit_channel():
     return conn, ch
 
 def path_from_key(base_dir: str, s3_key: str) -> str:
-    filename = s3_key.replace("/", "__") + ".json"
-    return os.path.join(base_dir, filename)
+    
+    #Nombre del archivo
+    filename = os.path.basename(s3_key)
+
+    # nombre sin extension 
+    name, _ = os.path.splitext(filename)
+    augmented_name = name + ".json"
+    return os.path.join(base_dir, augmented_name)
 
 
 # Actualiza el estado de la extracción de entidades en MongoDB
@@ -81,7 +87,11 @@ def spacy_load():
         return spacy.load("es_core_news_lg") #Modelo grande en español
 
 # Se guarda el pipeline del modelo elegido 
-NLP = spacy_load() 
+NLP = spacy_load()
+
+# Allowed labels para evitar entity MISC
+ALLOWED_LABELS = {"PER","ORG","LOC","GPE", "DATE",     
+    "TIME","MONEY","PERCENT","QUANTITY","ORDINAL","CARDINAL",}
 
 #Normalización del json para mejorar el reconocimiento de entidades
 def normalize_text(text: str) -> str:
@@ -113,7 +123,11 @@ def extract_entities(text: str) -> List[Dict[str, str]]:
 
     # Recorre cada una de las entidades extraidas
     for e in ents:
-        val = e["value"].strip()   #Normaliza
+        label = e["type"]
+        val = e["value"].strip()  # Normaliza
+
+        if label not in ALLOWED_LABELS:
+            continue
 
         if "\n" in val: #descartar entidades con salto de linea
             continue
@@ -121,7 +135,7 @@ def extract_entities(text: str) -> List[Dict[str, str]]:
         if len(val.split()) > 8:    #descartar entidades con más de 8 palabras
             continue
 
-        key = (e["type"], val.lower())
+        key = (label, val.lower())
         
         # Si la entidad no está en el conjunto de vistas entonces se agrega, de lo contrario se ignora
         if key in repeted:
@@ -155,20 +169,37 @@ def message(coll, msg: dict):
     blocks = []
     for k in (
         "title",
-        "description",
         "general_category",
         "specific_category",
+        "description",
+        "price",
+        "students",
+        "certificate_info",
         "authorComment",
     ):
         v = raw_doc.get(k)
-        if isinstance(v, str):
-            blocks.append(v)
+        if v is not None:
+            blocks.append(str(v))
+
     reviews = raw_doc.get("reviews")
     if isinstance(reviews, list):
         for r in reviews:
+            #lee user de reviews
+            user = r.get("user")
+            if isinstance(user, str):
+                blocks.append(user)
+            #lee coments de reviews
             comment = r.get("comment")
             if isinstance(comment, str):
                 blocks.append(comment)
+            #lee rating de reviews
+            rating = r.get("rating")
+            if rating is not None:
+                blocks.append(str(rating))
+            #lee date de reviews
+            date = r.get("date")
+            if isinstance(date, str):
+                blocks.append(date)
 
     text = "\n".join(blocks).strip()
     #Extracción de entidades con el texto concatenado

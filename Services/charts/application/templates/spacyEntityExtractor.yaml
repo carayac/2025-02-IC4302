@@ -20,6 +20,11 @@ spec:
         - name: {{ .Values.config.spacyEntityExtractor.name }}
           image: "{{ .Values.config.docker_registry }}/{{ .Values.config.spacyEntityExtractor.image }}"
           env:
+            - name: MONGO_URI
+              value: "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm?appName=ProductsSearch"
+            - name: INGESTION_COLLECTION
+              value: "ingestion"
+            
             - name: RABBITMQ
               value: "databases-rabbitmq"
             - name: RABBITMQ_QUEUE
