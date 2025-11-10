@@ -39,17 +39,15 @@ spec:
                   optional: false
 
             # Datos para leer y escribir
-            - name: RAW_DIR
-              value: "/xdata/raw"
-            - name: AUGMENTED_DIR
-              value: "/xdata/augmented"
+            - name: BASE_PATH
+              value: "/app/data"
           volumeMounts:
-            - name: augmented-volume
-              mountPath: /xdata
+            - name: data-volume
+              mountPath: /app/data/
 
-      # Volumen 
+      # Volumen
       volumes:
-        - name: augmented-volume
+        - name: data-volume
           persistentVolumeClaim:
-            claimName: augmented-pvc
+            claimName: data
 {{- end }}

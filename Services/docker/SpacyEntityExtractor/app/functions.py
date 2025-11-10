@@ -21,8 +21,7 @@ RABBIT_PASS = os.getenv("RABBITMQ_PASS")
 RABBIT_QUEUE_NER = os.getenv("RABBITMQ_QUEUE")
 
 # PVC de writeMany
-RAW_DIR = os.getenv("RAW_DIR")
-AUGMENTED_DIR = os.getenv("AUGMENTED_DIR")
+BASE_PATH = os.getenv("BASE_PATH")
 
 # Logging de Python
 logging.basicConfig(
@@ -31,9 +30,6 @@ logging.basicConfig(
 )
 log = logging.getLogger("spacy-ner")
 
-# Definicion de fecha actual para colección
-def now() -> str:
-    return datetime.now(timezone.utc).isoformat()
 
 #Conexion a MongoDB
 def mongo_collection():
@@ -92,6 +88,24 @@ NLP = spacy_load()
 # Allowed labels para evitar entity MISC
 ALLOWED_LABELS = {"PER","ORG","LOC","GPE", "DATE",     
     "TIME","MONEY","PERCENT","QUANTITY","ORDINAL","CARDINAL",}
+
+#Verifica que el PVC exista y tenga las carpetas raw y augmented de lo contrario las crea
+def ensure_volume(base_path: str):
+    if not base_path:
+        raise ValueError("BASE_PATH no definido")
+
+    # Crea la carpeta base si no existe
+    os.makedirs(base_path, exist_ok=True)
+
+    # Verifica que raw exista
+    raw_path = os.path.join(base_path, "raw")
+    
+    if not os.path.exists(raw_path):
+        raise FileNotFoundError(f"Carpeta raw no existe en {raw_path}")
+
+    # Crea augmented
+    augmented_path = os.path.join(base_path, "augmented")
+    os.makedirs(augmented_path, exist_ok=True)
 
 #Normalización del json para mejorar el reconocimiento de entidades
 def normalize_text(text: str) -> str:
@@ -210,8 +224,8 @@ def message(coll, msg: dict):
     augmented["entities"] = entities    #Agrega un campo entities
 
     # Guarda el doc en el volumen compartido
-    os.makedirs(AUGMENTED_DIR, exist_ok=True)
-    out_path = path_from_key(AUGMENTED_DIR, s3_key)
+    augmented_dir = os.path.join(BASE_PATH, "augmented")
+    out_path = path_from_key(augmented_dir, s3_key)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(augmented, f, ensure_ascii=False, indent=2)
 
@@ -222,9 +236,10 @@ def message(coll, msg: dict):
 
 def run():
     log.info("Spacy Entity Extractor iniciado.")
-    os.makedirs(RAW_DIR, exist_ok=True)
-    os.makedirs(AUGMENTED_DIR, exist_ok=True)
-
+    
+    # Validar y crear directorios raw y augmented
+    ensure_volume(BASE_PATH)
+    
     #conexiones
     coll = mongo_collection()
     conn, ch = rabbit_channel()
