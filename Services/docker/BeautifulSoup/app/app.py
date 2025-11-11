@@ -30,8 +30,8 @@ RABBITMQ_QUEUE_ENTITY = os.getenv("RABBITMQ_QUEUE_ENTITY")
 SHARED_VOLUME_PATH = os.getenv("SHARED_VOLUME_PATH", "/xdata")
 
 # MongoDB
-MONGO_URI = "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ProductsSearch?appName=ProductsSearch"
-INGESTION_COLLECTION = "ingestion"
+MONGO_URI = os.getenv("MONGO_URI")
+INGESTION_COLLECTION = os.getenv("INGESTION_COLLECTION", "ingestion")
 
 # S3 CLIENT
 s3 = boto3.client(
@@ -55,7 +55,7 @@ def connect_rabbitmq():
     channel.queue_declare(queue=RABBITMQ_QUEUE_ENTITY, durable=True)
     return connection, channel
 
-# DOWNLOAD HTML FROM S3
+
 def download_html_from_s3(file_key: str) -> str:
     try:
         obj = s3.get_object(Bucket=S3_BUCKET, Key=file_key)
@@ -64,7 +64,64 @@ def download_html_from_s3(file_key: str) -> str:
         logger.error(f"Error downloading {file_key} from S3: {e}")
         return None
 
-# PARSE COURSE DATA
+def parse_author(author_block):
+    if not author_block:
+        return None, None
+
+    raw = author_block.get_text(separator=" ", strip=True)
+
+    #Limpiar encabezados
+    to_remove = [
+        "Información del autor", "Información del Autor",
+        "Información del", "Información  del autor",
+        "Información", "autor:"
+    ]
+    clean = raw
+    for r in to_remove:
+        clean = clean.replace(r, "")
+    clean = clean.strip()
+
+    if not clean:
+        return None, None
+
+    # Caso 2: comentario largo sin nombre
+    if clean.lower().startswith((
+        "este curso", "en este curso", "si necesita",
+        "curso ", "ha sido", "mediante"
+    )):
+        return None, clean
+
+    palabras = clean.split()
+    if not palabras:
+        return None, None
+
+    #separar nombre de comentario
+    keywords = [
+        "magíster", "profesor", "ciencias", "ingeniería",
+        "aplicada", "licencia", "director", "gestión",
+        "autor", "educación", "estándar"
+    ]
+
+    idx = None
+    for i, p in enumerate(palabras):
+        if p.lower() in keywords:
+            idx = i
+            break
+
+    # Caso 3: nombre + descripción pegados
+    if idx:
+        name = " ".join(palabras[:idx]) or None
+        comment = " ".join(palabras[idx:]) or None
+        return name, comment
+
+    if len(palabras) <= 4:
+        return clean, None
+
+    #todo comentario
+    return None, clean
+
+
+
 def extract_course_data(html: str, filename: str) -> dict:
     soup = BeautifulSoup(html, "lxml")
 
@@ -78,55 +135,74 @@ def extract_course_data(html: str, filename: str) -> dict:
         "currency": "USD",
         "language": "es",
         "students": None,
-        "certificate_info": None,
-        "authorComment": None,
-        "reviews": [],
         "rating_value": None,
+        "estimated_weeks": None,
+        "hours_per_week": None,
+        "certificate_info": None,
+        "author": {"name": None, "comment": None},
+        "reviews": [],
         "date_extracted": datetime.utcnow().strftime("%d/%m/%Y")
     }
 
-    # JSON-LD Extraction
+    # JSON-LD 
     json_ld_tag = soup.find("script", type="application/ld+json")
+
     if json_ld_tag and json_ld_tag.string:
         try:
             cleaned = json_ld_tag.string.strip().replace("// <![CDATA[", "").replace("// ]]>", "")
-            ld_data = json.loads(cleaned)
-            if isinstance(ld_data, list):
-                ld_data = ld_data[0]
+            ld = json.loads(cleaned)
 
-            # Basic info
-            data["title"] = ld_data.get("name")
-            desc = ld_data.get("description")
+            if isinstance(ld, list):
+                ld = ld[0]
+
+            # Title + desc
+            data["title"] = ld.get("name")
+
+            desc = ld.get("description")
             if desc:
                 data["description"] = BeautifulSoup(desc, "lxml").get_text(" ", strip=True)
-            data["image"] = ld_data.get("image")
 
-            offers = ld_data.get("offers", {})
+            #Image
+            data["image"] = ld.get("image")
+
+            offers = ld.get("offers", {})
             data["price"] = float(offers.get("price", 0.0))
             data["currency"] = offers.get("priceCurrency", "USD")
 
+            #rating
+            if "aggregateRating" in ld:
+                try:
+                    data["rating_value"] = float(ld["aggregateRating"]["ratingValue"])
+                except:
+                    pass
+
             # Reviews
-            for r in ld_data.get("review", []):
+            for r in ld.get("review", []):
                 author = "Anónimo"
                 if isinstance(r.get("author"), dict):
                     author = r["author"].get("name", "Anónimo")
                 elif isinstance(r.get("author"), str):
                     author = r["author"]
 
-                comment = r.get("description") or r.get("reviewBody")
+                comment_html = r.get("description") or r.get("reviewBody")
+                if comment_html:
+                    comment = BeautifulSoup(comment_html, "lxml").get_text(" ", strip=True)
+                else:
+                    comment = None
+
                 rating = None
                 if "reviewRating" in r and isinstance(r["reviewRating"], dict):
-                    val = r["reviewRating"].get("ratingValue")
+                    rv = r["reviewRating"].get("ratingValue")
                     try:
-                        rating = float(val)
-                    except Exception:
+                        rating = float(rv)
+                    except:
                         pass
 
                 date = None
                 if r.get("datePublished"):
                     try:
                         date = datetime.strptime(r["datePublished"], "%Y-%m-%d").strftime("%d/%m/%Y")
-                    except Exception:
+                    except:
                         date = r["datePublished"]
 
                 data["reviews"].append({
@@ -136,142 +212,178 @@ def extract_course_data(html: str, filename: str) -> dict:
                     "date": date
                 })
 
-            if "aggregateRating" in ld_data:
-                try:
-                    data["rating_value"] = float(ld_data["aggregateRating"]["ratingValue"])
-                except Exception:
-                    pass
-
         except Exception as e:
-            logger.warning(f"Error parsing JSON-LD in {filename}: {e}")
+            logger.warning(f"JSON-LD error in {filename}: {e}")
 
-    # Title fallback
+
+
+
+
+    # TITLE / DESCRIPTION FALLBACKS
     if not data["title"]:
-        title_tag = soup.find("h1") or soup.find("title")
-        if title_tag:
-            data["title"] = title_tag.get_text(strip=True)
+        t = soup.find("h1") or soup.find("title")
+        if t:
+            data["title"] = t.get_text(strip=True)
 
-    # Description fallback
     if not data["description"]:
-        meta_desc = soup.find("meta", attrs={"name": "description"})
-        if meta_desc and meta_desc.get("content"):
-            data["description"] = meta_desc["content"]
+        meta_d = soup.find("meta", {"name": "description"})
+        if meta_d and meta_d.get("content"):
+            data["description"] = meta_d["content"]
         else:
-            p_tag = soup.find("p")
-            if p_tag:
-                data["description"] = p_tag.get_text(" ", strip=True)
+            p = soup.find("p")
+            if p:
+                data["description"] = p.get_text(" ", strip=True)
 
-    # Image fallback
-    if not data["image"]:
-        meta_img = soup.find("meta", property="og:image")
-        if meta_img and meta_img.get("content"):
-            data["image"] = meta_img["content"]
-
-    # Categories
+    # GENERAL CATEGORY 
     related_block = soup.find("div", class_="t-related")
     if related_block:
-        h4_tag = related_block.find("h4")
-        if h4_tag:
-            data["general_category"] = h4_tag.get_text(strip=True)
+        h4 = related_block.find("h4")
+        if h4:
+            data["general_category"] = h4.get_text(strip=True)
 
-    # Specific category (Área, Categoría, Tema)
+    # SPECIFIC CATEGORY
     full_text = soup.get_text(" ", strip=True)
-    area_match = re.search(r"(Área|Categoria|Categoría|Tema)\s*[:\-]\s*([A-Za-zÁÉÍÓÚáéíóúñÑ ]+)", full_text, re.IGNORECASE)
+    area_match = re.search(
+        r"(Área|Categoria|Categoría|Tema)\s*[:\-]\s*([A-Za-zÁÉÍÓÚáéíóúñÑ ]+)",
+        full_text,
+        re.IGNORECASE
+    )
     if area_match:
         data["specific_category"] = area_match.group(2).strip()
 
-    # Stats (students + rating)
-    stats = soup.find("div", class_="statsc")
-    if stats:
-        text = stats.get_text(" ", strip=True)
-        numbers = re.findall(r"\d+", text)
-        if numbers:
-            if len(numbers) > 5:  # Example: "495689" (rating + students)
-                data["rating_value"] = float(str(numbers[0])[0])
-                data["students"] = int(str(numbers[0])[1:])
-            else:
-                data["students"] = int(numbers[0])
+    # Estimated weeks & hours per week
+    extra_text = soup.get_text(" ", strip=True)
 
-    # Certificate info
+    w = re.search(r"(\d+)\s*semanas", extra_text, re.IGNORECASE)
+    if w:
+        data["estimated_weeks"] = int(w.group(1))
+
+    hp = re.search(r"(\d+-\d+)\s*horas", extra_text, re.IGNORECASE)
+    if hp:
+        data["hours_per_week"] = hp.group(1)
+
+
+    #EXTRACT RATING + STUDENTS
+    def _to_float(num_str):
+        try:
+            return float(num_str.replace(",", "."))
+        except:
+            return None
+
+    def _to_int_digits(num_str):
+        digits = re.sub(r"[^\d]", "", num_str)
+        try:
+            return int(digits) if digits else None
+        except:
+            return None
+
+    rating_dom = None
+    students_dom = None
+
+    stats = soup.select_one("div.statsc")
+    if stats:
+        opinions_text = None
+        for div in stats.select("div"):
+            txt = div.get_text(" ", strip=True)
+            if "opinion" in txt.lower():
+                opinions_text = txt
+                break
+        if opinions_text:
+            m = re.search(r"(\d+(?:[.,]\d+)?)", opinions_text)
+            if m:
+                rating_dom = _to_float(m.group(1))
+
+        students_text = None
+        for div in stats.select("div"):
+            txt = div.get_text(" ", strip=True)
+            if "estudiante" in txt.lower():
+                students_text = txt
+                break
+        if students_text:
+            m = re.search(r"([\d\.,]+)", students_text)
+            if m:
+                students_dom = _to_int_digits(m.group(1))
+
+    if rating_dom is not None:
+        data["rating_value"] = rating_dom
+
+    if students_dom is not None:
+        data["students"] = students_dom
+    if data["students"] is None:
+        m = re.search(r"([\d\.,]+)\s*estudiantes?", full_text, re.IGNORECASE)
+        if m:
+            data["students"] = _to_int_digits(m.group(1))
+
+    # CERTIFICATE INFO
     cert = soup.find("div", class_="st-certificate")
     if cert:
         data["certificate_info"] = cert.get_text(" ", strip=True)
 
-    # Author comment
+    #AUTHOR DIC
     author_block = soup.find("div", class_="st-author")
-    if author_block:
-        text = author_block.get_text(" ", strip=True)
-        text = text.replace("Información del autor", "").strip()
-        data["authorComment"] = text
+    name, comment = parse_author(author_block)
+
+    if name is None:
+        name = "Edutin Academy"
+
+    data["author"] = {
+        "name": name,
+        "comment": comment
+    }
 
     return data
 
 
+
 def process_message(ch, method, properties, body):
-    """Process message from controller queue."""
+
     if not body or not body.strip():
-        logger.warning("Empty message received, skipping.")
         ch.basic_ack(delivery_tag=method.delivery_tag)
         return
 
     file_key = body.decode("utf-8").strip()
     filename = os.path.basename(file_key)
-    logger.info(f"Processing HTML file: {file_key}")
 
     coll = mongo_collection()
-
-    #Mark as started
     coll.update_one({"_id": file_key}, {"$set": {"processing": "started"}}, upsert=True)
 
-    html_content = download_html_from_s3(file_key)
-    if not html_content:
-        logger.error(f"Failed to download {file_key}, skipping.")
+    html = download_html_from_s3(file_key)
+    if not html:
         ch.basic_ack(delivery_tag=method.delivery_tag)
         return
 
-    data = extract_course_data(html_content, filename)
+    data = extract_course_data(html, filename)
 
-    # Save JSON
     raw_dir = os.path.join(SHARED_VOLUME_PATH, "raw")
     os.makedirs(raw_dir, exist_ok=True)
     json_path = os.path.join(raw_dir, filename.replace(".html", ".json"))
+
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    logger.info(f"JSON file saved: {json_path}")
 
-    #Mark as completed
     coll.update_one({"_id": file_key}, {"$set": {"processing": "completed"}})
 
-    # Publish to entity queue
     msg_to_entity = {"s3Key": file_key, "jsonPath": json_path}
-    ch.basic_publish(
-        exchange="",
-        routing_key=RABBITMQ_QUEUE_ENTITY,
-        body=json.dumps(msg_to_entity)
-    )
-    logger.info(f"Published to {RABBITMQ_QUEUE_ENTITY}: {msg_to_entity}")
+    ch.basic_publish(exchange="", routing_key=RABBITMQ_QUEUE_ENTITY, body=json.dumps(msg_to_entity))
 
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-# MAIN
 def main():
-    logger.info("Starting BeautifulSoup Parser")
     connection, channel = connect_rabbitmq()
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(queue=RABBITMQ_QUEUE_HTML, on_message_callback=process_message)
 
     try:
-        logger.info(f"Listening for messages from {RABBITMQ_QUEUE_HTML}")
         channel.start_consuming()
     except KeyboardInterrupt:
-        logger.info("Stopping parser")
         channel.stop_consuming()
     finally:
         connection.close()
-        logger.info("RabbitMQ connection closed.")
+
 
 if __name__ == "__main__":
     main()
+
 
 
