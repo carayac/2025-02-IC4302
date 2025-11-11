@@ -31,6 +31,27 @@ export default async function CoursePage({ params, searchParams }: CoursePagePro
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           {/* Header Section */}
           <div className="mb-8">
+
+            {/* Botón Volver */}
+            <div className="mb-6">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200 group"
+              >
+                <svg 
+                  className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
+                  Volver a búsqueda de cursos
+                </span>
+              </Link>
+            </div>
+
             <div className="flex flex-wrap gap-2 mb-4">
               <Badge variant="secondary" className="text-sm">
                 {course.general_category}
@@ -170,11 +191,14 @@ export default async function CoursePage({ params, searchParams }: CoursePagePro
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                                {(review.author || 'Anon').charAt(0).toUpperCase()}
+                                {(review.user || 'Anon').charAt(0).toUpperCase()}
                               </div>
                               <div>
                                 <p className="font-semibold text-gray-900">
-                                  {review.author || 'Usuario Anónimo'}
+                                  {review.user}
+                                </p>
+                                <p className="text-xs text-gray-500 mb-1">
+                                  {review.date}
                                 </p>
                                 <div className="flex items-center gap-1">
                                   {[...Array(5)].map((_, i) => (
