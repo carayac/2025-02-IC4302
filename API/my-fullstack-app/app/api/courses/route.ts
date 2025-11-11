@@ -18,11 +18,16 @@ export async function GET(request: NextRequest) {
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
     const minStudents = searchParams.get('minStudents')
+    const entityType = searchParams.get('entityType')
+    const entityValue = searchParams.get('entityValue')
     const sortBy = searchParams.get('sortBy') || 'rating_value'
     const order = searchParams.get('order') || 'desc'
     const limit = parseInt(searchParams.get('limit') || '20')
     const page = parseInt(searchParams.get('page') || '1')
     const skip = (page - 1) * limit
+
+    // Convertir order a tipo estricto 1 | -1
+    const sortOrder: 1 | -1 = order === 'asc' ? 1 : -1
 
     // Si hay búsqueda de texto, usar Atlas Search con facets
     if (search) {
@@ -90,6 +95,25 @@ export async function GET(request: NextRequest) {
         })
       }
 
+      // Filtros para entities
+      if (entityType && entityType !== 'all') {
+        mustClauses.push({
+          text: {
+            query: entityType,
+            path: 'entities.type'
+          }
+        })
+      }
+
+      if (entityValue && entityValue !== 'all') {
+        mustClauses.push({
+          text: {
+            query: entityValue,
+            path: 'entities.value'
+          }
+        })
+      }
+
       // 1. Pipeline para obtener metadata con facets
       const metaPipeline = [
         {
@@ -114,50 +138,55 @@ export async function GET(request: NextRequest) {
                 }
               },
               facets: {
-                // Facet: general_category (stringFacet)
                 categoryFacet: {
                   type: 'string' as const,
                   path: 'general_category',
                   numBuckets: 50
                 },
-                // Facet: specific_category (stringFacet) - NUEVO
                 specificCategoryFacet: {
                   type: 'string' as const,
                   path: 'specific_category',
                   numBuckets: 100
                 },
-                // Facet: language (stringFacet)
                 languageFacet: {
                   type: 'string' as const,
                   path: 'language',
                   numBuckets: 20
                 },
-                // Facet: currency (stringFacet) - NUEVO
                 currencyFacet: {
                   type: 'string' as const,
                   path: 'currency',
                   numBuckets: 20
                 },
-                // Facet: price (numberFacet)
                 priceFacet: {
                   type: 'number' as const,
                   path: 'price',
                   boundaries: [0, 25, 50, 75, 100, 10000],
                   default: 'other'
                 },
-                // Facet: rating_value (numberFacet)
                 ratingFacet: {
                   type: 'number' as const,
                   path: 'rating_value',
                   boundaries: [0, 1, 2, 3, 4, 5, 6],
                   default: 'other'
                 },
-                // Facet: students (numberFacet) - NUEVO
                 studentsFacet: {
                   type: 'number' as const,
                   path: 'students',
                   boundaries: [0, 100, 500, 1000, 5000, 10000, 50000, 100000, 1000000],
                   default: 'other'
+                },
+                // Nuevo: Facet para entity type
+                entityTypeFacet: {
+                  type: 'string' as const,
+                  path: 'entities.type',
+                  numBuckets: 50
+                },
+                // Nuevo: Facet para entity value
+                entityValueFacet: {
+                  type: 'string' as const,
+                  path: 'entities.value',
+                  numBuckets: 100
                 }
               }
             }
@@ -172,7 +201,12 @@ export async function GET(request: NextRequest) {
       const totalCount = searchMeta.count?.lowerBound || 0
 
       // 2. Pipeline para obtener documentos con highlighting
-      const docsPipeline = [
+      const sortObject: Record<string, any> = {
+        searchScore: -1,
+        [sortBy]: sortOrder
+      }
+
+      const docsPipeline: any[] = [
         {
           $search: {
             index: 'default',
@@ -203,7 +237,7 @@ export async function GET(request: NextRequest) {
           }
         },
         {
-          $sort: { searchScore: -1, [sortBy]: order === 'asc' ? 1 : -1 }
+          $sort: sortObject
         },
         { $skip: skip },
         { $limit: limit },
@@ -251,7 +285,7 @@ export async function GET(request: NextRequest) {
         .map(([range, count]) => ({ range, count }))
         .sort((a, b) => a.range - b.range)
 
-      // Procesar facets de students - NUEVO
+      // Procesar facets de students
       const studentsBuckets = facetsData.studentsFacet?.buckets || []
       const studentsMap = new Map<number, number>()
       
@@ -304,7 +338,20 @@ export async function GET(request: NextRequest) {
           ratingDistribution: ratingDistribution,
           studentsRange: {
             buckets: studentsBucketsProcessed
-          }
+          },
+          // Nuevo: Entity facets
+          entityTypes: (facetsData.entityTypeFacet?.buckets || [])
+            .filter((b: any) => b._id !== null)
+            .map((b: any) => ({
+              name: b._id,
+              count: b.count
+            })),
+          entityValues: (facetsData.entityValueFacet?.buckets || [])
+            .filter((b: any) => b._id !== null)
+            .map((b: any) => ({
+              name: b._id,
+              count: b.count
+            }))
         },
         filters: {
           search,
@@ -316,6 +363,8 @@ export async function GET(request: NextRequest) {
           minPrice,
           maxPrice,
           minStudents,
+          entityType,
+          entityValue,
           sortBy,
           order,
         },
@@ -348,13 +397,19 @@ export async function GET(request: NextRequest) {
       if (minStudents) {
         matchQuery.students = { $gte: parseInt(minStudents) }
       }
+      if (entityType && entityType !== 'all') {
+        matchQuery['entities.type'] = entityType
+      }
+      if (entityValue && entityValue !== 'all') {
+        matchQuery['entities.value'] = entityValue
+      }
 
       const basePipeline: any[] = []
       if (Object.keys(matchQuery).length > 0) {
         basePipeline.push({ $match: matchQuery })
       }
 
-      const pipeline = [
+      const pipeline: any[] = [
         ...basePipeline,
         {
           $facet: {
@@ -420,8 +475,21 @@ export async function GET(request: NextRequest) {
                 }
               }
             ],
+            // Nuevo: Entity facets
+            entityTypes: [
+              { $unwind: '$entities' },
+              { $match: { 'entities.type': { $ne: null } } },
+              { $sortByCount: '$entities.type' },
+              { $limit: 50 }
+            ],
+            entityValues: [
+              { $unwind: '$entities' },
+              { $match: { 'entities.value': { $ne: null } } },
+              { $sortByCount: '$entities.value' },
+              { $limit: 100 }
+            ],
             results: [
-              { $sort: { [sortBy]: order === 'asc' ? 1 : -1 } },
+              { $sort: { [sortBy]: sortOrder } },
               { $skip: skip },
               { $limit: limit },
               { $project: { __v: 0 } }
@@ -521,7 +589,16 @@ export async function GET(request: NextRequest) {
           ratingDistribution: processedRatingDistribution,
           studentsRange: {
             buckets: processedStudentsDistribution
-          }
+          },
+          // Nuevo: Entity facets
+          entityTypes: data.entityTypes.map((e: any) => ({
+            name: e._id,
+            count: e.count
+          })),
+          entityValues: data.entityValues.map((e: any) => ({
+            name: e._id,
+            count: e.count
+          }))
         },
         filters: {
           search,
@@ -533,6 +610,8 @@ export async function GET(request: NextRequest) {
           minPrice,
           maxPrice,
           minStudents,
+          entityType,
+          entityValue,
           sortBy,
           order,
         },

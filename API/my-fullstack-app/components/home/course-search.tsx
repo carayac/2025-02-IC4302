@@ -31,6 +31,12 @@ interface CourseSearchProps {
   initialLanguages: string[]
 }
 
+interface RangeItem {
+  value: number
+  label: string
+  count: number
+}
+
 export function CourseSearch({ initialCategories, initialLanguages }: CourseSearchProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState<CourseFilters>({
@@ -84,7 +90,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
   }
 
   // Obtener rangos de rating con conteos
-  const getRatingRanges = () => {
+  const getRatingRanges = (): RangeItem[] => {
     if (!facets?.ratingDistribution) return []
     
     return facets.ratingDistribution
@@ -98,7 +104,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
   }
 
   // Obtener rangos de estudiantes con conteos
-  const getStudentsRanges = () => {
+  const getStudentsRanges = (): RangeItem[] => {
     if (!facets?.studentsRange?.buckets) return []
     
     const studentsLabels: { [key: number]: string } = {
@@ -124,8 +130,8 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
 
   const ratingRanges = getRatingRanges()
   const studentsRanges = getStudentsRanges()
-  const totalRatings = ratingRanges.reduce((sum, r) => sum + r.count, 0)
-  const totalStudents = studentsRanges.reduce((sum, s) => sum + s.count, 0)
+  const totalRatings = ratingRanges.reduce((sum: number, r: RangeItem) => sum + r.count, 0)
+  const totalStudents = studentsRanges.reduce((sum: number, s: RangeItem) => sum + s.count, 0)
 
   return (
     <div className="space-y-6">
@@ -158,7 +164,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                 <SheetHeader>
                   <SheetTitle>Facets de Búsqueda</SheetTitle>
                   <SheetDescription>
-                    Filtra por categoría, idioma, moneda, rating y estudiantes
+                    Filtra por categoría, idioma, moneda, rating, estudiantes y entidades
                   </SheetDescription>
                 </SheetHeader>
                 <div className="space-y-6 py-4 overflow-y-auto max-h-[calc(100vh-120px)]">
@@ -352,6 +358,60 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                     </Select>
                   </div>
 
+                  {/* NUEVO Facet 7: Entity Type (stringFacet) */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">🏷️ Tipo de Entidad</Label>
+                    <Select
+                      value={filters.entityType || 'all'}
+                      onValueChange={(value) =>
+                        handleFilterChange('entityType', value === 'all' ? undefined : value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todos los tipos" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[300px]">
+                        <SelectItem value="all">
+                          Todos los tipos
+                          {facets?.entityTypes && ` (${facets.entityTypes.reduce((sum: number, e: any) => sum + e.count, 0)})`}
+                        </SelectItem>
+                        {(facets?.entityTypes || []).map((entity: any) => (
+                          <SelectItem key={entity.name} value={entity.name}>
+                            {entity.name}
+                            {entity.count > 0 && <span className="text-muted-foreground ml-1">({entity.count})</span>}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* NUEVO Facet 8: Entity Value (stringFacet) */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold">🔖 Valor de Entidad</Label>
+                    <Select
+                      value={filters.entityValue || 'all'}
+                      onValueChange={(value) =>
+                        handleFilterChange('entityValue', value === 'all' ? undefined : value)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Todos los valores" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[300px]">
+                        <SelectItem value="all">
+                          Todos los valores
+                          {facets?.entityValues && ` (${facets.entityValues.reduce((sum: number, e: any) => sum + e.count, 0)})`}
+                        </SelectItem>
+                        {(facets?.entityValues || []).map((entity: any) => (
+                          <SelectItem key={entity.name} value={entity.name}>
+                            {entity.name}
+                            {entity.count > 0 && <span className="text-muted-foreground ml-1">({entity.count})</span>}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   {/* Botón limpiar filtros */}
                   <Button onClick={clearFilters} variant="outline" className="w-full mt-4">
                     <X className="mr-2 h-4 w-4" />
@@ -365,7 +425,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       </Card>
 
       {/* Filtros activos */}
-      {(filters.search || filters.category || filters.specificCategory || filters.language || filters.currency || filters.minRating || filters.minStudents) && (
+      {(filters.search || filters.category || filters.specificCategory || filters.language || filters.currency || filters.minRating || filters.minStudents || filters.entityType || filters.entityValue) && (
         <div className="flex flex-wrap gap-2">
           {filters.search && (
             <Badge variant="secondary" className="cursor-pointer">
@@ -430,6 +490,24 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
               <X
                 className="ml-1 h-3 w-3"
                 onClick={() => handleFilterChange('minStudents', undefined)}
+              />
+            </Badge>
+          )}
+          {filters.entityType && (
+            <Badge variant="secondary" className="cursor-pointer">
+              🏷️ {filters.entityType}
+              <X
+                className="ml-1 h-3 w-3"
+                onClick={() => handleFilterChange('entityType', undefined)}
+              />
+            </Badge>
+          )}
+          {filters.entityValue && (
+            <Badge variant="secondary" className="cursor-pointer">
+              🔖 {filters.entityValue}
+              <X
+                className="ml-1 h-3 w-3"
+                onClick={() => handleFilterChange('entityValue', undefined)}
               />
             </Badge>
           )}
@@ -528,6 +606,21 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                     <p className="text-xs text-muted-foreground">
                       🌐 {course.language}
                     </p>
+                    {/* Mostrar entities si existen */}
+                    {course.entities && course.entities.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {course.entities.slice(0, 3).map((entity: any, idx: number) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {entity.type}: {entity.value}
+                          </Badge>
+                        ))}
+                        {course.entities.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{course.entities.length - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </Link>

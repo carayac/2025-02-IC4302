@@ -101,6 +101,95 @@ export async function GET(
       )
     }
 
+    // Función para buscar cursos relacionados por título
+    async function findRelatedCoursesByTitle(relatedProductsData: any[]) {
+      const relatedTitles = relatedProductsData
+        .map((p: any) => p.title || p.authorComment?.substring(0, 100))
+        .filter(Boolean)
+        .filter((title, index, arr) => arr.indexOf(title) === index) // Remover duplicados
+
+      if (relatedTitles.length === 0) return []
+
+      try {
+        // Buscar cursos que coincidan con los títulos
+        const relatedCourses = await Course.find({
+          $or: [
+            { title: { $in: relatedTitles } },
+            // También buscar por authorComment si contiene el título
+            ...relatedTitles.map(title => ({
+              authorComment: { $regex: title.substring(0, 50), $options: 'i' }
+            }))
+          ],
+          _id: { $ne: course._id } // Excluir el curso actual
+        })
+        .select('title image rating_value students general_category language currency price _id')
+        .limit(20)
+        .lean()
+
+        // Mapear los resultados con los datos originales
+        return relatedCourses.map((relatedCourse: any) => {
+          // Encontrar el producto relacionado original que coincide
+          const originalProduct = relatedProductsData.find((p: any) =>
+            p.title === relatedCourse.title ||
+            (p.authorComment && relatedCourse.title.includes(p.authorComment.substring(0, 50)))
+          )
+
+          return {
+            id: relatedCourse._id.toString(),
+            title: relatedCourse.title,
+            price: relatedCourse.price || 0,
+            currency: relatedCourse.currency || 'USD',
+            image: relatedCourse.image || course.image || '/placeholder-course.jpg',
+            rating_value: relatedCourse.rating_value || 0,
+            students: relatedCourse.students || 0,
+            general_category: relatedCourse.general_category || course.general_category,
+            language: relatedCourse.language || course.language,
+            short_description: originalProduct?.description?.substring(0, 200) + '...' ||
+                            originalProduct?.short_description ||
+                            relatedCourse.title,
+            // Marcar como producto relacionado
+            isRelated: true,
+            originalCourseId: relatedCourse._id.toString()
+          }
+        })
+      } catch (error) {
+        console.warn('Error buscando cursos relacionados por título:', error)
+        return []
+      }
+    }
+
+    // Obtener productos relacionados
+    let relatedProducts: any[] = []
+    if (course.productos_relacionados && course.productos_relacionados.length > 0) {
+      try {
+        // Intentar buscar cursos reales por título primero
+        relatedProducts = await findRelatedCoursesByTitle(course.productos_relacionados)
+
+        // Si no encontramos cursos reales, usar los datos embebidos como fallback
+        if (relatedProducts.length === 0) {
+          console.log('No se encontraron cursos reales, usando datos embebidos como fallback')
+          relatedProducts = course.productos_relacionados.map((product: any, index: number) => ({
+            id: `fallback_${course._id}_${index}`,
+            title: product.title || product.authorComment?.substring(0, 100) + '...' || 'Producto relacionado',
+            price: product.price || 0,
+            currency: product.currency || 'USD',
+            image: product.image || course.image || '/placeholder-course.jpg',
+            rating_value: product.rating_value || course.rating_value || 0,
+            students: product.students || course.students || 0,
+            general_category: product.general_category || course.general_category,
+            language: product.language || course.language,
+            short_description: product.description?.substring(0, 200) + '...' || '',
+            // Marcar como producto relacionado
+            isRelated: true,
+            originalCourseId: null // No hay curso real para este
+          }))
+        }
+      } catch (error) {
+        console.warn('Error procesando productos relacionados:', error)
+        relatedProducts = []
+      }
+    }
+
     // Calcular estadísticas adicionales de las reviews
     const reviewStats = {
       totalReviews: course.reviews?.length || 0,
@@ -121,6 +210,7 @@ export async function GET(
           ...course,
           reviewStats,
           highlights: highlights || undefined,
+          relatedProducts,
         },
       },
       {
