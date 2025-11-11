@@ -341,7 +341,18 @@ def process_message(ch, method, properties, body):
         ch.basic_ack(delivery_tag=method.delivery_tag)
         return
 
-    file_key = body.decode("utf-8").strip()
+    raw = body.decode("utf-8").strip()
+
+    file_key = None
+    try:
+        parsed = json.loads(raw)
+        if isinstance(parsed, dict) and "id" in parsed:
+            file_key = parsed["id"]
+        elif isinstance(parsed, str):
+            file_key = parsed
+    except:
+        file_key = raw
+
     filename = os.path.basename(file_key)
 
     coll = mongo_collection()
@@ -384,6 +395,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
