@@ -19,33 +19,34 @@ spec:
       containers:
         - name: {{ .Values.config.beautifulSoup.name }}
           image: "{{ .Values.config.docker_registry }}/{{ .Values.config.beautifulSoup.image }}"
-          
-          # --- ENVIRONMENT VARIABLES ---
+
           env:
-            # AWS / S3 configuration
+            - name: MONGO_URI
+              value: "mongodb+srv://dbUser:B1b5xCdAOZDVfjcC@productssearch.sao2plc.mongodb.net/ecomm?appName=ProductsSearch"
+            - name: INGESTION_COLLECTION
+              value: "ingestion"
+
             - name: S3_BUCKET
               value: "ic-tec-dataset"
+
             - name: AWS_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: aws-secret
                   key: AWS_ACCESS_KEY
-                  optional: false
             - name: AWS_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: aws-secret
                   key: AWS_SECRET_KEY
-                  optional: false
             - name: AWS_REGION
               value: "us-east-1"
 
-            # RabbitMQ configuration
             - name: RABBITMQ
               value: "databases-rabbitmq"
-            - name: RABBITMQ_QUEUE_HTML     # queue to consume from (controller sends here)
+            - name: RABBITMQ_QUEUE_HTML
               value: "queue_parse"
-            - name: RABBITMQ_QUEUE_ENTITY   # queue to publish to (entity extractor listens)
+            - name: RABBITMQ_QUEUE_ENTITY
               value: "queue_entity"
             - name: RABBITMQ_USER
               value: "user"
@@ -54,20 +55,16 @@ spec:
                 secretKeyRef:
                   name: databases-rabbitmq
                   key: rabbitmq-password
-                  optional: false
 
-            # Shared volume path
             - name: SHARED_VOLUME_PATH
               value: "/xdata"
 
-          # --- VOLUME MOUNT ---
           volumeMounts:
-            - name: augmented-volume
+            - name: shared-volume
               mountPath: /xdata
 
-      # --- VOLUME CLAIM ---
       volumes:
-        - name: augmented-volume
+        - name: shared-volume
           persistentVolumeClaim:
-            claimName: augmented-pvc
+            claimName: data
 {{- end }}
