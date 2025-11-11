@@ -85,8 +85,6 @@ def spacy_load():
 # Se guarda el pipeline del modelo elegido 
 NLP = spacy_load()
 
-# Etiqueta bloqueada 
-BLOCKED = {"MISC"}
 
 #Verifica que el PVC exista y tenga las carpetas raw y augmented de lo contrario las crea
 def ensure_volume(base_path: str):
@@ -96,11 +94,9 @@ def ensure_volume(base_path: str):
     # Crea la carpeta base si no existe
     os.makedirs(base_path, exist_ok=True)
 
-    # Verifica que raw exista
+    # Crea raw si no existe
     raw_path = os.path.join(base_path, "raw")
-    
-    if not os.path.exists(raw_path):
-        raise FileNotFoundError(f"Carpeta raw no existe en {raw_path}")
+    os.makedirs(raw_path, exist_ok=True)
 
     # Crea augmented
     augmented_path = os.path.join(base_path, "augmented")
@@ -127,7 +123,7 @@ def extract_entities(text: str) -> List[Dict[str, str]]:
     text = normalize_text(text)
     doc = NLP(text) # Doc Objeto con toda la información del texto que fue procesado
 
-   # Recorre cada entidad y extrae text y label_ (texto y tipo de entidad ORG, PRODUCTO)
+    # Recorre cada entidad y extrae text y label_ (texto y tipo de entidad ORG, PRODUCTO)
     ents = [{"type": ent.label_, "value": ent.text} for ent in doc.ents]
 
     # Depuración de duplicacion de entidades
@@ -136,26 +132,13 @@ def extract_entities(text: str) -> List[Dict[str, str]]:
 
     # Recorre cada una de las entidades extraidas
     for e in ents:
-        label = e["type"]
-        val = e["value"].strip()  # Normaliza
+        entity = (e["type"], e["value"].strip().lower())  # Normaliza
 
-        # Filtrar etiquetas bloqueadas
-        if label in BLOCKED:
-            continue
-
-        if "\n" in val: #descartar entidades con salto de linea
-            continue
-
-        if len(val.split()) > 8:    #descartar entidades con más de 8 palabras
-            continue
-
-        key = (label, val.lower())
-        
         # Si la entidad no está en el conjunto de vistas entonces se agrega, de lo contrario se ignora
-        if key in repeted:
-            continue
-        repeted.add(key)
-        out.append({"type": e["type"], "value": val})
+        if entity not in repeted:
+            repeted.add(entity)
+            out.append({"type": e["type"], "value": e["value"].strip()})
+
     return out
 
 
