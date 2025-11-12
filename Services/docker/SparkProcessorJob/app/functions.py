@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession, DataFrame
-from pyspark.sql.functions import initcap, col, expr, when, date_format,to_date , regexp_replace, udf, explode, collect_list, slice, array_contains, struct, monotonically_increasing_id, flatten, array_distinct
+from pyspark.sql.functions import initcap, col, expr, when, date_format,to_date , regexp_replace, udf, explode, collect_list, slice, array_contains, struct, monotonically_increasing_id, flatten, array_distinct, row_number, coalesce
 from pyspark.sql.types import ArrayType, StructType, StringType, DateType, TimestampType
+from pyspark.sql.window import Window
 import logging
 import sys
 import os
@@ -26,6 +27,10 @@ def createSession():
     """Crea una sesión Spark reutilizable"""
     spark = SparkSession.builder \
         .appName("spark-job") \
+        .config("spark.executor.memory", os.getenv("SPARK_EXECUTOR_MEMORY", "2g")) \
+        .config("spark.driver.memory", os.getenv("SPARK_DRIVER_MEMORY", "1g")) \
+        .config("spark.sql.shuffle.partitions", os.getenv("SPARK_SQL_SHUFFLE_PARTITIONS", "16")) \
+        .config("spark.sql.adaptive.enabled", "true") \
         .config("spark.mongodb.write.connection.uri", uri) \
         .getOrCreate()
     return spark
@@ -44,7 +49,6 @@ def read_augmented_data(spark, input_path):
 
     df = spark.read.option("multiline","true").json(input_path)
     df.createOrReplaceTempView("augmented_data")
-    df.show(5)
     logger.info("Augmented data loaded and registered as temporary view")
     return df
 
@@ -117,10 +121,15 @@ def normalize_entities(dataframe):
 # Transformation #2
 # Format dates to DD/MM/YYYY throughout the schema using Spark SQL
 def format_dates_ddmmyyyy_sql(dataframe):
+    parsed_primary = to_date(col("date_extracted"), "dd/MM/yyyy")
+    parsed_iso = to_date(col("date_extracted"), "yyyy-MM-dd")
+    parsed_slash_iso = to_date(col("date_extracted"), "yyyy/MM/dd")
+    parsed_mixed = to_date(regexp_replace(col("date_extracted"), "/", "-"), "dd-MM-yyyy")
+
     df_formatted = dataframe.withColumn(
         "date_extracted",
         date_format(
-            to_date(regexp_replace(col("date_extracted"), "/", "-"), "yyyy-MM-dd"),
+            coalesce(parsed_primary, parsed_iso, parsed_slash_iso, parsed_mixed),
             "dd/MM/yyyy"
         )
     )
@@ -170,10 +179,17 @@ def add_related_products(df, max_relacionados: int = 10) -> DataFrame:
     exploded_global = df_with_id.withColumn("entity", explode(col("entities"))) \
                                .withColumn("entity_value", col("entity.value")) \
                                .withColumn("entity_type", col("entity.type")) \
-                               .filter((col("entity_value").isNotNull())) \
-                               .select(col("entity_value"), full_struct)
+                               .filter(col("entity_value").isNotNull()) \
+                               .select(col("entity_value"), col("_product_id"), full_struct)
 
-    df_grouped = exploded_global.groupBy("entity_value").agg(collect_list(col("full_product")).alias("related_per_entity"))
+    # limit number of products por entidad antes del collect_list para evitar OOM
+    max_por_entidad = max_relacionados * 5
+    entity_window = Window.partitionBy("entity_value").orderBy(col("_product_id"))
+    limited_global = exploded_global.withColumn("_entity_rank", row_number().over(entity_window)) \
+                                     .filter(col("_entity_rank") <= max_por_entidad) \
+                                     .drop("_entity_rank")
+
+    df_grouped = limited_global.groupBy("entity_value").agg(collect_list(col("full_product")).alias("related_per_entity"))
 
     # For each product, explode its entities and join to the grouped related list, then aggregate back
     left_exploded = df_with_id.select("_product_id", "entities") \
@@ -224,7 +240,7 @@ def normalize_data(spark):
 
     # Formate dates to DD/MM/YYYY throughout the schema
     #if use the sql version to apply the format throughout the schema
-    df = format_dates_ddmmyyyy_sql(df)
+    #df = format_dates_ddmmyyyy_sql(df)
 
     #genereate the short version of the description
     df = summary(df)

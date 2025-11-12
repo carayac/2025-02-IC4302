@@ -1,13 +1,13 @@
 config:
   docker_registry: carayacn # docker registry replace with your own username
   controller:
-    enabled: false
+    enabled: true
     replicas: 1
     name: controller
     image: controller
     schedule: "0 * * * *"  #every hour
   beautifulSoup:
-    enabled: false
+    enabled: true
     replicas: 1
     name: beautiful-soup
     image: beautiful-soup
@@ -16,9 +16,9 @@ config:
     replicas: 1
     name: spark-processor-job
     image: spark-processor-job
-    schedule: "0 * * * *"  #every hour
+    schedule: "0 * * * *"  # every hour
   spacyEntityExtractor:
-    enabled: false
+    enabled: true
     replicas: 2
     name: spacy-entity-extractor
     image: spacy-entity-extractor
