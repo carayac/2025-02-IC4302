@@ -358,6 +358,7 @@ def process_message(ch, method, properties, body):
     coll = mongo_collection()
     coll.update_one({"_id": file_key}, {"$set": {"processing": "started"}}, upsert=True)
 
+    logger.info(f"{file_key} se empezó a procesar")
     html = download_html_from_s3(file_key)
     if not html:
         ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -374,9 +375,10 @@ def process_message(ch, method, properties, body):
 
     coll.update_one({"_id": file_key}, {"$set": {"processing": "completed"}})
 
-    msg_to_entity = {"s3Key": file_key, "jsonPath": json_path}
+    msg_to_entity = {"_id": file_key, "jsonPath": json_path}
     ch.basic_publish(exchange="", routing_key=RABBITMQ_QUEUE_ENTITY, body=json.dumps(msg_to_entity))
 
+    logger.info(f"{msg_to_entity} publicado en {RABBITMQ_QUEUE_ENTITY}, proceso completado")
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
@@ -395,5 +397,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
