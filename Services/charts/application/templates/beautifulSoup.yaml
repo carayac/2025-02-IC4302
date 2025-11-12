@@ -57,11 +57,11 @@ spec:
                   key: rabbitmq-password
 
             - name: SHARED_VOLUME_PATH
-              value: "/xdata"
+              value: "/app/data"
 
           volumeMounts:
             - name: shared-volume
-              mountPath: /xdata
+              mountPath: /app/data/
 
       volumes:
         - name: shared-volume
