@@ -128,7 +128,6 @@ def extract_course_data(html: str, filename: str) -> dict:
     data = {
         "title": None,
         "general_category": None,
-        "specific_category": None,
         "description": None,
         "image": None,
         "price": 0.0,
@@ -149,8 +148,18 @@ def extract_course_data(html: str, filename: str) -> dict:
 
     if json_ld_tag and json_ld_tag.string:
         try:
-            cleaned = json_ld_tag.string.strip().replace("// <![CDATA[", "").replace("// ]]>", "")
-            ld = json.loads(cleaned)
+            raw_json = json_ld_tag.string
+
+            
+            raw_json = raw_json.replace("// <![CDATA[", "")
+            raw_json = raw_json.replace("// ]]>", "")
+
+            
+            raw_json = re.sub(r'^\s*//.*$', '', raw_json, flags=re.MULTILINE)
+
+            raw_json = raw_json.strip()
+
+            ld = json.loads(raw_json)
 
             if isinstance(ld, list):
                 ld = ld[0]
@@ -164,10 +173,6 @@ def extract_course_data(html: str, filename: str) -> dict:
 
             #Image
             data["image"] = ld.get("image")
-
-            offers = ld.get("offers", {})
-            data["price"] = float(offers.get("price", 0.0))
-            data["currency"] = offers.get("priceCurrency", "USD")
 
             #rating
             if "aggregateRating" in ld:
@@ -216,6 +221,28 @@ def extract_course_data(html: str, filename: str) -> dict:
             logger.warning(f"JSON-LD error in {filename}: {e}")
 
 
+    ##FALLBACKS
+
+
+    #IMAGE FALLBACK
+        
+    if not data["image"]:
+        #OG
+        og = soup.find("meta", property="og:image")
+        if og and og.get("content"):
+            data["image"] = og["content"]
+
+    if not data["image"]:
+        #Twitter image
+        tw = soup.find("meta", {"name": "twitter:image"})
+        if tw and tw.get("content"):
+            data["image"] = tw["content"]
+
+    if not data["image"]:
+        #player del video
+        player = soup.select_one("img.player")
+        if player and player.get("src"):
+            data["image"] = player["src"]
 
 
 
@@ -228,7 +255,7 @@ def extract_course_data(html: str, filename: str) -> dict:
     if not data["description"]:
         meta_d = soup.find("meta", {"name": "description"})
         if meta_d and meta_d.get("content"):
-            data["description"] = meta_d["content"]
+            data["description"] = BeautifulSoup(meta_d["content"], "lxml").get_text(" ", strip=True)
         else:
             p = soup.find("p")
             if p:
@@ -241,16 +268,6 @@ def extract_course_data(html: str, filename: str) -> dict:
         if h4:
             data["general_category"] = h4.get_text(strip=True)
 
-    # SPECIFIC CATEGORY
-    full_text = soup.get_text(" ", strip=True)
-    area_match = re.search(
-        r"(Área|Categoria|Categoría|Tema)\s*[:\-]\s*([A-Za-zÁÉÍÓÚáéíóúñÑ ]+)",
-        full_text,
-        re.IGNORECASE
-    )
-    if area_match:
-        data["specific_category"] = area_match.group(2).strip()
-
     # Estimated weeks & hours per week
     extra_text = soup.get_text(" ", strip=True)
 
@@ -261,6 +278,39 @@ def extract_course_data(html: str, filename: str) -> dict:
     hp = re.search(r"(\d+-\d+)\s*horas", extra_text, re.IGNORECASE)
     if hp:
         data["hours_per_week"] = hp.group(1)
+
+    #REVIEWS
+    if not data["reviews"]:
+        comments_ul = soup.find("ul", id="list_comment")
+        if comments_ul:
+            for li in comments_ul.find_all("li", attrs={"name": "user_comment"}):
+                user_tag = li.select_one("div > a[href*='/certifications/index/']")
+                user = user_tag.get_text(" ", strip=True).split()[0] if user_tag else "Anónimo"
+                comment_tag = li.find("p", class_="comment-info")
+                comment = comment_tag.get_text(" ", strip=True) if comment_tag else None
+                stars = li.select("ul.row.star svg")
+                rating = None
+                if stars:
+                    filled = 0
+                    for svg in stars:
+                        classes = svg.get("class") or []
+                        if isinstance(classes, str):
+                            classes = [classes]
+                        style = svg.get("style", "")
+                        if "opacity" in " ".join(classes) and "opacity:1" not in style:
+                            continue
+                        filled += 1
+                    rating = float(filled) if filled else None
+
+                date_tag = li.find("div", class_="comment-date")
+                date = date_tag.get_text(" ", strip=True) if date_tag else None
+
+                data["reviews"].append({
+                    "user": user,
+                    "comment": comment,
+                    "rating": rating,
+                    "date": date
+                })
 
 
     #EXTRACT RATING + STUDENTS
@@ -397,6 +447,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 

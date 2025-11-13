@@ -5,7 +5,7 @@
 **Institución:** Tecnológico de Costa Rica – Escuela de Ingeniería en Computación  
 
 ### VIDEO INFORMATIVO
-[Que es NOMBRE DE LA UI?](poner link)
+[Products Search V2](poner link)
 
 # Instrucciones de Ejecución
   
@@ -519,6 +519,180 @@ Es producida por el BeautifulSoup y consumida por el Spacy Entity Extractor.  Su
 ### Rest API
 <details> <summary>Desplegar información</summary>
 
+#### Endpoints
+<details> <summary>Ver endpoints</summary>
+
+#### 1. Obtener cursos
+```
+GET /api/courses
+```
+
+**Descripción:** Obtiene una lista de cursos desde la base de datos con filtros opcionales, ordenamiento, paginación y estadísticas agrupadas (facets).
+Si se envía el parámetro search, se utiliza Atlas Search para realizar búsquedas de texto con relevancia y resultados destacados (highlighting).
+
+**Parámetros de consulta (Query Params)**
+
+| Parámetro | Tipo | Descripción |
+|------------|------|--------------|
+| `search` | `string` | Texto a buscar en los campos `title`, `description`, `short-description`, `authorComment` |
+| `category` | `string` | Filtra por categoría general del curso | 
+| `estimatedWeeks` | `number` | Filtra por semanas estimadas de duración |
+| `language` | `string` | Filtra por idioma | 
+| `currency` | `string` | Filtra por tipo de moneda |
+| `studentsRange` | `string` | Rango de estudiantes, formato `"min-max"` (ej. `"100-5000"`) | 
+| `entityType` | `string` | Filtra por tipo de entidad (`entities.type`) | 
+| `entityValue` | `string` | Filtra por valor de entidad (`entities.value`) | 
+| `sortBy` | `string` | Campo de ordenamiento (ej. `"rating_value"`, `"price"`) | 
+| `order` | `string` | Orden ascendente o descendente (`asc` o `desc`) | 
+| `limit` | `number` | Límite de resultados por página |
+| `page` | `number` | Página actual | 
+
+**Ejemplo de request:**
+```
+GET /api/courses?search=javascript&category=Programación&language=es&limit=5&page=1
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "64b12345f9c12f7a9c3e1111",
+      "title": "Curso de JavaScript",
+      "description": "Aprende JavaScript desde cero",
+      "price": 49,
+      "rating_value": 4.5,
+      "students": 1050,
+      "language": "es",
+      "currency": "USD",
+      "entities": [
+        { "type": "plataforma", "value": "Edutin" }
+      ],
+      "highlights": [ /* fragmentos destacados si hay búsqueda */ ]
+    }
+  ],
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 10,
+    "totalCount": 200,
+    "limit": 20,
+    "hasNextPage": true,
+    "hasPrevPage": false
+  },
+  "facets": {
+    "categories": [{ "name": "Programación", "count": 120 }],
+    "estimatedWeeks": [{ "name": 8, "count": 30 }],
+    "languages": [{ "name": "es", "count": 180 }],
+    "currencies": [{ "name": "USD", "count": 150 }],
+    "priceRange": {
+      "buckets": [{ "range": 0, "count": 20 }, { "range": 50, "count": 100 }]
+    },
+    "ratingDistribution": [
+      { "_id": 3, "count": 15 },
+      { "_id": 4, "count": 80 },
+      { "_id": 5, "count": 50 }
+    ],
+    "studentsRange": {
+      "buckets": [{ "range": 0, "count": 10 }, { "range": 1000, "count": 50 }]
+    },
+    "entityTypes": [{ "name": "plataforma", "count": 2 }],
+    "entityValues": [{ "name": "Edutin", "count": 50 }]
+  },
+  "filters": {
+    "search": "javascript",
+    "category": "Programación",
+    "language": "es",
+    "sortBy": "rating_value",
+    "order": "desc"
+  }
+}
+```
+
+
+#### 2. Obtener curso específico
+```
+GET /api/courses/{id}
+```
+
+**Descripción:** Obtiene la información detallada de un curso específico por su ID de MongoDB. Si se incluye el parámetro search, se utiliza Atlas Search para aplicar búsqueda semántica dentro del curso y resaltar coincidencias (highlighting). Además, devuelve productos relacionados y estadísticas de reseñas.
+
+**Parámetros de consulta (Query Params)**
+
+| Parámetro | Tipo | Descripción | 
+|------------|------|--------------|
+| `id` | `string` | ID del curso en formato MongoDB ObjectId |
+| `search` | `string` | Texto para aplicar búsqueda contextual con Atlas Search y resaltar coincidencias| 
+
+**Ejemplo de request:**
+```
+GET /api/courses/64b12345f9c12f7a9c3e1111?search=javascript
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "64b12345f9c12f7a9c3e1111",
+    "title": "Curso de JavaScript",
+    "description": "Aprende a programar en JavaScript desde cero.",
+    "price": 49,
+    "rating_value": 4.5,
+    "students": 1050,
+    "language": "es",
+    "currency": "USD",
+    "general_category": "Programación",
+    "productos_relacionados": [
+      {
+        "title": "Curso de HTML",
+        "price": 29,
+        "currency": "USD"
+      }
+    ],
+    "reviewStats": {
+      "totalReviews": 150,
+      "averageRating": 4.5,
+      "ratingDistribution": {
+        "5": 100,
+        "4": 30,
+        "3": 10,
+        "2": 5,
+        "1": 5
+      }
+    },
+    "relatedProducts": [
+      {
+        "id": "64b99999f9c12f7a9c3e7777",
+        "title": "Curso de HTML",
+        "price": 29,
+        "currency": "USD",
+        "rating_value": 4.6,
+        "students": 800,
+        "language": "es",
+        "short_description": "Aprende los fundamentos del lenguaje HTML...",
+        "isRelated": true,
+        "originalCourseId": "64b99999f9c12f7a9c3e7777"
+      }
+    ],
+    "highlights": [
+      {
+        "path": "description",
+        "texts": [
+          { "value": "Aprende a programar en ", "type": "text" },
+          { "value": "JavaScript", "type": "hit" },
+          { "value": " desde cero.", "type": "text" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+
+</details>
+
+
 #### Uso de la AI
 <details> <summary>Desplegar información</summary>
 
@@ -547,6 +721,11 @@ Es producida por el BeautifulSoup y consumida por el Spacy Entity Extractor.  Su
 
 6. La utilización de Spacy logra identificar correctamente entidades importantes sobre los productos de cursos, brindando así una mejor organización de la información dentro de cada uno de los productos que se mostrarán
 
+7. El uso de Next.js para el despliegue en Vercel simplifica mucho el desarrollo y la implementación de aplicaciones full-stack. Las API routes permiten crear un backend serverless integrado, reduciendo la complejidad de configuración y facilitando la interacción con bases de datos como MongoDB Atlas.
+
+8. Firebase facilita la autenticación de usuarios con herramientas listas para producción, eliminando la necesidad de desarrollar endpoints personalizados. Su integración con NextJS permite construir aplicaciones seguras en menos tiempo, manteniendo buenas prácticas en la gestión de sesiones y credenciales.
+
+
 </details>
 
 # Recomendaciones
@@ -566,6 +745,10 @@ Se recomienda centralizar la configuración del sistema mediante variables de en
 5. Se recomienda validar que los archivos HTML realmente contengan información para de esta manera evitar que el componenyte que los consume procese archivos innecesarios y mantener la calidad de los datos.
 
 6. Se recomienda analizar bien el contexto en el que será utilizado el modelo Spacy, ya que este contiene modelos con diferentes caracteristicas, algunos consumen más memoria lo cual puede ser no tan factible cuando se tienen recursos limitados, otros son más ligeros pero tienen peor redimiento, por esto se requiere un analisis de cuál podría ser el más adecuado.
+
+7. Para las instrucciones de este proyecto, donde se debe de desplegar una web en Vercel, se recomienda utilizar Next.js. Este framework es muy sencillo de desplegar, ya que es creado  por el propio Vercel. Además, el uso del backend es facilitado por las API routes de Next.js, que permiten crear endpoints serverless directamente en el proyecto, sin preocuparse por desplegarlo en otro sitio.
+
+8. Si se tiene la posibilidad, se recomienda el uso de Firebase para el manejo de autenticación de usuarios. Estas funcionalidades que ofrece facilitan mucho los procesos de registro, login, verificación de correos electrónicos, recuperación de contraseñas y gestión de sesiones, sin necesidad de implementar un backend personalizado para autenticación.
 
 </details>
 
