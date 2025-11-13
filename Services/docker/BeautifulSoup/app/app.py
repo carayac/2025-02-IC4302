@@ -149,8 +149,18 @@ def extract_course_data(html: str, filename: str) -> dict:
 
     if json_ld_tag and json_ld_tag.string:
         try:
-            cleaned = json_ld_tag.string.strip().replace("// <![CDATA[", "").replace("// ]]>", "")
-            ld = json.loads(cleaned)
+            raw_json = json_ld_tag.string
+
+            
+            raw_json = raw_json.replace("// <![CDATA[", "")
+            raw_json = raw_json.replace("// ]]>", "")
+
+            
+            raw_json = re.sub(r'^\s*//.*$', '', raw_json, flags=re.MULTILINE)
+
+            raw_json = raw_json.strip()
+
+            ld = json.loads(raw_json)
 
             if isinstance(ld, list):
                 ld = ld[0]
@@ -218,6 +228,11 @@ def extract_course_data(html: str, filename: str) -> dict:
 
 
 
+    if not data["image"]:
+        thumb = soup.select_one(".youtube .player")
+        if thumb and thumb.get("src"):
+            data["image"] = thumb["src"]
+
 
     # TITLE / DESCRIPTION FALLBACKS
     if not data["title"]:
@@ -228,7 +243,7 @@ def extract_course_data(html: str, filename: str) -> dict:
     if not data["description"]:
         meta_d = soup.find("meta", {"name": "description"})
         if meta_d and meta_d.get("content"):
-            data["description"] = meta_d["content"]
+            data["description"] = BeautifulSoup(meta_d["content"], "lxml").get_text(" ", strip=True)
         else:
             p = soup.find("p")
             if p:
