@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/home/navbar'
 import { HighlightedText } from '@/components/ui/highlighted-text'
 import Link from 'next/link'
-import { Star, Users, Globe, DollarSign, Award, MessageSquare } from 'lucide-react'
+import { Star, Users, Globe, DollarSign, Award, MessageSquare, Clock } from 'lucide-react'
 
 interface CoursePageProps {
   params: Promise<{ id: string }>
@@ -270,6 +270,14 @@ export default async function CoursePage({ params, searchParams }: CoursePagePro
                         <span className="text-sm font-medium">Estudiantes</span>
                       </div>
                       <span className="font-semibold">{formatStudents(course.students)}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between py-2 border-b border-gray-100">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-orange-500" />
+                        <span className="text-sm font-medium">Semanas Estimadas</span>
+                      </div>
+                      <span className="font-semibold">{course.estimated_weeks || 'N/A'} {course.estimated_weeks === 1 ? 'semana' : 'semanas'}</span>
                     </div>
 
                     <div className="flex items-center justify-between py-2 border-b border-gray-100">
