@@ -98,6 +98,7 @@ export async function fetchCourses(
 
   const response = await fetch(url, {
     cache: 'no-store',
+    credentials: 'include',
   })
 
   if (!response.ok) {
@@ -108,7 +109,7 @@ export async function fetchCourses(
   return response.json()
 }
 
-export async function fetchCourse(id: string, search?: string): Promise<CourseResponse> {
+export async function fetchCourse(id: string, search?: string, token?: string): Promise<CourseResponse> {
   const params = new URLSearchParams()
   if (search) params.append('search', search)
 
@@ -116,10 +117,21 @@ export async function fetchCourse(id: string, search?: string): Promise<CourseRe
   const queryString = params.toString()
   const url = `${baseUrl}/api/courses/${id}${queryString ? `?${queryString}` : ''}`
 
-  console.log('🔍 Fetching course from:', url)
+  console.log('Fetching course from:', url)
+
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  }
+
+  // Si hay token, inclúyelo como Cookie header
+  if (token) {
+    headers['Cookie'] = `auth-token=${token}`
+  }
 
   const response = await fetch(url, {
     cache: 'no-store',
+    credentials: 'include',
+    headers,
   })
 
   if (!response.ok) {

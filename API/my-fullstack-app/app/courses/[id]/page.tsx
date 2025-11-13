@@ -6,6 +6,8 @@ import { Navbar } from '@/components/home/navbar'
 import { HighlightedText } from '@/components/ui/highlighted-text'
 import Link from 'next/link'
 import { Star, Users, Globe, DollarSign, Award, MessageSquare, Clock } from 'lucide-react'
+import { cookies } from 'next/headers'
+
 
 interface CoursePageProps {
   params: Promise<{ id: string }>
@@ -17,7 +19,10 @@ export default async function CoursePage({ params, searchParams }: CoursePagePro
   const { search } = await searchParams
 
   try {
-    const response = await fetchCourse(id, search)
+    const cookieStore = await cookies()
+    const authToken = cookieStore.get('auth-token')?.value
+
+    const response = await fetchCourse(id, search, authToken)
 
     if (!response.success) {
       notFound()

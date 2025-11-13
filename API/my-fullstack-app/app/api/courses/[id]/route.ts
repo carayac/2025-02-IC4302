@@ -2,13 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongoose'
 import Course from '@/lib/models/course'
 import mongoose from 'mongoose'
+import { authAdmin } from '@/lib/firebase-admin'
 
 export const dynamic = 'force-dynamic'
 
-/**
- * GET /api/courses/[id]
- * Obtiene un curso específico por ID
- */
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -28,6 +26,23 @@ export async function GET(
         },
         { status: 400 }
       )
+    }
+
+  
+    // Verifica si tiene token de autenticación
+    const token = request.cookies.get('auth-token')?.value
+    console.log('Token recibido:', token ? 'Presente' : 'Ausente')  
+
+    if (!token) {
+      return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
+    }
+
+    // Verifica si el token fue emitido por Firebase
+    const decodedToken = await authAdmin.verifyIdToken(token)
+    console.log('Token decodificado ahora siuuu (UID):', decodedToken?.uid)  
+
+    if (!decodedToken) {
+      return NextResponse.json({ success: false, error: 'El token no es válido' }, { status: 401 })
     }
 
     // Conectar a la base de datos

@@ -1,11 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongoose'
 import Course from '@/lib/models/course'
+import { authAdmin } from '@/lib/firebase-admin'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
+
+    // Verifica si tiene token de autenticación
+    const token = request.cookies.get('auth-token')?.value
+    console.log('Token recibido:', token ? 'Presente' : 'Ausente')  // Log seguro: no imprime el token completo
+
+    if (!token) {
+      return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
+    }
+
+    // Verifica si el token fue emitido por Firebase
+    const decodedToken = await authAdmin.verifyIdToken(token)
+    console.log('Token decodificado (UID):', decodedToken?.uid)  // Log del UID para depuración
+
+    if (!decodedToken) {
+      return NextResponse.json({ success: false, error: 'El token no es válido' }, { status: 401 })
+    }
+
     await connectDB()
 
     const { searchParams } = new URL(request.url)
