@@ -10,7 +10,7 @@ from pymongo import MongoClient
 
 # S3
 S3_BUCKET = os.getenv("S3_BUCKET")
-S3_PREFIXES = [p.strip() for p in os.getenv("S3_PREFIXES").split(",") if p.strip()]
+S3_PREFIXES = [p.strip() for p in os.getenv("S3_PREFIXES", "").split(",") if p.strip()]
 AWS_REGION = os.getenv("AWS_REGION")
 
 # MongoDB

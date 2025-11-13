@@ -17,6 +17,6 @@ RUN python -m spacy download es_core_news_lg
 
 COPY app/. .
 
-#RUN python -u test.py
+RUN python -u test.py
 
 CMD ["python", "-u", "app.py"]
