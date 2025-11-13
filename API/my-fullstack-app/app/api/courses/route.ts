@@ -11,13 +11,10 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category')
-    const specificCategory = searchParams.get('specificCategory')
+    const estimatedWeeks = searchParams.get('estimatedWeeks')
     const language = searchParams.get('language')
     const currency = searchParams.get('currency')
-    const minRating = searchParams.get('minRating')
-    const minPrice = searchParams.get('minPrice')
-    const maxPrice = searchParams.get('maxPrice')
-    const minStudents = searchParams.get('minStudents')
+    const studentsRange = searchParams.get('studentsRange')
     const entityType = searchParams.get('entityType')
     const entityValue = searchParams.get('entityValue')
     const sortBy = searchParams.get('sortBy') || 'rating_value'
@@ -43,11 +40,11 @@ export async function GET(request: NextRequest) {
         })
       }
 
-      if (specificCategory && specificCategory !== 'all') {
+      if (estimatedWeeks && estimatedWeeks !== 'all') {
         mustClauses.push({
-          text: {
-            query: specificCategory,
-            path: 'specific_category'
+          equals: {
+            path: 'estimated_weeks',
+            value: parseInt(estimatedWeeks)
           }
         })
       }
@@ -70,27 +67,13 @@ export async function GET(request: NextRequest) {
         })
       }
       
-      if (minRating) {
-        mustClauses.push({
-          range: {
-            path: 'rating_value',
-            gte: parseFloat(minRating)
-          }
-        })
-      }
-
-      if (minPrice || maxPrice) {
-        const priceRange: any = { path: 'price' }
-        if (minPrice) priceRange.gte = parseFloat(minPrice)
-        if (maxPrice) priceRange.lte = parseFloat(maxPrice)
-        mustClauses.push({ range: priceRange })
-      }
-
-      if (minStudents) {
+      if (studentsRange && studentsRange !== 'all') {
+        const [min, max] = studentsRange.split('-').map(Number)
         mustClauses.push({
           range: {
             path: 'students',
-            gte: parseInt(minStudents)
+            gte: min,
+            lt: max === 1000000 ? undefined : max  
           }
         })
       }
@@ -143,10 +126,11 @@ export async function GET(request: NextRequest) {
                   path: 'general_category',
                   numBuckets: 50
                 },
-                specificCategoryFacet: {
-                  type: 'string' as const,
-                  path: 'specific_category',
-                  numBuckets: 100
+                estimatedWeeks: {
+                  type: 'number' as const,
+                  path: 'estimated_weeks', 
+                  boundaries: [0, 4, 8, 12, 16, 20, 24, 52],
+                  default: 'other'
                 },
                 languageFacet: {
                   type: 'string' as const,
@@ -315,7 +299,7 @@ export async function GET(request: NextRequest) {
             name: b._id,
             count: b.count
           })),
-          specificCategories: (facetsData.specificCategoryFacet?.buckets || [])
+          estimatedWeeks: (facetsData.estimatedWeeks?.buckets || [])
             .filter((b: any) => b._id !== null)
             .map((b: any) => ({
               name: b._id,
@@ -356,13 +340,10 @@ export async function GET(request: NextRequest) {
         filters: {
           search,
           category,
-          specificCategory,
+          estimatedWeeks,
           language,
           currency,
-          minRating,
-          minPrice,
-          maxPrice,
-          minStudents,
+          studentsRange,
           entityType,
           entityValue,
           sortBy,
@@ -377,8 +358,8 @@ export async function GET(request: NextRequest) {
       if (category && category !== 'all') {
         matchQuery.general_category = category
       }
-      if (specificCategory && specificCategory !== 'all') {
-        matchQuery.specific_category = specificCategory
+      if (estimatedWeeks && estimatedWeeks !== 'all') {
+        matchQuery.estimated_weeks = parseInt(estimatedWeeks)
       }
       if (language && language !== 'all') {
         matchQuery.language = language
@@ -386,17 +367,14 @@ export async function GET(request: NextRequest) {
       if (currency && currency !== 'all') {
         matchQuery.currency = currency
       }
-      if (minRating) {
-        matchQuery.rating_value = { $gte: parseFloat(minRating) }
-      }
-      if (minPrice || maxPrice) {
-        matchQuery.price = {}
-        if (minPrice) matchQuery.price.$gte = parseFloat(minPrice)
-        if (maxPrice) matchQuery.price.$lte = parseFloat(maxPrice)
-      }
-      if (minStudents) {
-        matchQuery.students = { $gte: parseInt(minStudents) }
-      }
+      if (studentsRange && studentsRange !== 'all') {
+  const [min, max] = studentsRange.split('-').map(Number)
+  matchQuery.students = {
+    $gte: min,
+    ...(max !== 1000000 && { $lt: max })
+  }
+}
+
       if (entityType && entityType !== 'all') {
         matchQuery['entities.type'] = entityType
       }
@@ -418,9 +396,9 @@ export async function GET(request: NextRequest) {
               { $sortByCount: '$general_category' },
               { $limit: 50 }
             ],
-            specificCategories: [
-              { $match: { specific_category: { $ne: null } } },
-              { $sortByCount: '$specific_category' },
+            estimatedWeeks: [
+              { $match: { estimated_weeks: { $ne: null } } },
+              { $sortByCount: '$estimated_weeks' },
               { $limit: 100 }
             ],
             languages: [
@@ -570,7 +548,7 @@ export async function GET(request: NextRequest) {
             name: c._id,
             count: c.count
           })),
-          specificCategories: data.specificCategories.map((c: any) => ({
+          estimatedWeeks: data.estimatedWeeks.map((c: any) => ({
             name: c._id,
             count: c.count
           })),
@@ -590,7 +568,6 @@ export async function GET(request: NextRequest) {
           studentsRange: {
             buckets: processedStudentsDistribution
           },
-          // Nuevo: Entity facets
           entityTypes: data.entityTypes.map((e: any) => ({
             name: e._id,
             count: e.count
@@ -603,13 +580,10 @@ export async function GET(request: NextRequest) {
         filters: {
           search,
           category,
-          specificCategory,
+          estimatedWeeks,
           language,
           currency,
-          minRating,
-          minPrice,
-          maxPrice,
-          minStudents,
+          studentsRange,
           entityType,
           entityValue,
           sortBy,

@@ -89,19 +89,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // Obtener rangos de rating con conteos
-  const getRatingRanges = (): RangeItem[] => {
-    if (!facets?.ratingDistribution) return []
-    
-    return facets.ratingDistribution
-      .filter((bucket: any) => bucket._id !== 'Other' && bucket._id !== 'other')
-      .map((bucket: any) => ({
-        value: bucket._id,
-        label: `${bucket._id} - ${bucket._id + 1} ⭐`,
-        count: bucket.count
-      }))
-      .sort((a: any, b: any) => a.value - b.value)
-  }
+
 
   // Obtener rangos de estudiantes con conteos
   const getStudentsRanges = (): RangeItem[] => {
@@ -128,11 +116,17 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       .sort((a: any, b: any) => a.value - b.value)
   }
 
-  const ratingRanges = getRatingRanges()
-  const studentsRanges = getStudentsRanges()
-  const totalRatings = ratingRanges.reduce((sum: number, r: RangeItem) => sum + r.count, 0)
-  const totalStudents = studentsRanges.reduce((sum: number, s: RangeItem) => sum + s.count, 0)
+  const getNextRange = (current: number) => {
+    const ranges = [0, 100, 500, 1000, 5000, 10000, 50000, 100000, 1000000]
+    const currentIndex = ranges.indexOf(current)
+    if (currentIndex === -1 || currentIndex === ranges.length - 1) return '1000000'
+    return ranges[currentIndex + 1].toString()
+  }
 
+  const studentsRanges = getStudentsRanges()
+  const totalStudents = studentsRanges.reduce((sum: number, s: RangeItem) => sum + s.count, 0)
+  const totalEstimatedWeeks = (facets?.estimatedWeeks || []).reduce((sum: number, w: any) => sum + w.count, 0)
+  
   return (
     <div className="space-y-6">
       {/* Barra de búsqueda */}
@@ -198,11 +192,10 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
 
                   {/* Facet 2: Categoría Específica (stringFacet) */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold">🎯 Categoría Específica</Label>
+                    <Label className="text-sm font-semibold">⏱️ Semanas Estimadas</Label>
                     <Select
-                      value={filters.specificCategory || 'all'}
-                      onValueChange={(value) =>
-                        handleFilterChange('specificCategory', value === 'all' ? undefined : value)
+                        value={filters.estimatedWeeks?.toString() || 'all'}                      onValueChange={(value) =>
+                        handleFilterChange('estimatedWeeks', value === 'all' ? undefined : value)
                       }
                     >
                       <SelectTrigger>
@@ -210,13 +203,13 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                       </SelectTrigger>
                       <SelectContent className="max-h-[300px]">
                         <SelectItem value="all">
-                          Todas las subcategorías
-                          {facets?.specificCategories && ` (${facets.specificCategories.reduce((sum: number, c: any) => sum + c.count, 0)})`}
+                          Todas las duraciones
+                          {totalEstimatedWeeks > 0 && ` (${totalEstimatedWeeks})`}
                         </SelectItem>
-                        {(facets?.specificCategories || []).map((cat: any) => (
-                          <SelectItem key={cat.name} value={cat.name}>
-                            {cat.name}
-                            {cat.count > 0 && <span className="text-muted-foreground ml-1">({cat.count})</span>}
+                        {(facets?.estimatedWeeks || []).map((weeks: any) => (
+                          <SelectItem key={weeks.name} value={weeks.name.toString()}>
+                            {weeks.name} {weeks.name === 1 ? 'semana' : 'semanas'}
+                            {weeks.count > 0 && <span className="text-muted-foreground ml-1">({weeks.count})</span>}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -277,55 +270,15 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                     </Select>
                   </div>
 
-                  {/* Facet 5: Rating (numberFacet) */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-semibold">⭐ Rating Mínimo</Label>
-                    <Select
-                      value={filters.minRating?.toString() || 'all'}
-                      onValueChange={(value) =>
-                        handleFilterChange('minRating', value === 'all' ? undefined : parseFloat(value))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Todos los ratings" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">
-                          Todos los ratings
-                          {totalRatings > 0 && ` (${totalRatings})`}
-                        </SelectItem>
-                        {ratingRanges.length > 0 ? (
-                          ratingRanges.map((range) => (
-                            <SelectItem key={range.value} value={range.value.toString()}>
-                              {range.label}
-                              <span className="text-muted-foreground ml-1">({range.count})</span>
-                            </SelectItem>
-                          ))
-                        ) : (
-                          <>
-                            <SelectItem value="0">0 - 1 ⭐</SelectItem>
-                            <SelectItem value="1">1 - 2 ⭐</SelectItem>
-                            <SelectItem value="2">2 - 3 ⭐</SelectItem>
-                            <SelectItem value="3">3 - 4 ⭐</SelectItem>
-                            <SelectItem value="4">4 - 5 ⭐</SelectItem>
-                          </>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
 
                   {/* Facet 6: Número de Estudiantes (numberFacet) */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold">👥 Mínimo de Estudiantes</Label>
+                    <Label className="text-sm font-semibold">👥 Rango de Estudiantes</Label>
                     <Select
-                      value={filters.minStudents?.toString() || 'all'}
-                      onValueChange={(value) => {
-                        if (value === 'all') {
-                          handleFilterChange('minStudents', undefined)
-                        } else {
-                          handleFilterChange('minStudents', parseInt(value))
-                        }
-                      }}
+                      value={filters.studentsRange || 'all'}
+                      onValueChange={(value) =>
+                        handleFilterChange('studentsRange', value === 'all' ? undefined : value)
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Todos los cursos" />
@@ -337,28 +290,28 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                         </SelectItem>
                         {studentsRanges.length > 0 ? (
                           studentsRanges.map((range) => (
-                            <SelectItem key={range.value} value={range.value.toString()}>
+                            <SelectItem key={range.value} value={`${range.value}-${getNextRange(range.value)}`}>
                               {range.label}
                               <span className="text-muted-foreground ml-1">({range.count})</span>
                             </SelectItem>
                           ))
                         ) : (
                           <>
-                            <SelectItem value="0">0 - 100</SelectItem>
-                            <SelectItem value="100">100 - 500</SelectItem>
-                            <SelectItem value="500">500 - 1K</SelectItem>
-                            <SelectItem value="1000">1K - 5K</SelectItem>
-                            <SelectItem value="5000">5K - 10K</SelectItem>
-                            <SelectItem value="10000">10K - 50K</SelectItem>
-                            <SelectItem value="50000">50K - 100K</SelectItem>
-                            <SelectItem value="100000">100K - 1M</SelectItem>
+                            <SelectItem value="0-100">0 - 100</SelectItem>
+                            <SelectItem value="100-500">100 - 500</SelectItem>
+                            <SelectItem value="500-1000">500 - 1K</SelectItem>
+                            <SelectItem value="1000-5000">1K - 5K</SelectItem>
+                            <SelectItem value="5000-10000">5K - 10K</SelectItem>
+                            <SelectItem value="10000-50000">10K - 50K</SelectItem>
+                            <SelectItem value="50000-100000">50K - 100K</SelectItem>
+                            <SelectItem value="100000-1000000">100K - 1M</SelectItem>
                           </>
                         )}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* NUEVO Facet 7: Entity Type (stringFacet) */}
+                  {/* Facet 7: Entity Type (stringFacet) */}
                   <div className="space-y-2">
                     <Label className="text-sm font-semibold">🏷️ Tipo de Entidad</Label>
                     <Select
@@ -425,7 +378,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       </Card>
 
       {/* Filtros activos */}
-      {(filters.search || filters.category || filters.specificCategory || filters.language || filters.currency || filters.minRating || filters.minStudents || filters.entityType || filters.entityValue) && (
+      {(filters.search || filters.category || filters.estimatedWeeks || filters.language || filters.currency || filters.studentsRange || filters.entityType || filters.entityValue) && (
         <div className="flex flex-wrap gap-2">
           {filters.search && (
             <Badge variant="secondary" className="cursor-pointer">
@@ -448,15 +401,16 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
               />
             </Badge>
           )}
-          {filters.specificCategory && (
+          {filters.estimatedWeeks && (
             <Badge variant="secondary" className="cursor-pointer">
-              🎯 {filters.specificCategory}
+              ⏱️ {filters.estimatedWeeks} {filters.estimatedWeeks === 1 ? 'semana' : 'semanas'}
               <X
                 className="ml-1 h-3 w-3"
-                onClick={() => handleFilterChange('specificCategory', undefined)}
+                onClick={() => handleFilterChange('estimatedWeeks', undefined)}
               />
             </Badge>
           )}
+
           {filters.language && (
             <Badge variant="secondary" className="cursor-pointer">
               🌐 {filters.language}
@@ -475,21 +429,12 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
               />
             </Badge>
           )}
-          {filters.minRating && (
+          {filters.studentsRange && (
             <Badge variant="secondary" className="cursor-pointer">
-              ⭐ {filters.minRating}+
+              👥 {filters.studentsRange} estudiantes
               <X
                 className="ml-1 h-3 w-3"
-                onClick={() => handleFilterChange('minRating', undefined)}
-              />
-            </Badge>
-          )}
-          {filters.minStudents && (
-            <Badge variant="secondary" className="cursor-pointer">
-              👥 {filters.minStudents}+ estudiantes
-              <X
-                className="ml-1 h-3 w-3"
-                onClick={() => handleFilterChange('minStudents', undefined)}
+                onClick={() => handleFilterChange('studentsRange', undefined)}
               />
             </Badge>
           )}
@@ -610,7 +555,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                     {course.entities && course.entities.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">
                         {course.entities.slice(0, 3).map((entity: any, idx: number) => (
-                          <Badge key={idx} variant="outline" className="text-xs">
+                          <Badge key={idx} variant="outline" className="text-xs truncate max-w-85">
                             {entity.type}: {entity.value}
                           </Badge>
                         ))}
@@ -621,6 +566,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
                         )}
                       </div>
                     )}
+
                   </CardContent>
                 </Card>
               </Link>

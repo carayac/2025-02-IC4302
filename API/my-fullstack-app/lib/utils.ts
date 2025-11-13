@@ -8,13 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 export interface CourseFilters {
   search?: string
   category?: string
-  specificCategory?: string
+  estimatedWeeks?: number
   language?: string
   currency?: string
-  minRating?: number
-  minPrice?: number
-  maxPrice?: number
-  minStudents?: number
+  studentsRange?: string 
   entityType?: string
   entityValue?: string
   sortBy?: 'rating_value' | 'price' | 'students' | 'title'
@@ -36,7 +33,7 @@ export interface PaginatedResponse<T> {
   }
   facets?: {
     categories?: Array<{ name: string; count: number }>
-    specificCategories?: Array<{ name: string; count: number }>
+    estimatedWeeks?: Array<{ name: string; count: number }> 
     languages?: Array<{ name: string; count: number }>
     currencies?: Array<{ name: string; count: number }>
     priceRange?: {
@@ -85,13 +82,10 @@ export async function fetchCourses(
 
   if (filters.search) params.append('search', filters.search)
   if (filters.category) params.append('category', filters.category)
-  if (filters.specificCategory) params.append('specificCategory', filters.specificCategory)
+  if (filters.estimatedWeeks) params.append('estimatedWeeks', filters.estimatedWeeks.toString())  
   if (filters.language) params.append('language', filters.language)
   if (filters.currency) params.append('currency', filters.currency)
-  if (filters.minRating) params.append('minRating', filters.minRating.toString())
-  if (filters.minPrice) params.append('minPrice', filters.minPrice.toString())
-  if (filters.maxPrice) params.append('maxPrice', filters.maxPrice.toString())
-  if (filters.minStudents) params.append('minStudents', filters.minStudents.toString())
+  if (filters.studentsRange) params.append('studentsRange', filters.studentsRange)
   if (filters.entityType) params.append('entityType', filters.entityType)
   if (filters.entityValue) params.append('entityValue', filters.entityValue)
   if (filters.sortBy) params.append('sortBy', filters.sortBy)
