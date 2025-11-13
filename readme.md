@@ -693,8 +693,37 @@ GET /api/courses/64b12345f9c12f7a9c3e1111?search=javascript
 </details>
 
 
-#### Uso de la AI
-<details> <summary>Desplegar información</summary>
+#### Método de seguridad implementado
+<details>
+<summary>Desplegar información</summary>
+
+Se utilizó el SDK de Firebase Admin para implementar manejo de seguridad, verificando que solo usuarios logueados accedan a recursos.
+
+##### Middleware de Autenticación
+
+- Configurado en `middleware.ts` con `matcher: ['/', '/courses/:path*']` para proteger página principal y de curso específico.
+- Verifica la presencia y validez del token ID de Firebase usando `authAdmin.verifyIdToken()`.
+- Si el token falta o es inválido:
+  - Redirige a `/auth/login`.
+  - Elimina la cookie `auth-token`.
+
+#####  Verificación de Tokens en Endpoints API
+
+- En `/api/courses/route.ts` y `/api/courses/[id]/route.ts`:
+  - Se extrae el token con `request.cookies.get('auth-token')`.
+  - Se valida con `authAdmin.verifyIdToken(token)`.
+  - Si la validación falla, no se ejecuta el endpoint.
+
+##### Flujo General de Seguridad
+
+1. El usuario inicia sesión en el cliente y obtiene un ID Token de Firebase Auth.
+2. El token se almacena en una cookie `auth-token`.
+3. El middleware verifica el token en rutas protegidas para redirecciones.
+4. Los endpoints verifican el token en cada solicitud para autorizar acceso a datos.
+5. Si cualquier verificación falla, se deniega el acceso con errores apropiados.
+
+</details>
+
 
 
 </details>
