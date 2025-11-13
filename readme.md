@@ -97,6 +97,27 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 <details>
   <summary>Desplegar información</summary>
 
+Estas pruebas verifican el comportamiento principal del componente que controla la ingesta de archivos desde S3, el cálculo de MD5, y la publicación a RabbitMQ.  
+
+- `build_doc`: Se prueba que el documento generado incluya todos los campos correctos usando el key, el tamaño, el MD5 y la fecha simulada.  
+- `build_message`: Revisa que el mensaje solo contenga el id basado en el _id del documento.  
+- `list_s3`: Simula paginación de S3 y verifica que la función devuelva todos los objetos encontrados en varias páginas.  
+- `calculate_md5`: Se simula el Body que devuelve S3 y se verifica que el MD5 calculado sea correcto usando chunks de bytes.  
+- `test_publish_new`: Cuando un archivo no existe en Mongo, hace upsert y guarda el estado "new". Publica el mensaje en RabbitMQ.
+- `test_publish_modified`: Cuando el archivo sí existe pero el MD5 cambió, actualiza la entrada y guarda el estado "modified". Publica el mensaje en RabbitMQ.
+- `test_publish_unchanged` : Cuando el archivo existe y el MD5 es igual, no actualiza nada, no publica nada y devuleve unchanged.
+
+```
+test.py::test_build_doc PASSED                                                                                     [ 14%]
+test.py::test_build_message PASSED                                                                                 [ 28%]
+test.py::test_list_s3 PASSED                                                                                       [ 42%]
+test.py::test_calculate_md5 PASSED                                                                                 [ 57%]
+test.py::test_publish_new PASSED                                                                                   [ 71%]
+test.py::test_publish_modified PASSED                                                                              [ 85%]
+test.py::test_publish_unchanged PASSED                                                                             [100%]
+
+=================================================== 7 passed in 0.43s ===================================================
+```
 
 
 </details>
@@ -127,6 +148,31 @@ WebScraper/test.py::test_descargarHtml PASSED                                   
 #### Spacy Entity Extractor
 <details> <summary>Desplegar información</summary>
 
+Estas pruebas verifican el comportamiento principal del componente que usa spaCy para extraer entidades, actualizar el estado en MongoDB y escribir los archivos nuevos en el volumen compartido.
+
+- `test_path_from_key`: Verifica que a partir del s3_key se genere correctamente la ruta del archivo JSON en la carpeta augmented.  
+- `test_entities_started`: Comprueba que entities_status actualice el documento en MongoDB con el estado "started" usando el _id correcto.  
+- `test_entities_error`: Valida quecuando el estado es "error", se guarde tanto entitiesExtraction como entitiesExtractionError en la colección.  
+- `test_normalize_text`: Revisa que normalize_text limpie saltos de línea y espacios múltiples, dejando el texto en una sola línea con espacios simples. También se prueba el comportamiento con texto vacío o None.  
+- `test_extract_entities`: Simula el modelo de spaCy para comprobar que extract_entities usa NLP internamente, devuelva una lista de diccionarios con type y value y elimine entidades duplicadas.  
+- `test_ensure_volume`: Valida que ensure_volume cree las carpetas raw y augmented dentro del BASE_PATH que se le pasa.
+- `test_ensure_volume_empty`: Comprueba que, si el base_path es vacío, la función lance un ValueError.  
+- `test_message_flujo`: Prueba el flujo completo de message: Usa un JSON de entrada en la carpeta raw, construye el texto a partir de los campos del curso y las reseñas, llama a extract_entities, escribe el archivo nuevo en augmented con el campo entities y por ultimo, actualiza MongoDB dos veces: primero con "started" y al final con "completed".
+
+```
+
+test.py::test_path_from_key PASSED                                                                          [ 12%]  
+test.py::test_entities_started PASSED                                                                       [ 25%]  
+test.py::test_entities_error PASSED                                                                         [ 37%]  
+test.py::test_normalize_text PASSED                                                                         [ 50%]  
+test.py::test_extract_entities PASSED                                                                       [ 62%]  
+test.py::test_ensure_volume PASSED                                                                          [ 75%]  
+test.py::test_ensure_volume_empty PASSED                                                                    [ 87%]  
+test.py::test_message_flujo PASSED                                                                          [100%]  
+
+=============================================== 8 passed in 6.08s ===============================================
+
+```
 
 </details>
 
@@ -418,6 +464,27 @@ De esta manera, cada ejecución del CronJob entrega datos limpios, resumidos y e
 1. **Mapping:** revisado en Atlas UI → Search Indexes → `default` → JSON.
 2. **Facets:** consultas `$searchMeta` retornan buckets para categorías y rangos numéricos verificando los `stringFacet` y `numberFacet` definidos.
 3. **Highlighting:** consultas `$search` en Data Explorer muestran texto marcado en los campos configurados, cumpliendo el requisito de resaltado.
+
+## Colección ingestion  
+
+- **Colección:** `ecomm.ingestion `
+- **Objetivo:** almacenar el registro de todos los documentos HTML provenientes del bucket S3 antes de su procesamiento por el parser. Esta colección actúa como el punto de control del pipeline de ingesta registrando el estado `new|modified`
+- **Esquema utilizado:**
+
+```json
+{
+  "_id": "",
+  "fileName": "",
+  "sizeBytes": 0,
+  "md5": "",
+  "state": "",
+  "publishedAt": "",
+  "processing": "",
+  "processingError": "",
+  "entitiesExtraction": "",
+  "entitiesExtractionError": ""
+}
+```
 
 </details>
 
