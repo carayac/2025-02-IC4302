@@ -27,11 +27,35 @@ AWS_DEFAULT_REGION = os.getenv("AWS_DEFAULT_REGION")
 #Variables
 headers = {"User-Agent": "Mozilla/5.0"}  #para evitar ser detectado como bot
 urlBase = "https://app.edutin.com/search/courses?q="
-categories = ["programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas", "marketing"]
+categories = [
+    "python", "excel", "word", "html", "css", "javascript",
+    "sql", "bases de datos", "ciberseguridad", "linux", "ubuntu",
+    "office", "powerpoint", "arduino", "robotica", "electronica",
+    "mecanica automotriz", "soldadura", "refrigeracion", "aire acondicionado",
+    "paneles solares", "autocad", "diseño grafico", "photoshop",
+    "illustrator", "blender", "modelado 3d",
+
+    "manualidades", "costura", "modisteria", "reposteria", "maquillaje",
+    "uñas acrilicas", "peluqueria", "barberia", "peinados", "carpinteria",
+    "tapiceria", "joyeria", "bisuteria", "cosmetica natural",
+
+    "decoracion", "dibujo", "pintura", "acuarela", "serigrafia",
+
+    "enfermeria", "primeros auxilios", "fisioterapia", "masajes",
+    "quiromasaje", "psicoterapia", "nutricion", "farmacia", "fitoterapia",
+
+    "ventas", "atencion al cliente", "liderazgo", "emprendimiento",
+    "community manager", "marketing digital", "publicidad", "logistica",
+    "contabilidad", "finanzas personales",
+
+    "ingles", "ingles basico", "frances", "italiano", "aleman",
+    "portugues", "japones", "mandarin"
+]
 folder = "productos"
 scroll_pause_time = 15
 cursoId = 1
 carpeta_grupo = "CARPETA_HCDCP"
+cursos_globales = set()
 
 
 
@@ -86,9 +110,9 @@ def obtenerLinks(htmlBase):
 
 
 #guarda en archivo
-def descargarHtml(html, num):
+def descargarHtml(html, num, link):
     if not html:
-        logger.warning(f"HTML vacío para el curso #{num}")
+        logger.warning(f"HTML vacío para curso #{num}, link: {link}")
         return
     folder_path = os.path.join(folder)
     os.makedirs(folder_path, exist_ok=True)
@@ -97,10 +121,11 @@ def descargarHtml(html, num):
     try:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(html)
-        logger.info(f"Guardado: {file_path}")
+        logger.info(f"Guardado: {file_path} | origen: {link}")
     except Exception as e:
         logger.error(f"Error guardando {file_path}: {e}")
         return None
+
 
 
 #guarda en archivo
@@ -124,9 +149,15 @@ def main():
         url = f'{urlBase}{category}'
         htmlBase = obtenerBusqueda(url)
         cursos = obtenerLinks(htmlBase)
+
         for curso in cursos:
+            if curso in cursos_globales:
+                logger.info(f"Saltado (duplicado): {curso}")
+                continue
+            cursos_globales.add(curso)
+
             htmlCurso = obtenerProductos(curso)
-            descargarHtml(htmlCurso, cursoId)
+            descargarHtml(htmlCurso, cursoId, curso)
             cursoId += 1
             time.sleep(1)
     subirBucket()
