@@ -23,10 +23,23 @@ export function LoginForm() {
     setLoading(true);
 
     try {
+      // Obtiene el token del cliente con Firebase Auth
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCredential.user.getIdToken();
-      document.cookie = `auth-token=${token}; path=/; max-age=3600`; // Establece cookie
-      router.push("/"); 
+
+      // Envía el token al endpoint para verificación y seteo de cookie
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        router.push("/");  
+      } else {
+        setError(data.error);
+      }
     } catch (err: any) {
       setError(err.message || "Error al iniciar sesión");
     } finally {

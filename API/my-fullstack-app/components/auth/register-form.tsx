@@ -2,8 +2,6 @@
 
 import type React from "react";
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,18 +33,26 @@ export function RegisterForm() {
     setLoading(true);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Opcional: Auto-login después de registro
-      const token = await userCredential.user.getIdToken();
-      document.cookie = `auth-token=${token}; path=/; max-age=3600`;
-      router.push("/"); // Redirige al dashboard
+      // Llama al endpoint register
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        // Registro correcto y redirige a login 
+        router.push('/auth/login');
+      } else {
+        setError(data.error);
+      }
     } catch (err: any) {
-      setError(err.message || "Error al registrarse");
+      setError("Error al registrarse");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <Card className="w-full max-w-md border-border/50 bg-card/50 backdrop-blur-sm">
       <CardHeader className="space-y-2">

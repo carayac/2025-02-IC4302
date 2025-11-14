@@ -1,6 +1,5 @@
 "use client"
 import { auth } from "@/lib/firebase"
-import { signOut } from "firebase/auth"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import {
@@ -18,15 +17,24 @@ export function Navbar() {
   const router = useRouter()
   const user = auth.currentUser
 
-const handleLogout = async () => {
-  try {
-    await signOut(auth);
-    document.cookie = "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; // Limpia cookie
-    router.push("/auth/login"); // Redirige a la ruta correcta
-  } catch (error) {
-    console.error("Error al cerrar sesión:", error);
-  }
-};
+  const handleLogout = async () => {
+    try {
+      // Llama al endpoint para logout
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        router.push("/auth/login");  
+      } else {
+        console.error("Error al cerrar sesión");
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
 
   const getInitials = (email: string | null) => {
     if (!email) return "U"
