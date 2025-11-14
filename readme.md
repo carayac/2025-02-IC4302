@@ -125,13 +125,19 @@ test.py::test_publish_unchanged PASSED                                          
 #### Web Scraper
 <details>
   <summary>Desplegar información</summary>
-Se prueban las funciones más importantes del webscrapper
+Estas pruebas validan el comportamiento central del webscraper encargado de descargar páginas HTML, filtrar enlaces válidos de cursos, y guardar los archivos generados.  
+Se utilizan `monkeypatch`, `MagicMock` y un directorio temporal (`tmp_path`) para simular el entorno real sin hacer requests ni escribir archivos en el sistema.
+
+- `test_obtenerProductos`: Verifica que la función retorne exactamente el contenido del HTML cuando la petición es exitosa.
+- `test_obtenerLinks`: Esta prueba garantiza que el filtro de URLs es correcto.
+- `test_obtenerLinks_vacio`: Confirma un buen manejo de entradas inválidas.
+- `test_descargarHtml`: Esta prueba asegura la correcta creación y escritura de los archivos descargados.
 
 ```
-WebScraper/test.py::test_obtenerProductos PASSED                                                                                                                                                                                                               [ 25%]
-WebScraper/test.py::test_obtenerLinks PASSED                                                                                                                                                                                                               [ 50%]
-WebScraper/test.py::test_obtenerLinks_vacio PASSED                                                                                                                                                                                                               [ 75%]
-WebScraper/test.py::test_descargarHtml PASSED                                                                                                                                                                                                               [100%]
+WebScraper/test.py::test_obtenerProductos PASSED     [ 25%]
+WebScraper/test.py::test_obtenerLinks PASSED         [ 50%]
+WebScraper/test.py::test_obtenerLinks_vacio PASSED   [ 75%]
+WebScraper/test.py::test_descargarHtml PASSED        [100%]
 
 ============== 4 passed in 0.25s ==============
 ```
@@ -242,7 +248,7 @@ controller:
 
   Para poder utilizar este componente, descargar localmente las librerías requests, selenium y dotenv. Además. configurar el .env con las credenciales de aws de ser necesario. Solo hay que correr el main una vez.
 
-  El web scraper es un pequeño código en python que se corre localmente fuera de kubernetes. Se encarga de recorrer la página de cursos online "edutin". Recorre las categorías "programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas" y "marketing". Para esto, se usa selenium para hacer scroll en la página principal de edutin, y una vez que se hayan cargado suficientes cursos, se recupera el html de la página. Luego, se recorre el html en busca de la dirección que lleva a la información espcífica de cada curso. Cuando se encuentra, se extrae el html de esa dirección. Los html se descargan localmente en la carpeta "productos", y van numerados del 001 al 505. Una vez se han descargado los 505 cursos, estos se suben a la carpeta del bucket de aws, ic-tec-dataset/CARPETA_HCDCP/. Desde ahí se podrán recuperar los datos posteriormente.
+  El web scraper es un pequeño código en python que se corre localmente fuera de kubernetes. Se encarga de recorrer la página de cursos online "edutin". Recorre las categorías "programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas" y "marketing". Para esto, se usa selenium para hacer scroll en la página principal de edutin, y una vez que se hayan cargado suficientes cursos, se recupera el html de la página. Luego, se recorre el html en busca de la dirección que lleva a la información espcífica de cada curso. Cuando se encuentra, se extrae el html de esa dirección. Los html se descargan localmente en la carpeta "productos", y van numerados del 001 al 539. Una vez se han descargado los 505 cursos, estos se suben a la carpeta del bucket de aws, ic-tec-dataset/CARPETA_HCDCP/. Desde ahí se podrán recuperar los datos posteriormente.
 
 
 </details>
