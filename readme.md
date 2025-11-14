@@ -102,21 +102,27 @@ A continuación, se explicará como utilizar la web. Esta página está hecha po
 <details>
   <summary>2. Cursos Generales:</summary>
   
-xxx
+**Página Home**: Esta es la página principal, donde el usuario es redirigido una vez inicia sesión. En esta pantalla puede ver todos los cursos disponibles, con su información general, como el título, descripción,imagen, rating, entre otros. Hay una paginación de 20 cursos, para una mejor experiencia de usuario. Además, el usuario puede buscar textualmente lo que busca y aparecerá la palabra en highlight, también puede usar la búsqueda avanzada para ver cursos con esas opciones.
+<img width="1305" height="646" alt="image" src="https://github.com/user-attachments/assets/27bec5d3-5613-403e-8747-699c882c3aeb" />
+<img width="1316" height="643" alt="image" src="https://github.com/user-attachments/assets/c90db481-1f45-4f2d-a5a9-22efc37fdb87" />
+<img width="1272" height="649" alt="image" src="https://github.com/user-attachments/assets/186b8a60-2959-4623-8713-d3d57a44d1d5" />
 
 </details>
 
 <details>
   <summary>3. Detalles sobre Curso Específico:</summary>
   
-xxx
+**Información de un curso**: Esta es la página que se obtiene al darle click a un curso. En esta pantalla puede ver toda la información de este, para que tome la decisión si desea empezar el curso. Si se busco una palabra en especial, acá se va a mantener el highlighting. Además, también aparecen los cursos relacionados, para que el usuario siga navegando sobre los cursos que se ofrecen. 
+<img width="1354" height="651" alt="image" src="https://github.com/user-attachments/assets/b2cf10aa-dacb-49b9-b178-3bf4a4f88f34" />
+<img width="1326" height="651" alt="image" src="https://github.com/user-attachments/assets/ccb006d9-51c3-4ced-8341-c2ba5174aa15" />
 
 </details>
 
 <details>
   <summary>4. Cerrar sesión:</summary>
   
-xxx
+**Navbar**: Si ya desea cerrar sesión por seguridad, se debe tocar el ícono del perfil en el header. Este ícono contiene la primera inicial de su correo electrónico. Al presionarlo obtendrá la opción para salir. Esto lo redigira a la pantalla de iniciar sesión.
+<img width="1274" height="163" alt="image" src="https://github.com/user-attachments/assets/c00b28fa-5516-422c-b288-77f15ee208fd" />
 
 </details>
 
@@ -600,6 +606,21 @@ Es producida por el BeautifulSoup y consumida por el Spacy Entity Extractor.  Su
 #### Uso de la AI
 <details> <summary>Desplegar información</summary>
 
+Para la realización del frontend de esta web, al ser desplegad en Vercel, se utilizo su propia AI llamado **v0 by Vercel**. Esto es una AI excelente para realizar frontend de sitios web, el cual hace los sitios con componentes muy estéticos y una paleta de colores agradable. También sirve un poco para el backend, pero su fuerte es el diseño del front. Los prompts que se utilizaron fueron los siguientes, estos fueron para crear el frontend usando MockUps, mientras los compañeros trabajaban para tener los campos correctos de los datos extraidos:
+- Debo crear la UI de login y register en mi proyecto de NextJS usando Tailwind. Manejando siempre las mejores practias y los componentes mas modernos, también se piensa utilizar  firebase y firestore para la authentication
+- Ahora crea una pantalla luego del proceso de Auth. Esta pantalla es para obtener cursos disponibles y realizar una busqueda de algun curso, tambien debe tener una opcion de busqueda avanzada con estos facets mientras tanto "programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas", "marketing.
+Recuerda hacerla moderna, con componentes modernos y para nextjs. Agregale un navbar bonito donde esta ubicado el cerrar sesion
+- Perfecto, ahora crea la pantalla al presionar un curso. Esta debe ser moderna, donde me va a incluir la información del curso específico como descripción, precio, idioma, certificación, reviews y otros campos que consideres correctos.
+
+#### Reflexión
+<details> <summary>Desplegar información</summary>
+Ventajas de usar esta AI:
+  
+- Se ahorro bastante el tiempo, ya que el frontend suele durar por todos los componentes que se le deben de agregar. Este tiempo puede ser aprovechado para otras funciones como el backend.
+  
+- La inteligencia artifial tiene mejores ideas de diseño para mejor la experiencia del usuario.
+
+- El uso de paleta de colores y componentes son muy bonitos y minimalistas, aumentando el profesionalismo de la web
 
 </details>
 
