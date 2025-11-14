@@ -61,7 +61,7 @@ export function CourseSearch({ initialCategories, initialLanguages }: CourseSear
       setCourses(response.data)
       setPagination(response.pagination)
       setFacets(response.facets)
-      console.log('📊 Facets recibidos:', response.facets)
+      console.log('Facets recibidos:', response.facets)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar cursos')
       console.error('Error loading courses:', err)

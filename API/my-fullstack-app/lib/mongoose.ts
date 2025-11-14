@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 
+// Si no obtiene la variable de entorno
 if (!process.env.MONGODB_URI) {
   throw new Error('Por favor define la variable MONGODB_URI en .env.local')
 }

@@ -21,8 +21,7 @@ export async function POST(request: NextRequest) {
         response.cookies.set('auth-token', token, { path: '/', maxAge: 3600 })
         
         return response
-    } catch (error) {
-        // Manejo de errores (ej. token inválido)
+    } catch (error) 
         return NextResponse.json({ success: false, error: (error as Error).message }, { status: 401 })
     }
 }

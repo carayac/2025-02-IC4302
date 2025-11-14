@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-// Configura qué rutas aplica el middleware 
+// Rutas aplica el middleware 
 export const config = {
   matcher: ['/', '/courses/:path*'],
 }

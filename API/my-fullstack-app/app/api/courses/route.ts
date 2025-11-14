@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
     // Verifica si tiene token de autenticación
     const token = request.cookies.get('auth-token')?.value
-    console.log('Token recibido:', token ? 'Presente' : 'Ausente')  // Log seguro: no imprime el token completo
+    console.log('Token recibido:', token ? 'Presente' : 'Ausente')  
 
     if (!token) {
       return NextResponse.json({ success: false, error: 'No autorizado' }, { status: 401 })
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     // Verifica si el token fue emitido por Firebase
     const decodedToken = await authAdmin.verifyIdToken(token)
-    console.log('Token decodificado (UID):', decodedToken?.uid)  // Log del UID para depuración
+    console.log('Token decodificado (UID):', decodedToken?.uid)  
 
     if (!decodedToken) {
       return NextResponse.json({ success: false, error: 'El token no es válido' }, { status: 401 })
@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
 
     await connectDB()
 
+    // Obtiene parámetros de consulta para saber si hay highlighting 
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category')
@@ -46,23 +47,25 @@ export async function GET(request: NextRequest) {
 
     // Si hay búsqueda de texto, usar Atlas Search con facets
     if (search) {
-      // Construir filtros adicionales
+      // Array de filtros obligatorios para retornar cursos con esos filtros
       const mustClauses: any[] = []
       
+      // verifica si se filtra por category
       if (category && category !== 'all') {
         mustClauses.push({
           text: {
-            query: category,
-            path: 'general_category'
+            query: category, //Busca el valor solicitado
+            path: 'general_category' // En el campo 'general_category'
           }
         })
       }
 
+      // verifica si se filtra por estimatedWeeks
       if (estimatedWeeks && estimatedWeeks !== 'all') {
         mustClauses.push({
-          equals: {
-            path: 'estimated_weeks',
-            value: parseInt(estimatedWeeks)
+          equals: { // Filtro de igualdad exacta
+            path: 'estimated_weeks', // Campo numérico en Mongo
+            value: parseInt(estimatedWeeks) // Valor a comparar (convertido a número)
           }
         })
       }
@@ -86,12 +89,13 @@ export async function GET(request: NextRequest) {
       }
       
       if (studentsRange && studentsRange !== 'all') {
+        // Divide el string en mínimo y máximo
         const [min, max] = studentsRange.split('-').map(Number)
         mustClauses.push({
           range: {
-            path: 'students',
-            gte: min,
-            lt: max === 1000000 ? undefined : max  
+            path: 'students', // Campo numérico en Mongo
+            gte: min, // Valor mínimo del rango
+            lt: max === 1000000 ? undefined : max  // Valor máximo del rango, excepto si es 1,000,000
           }
         })
       }
@@ -100,8 +104,8 @@ export async function GET(request: NextRequest) {
       if (entityType && entityType !== 'all') {
         mustClauses.push({
           text: {
-            query: entityType,
-            path: 'entities.type'
+            query: entityType, //Busca el valor solicitado
+            path: 'entities.type' // En el campo el array entities y su subcampo type
           }
         })
       }
@@ -115,30 +119,32 @@ export async function GET(request: NextRequest) {
         })
       }
 
-      // 1. Pipeline para obtener metadata con facets
+      // Pipeline para obtener conteo de facets
       const metaPipeline = [
         {
           $searchMeta: {
-            index: 'default',
-            facet: {
+            index: 'default', // Nombre del índice de Atlas Search
+            facet: { // Definición de facets
               operator: {
                 compound: {
                   should: [
                     {
                       text: {
-                        query: search,
+                        query: search, // Texto de búsqueda
+                        // Campos donde se realiza la búsqueda
                         path: ['title', 'description', 'short-description', 'authorComment'],
-                        fuzzy: {
+                        fuzzy: { //Tolerancia a errores tipográficos
                           maxEdits: 2,
                           prefixLength: 3
                         }
                       }
                     }
                   ],
+                  // Filtros adicionales que definimos anteriormente
                   must: mustClauses.length > 0 ? mustClauses : undefined
                 }
               },
-              facets: {
+              facets: { //Conteo de facets, lo que se ve en la UI
                 categoryFacet: {
                   type: 'string' as const,
                   path: 'general_category',
@@ -178,13 +184,13 @@ export async function GET(request: NextRequest) {
                   boundaries: [0, 100, 500, 1000, 5000, 10000, 50000, 100000, 1000000],
                   default: 'other'
                 },
-                // Nuevo: Facet para entity type
+                // Facet para entity type
                 entityTypeFacet: {
                   type: 'string' as const,
                   path: 'entities.type',
                   numBuckets: 50
                 },
-                // Nuevo: Facet para entity value
+                //Facet para entity value
                 entityValueFacet: {
                   type: 'string' as const,
                   path: 'entities.value',
@@ -215,8 +221,8 @@ export async function GET(request: NextRequest) {
             compound: {
               should: [
                 {
-                  text: {
-                    query: search,
+                  text: { // Búsqueda de texto 
+                    query: search, //Busca el texto ingresado
                     path: ['title', 'description', 'short-description', 'authorComment'],
                     fuzzy: {
                       maxEdits: 2,
@@ -227,7 +233,7 @@ export async function GET(request: NextRequest) {
               ],
               must: mustClauses.length > 0 ? mustClauses : undefined
             },
-            highlight: {
+            highlight: { //Resaltar coincidencias en el path
               path: ['title', 'description', 'short-description', 'authorComment']
             }
           }
@@ -370,7 +376,7 @@ export async function GET(request: NextRequest) {
       })
 
     } else {
-      // Sin búsqueda de texto - Usar queries normales
+      // Sin búsqueda de texto search para highlighting
       const matchQuery: any = {}
       
       if (category && category !== 'all') {
@@ -471,7 +477,6 @@ export async function GET(request: NextRequest) {
                 }
               }
             ],
-            // Nuevo: Entity facets
             entityTypes: [
               { $unwind: '$entities' },
               { $match: { 'entities.type': { $ne: null } } },
