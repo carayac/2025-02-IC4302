@@ -74,16 +74,53 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 > Si no necesita la instalación, ignore este paso
 
 
-#### 6. Como ingresar a la pagina WEB 
+#### 6. Como ingresar a la página WEB 
 <details>
   <summary>Desplegar información</summary>
 
-### Manual de acceso a la página web 
+### Manual de acceso a la página web
 
+Nuestro sitio web trata sobre cursos donde el usuario puede consultar todos los cursos disponibles, ver información como el precio, idioma, categoría, entidades, etc. Además, puede hacer búsquedas por filtros o por texto, donde obtendrá un highlight de los cursos con las palabras utilizadas.
 
+Para acceder a **Products Search V2**, simplemente ingrese a [https://fullstack-app-ruby.vercel.app/](https://fullstack-app-ruby.vercel.app/)
+
+A continuación, se explicará como utilizar la web. Esta página está hecha por Next.js, utiliza Firebase como método de autenticación y seguridad para verificación de tokens. Se puede dividir en cuatro módulos:
+
+<details>
+  <summary>1. Autenticación:</summary>
+  
+**Registrarse**: Si es la primera vez utilizando la aplicación web, se debe crear una cuenta. Unicamente debe ingresar un correo electrónico valido y la contraseña, se debe confirmar para verificar que sea la misma.
+
+<img width="1361" height="654" alt="image" src="https://github.com/user-attachments/assets/9c43d68e-dfc2-4517-9857-0f9bc9c9b99c" />
+
+**Iniciar Sesión**: Si ya tiene una cuenta registrada, unicamente debe colocar el correo y contraseña utilizados al crear la cuenta.
+
+<img width="1356" height="649" alt="image" src="https://github.com/user-attachments/assets/68f7340c-5c61-47bd-a4bd-96042083514f" />
 
 </details>
 
+<details>
+  <summary>2. Cursos Generales:</summary>
+  
+xxx
+
+</details>
+
+<details>
+  <summary>3. Detalles sobre Curso Específico:</summary>
+  
+xxx
+
+</details>
+
+<details>
+  <summary>4. Cerrar sesión:</summary>
+  
+xxx
+
+</details>
+
+</details>
 
 </details>
 
