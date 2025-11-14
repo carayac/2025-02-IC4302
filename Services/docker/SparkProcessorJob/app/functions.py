@@ -240,7 +240,7 @@ def normalize_data(spark):
 
     # Formate dates to DD/MM/YYYY throughout the schema
     #if use the sql version to apply the format throughout the schema
-    #df = format_dates_ddmmyyyy_sql(df)
+    df = format_dates_ddmmyyyy_sql(df)
 
     #genereate the short version of the description
     df = summary(df)
