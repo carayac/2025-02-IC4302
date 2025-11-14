@@ -372,6 +372,29 @@ De esta manera, cada ejecución del CronJob entrega datos limpios, resumidos y e
 
 ### Configuración Firestore
 <details> <summary>Desplegar información</summary>
+Firestore se usa para almacenar perfiles de usuarios y datos adicionales, complementando MongoDB para cursos. También se implemento Firebase Auth para el manejo de la autenticación de usuarios de forma segura.
+
+#### Credenciales de Firebase (`lib/firebase.ts`):
+- **API Key**: `AIzaSyBGqepgUpRN9jfTfRnzSMiFOnXEEzSJ8VU` – Clave para autenticación en cliente.
+- **Auth Domain**: `proyect-db-2-itcr.firebaseapp.com` – Dominio para auth.
+- **Project ID**: `proyect-db-2-itcr` – ID del proyecto.
+- **Storage Bucket**: `proyect-db-2-itcr.firebasestorage.app` – Para archivos.
+- **Messaging Sender ID**: `121361936291` – Para notificaciones.
+- **App ID**: `1:121361936291:web:c0d99e83a723641fa3b416` – ID de la app web.
+- **Measurement ID**: `G-DZ3Q95442D` – Para Analytics.
+
+#### Configuración:
+
+- Inicializa Firebase con `initializeApp(firebaseConfig)`.
+- Exporta `auth = getAuth(app)` para autenticación cliente.
+- Exporta `db = getFirestore(app)` para Firestore.
+- Crea colección `users` en Firestore Console para perfiles
+
+#### Evidencias:
+
+<img width="1249" height="529" alt="image" src="https://github.com/user-attachments/assets/f770f3d5-a8b2-4761-8a62-c47833e85224" />
+
+<img width="1271" height="510" alt="image" src="https://github.com/user-attachments/assets/8ec9d116-10c7-4db1-ba2b-383e88ae56b1" />
 
 
 </details>
@@ -589,7 +612,107 @@ Es producida por el BeautifulSoup y consumida por el Spacy Entity Extractor.  Su
 #### Endpoints
 <details> <summary>Ver endpoints</summary>
 
-#### 1. Obtener cursos
+<details> <summary>Autenticación</summary>
+
+#### Register  
+```
+POST /api/register
+```
+
+**Descripción:** Crea un nuevo usuario en Firebase Auth y guarda su perfil en Firestore. Requiere email y contraseña válidos. La contraseña se maneja internamente por Firebase.
+
+**Ejemplo de request:**
+```
+
+POST /api/register
+Content-Type: application/json
+{
+  "email": "usuario@example.com",
+  "password": "12345678"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Usuario registrado exitosamente",
+  "uid": "HOngPYZUUkUmijffu3zd7t8NPjE2"
+}
+```
+
+
+#### Login  
+```
+POST /api/auth/login
+```
+
+**Descripción:** Verifica el token ID enviado por el cliente (con Firebase Auth, el cual maneja verifica correo y contraseña) y setea una cookie de autenticación si es válido. También verifica que el usuario exista en Firestore.
+
+**Ejemplo de request:**
+```
+POST /api/auth/login
+Content-Type: application/json
+{
+  "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "uid": "HOngPYZUUkUmijffu3zd7t8NPjE2"
+}
+```
+
+#### Logout  
+```
+POST /api/auth/logout
+```
+
+**Descripción:** Elimina la cookie de autenticación auth-token, cerrando la sesión del usuario.
+
+**Ejemplo de request:**
+```
+POST /api/auth/logout
+Content-Type: application/json
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true
+}
+```
+
+#### Login  
+```
+POST /api/auth/login
+```
+
+**Descripción:** Verifica el token ID enviado por el cliente (con Firebase Auth SDK) y setea una cookie de autenticación si es válido. También verifica que el usuario exista en Firestore.
+
+**Ejemplo de request:**
+```
+POST /api/auth/login
+Content-Type: application/json
+{
+  "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "uid": "HOngPYZUUkUmijffu3zd7t8NPjE2"
+}
+```
+</details>
+
+<details> <summary>Cursos</summary>
+
+#### Obtener cursos
 ```
 GET /api/courses
 ```
@@ -677,7 +800,7 @@ GET /api/courses?search=javascript&category=Programación&language=es&limit=5&pa
 ```
 
 
-#### 2. Obtener curso específico
+#### Obtener curso específico
 ```
 GET /api/courses/{id}
 ```
@@ -758,7 +881,7 @@ GET /api/courses/64b12345f9c12f7a9c3e1111?search=javascript
 
 
 </details>
-
+</details>
 
 #### Método de seguridad implementado
 <details>
