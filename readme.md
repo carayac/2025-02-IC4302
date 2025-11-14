@@ -706,29 +706,6 @@ Content-Type: application/json
 }
 ```
 
-#### Login  
-```
-POST /api/auth/login
-```
-
-**Descripción:** Verifica el token ID enviado por el cliente (con Firebase Auth SDK) y setea una cookie de autenticación si es válido. También verifica que el usuario exista en Firestore.
-
-**Ejemplo de request:**
-```
-POST /api/auth/login
-Content-Type: application/json
-{
-  "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
-}
-```
-
-**Response (200 OK):**
-```json
-{
-  "success": true,
-  "uid": "HOngPYZUUkUmijffu3zd7t8NPjE2"
-}
-```
 </details>
 
 <details> <summary>Cursos</summary>
@@ -927,7 +904,7 @@ Se utilizó el SDK de Firebase Admin para implementar manejo de seguridad, verif
 
 ##### Flujo General de Seguridad
 
-1. El usuario inicia sesión en el cliente y obtiene un ID Token de Firebase Auth.
+1. El usuario inicia sesión y obtiene un ID Token de Firebase Auth.
 2. El token se almacena en una cookie `auth-token`.
 3. El middleware verifica el token en rutas protegidas para redirecciones.
 4. Los endpoints verifican el token en cada solicitud para autorizar acceso a datos.
