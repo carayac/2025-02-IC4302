@@ -254,7 +254,7 @@ Para validar las transformaciones de Spark sin tocar la escritura en Mongo Atlas
 </details>
 
 
-# Configuración de componenetes 
+# Configuración de componentes 
 <details>
   
   <summary>Desplegar información</summary>  
@@ -414,140 +414,145 @@ Firestore se usa para almacenar perfiles de usuarios y datos adicionales, comple
 - **Objetivo:** habilitar búsqueda full-text con facets y highlighting sobre los productos normalizados por Spark.
 - Nota: Se asignaron de tipo facet las caracterist6icas mas relevantes que seran utilizadas.
 - **Mapping utilizado:**
-  ```json
-    {
-    "mappings": {
-      "dynamic": true,
-      "fields": {
-        "authorComment": {
+```json
+{
+  "mappings": {
+    "dynamic": true,
+    "fields": {
+      "authorComment": {
+        "type": "string"
+      },
+      "currency": [
+        {
+          "analyzer": "lucene.keyword",
+          "searchAnalyzer": "lucene.keyword",
           "type": "string"
         },
-        "currency": [
-          {
-            "analyzer": "lucene.keyword",
-            "searchAnalyzer": "lucene.keyword",
-            "type": "string"
-          },
-          {
-            "type": "stringFacet"
-          }
-        ],
-        "date_extracted": {
-          "type": "date"
-        },
-        "description": {
-          "type": "string"
-        },
-        "entities": {
-          "fields": {
-            "type": {
+        {
+          "type": "stringFacet"
+        }
+      ],
+      "date_extracted": {
+        "type": "date"
+      },
+      "description": {
+        "type": "string"
+      },
+      "entities": {
+        "fields": {
+          "type": [
+            {
               "analyzer": "lucene.keyword",
               "searchAnalyzer": "lucene.keyword",
               "type": "string"
             },
-            "value": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "stringFacet"
-              }
-            ]
-          },
-          "type": "document"
-        },
-        "general_category": [
-          {
-            "type": "string"
-          },
-          {
-            "analyzer": "lucene.keyword",
-            "type": "autocomplete"
-          },
-          {
-            "type": "stringFacet"
-          }
-        ],
-        "language": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "stringFacet"
-          }
-        ],
-        "price": [
-          {
-            "type": "number"
-          },
-          {
-            "type": "numberFacet"
-          }
-        ],
-        "productos_relacionados": {
-          "fields": {
-            "entities": {
-              "fields": {
-                "type": {
-                  "type": "stringFacet"
-                }
-              },
-              "type": "document"
+            {
+              "type": "stringFacet"
             }
-          },
-          "type": "document"
-        },
-        "rating_value": [
-          {
-            "type": "number"
-          },
-          {
-            "type": "numberFacet"
-          }
-        ],
-        "reviews": {
-          "dynamic": true,
-          "fields": {
-            "comment": {
+          ],
+          "value": [
+            {
               "type": "string"
             },
-            "rating": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "numberFacet"
-              }
-            ]
-          },
-          "type": "document"
+            {
+              "type": "stringFacet"
+            }
+          ]
         },
-        "short-description": {
+        "type": "document"
+      },
+      "estimated_weeks": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "numberFacet"
+        }
+      ],
+      "general_category": [
+        {
           "type": "string"
         },
-        "specific_category": [
-          {
+        {
+          "analyzer": "lucene.keyword",
+          "type": "autocomplete"
+        },
+        {
+          "type": "stringFacet"
+        }
+      ],
+      "language": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "stringFacet"
+        }
+      ],
+      "price": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "numberFacet"
+        }
+      ],
+      "productos_relacionados": {
+        "fields": {
+          "entities": {
+            "fields": {
+              "type": {
+                "type": "stringFacet"
+              }
+            },
+            "type": "document"
+          }
+        },
+        "type": "document"
+      },
+      "rating_value": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "numberFacet"
+        }
+      ],
+      "reviews": {
+        "dynamic": true,
+        "fields": {
+          "comment": {
             "type": "string"
           },
-          {
-            "type": "stringFacet"
-          }
-        ],
-        "students": [
-          {
-            "type": "number"
-          },
-          {
-            "type": "numberFacet"
-          }
-        ],
-        "title": {
-          "type": "string"
+          "rating": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "numberFacet"
+            }
+          ]
+        },
+        "type": "document"
+      },
+      "short-description": {
+        "type": "string"
+      },
+      "students": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "numberFacet"
         }
+      ],
+      "title": {
+        "type": "string"
       }
     }
   }
-  ```
+}
+```
 
 #### Facets configurados
 - `currency`, `general_category`, `language`, `specific_category`: facets de texto para filtros de navegación.
