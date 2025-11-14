@@ -257,7 +257,31 @@ controller:
 ### Beautiful Soup
 <details>
   <summary>Desplegar información</summary>
-  
+
+El Beautiful Soup Parser es el segundo componente del pipeline y es quien parsea la información extraída en los html para generar un json limpio con la información. 
+Este componente actúa mediante RabbitMQ, escuchando los documentos publicados desde el controller para descargarlos, y avisando al Spaci Entity cuando genera un json. 
+Sus funciones principales son:  
+
+-	Escuchar RabbitMQ para leer los mensajes publicados por el Controller.
+-	Descargar el archivo html del bucket de S3 con la ruta dada por el Controller. 
+-	Parsea el archivo, obteniendo toda la información revelante con la biblioteca Beatiful Soup
+-	Guarda la información en una archivo json dentro de la carpeta raw en el almacenamiento compartido entre pods
+-	Actualiza la colección "Ingestion" en mongo, poniendo en el campo "processing" el estado "started" cuando se recibe el mensaje y se empieza a parsear, y el estado "completed" cuando se almacena el json.
+-	Publica un mensaje en la cola de RabbitMQ compartida con el Spacy Entity Extractor, con el id del archivo y la ruta del json parseado.
+
+Este componente se ejecuta como un Deployment de Kubernetes, pasa escuchando y ejecutándose según los mensajes que recibe del controller. Se recomienda mínimo utilizar 2 réplicas(beautifulSoup.yaml). 
+
+Como informacón útil, si se desea ver los json subidos al volumen compartido por este componente, se puede usar el siguiente comando: 
+
+```
+  kubectl exec -it <nombre del pod> -- bash
+```
+reemplazando con el nombre del pod del componente en su equipo. Dentro del pod, si desea ver un archivo por ejemplo el 251, puede usar este comando:
+
+```
+  cat /app/data/raw/curso_251.json
+```
+
 </details>
 
 #### Spacy Entity Extractor
@@ -759,6 +783,10 @@ Se utilizó el SDK de Firebase Admin para implementar manejo de seguridad, verif
 7. El uso de Next.js para el despliegue en Vercel simplifica mucho el desarrollo y la implementación de aplicaciones full-stack. Las API routes permiten crear un backend serverless integrado, reduciendo la complejidad de configuración y facilitando la interacción con bases de datos como MongoDB Atlas.
 
 8. Firebase facilita la autenticación de usuarios con herramientas listas para producción, eliminando la necesidad de desarrollar endpoints personalizados. Su integración con NextJS permite construir aplicaciones seguras en menos tiempo, manteniendo buenas prácticas en la gestión de sesiones y credenciales.
+  
+9. La biblioteca Beatiful Soup provee una serie de utilidades muy importantes para parsear archivos, permitiendo limpiar y normalizar etiquetas y documentos con formato HTML en este caso.
+
+10. La utilización de un volumen compartido tipo ReadWriteMany permite que varios pods puedan leer y escribir en un mismo almacenamiento al mismo tiempo, permitiendo que varios componentes utilicen el volumen y siendo eficiente para flujos grandes.
 
 
 </details>
@@ -777,13 +805,17 @@ Se recomienda centralizar la configuración del sistema mediante variables de en
 
 4. Se recomienda implementar mejores prácticas de seguridad para el manejo de credenciales para evitar fallos en la seguridad del proyecto.
 
-5. Se recomienda validar que los archivos HTML realmente contengan información para de esta manera evitar que el componenyte que los consume procese archivos innecesarios y mantener la calidad de los datos.
+5. Se recomienda validar que los archivos HTML realmente contengan información para de esta manera evitar que el componente que los consume procese archivos innecesarios y mantener la calidad de los datos.
 
 6. Se recomienda analizar bien el contexto en el que será utilizado el modelo Spacy, ya que este contiene modelos con diferentes caracteristicas, algunos consumen más memoria lo cual puede ser no tan factible cuando se tienen recursos limitados, otros son más ligeros pero tienen peor redimiento, por esto se requiere un analisis de cuál podría ser el más adecuado.
 
 7. Para las instrucciones de este proyecto, donde se debe de desplegar una web en Vercel, se recomienda utilizar Next.js. Este framework es muy sencillo de desplegar, ya que es creado  por el propio Vercel. Además, el uso del backend es facilitado por las API routes de Next.js, que permiten crear endpoints serverless directamente en el proyecto, sin preocuparse por desplegarlo en otro sitio.
 
 8. Si se tiene la posibilidad, se recomienda el uso de Firebase para el manejo de autenticación de usuarios. Estas funcionalidades que ofrece facilitan mucho los procesos de registro, login, verificación de correos electrónicos, recuperación de contraseñas y gestión de sesiones, sin necesidad de implementar un backend personalizado para autenticación.
+
+9. Se recomienda, a la hora de trabajar con componentes grandes o pensando en escalabilidad, parametrizar las métricas de cada componente para la instalación, permitiendo subir la cantidad de réplicas en caso de que la ejecución esté siendo innestable.
+
+10. Se recomienda a la hora de parsear archivos html buscar los distintos lados donde viene la misma información para tener fallbacks, esto permite tener respuesta a errores o inconsistencias de los caracteres HTML. 
 
 </details>
 
@@ -825,6 +857,8 @@ https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 https://spacy.io/models/es
 
 https://spacy.io/usage/models
+
+https://beautiful-soup-4.readthedocs.io/en/latest/
 
 </details>
 
