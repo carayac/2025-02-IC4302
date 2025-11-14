@@ -167,16 +167,27 @@ def message(coll, msg: dict):
     for k in (
         "title",
         "general_category",
-        "specific_category",
         "description",
         "price",
+        "currency",
         "students",
+        "estimated_weeks",
         "certificate_info",
-        "authorComment",
+        "date_extracted",
     ):
         v = raw_doc.get(k)
         if v is not None:
             blocks.append(str(v))
+
+    # Leer campos de author: name y comment
+    author = raw_doc.get("author")
+    if isinstance(author, dict):
+        author_name = author.get("name")
+        if isinstance(author_name, str):
+            blocks.append(author_name)
+        author_comment = author.get("comment")
+        if isinstance(author_comment, str):
+            blocks.append(author_comment)
 
     reviews = raw_doc.get("reviews")
     if isinstance(reviews, list):

@@ -44,8 +44,10 @@ def test_obtenerLinks_vacio():
 def test_descargarHtml(tmp_path, monkeypatch):
     monkeypatch.setattr("main.folder", str(tmp_path))
 
+    link = "https://edutin.com/curso-de-ejemplo"
+
     #probar con curso 001
-    descargarHtml("<html>hola</html>", 1)
+    descargarHtml("<html>hola</html>", 1, link)
 
     file_path = tmp_path / "curso_001.html"
     assert file_path.exists()

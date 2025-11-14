@@ -74,16 +74,59 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 > Si no necesita la instalación, ignore este paso
 
 
-#### 6. Como ingresar a la pagina WEB 
+#### 6. Como ingresar a la página WEB 
 <details>
   <summary>Desplegar información</summary>
 
-### Manual de acceso a la página web 
+### Manual de acceso a la página web
 
+Nuestro sitio web trata sobre cursos donde el usuario puede consultar todos los cursos disponibles, ver información como el precio, idioma, categoría, entidades, etc. Además, puede hacer búsquedas por filtros o por texto, donde obtendrá un highlight de los cursos con las palabras utilizadas.
 
+Para acceder a **Products Search V2**, simplemente ingrese a [https://fullstack-app-ruby.vercel.app/](https://fullstack-app-ruby.vercel.app/)
+
+A continuación, se explicará como utilizar la web. Esta página está hecha por Next.js, utiliza Firebase como método de autenticación y seguridad para verificación de tokens. Se puede dividir en cuatro módulos:
+
+<details>
+  <summary>1. Autenticación:</summary>
+  
+**Registrarse**: Si es la primera vez utilizando la aplicación web, se debe crear una cuenta. Unicamente debe ingresar un correo electrónico valido y la contraseña, se debe confirmar para verificar que sea la misma.
+
+<img width="1361" height="654" alt="image" src="https://github.com/user-attachments/assets/9c43d68e-dfc2-4517-9857-0f9bc9c9b99c" />
+
+**Iniciar Sesión**: Si ya tiene una cuenta registrada, unicamente debe colocar el correo y contraseña utilizados al crear la cuenta.
+
+<img width="1356" height="649" alt="image" src="https://github.com/user-attachments/assets/68f7340c-5c61-47bd-a4bd-96042083514f" />
 
 </details>
 
+<details>
+  <summary>2. Cursos Generales:</summary>
+  
+**Página Home**: Esta es la página principal, donde el usuario es redirigido una vez inicia sesión. En esta pantalla puede ver todos los cursos disponibles, con su información general, como el título, descripción,imagen, rating, entre otros. Hay una paginación de 20 cursos, para una mejor experiencia de usuario. Además, el usuario puede buscar textualmente lo que busca y aparecerá la palabra en highlight, también puede usar la búsqueda avanzada para ver cursos con esas opciones.
+<img width="1305" height="646" alt="image" src="https://github.com/user-attachments/assets/27bec5d3-5613-403e-8747-699c882c3aeb" />
+<img width="1316" height="643" alt="image" src="https://github.com/user-attachments/assets/c90db481-1f45-4f2d-a5a9-22efc37fdb87" />
+<img width="1272" height="649" alt="image" src="https://github.com/user-attachments/assets/186b8a60-2959-4623-8713-d3d57a44d1d5" />
+
+</details>
+
+<details>
+  <summary>3. Detalles sobre Curso Específico:</summary>
+  
+**Información de un curso**: Esta es la página que se obtiene al darle click a un curso. En esta pantalla puede ver toda la información de este, para que tome la decisión si desea empezar el curso. Si se busco una palabra en especial, acá se va a mantener el highlighting. Además, también aparecen los cursos relacionados, para que el usuario siga navegando sobre los cursos que se ofrecen. 
+<img width="1354" height="651" alt="image" src="https://github.com/user-attachments/assets/b2cf10aa-dacb-49b9-b178-3bf4a4f88f34" />
+<img width="1326" height="651" alt="image" src="https://github.com/user-attachments/assets/ccb006d9-51c3-4ced-8341-c2ba5174aa15" />
+
+</details>
+
+<details>
+  <summary>4. Cerrar sesión:</summary>
+  
+**Navbar**: Si ya desea cerrar sesión por seguridad, se debe tocar el ícono del perfil en el header. Este ícono contiene la primera inicial de su correo electrónico. Al presionarlo obtendrá la opción para salir. Esto lo redigira a la pantalla de iniciar sesión.
+<img width="1274" height="163" alt="image" src="https://github.com/user-attachments/assets/c00b28fa-5516-422c-b288-77f15ee208fd" />
+
+</details>
+
+</details>
 
 </details>
 
@@ -125,13 +168,19 @@ test.py::test_publish_unchanged PASSED                                          
 #### Web Scraper
 <details>
   <summary>Desplegar información</summary>
-Se prueban las funciones más importantes del webscrapper
+Estas pruebas validan el comportamiento central del webscraper encargado de descargar páginas HTML, filtrar enlaces válidos de cursos, y guardar los archivos generados.  
+Se utilizan `monkeypatch`, `MagicMock` y un directorio temporal (`tmp_path`) para simular el entorno real sin hacer requests ni escribir archivos en el sistema.
+
+- `test_obtenerProductos`: Verifica que la función retorne exactamente el contenido del HTML cuando la petición es exitosa.
+- `test_obtenerLinks`: Esta prueba garantiza que el filtro de URLs es correcto.
+- `test_obtenerLinks_vacio`: Confirma un buen manejo de entradas inválidas.
+- `test_descargarHtml`: Esta prueba asegura la correcta creación y escritura de los archivos descargados.
 
 ```
-WebScraper/test.py::test_obtenerProductos PASSED                                                                                                                                                                                                               [ 25%]
-WebScraper/test.py::test_obtenerLinks PASSED                                                                                                                                                                                                               [ 50%]
-WebScraper/test.py::test_obtenerLinks_vacio PASSED                                                                                                                                                                                                               [ 75%]
-WebScraper/test.py::test_descargarHtml PASSED                                                                                                                                                                                                               [100%]
+WebScraper/test.py::test_obtenerProductos PASSED     [ 25%]
+WebScraper/test.py::test_obtenerLinks PASSED         [ 50%]
+WebScraper/test.py::test_obtenerLinks_vacio PASSED   [ 75%]
+WebScraper/test.py::test_descargarHtml PASSED        [100%]
 
 ============== 4 passed in 0.25s ==============
 ```
@@ -242,7 +291,7 @@ controller:
 
   Para poder utilizar este componente, descargar localmente las librerías requests, selenium y dotenv. Además. configurar el .env con las credenciales de aws de ser necesario. Solo hay que correr el main una vez.
 
-  El web scraper es un pequeño código en python que se corre localmente fuera de kubernetes. Se encarga de recorrer la página de cursos online "edutin". Recorre las categorías "programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas" y "marketing". Para esto, se usa selenium para hacer scroll en la página principal de edutin, y una vez que se hayan cargado suficientes cursos, se recupera el html de la página. Luego, se recorre el html en busca de la dirección que lleva a la información espcífica de cada curso. Cuando se encuentra, se extrae el html de esa dirección. Los html se descargan localmente en la carpeta "productos", y van numerados del 001 al 505. Una vez se han descargado los 505 cursos, estos se suben a la carpeta del bucket de aws, ic-tec-dataset/CARPETA_HCDCP/. Desde ahí se podrán recuperar los datos posteriormente.
+  El web scraper es un pequeño código en python que se corre localmente fuera de kubernetes. Se encarga de recorrer la página de cursos online "edutin". Recorre las categorías "programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas" y "marketing". Para esto, se usa selenium para hacer scroll en la página principal de edutin, y una vez que se hayan cargado suficientes cursos, se recupera el html de la página. Luego, se recorre el html en busca de la dirección que lleva a la información espcífica de cada curso. Cuando se encuentra, se extrae el html de esa dirección. Los html se descargan localmente en la carpeta "productos", y van numerados del 001 al 539. Una vez se han descargado los 505 cursos, estos se suben a la carpeta del bucket de aws, ic-tec-dataset/CARPETA_HCDCP/. Desde ahí se podrán recuperar los datos posteriormente.
 
 
 </details>
@@ -251,7 +300,31 @@ controller:
 ### Beautiful Soup
 <details>
   <summary>Desplegar información</summary>
-  
+
+El Beautiful Soup Parser es el segundo componente del pipeline y es quien parsea la información extraída en los html para generar un json limpio con la información. 
+Este componente actúa mediante RabbitMQ, escuchando los documentos publicados desde el controller para descargarlos, y avisando al Spaci Entity cuando genera un json. 
+Sus funciones principales son:  
+
+-	Escuchar RabbitMQ para leer los mensajes publicados por el Controller.
+-	Descargar el archivo html del bucket de S3 con la ruta dada por el Controller. 
+-	Parsea el archivo, obteniendo toda la información revelante con la biblioteca Beatiful Soup
+-	Guarda la información en una archivo json dentro de la carpeta raw en el almacenamiento compartido entre pods
+-	Actualiza la colección "Ingestion" en mongo, poniendo en el campo "processing" el estado "started" cuando se recibe el mensaje y se empieza a parsear, y el estado "completed" cuando se almacena el json.
+-	Publica un mensaje en la cola de RabbitMQ compartida con el Spacy Entity Extractor, con el id del archivo y la ruta del json parseado.
+
+Este componente se ejecuta como un Deployment de Kubernetes, pasa escuchando y ejecutándose según los mensajes que recibe del controller. Se recomienda mínimo utilizar 2 réplicas(beautifulSoup.yaml). 
+
+Como informacón útil, si se desea ver los json subidos al volumen compartido por este componente, se puede usar el siguiente comando: 
+
+```
+  kubectl exec -it <nombre del pod> -- bash
+```
+reemplazando con el nombre del pod del componente en su equipo. Dentro del pod, si desea ver un archivo por ejemplo el 251, puede usar este comando:
+
+```
+  cat /app/data/raw/curso_251.json
+```
+
 </details>
 
 #### Spacy Entity Extractor
@@ -305,6 +378,29 @@ De esta manera, cada ejecución del CronJob entrega datos limpios, resumidos y e
 
 ### Configuración Firestore
 <details> <summary>Desplegar información</summary>
+Firestore se usa para almacenar perfiles de usuarios y datos adicionales, complementando MongoDB para cursos. También se implemento Firebase Auth para el manejo de la autenticación de usuarios de forma segura.
+
+#### Credenciales de Firebase (`lib/firebase.ts`):
+- **API Key**: `AIzaSyBGqepgUpRN9jfTfRnzSMiFOnXEEzSJ8VU` – Clave para autenticación en cliente.
+- **Auth Domain**: `proyect-db-2-itcr.firebaseapp.com` – Dominio para auth.
+- **Project ID**: `proyect-db-2-itcr` – ID del proyecto.
+- **Storage Bucket**: `proyect-db-2-itcr.firebasestorage.app` – Para archivos.
+- **Messaging Sender ID**: `121361936291` – Para notificaciones.
+- **App ID**: `1:121361936291:web:c0d99e83a723641fa3b416` – ID de la app web.
+- **Measurement ID**: `G-DZ3Q95442D` – Para Analytics.
+
+#### Configuración:
+
+- Inicializa Firebase con `initializeApp(firebaseConfig)`.
+- Exporta `auth = getAuth(app)` para autenticación cliente.
+- Exporta `db = getFirestore(app)` para Firestore.
+- Crea colección `users` en Firestore Console para perfiles
+
+#### Evidencias:
+
+<img width="1249" height="529" alt="image" src="https://github.com/user-attachments/assets/f770f3d5-a8b2-4761-8a62-c47833e85224" />
+
+<img width="1271" height="510" alt="image" src="https://github.com/user-attachments/assets/8ec9d116-10c7-4db1-ba2b-383e88ae56b1" />
 
 
 </details>
@@ -510,6 +606,21 @@ Es producida por el BeautifulSoup y consumida por el Spacy Entity Extractor.  Su
 #### Uso de la AI
 <details> <summary>Desplegar información</summary>
 
+Para la realización del frontend de esta web, al ser desplegad en Vercel, se utilizo su propia AI llamado **v0 by Vercel**. Esto es una AI excelente para realizar frontend de sitios web, el cual hace los sitios con componentes muy estéticos y una paleta de colores agradable. También sirve un poco para el backend, pero su fuerte es el diseño del front. Los prompts que se utilizaron fueron los siguientes, estos fueron para crear el frontend usando MockUps, mientras los compañeros trabajaban para tener los campos correctos de los datos extraidos:
+- Debo crear la UI de login y register en mi proyecto de NextJS usando Tailwind. Manejando siempre las mejores practias y los componentes mas modernos, también se piensa utilizar  firebase y firestore para la authentication
+- Ahora crea una pantalla luego del proceso de Auth. Esta pantalla es para obtener cursos disponibles y realizar una busqueda de algun curso, tambien debe tener una opcion de busqueda avanzada con estos facets mientras tanto "programacion", "cocina", "creativo", "salud", "negocio", "deporte", "psicologia", "ciencia", "cloud computing", "mantenimiento", "moda", "arte", "idiomas", "marketing.
+Recuerda hacerla moderna, con componentes modernos y para nextjs. Agregale un navbar bonito donde esta ubicado el cerrar sesion
+- Perfecto, ahora crea la pantalla al presionar un curso. Esta debe ser moderna, donde me va a incluir la información del curso específico como descripción, precio, idioma, certificación, reviews y otros campos que consideres correctos.
+
+#### Reflexión
+<details> <summary>Desplegar información</summary>
+Ventajas de usar esta AI:
+  
+- Se ahorro bastante el tiempo, ya que el frontend suele durar por todos los componentes que se le deben de agregar. Este tiempo puede ser aprovechado para otras funciones como el backend.
+  
+- La inteligencia artifial tiene mejores ideas de diseño para mejor la experiencia del usuario.
+
+- El uso de paleta de colores y componentes son muy bonitos y minimalistas, aumentando el profesionalismo de la web
 
 </details>
 
@@ -522,7 +633,107 @@ Es producida por el BeautifulSoup y consumida por el Spacy Entity Extractor.  Su
 #### Endpoints
 <details> <summary>Ver endpoints</summary>
 
-#### 1. Obtener cursos
+<details> <summary>Autenticación</summary>
+
+#### Register  
+```
+POST /api/register
+```
+
+**Descripción:** Crea un nuevo usuario en Firebase Auth y guarda su perfil en Firestore. Requiere email y contraseña válidos. La contraseña se maneja internamente por Firebase.
+
+**Ejemplo de request:**
+```
+
+POST /api/register
+Content-Type: application/json
+{
+  "email": "usuario@example.com",
+  "password": "12345678"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Usuario registrado exitosamente",
+  "uid": "HOngPYZUUkUmijffu3zd7t8NPjE2"
+}
+```
+
+
+#### Login  
+```
+POST /api/auth/login
+```
+
+**Descripción:** Verifica el token ID enviado por el cliente (con Firebase Auth, el cual maneja verifica correo y contraseña) y setea una cookie de autenticación si es válido. También verifica que el usuario exista en Firestore.
+
+**Ejemplo de request:**
+```
+POST /api/auth/login
+Content-Type: application/json
+{
+  "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "uid": "HOngPYZUUkUmijffu3zd7t8NPjE2"
+}
+```
+
+#### Logout  
+```
+POST /api/auth/logout
+```
+
+**Descripción:** Elimina la cookie de autenticación auth-token, cerrando la sesión del usuario.
+
+**Ejemplo de request:**
+```
+POST /api/auth/logout
+Content-Type: application/json
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true
+}
+```
+
+#### Login  
+```
+POST /api/auth/login
+```
+
+**Descripción:** Verifica el token ID enviado por el cliente (con Firebase Auth SDK) y setea una cookie de autenticación si es válido. También verifica que el usuario exista en Firestore.
+
+**Ejemplo de request:**
+```
+POST /api/auth/login
+Content-Type: application/json
+{
+  "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "uid": "HOngPYZUUkUmijffu3zd7t8NPjE2"
+}
+```
+</details>
+
+<details> <summary>Cursos</summary>
+
+#### Obtener cursos
 ```
 GET /api/courses
 ```
@@ -610,7 +821,7 @@ GET /api/courses?search=javascript&category=Programación&language=es&limit=5&pa
 ```
 
 
-#### 2. Obtener curso específico
+#### Obtener curso específico
 ```
 GET /api/courses/{id}
 ```
@@ -691,10 +902,39 @@ GET /api/courses/64b12345f9c12f7a9c3e1111?search=javascript
 
 
 </details>
+</details>
 
+#### Método de seguridad implementado
+<details>
+<summary>Desplegar información</summary>
 
-#### Uso de la AI
-<details> <summary>Desplegar información</summary>
+Se utilizó el SDK de Firebase Admin para implementar manejo de seguridad, verificando que solo usuarios logueados accedan a recursos.
+
+##### Middleware de Autenticación
+
+- Configurado en `middleware.ts` con `matcher: ['/', '/courses/:path*']` para proteger página principal y de curso específico.
+- Verifica la presencia y validez del token ID de Firebase usando `authAdmin.verifyIdToken()`.
+- Si el token falta o es inválido:
+  - Redirige a `/auth/login`.
+  - Elimina la cookie `auth-token`.
+
+#####  Verificación de Tokens en Endpoints API
+
+- En `/api/courses/route.ts` y `/api/courses/[id]/route.ts`:
+  - Se extrae el token con `request.cookies.get('auth-token')`.
+  - Se valida con `authAdmin.verifyIdToken(token)`.
+  - Si la validación falla, no se ejecuta el endpoint.
+
+##### Flujo General de Seguridad
+
+1. El usuario inicia sesión en el cliente y obtiene un ID Token de Firebase Auth.
+2. El token se almacena en una cookie `auth-token`.
+3. El middleware verifica el token en rutas protegidas para redirecciones.
+4. Los endpoints verifican el token en cada solicitud para autorizar acceso a datos.
+5. Si cualquier verificación falla, se deniega el acceso con errores apropiados.
+
+</details>
+
 
 
 </details>
@@ -724,6 +964,10 @@ GET /api/courses/64b12345f9c12f7a9c3e1111?search=javascript
 7. El uso de Next.js para el despliegue en Vercel simplifica mucho el desarrollo y la implementación de aplicaciones full-stack. Las API routes permiten crear un backend serverless integrado, reduciendo la complejidad de configuración y facilitando la interacción con bases de datos como MongoDB Atlas.
 
 8. Firebase facilita la autenticación de usuarios con herramientas listas para producción, eliminando la necesidad de desarrollar endpoints personalizados. Su integración con NextJS permite construir aplicaciones seguras en menos tiempo, manteniendo buenas prácticas en la gestión de sesiones y credenciales.
+  
+9. La biblioteca Beatiful Soup provee una serie de utilidades muy importantes para parsear archivos, permitiendo limpiar y normalizar etiquetas y documentos con formato HTML en este caso.
+
+10. La utilización de un volumen compartido tipo ReadWriteMany permite que varios pods puedan leer y escribir en un mismo almacenamiento al mismo tiempo, permitiendo que varios componentes utilicen el volumen y siendo eficiente para flujos grandes.
 
 
 </details>
@@ -742,13 +986,17 @@ Se recomienda centralizar la configuración del sistema mediante variables de en
 
 4. Se recomienda implementar mejores prácticas de seguridad para el manejo de credenciales para evitar fallos en la seguridad del proyecto.
 
-5. Se recomienda validar que los archivos HTML realmente contengan información para de esta manera evitar que el componenyte que los consume procese archivos innecesarios y mantener la calidad de los datos.
+5. Se recomienda validar que los archivos HTML realmente contengan información para de esta manera evitar que el componente que los consume procese archivos innecesarios y mantener la calidad de los datos.
 
 6. Se recomienda analizar bien el contexto en el que será utilizado el modelo Spacy, ya que este contiene modelos con diferentes caracteristicas, algunos consumen más memoria lo cual puede ser no tan factible cuando se tienen recursos limitados, otros son más ligeros pero tienen peor redimiento, por esto se requiere un analisis de cuál podría ser el más adecuado.
 
 7. Para las instrucciones de este proyecto, donde se debe de desplegar una web en Vercel, se recomienda utilizar Next.js. Este framework es muy sencillo de desplegar, ya que es creado  por el propio Vercel. Además, el uso del backend es facilitado por las API routes de Next.js, que permiten crear endpoints serverless directamente en el proyecto, sin preocuparse por desplegarlo en otro sitio.
 
 8. Si se tiene la posibilidad, se recomienda el uso de Firebase para el manejo de autenticación de usuarios. Estas funcionalidades que ofrece facilitan mucho los procesos de registro, login, verificación de correos electrónicos, recuperación de contraseñas y gestión de sesiones, sin necesidad de implementar un backend personalizado para autenticación.
+
+9. Se recomienda, a la hora de trabajar con componentes grandes o pensando en escalabilidad, parametrizar las métricas de cada componente para la instalación, permitiendo subir la cantidad de réplicas en caso de que la ejecución esté siendo innestable.
+
+10. Se recomienda a la hora de parsear archivos html buscar los distintos lados donde viene la misma información para tener fallbacks, esto permite tener respuesta a errores o inconsistencias de los caracteres HTML. 
 
 </details>
 
@@ -790,6 +1038,8 @@ https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 https://spacy.io/models/es
 
 https://spacy.io/usage/models
+
+https://beautiful-soup-4.readthedocs.io/en/latest/
 
 </details>
 
