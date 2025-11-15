@@ -201,6 +201,7 @@ WebScraper/test.py::test_descargarHtml PASSED        [100%]
 
 
 test.py::test_parse_author PASSED                                       [ 20%]
+
 test.py::test_extract_course_data_json_ld PASSED                        [ 40%]
 test.py::test_extract_course_data_fallbacks PASSED                      [ 60%]
 test.py::test_download_html_from_s3 PASSED                              [ 80%]
