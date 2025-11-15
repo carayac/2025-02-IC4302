@@ -199,6 +199,7 @@ WebScraper/test.py::test_descargarHtml PASSED        [100%]
 - `test_download_html_from_s3`: Valida que la función descargue correctamente el HTML desde S3, confirmando recibir la respuesta correcta. 
 - `test_process_message`: Prueba el funcionamiento del flujo al recibir un mensaje, para actualizar mongo, generar y subir el json al volumen compartido y publicar la información en RabbitMQ para el siguiente componente.
 
+```
 
 test.py::test_parse_author PASSED                                  [ 20%]
 test.py::test_extract_course_data_json_ld PASSED                   [ 40%]
@@ -208,7 +209,7 @@ test.py::test_process_message PASSED                               [100%]
 
 =========================== 5 passed in 1.33s ===========================
 
-
+```
   
 </details>
 
