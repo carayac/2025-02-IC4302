@@ -8,7 +8,7 @@ config:
     schedule: "0 * * * *"  #every hour
   beautifulSoup:
     enabled: true
-    replicas: 1
+    replicas: 2
     name: beautiful-soup
     image: beautiful-soup
   sparkProcessorJob:
