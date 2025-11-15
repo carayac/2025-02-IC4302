@@ -70,7 +70,7 @@ def parse_author(author_block):
 
     raw = author_block.get_text(separator=" ", strip=True)
 
-    #Limpiar encabezados
+    # Limpiar encabezados
     to_remove = [
         "Información del autor", "Información del Autor",
         "Información del", "Información  del autor",
@@ -86,8 +86,14 @@ def parse_author(author_block):
 
     # Caso 2: comentario largo sin nombre
     if clean.lower().startswith((
-        "este curso", "en este curso", "si necesita",
-        "curso ", "ha sido", "mediante"
+        "este curso",
+        "en este curso",
+        "si necesita",
+        "curso ",
+        "ha sido",
+        "mediante",
+        "este introducción",  
+        "esta introducción"
     )):
         return None, clean
 
@@ -95,12 +101,19 @@ def parse_author(author_block):
     if not palabras:
         return None, None
 
-    #separar nombre de comentario
+    # Palabras clave que marcan el inicio del comentario
     keywords = [
-        "magíster", "profesor", "ciencias", "ingeniería",
-        "aplicada", "licencia", "director", "gestión",
-        "autor", "educación", "estándar"
+        "magíster", "profesor", "profesora", "ciencias", "ingeniería", "aplicada",
+        "licencia", "director", "directora", "gestión", "autor", "autora",
+        "educación", "estándar", "especialista", "especialista.", "especialista,", 
+        "psicólogo", "psicóloga", "psicólogo,", "psicóloga,", "esp.", "esp", "abogado", "abogada",
+        "productor", "productora","audiovisual", "diseñador", "diseñadora" "fisioterapeuta", "fisioterapeuta,",
+        "máster", "instructor", "instructor,", "instructora", "lic", "lic.", "comunicadora", "comunicador", "periodista",
+        "equipo", "músico", "música", "músico,", "compositor", "nativo", "desarrollador", "desarrolladora", 
+        "ingeniero", "ingeniera", "finanzas", "nativa"
     ]
+
+    keywords = [k.lower() for k in keywords]
 
     idx = None
     for i, p in enumerate(palabras):
@@ -108,17 +121,19 @@ def parse_author(author_block):
             idx = i
             break
 
-    # Caso 3: nombre + descripción pegados
-    if idx:
+    # Caso: nombre + descripción pegados
+    if idx is not None:
         name = " ".join(palabras[:idx]) or None
         comment = " ".join(palabras[idx:]) or None
         return name, comment
 
+    # Si tiene solo nombre
     if len(palabras) <= 4:
         return clean, None
 
-    #todo comentario
+    #todo es comentario Edutin Academy
     return None, clean
+
 
 
 
@@ -257,9 +272,16 @@ def extract_course_data(html: str, filename: str) -> dict:
         if meta_d and meta_d.get("content"):
             data["description"] = BeautifulSoup(meta_d["content"], "lxml").get_text(" ", strip=True)
         else:
-            p = soup.find("p")
-            if p:
-                data["description"] = p.get_text(" ", strip=True)
+            desc_block = soup.select_one(".course-description p, .information p")
+            if desc_block:
+                data["description"] = BeautifulSoup(desc_block.decode_contents(), "lxml").get_text(" ", strip=True)
+               
+            else:
+                p = soup.find("p")
+                if p:
+                    data["description"] = BeautifulSoup(p.decode_contents(), "lxml").get_text(" ", strip=True)
+
+
 
     # GENERAL CATEGORY 
     related_block = soup.find("div", class_="t-related")
@@ -360,6 +382,8 @@ def extract_course_data(html: str, filename: str) -> dict:
     if students_dom is not None:
         data["students"] = students_dom
     if data["students"] is None:
+        
+        full_text = soup.get_text(" ", strip=True)
         m = re.search(r"([\d\.,]+)\s*estudiantes?", full_text, re.IGNORECASE)
         if m:
             data["students"] = _to_int_digits(m.group(1))
@@ -447,6 +471,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
