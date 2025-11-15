@@ -13,10 +13,36 @@ mongodb:
     - name: EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU
       value: "1"
 elastic:
+  enabled: false
   version: 8.6.1
   replicas: 1
   name: ic4302
+  fullnameOverride: mi-elasticsearch
 kibana:
+  enabled: false
   version: 8.6.1
   replicas: 1
   name: ic4302
+
+opensearch:
+  enabled: true
+  fullnameOverride: "mi-opensearch"
+  clusterName: "opensearch-cluster"
+  replicas: 1
+  extraEnvs:
+    - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+      value: "BaseDatos12345!"
+  keystore:
+    - secretName: snapshot-secret
+  plugins:
+    enabled: true
+    installList:
+      - repository-s3
+
+
+opensearchDashboards:
+  enabled: true
+  fullnameOverride: "mi-opensearch-dashboards"
+  opensearchHosts:
+    - "http://opensearch-cluster-master.default.svc.cluster.local:9200"
+

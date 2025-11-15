@@ -2,5 +2,11 @@ dependencies:
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
   version: 13.6.7
-digest: sha256:968d303142434a9b8f785ffb4212b03e7e57b40d413347fc6ac486c8aed33902
-generated: "2025-05-27T16:45:21.554091-06:00"
+- name: opensearch
+  repository: https://opensearch-project.github.io/helm-charts/
+  version: 2.26.1
+- name: opensearch-dashboards
+  repository: https://opensearch-project.github.io/helm-charts/
+  version: 2.15.1
+digest: sha256:37c73d6c6c9d356a21b075e10ebd5a7599c9492044e253c956f11434e2da67f7
+generated: "2025-11-14T21:59:10.0105706-06:00"

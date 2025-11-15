@@ -1,3 +1,4 @@
+{{if .Values.elastic.enabled }}
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
@@ -25,3 +26,4 @@ spec:
               memory: 2Gi
     config:
       node.store.allow_mmap: false
+{{- end }}
