@@ -8,8 +8,9 @@ docker login
 
 
 # #-------------------------INICIO DATASEEDER ----------------------------
-Set-Location ../DataSeeder
+Set-Location ./DataSeeder
 docker build -t "$Username/dataseeder" .
 docker push "$Username/dataseeder"
+cd ..
 # #-------------------------FIN DATASEEDER ----------------------------
 
