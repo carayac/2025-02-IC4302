@@ -11,6 +11,9 @@ from mysql.connector import pooling
 from elasticsearch import Elasticsearch, helpers
 from openSearch import OpenSearch, helpers as os_helpers
 import requests
+from pymongo import MongoClient
+from pymongo.errors import PyMongoError
+
 
 #Variables de entorno, enable en el deployment.yaml
 POSTGRES_ENABLE = os.getenv("POSTGRES_ENABLE", "true").lower() == "true"
@@ -18,6 +21,8 @@ MARIADB_ENABLE = os.getenv("MARIADB_ENABLE", "true").lower() == "true"
 ELASTICSEARCH_ENABLE = os.getenv("ELASTICSEARCH_ENABLE", "true").lower() == "true"
 OPENSEARCH_ENABLE = os.getenv("OPENSEARCH_ENABLE", "true").lower() == "true"
 CHROMADB_ENABLE = os.getenv("CHROMADB_ENABLE", "true").lower() == "true"
+MONGO_ENABLE = os.getenv("MONGO_ENABLE", "true").lower() == "true"
+
 
 if POSTGRES_ENABLE:
     # Variables de entorno
@@ -50,6 +55,19 @@ if OPENSEARCH_ENABLE:
     OPENSEARCH_USER = getenv("OPENSEARCH_USER", "admin")
     OPENSEARCH_PASS = getenv("OPENSEARCH_PASS")
     OPENSEARCH_COLLECTION = getenv("OPENSEARCH_COLLECTION", "animales")
+
+if MONGO_ENABLE:
+    MONGO_HOST = getenv("MONGO_HOST")
+    MONGO_PORT = getenv("MONGO_PORT")
+    MONGO_DB = getenv("MONGO_DB")
+    MONGO_COLLECTION = getenv("MONGO_COLLECTION")
+    MONGO_USER = getenv("MONGO_USER")
+    MONGO_PASS = getenv("MONGO_PASS")
+    MONGO_AUTH_DB = getenv("MONGO_AUTH_DB")
+    MONGO_URI = (
+        f"mongodb://{MONGO_USER}:{MONGO_PASS}@"
+        f"{MONGO_HOST}:{MONGO_PORT}/?authSource={MONGO_AUTH_DB}")
+
 
 
 def load_dataset():
@@ -487,6 +505,92 @@ def upsert_data_opensearch(df):
 
 #-------------------------------------FIN OPEN SEARCH-------------------------------------
 
+
+#--------------------------------------MONGO DB ------------------------------------------
+
+mongo_client = None
+
+def get_mongo_client():
+    global mongo_client
+    if mongo_client is None:
+        try:
+            mongo_client = MongoClient(MONGO_URI)
+            # Prueba de conexion
+            mongo_client.admin.command("ping")
+            print("Conexión a MongoDB exitosa")
+        except PyMongoError as e:
+            print(f"Error conectando a MongoDB: {e}")
+            sys.exit(1)
+    return mongo_client
+
+
+def insert_data_mongo(df):
+    """
+    Inserta los datos del dataset en una colección 'animals' en MongoDB.
+    Un documento por animal, con arrays para habitats y predators.
+    """
+    try:
+        client = get_mongo_client()
+        db = client[MONGO_DB]
+        collection = db[MONGO_COLLECTION]
+
+        # Opcional: limpiar colección antes de insertar
+        collection.delete_many({})
+        print(f"Colección {MONGO_COLLECTION} limpiada en MongoDB")
+
+        docs = []
+        for _, row in df.iterrows():
+            habitats = [h.strip() for h in str(row["Habitat"]).split(",") if h and h.strip() and str(h).lower() != "nan"]
+            predators = [p.strip() for p in str(row["Predators"]).split(",") if p and p.strip() and str(p).lower() != "nan"]
+
+            doc = {
+                "name": row["Animal"],
+                "height_cm": row["Height (cm)"],
+                "weight_kg": row["Weight (kg)"],
+                "color": row["Color"],
+                "lifespan_years": row["Lifespan (years)"],
+                "diet": row["Diet"],
+                "family": row["Family"],
+                "habitats": habitats,
+                "predators": predators,
+                "average_speed_kmh": row["Average Speed (km/h)"],
+                "top_speed_kmh": row["Top Speed (km/h)"],
+                "countries_found": row["Countries Found"],
+                "conservation_status": row["Conservation Status"],
+                "gestation_period_days": row["Gestation Period (days)"],
+                "social_structure": row["Social Structure"],
+                "offspring_per_birth": row["Offspring per Birth"]
+            }
+
+            
+            clean_doc = {}
+
+            for k, v in doc.items():
+                # Si es lista dejar como está
+                if isinstance(v, list):
+                    clean_doc[k] = v
+                else:
+                    # Si es NaN o None poner None, si no, dejar el valor
+                    clean_doc[k] = None if pd.isna(v) else v
+
+            docs.append(clean_doc)
+
+        if docs:
+            collection.insert_many(docs)
+            print(f"{len(docs)} documentos insertados en MongoDB")
+        else:
+            print("No hay documentos para insertar en MongoDB")
+
+        return True
+
+    except PyMongoError as e:
+        print(f"Error insertando datos en MongoDB: {e}")
+        return False
+
+#--------------------------------------FIN MONGO DB --------------------------------------
+
+
+
 if __name__ == "__main__":    
     try:
         if MARIADB_ENABLE :
@@ -510,6 +614,13 @@ if __name__ == "__main__":
             if not init_opensearch():
                 print("No se pudo inicializar OpenSearch")
                 sys.exit(1)
+                
+        if MONGO_ENABLE:
+            if not get_mongo_client():
+                print("No se pudo inicializar MongoDB")
+                sys.exit(1)
+        
+        
         
         # Cargar dataset
         df = load_dataset()
@@ -532,6 +643,12 @@ if __name__ == "__main__":
             if not upsert_data_opensearch(df):
                 print("No se pudo cargar OpenSearch")
                 sys.exit(1)
+        
+        if MONGO_ENABLE:
+            if not insert_data_mongo(df):
+                print("No se pudo cargar MongoDB")
+                sys.exit(1)
+
 
 
         print("DataSeeder completado exitosamente en todas las bases")

@@ -1,12 +1,13 @@
 config:
     
     dataseeder: # Added configuration for DataSeeder
-        enabled: false
+        enabled: true
         name: dataseeder
         replicas: 1
-        image: carayacn/dataseeder # To charge with data the database
-        openSearchEnable: true
+        image: prosoli/dataseeder # To charge with data the database
+        openSearchEnable: false
         mariaDBEnable: false
         elasticSearchEnable: false
         chromaDBEnable: false
         postgresEnable: false
+        mongoEnable: true

@@ -91,6 +91,28 @@ spec:
                 optional: false
           {{- end }}
 
+          {{- if .Values.config.dataseeder.mongoEnable }}
+          - name: MONGO_HOST
+            value: "databases-mongodb"
+          - name: MONGO_PORT
+            value: "27017"
+          - name: MONGO_DB
+            value: "animalsdb"
+          - name: MONGO_COLLECTION
+            value: "animals"
+          - name: MONGO_USER
+            value: "root"
+          - name: MONGO_PASS
+            valueFrom:
+              secretKeyRef:
+                name: databases-mongodb
+                key: mongodb-root-password
+                optional: false
+          - name: MONGO_AUTH_DB
+            value: "admin"
+          {{- end }}
+
+
           - name: POSTGRES_ENABLE
             value: "{{ .Values.config.dataseeder.postgresEnable }}"
           - name: MARIADB_ENABLE
@@ -101,4 +123,7 @@ spec:
             value: "{{ .Values.config.dataseeder.openSearchEnable }}"
           - name: CHROMADB_ENABLE
             value: "{{ .Values.config.dataseeder.chromaDBEnable }}"
+          - name: MONGO_ENABLE
+            value: "{{ .Values.config.dataseeder.mongoEnable }}"
+
 {{ end }}
