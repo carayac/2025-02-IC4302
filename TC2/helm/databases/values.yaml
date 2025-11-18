@@ -4,7 +4,7 @@ mongodb:
   global:
     security:
       allowInsecureImages: true
-  enabled: true
+  enabled: false
   livenessProbe:
     enabled: false
   readinessProbe:
@@ -12,6 +12,8 @@ mongodb:
   extraEnvVars:
     - name: EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU
       value: "1"
+
+
 elastic:
   enabled: false
   version: 8.6.1
@@ -24,8 +26,10 @@ kibana:
   replicas: 1
   name: ic4302
 
+
+
 opensearch:
-  enabled: true
+  enabled: false
   fullnameOverride: "mi-opensearch"
   clusterName: "opensearch-cluster"
   replicas: 1
@@ -45,4 +49,32 @@ opensearchDashboards:
   fullnameOverride: "mi-opensearch-dashboards"
   opensearchHosts:
     - "http://opensearch-cluster-master.default.svc.cluster.local:9200"
+
+
+couchdb:
+  enabled: true
+  clusterSize: 1
+  allowAdminParty: false
+  createAdminSecret: true
+  adminUsername: admin
+  adminPassword: ""                
+  adminHash: ""            
+  cookieAuthSecret: ""  
+  image:
+    repository: couchdb
+    tag: 3.5.0
+    pullPolicy: IfNotPresent
+  service:
+    enabled: true
+    type: ClusterIP
+    externalPort: 5984
+    targetPort: 5984
+  couchdbConfig:
+    chttpd:
+      bind_address: any
+      require_valid_user: false
+  # prometheusPort:
+  #   enabled: false
+  #   bind_address: "0.0.0.0"
+  #   port: 17986
 
