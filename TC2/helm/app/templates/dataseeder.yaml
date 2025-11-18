@@ -113,6 +113,23 @@ spec:
           {{- end }}
 
 
+
+          {{- if .Values.config.dataseeder.couchDBEnable }}
+          - name: COUCHDB_HOST
+            value: "databases-couchdb"
+          - name: COUCHDB_PORT
+            value: "5984"
+          - name: COUCHDB_USER
+            value: "admin"
+          - name: COUCHDB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: databases-couchdb
+                key: adminPassword
+          - name: COUCHDB_DB
+            value: "animalsdb"
+          {{- end }}
+
           - name: POSTGRES_ENABLE
             value: "{{ .Values.config.dataseeder.postgresEnable }}"
           - name: MARIADB_ENABLE
@@ -121,6 +138,8 @@ spec:
             value: "{{ .Values.config.dataseeder.elasticSearchEnable }}"
           - name: OPENSEARCH_ENABLE
             value: "{{ .Values.config.dataseeder.openSearchEnable }}"
+          - name: COUCHDB_ENABLE
+            value: "{{ .Values.config.dataseeder.couchDBEnable }}"
           - name: CHROMADB_ENABLE
             value: "{{ .Values.config.dataseeder.chromaDBEnable }}"
           - name: MONGO_ENABLE
