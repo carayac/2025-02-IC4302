@@ -15,6 +15,7 @@ from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 
 
+
 #Variables de entorno, enable en el deployment.yaml
 POSTGRES_ENABLE = os.getenv("POSTGRES_ENABLE", "true").lower() == "true"
 MARIADB_ENABLE = os.getenv("MARIADB_ENABLE", "true").lower() == "true"
@@ -22,6 +23,7 @@ ELASTICSEARCH_ENABLE = os.getenv("ELASTICSEARCH_ENABLE", "true").lower() == "tru
 OPENSEARCH_ENABLE = os.getenv("OPENSEARCH_ENABLE", "true").lower() == "true"
 CHROMADB_ENABLE = os.getenv("CHROMADB_ENABLE", "true").lower() == "true"
 MONGO_ENABLE = os.getenv("MONGO_ENABLE", "true").lower() == "true"
+COUCHDB_ENABLE = os.getenv("COUCHDB_ENABLE", "true").lower() == "true"
 
 
 if POSTGRES_ENABLE:
@@ -67,6 +69,13 @@ if MONGO_ENABLE:
     MONGO_URI = (
         f"mongodb://{MONGO_USER}:{MONGO_PASS}@"
         f"{MONGO_HOST}:{MONGO_PORT}/?authSource={MONGO_AUTH_DB}")
+    
+if COUCHDB_ENABLE:
+    COUCHDB_HOST = getenv("COUCHDB_HOST")
+    COUCHDB_PORT = getenv("COUCHDB_PORT")
+    COUCHDB_DB = getenv("COUCHDB_DB")
+    COUCHDB_USER = getenv("COUCHDB_USER")
+    COUCHDB_PASS = getenv("COUCHDB_PASS")
 
 
 
@@ -589,6 +598,91 @@ def insert_data_mongo(df):
 
 #--------------------------------------FIN MONGO DB --------------------------------------
 
+#--------------------------------------COUCH CB ------------------------------------------
+def get_couchdb_url():
+    return f"http://{COUCHDB_USER}:{COUCHDB_PASS}@{COUCHDB_HOST}:{COUCHDB_PORT}"
+
+def create_database_couchdb():
+    url = f"{get_couchdb_url()}/{COUCHDB_DB}"
+    try:
+        response = requests.put(url, auth=(COUCHDB_USER, COUCHDB_PASS))
+        response.raise_for_status()
+
+        if response.status_code == 201:
+            print(f"BD creada exitosamente en couch DB")
+            return True
+        elif response.status_code == 412:
+            print(f"BD ya existe en CouchDB, sin problemas.")
+            return True
+        else:
+            print(f"Fallo al crear BD en CouchDB")
+            return False
+
+    except requests.exceptions.ConnectionError:
+        print("No se puco conectar a CouchDB")
+        return False
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+        return False
+
+def insert_data_couchdb(df):
+    """
+    Inserta los datos del dataset en base de datos animalsdb en CouchBD.
+    Crea un documento en la base de datos por documento insertado.
+    """
+    try:
+        url = f"{get_couchdb_url()}/{COUCHDB_DB}"
+
+        docs = []
+        for _, row in df.iterrows():
+            habitats = [h.strip() for h in str(row["Habitat"]).split(",") if h and h.strip() and str(h).lower() != "nan"]
+            predators = [p.strip() for p in str(row["Predators"]).split(",") if p and p.strip() and str(p).lower() != "nan"]
+
+            doc = {
+                "name": row["Animal"],
+                "height_cm": row["Height (cm)"],
+                "weight_kg": row["Weight (kg)"],
+                "color": row["Color"],
+                "lifespan_years": row["Lifespan (years)"],
+                "diet": row["Diet"],
+                "family": row["Family"],
+                "habitats": habitats,
+                "predators": predators,
+                "average_speed_kmh": row["Average Speed (km/h)"],
+                "top_speed_kmh": row["Top Speed (km/h)"],
+                "countries_found": row["Countries Found"],
+                "conservation_status": row["Conservation Status"],
+                "gestation_period_days": row["Gestation Period (days)"],
+                "social_structure": row["Social Structure"],
+                "offspring_per_birth": row["Offspring per Birth"]
+            }
+
+            
+            clean_doc = {}
+
+            for k, v in doc.items():
+                # Si es lista dejar como está
+                if isinstance(v, list):
+                    clean_doc[k] = v
+                else:
+                    # Si es NaN o None poner None, si no, dejar el valor
+                    clean_doc[k] = None if pd.isna(v) else v
+
+            docs.append(clean_doc)
+
+        if docs:
+            bulk_response = requests.post(f"{url}/_bulk_docs", json={"docs": docs}) #insertado en bulk
+            print(bulk_response.json())
+            print(f"{len(docs)} documentos insertados en CouchDB")
+        else:
+            print("No hay documentos para insertar en CouchDB")
+
+        return True
+
+    except Exception as e:
+        print(f"Error insertando datos en CouchDB: {e}")
+        return False
+#--------------------------------------FIN COUCH DB --------------------------------------
 
 
 if __name__ == "__main__":    
@@ -619,6 +713,11 @@ if __name__ == "__main__":
             if not get_mongo_client():
                 print("No se pudo inicializar MongoDB")
                 sys.exit(1)
+
+        if COUCHDB_ENABLE:
+            if not create_database_couchdb():
+                print("No se pudo inicializar CouchDB")
+                sys.exit(1)
         
         
         
@@ -647,6 +746,11 @@ if __name__ == "__main__":
         if MONGO_ENABLE:
             if not insert_data_mongo(df):
                 print("No se pudo cargar MongoDB")
+                sys.exit(1)
+
+        if COUCHDB_ENABLE:
+            if not insert_data_couchdb(df):
+                print("No se pudo cargar CouchDB")
                 sys.exit(1)
 
 
