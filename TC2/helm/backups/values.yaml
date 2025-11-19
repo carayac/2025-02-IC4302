@@ -4,10 +4,26 @@ mongo:
     namespace: default
     connectionString: databases-mongodb.default.svc.cluster.local:27017
     bucketName: ic-tec-dataset
-    path: 200420157/mongodb
+    path: CARPETA_HCDCP_BACKUP/mongodb
     maxBackups: 3
     secret: databases-mongodb
     name: mongo 
+    schedule: "0 */12 * * *"
+    diskSize: 2
+    storageClass: hostpath
+    provider: aws
+    type: backup
+
+couchdb:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-couchdb.default.svc.cluster.local:5984
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/couchdb
+    maxBackups: 3
+    secret: databases-couchdb
+    name: couchdb
     schedule: "0 */12 * * *"
     diskSize: 2
     storageClass: hostpath
