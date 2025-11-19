@@ -46,3 +46,12 @@ opensearchDashboards:
   opensearchHosts:
     - "http://opensearch-cluster-master.default.svc.cluster.local:9200"
 
+# MariaDB
+mariadb:
+  replicas: 1
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/mariadb
+    tag: 11.2.3-debian-11-r1
+
