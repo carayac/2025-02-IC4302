@@ -12,20 +12,22 @@ mongodb:
   extraEnvVars:
     - name: EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU
       value: "1"
+
+#Apagar encender segun se use elaticsearch o opensearch
 elastic:
-  enabled: false
+  enabled: true
   version: 8.6.1
   replicas: 1
   name: ic4302
   fullnameOverride: mi-elasticsearch
 kibana:
-  enabled: false
+  enabled: true
   version: 8.6.1
   replicas: 1
   name: ic4302
 
 opensearch:
-  enabled: true
+  enabled: false
   fullnameOverride: "mi-opensearch"
   clusterName: "opensearch-cluster"
   replicas: 1
@@ -41,7 +43,7 @@ opensearch:
 
 
 opensearchDashboards:
-  enabled: true
+  enabled: false
   fullnameOverride: "mi-opensearch-dashboards"
   opensearchHosts:
     - "http://opensearch-cluster-master.default.svc.cluster.local:9200"
