@@ -4,7 +4,7 @@ mongo:
     namespace: default
     connectionString: databases-mongodb.default.svc.cluster.local:27017
     bucketName: ic-tec-dataset
-    path: 200420157/mongodb
+    path: CARPETA_HCDCP_BACKUP/mongodb
     maxBackups: 3
     secret: databases-mongodb
     name: mongo 
