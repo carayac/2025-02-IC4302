@@ -4,6 +4,11 @@
 # Mostrar lista de releases
 helm list
 
+# Desinstalar chart 'backups'
+helm uninstall backups
+
+Start-Sleep -Seconds 10
+
 # Desinstalar chart 'app'
 helm uninstall app
 
