@@ -25,3 +25,12 @@ Remove-Item -Force Chart.lock -ErrorAction SilentlyContinue
 helm dependency update
 Set-Location ..
 helm upgrade --install app app
+
+Start-Sleep -Seconds 20
+
+# Instalar chart 'backups'
+Set-Location backups
+Remove-Item -Force Chart.lock -ErrorAction SilentlyContinue
+helm dependency update
+Set-Location ..
+helm upgrade --install backups backups
