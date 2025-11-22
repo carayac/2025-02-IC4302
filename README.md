@@ -49,7 +49,7 @@ Para realizar todo el procedimiento es necesario crear un Snapshot Repository, e
 | name | elastic |
 | provider | AWS |
 | bucketName | ic-tec-dataset |
-| base_path | CARPETA_HCDCP_BACKUP/opensearch |  
+| base_path | CARPETA_HCDCP_BACKUP/elastic |  
 
 ### Configuración de la política  
 
