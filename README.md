@@ -113,11 +113,26 @@
 
 ---
 
-- **Crear repositorio:** ![alt text](image-1.png)
-- **Política de Snapshots:** ![alt text](image-2.png)
-- **Crear Snapshot:** ![alt text](image-3.png)
-- **Restaurar Snapshot:** ![alt text](image-4.png)
-- **Verificar índice:** ![alt text](image-5.png)
+- **Crear repositorio:** 
+ 
+  ![alt text](image-1.png)
+
+- **Política de Snapshots:** 
+  
+  ![alt text](image-2.png)
+
+- **Crear Snapshot:** 
+ 
+  ![alt text](image-3.png)
+
+- **Restaurar Snapshot:**
+  
+  ![alt text](image-4.png)
+
+- **Verificar índice:** 
+  
+  ![alt text](image-5.png)
+  
 </details>
 
 
