@@ -452,7 +452,7 @@ def init_opensearch():
             hosts=[OPENSEARCH_ENDPOINT],
             http_auth=(OPENSEARCH_USER, OPENSEARCH_PASS),
             use_ssl=True,
-            verify_certs=False,   # si no tienes certificados válidos
+            verify_certs=False,   
             ssl_assert_hostname=False,
             ssl_show_warn=False
         )
@@ -469,7 +469,7 @@ def upsert_data_opensearch(df):
             hosts=[OPENSEARCH_ENDPOINT],
             http_auth=(OPENSEARCH_USER, OPENSEARCH_PASS),
             use_ssl=True,
-            verify_certs=False,   # si no tienes certificados válidos
+            verify_certs=False,   
             ssl_assert_hostname=False,
             ssl_show_warn=False
     )
