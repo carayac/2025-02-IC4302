@@ -13,7 +13,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-7.0.asc
 EOT
 yum update -y
 yum install mongodb-database-tools -y
-mongodump --host="$MONGO_CONNECTION_STRING" -u $MONGO_USERNAME -p $MONGO_PASSWORD --gzip --archive=/mongodump/$DATE
-aws s3 cp /mongodump/$DATE s3://$BUCKET_NAME/$BACKUP_PATH/$DATE --recursive
+mongodump --host="$MONGO_CONNECTION_STRING" -u $MONGO_USERNAME -p $MONGO_PASSWORD --gzip --archive=/mongodump/${DATE}.gz
+aws s3 cp /mongodump/${DATE}.gz s3://$BUCKET_NAME/$BACKUP_PATH/${DATE}.gz
 aws s3 ls s3://$BUCKET_NAME/$BACKUP_PATH/
-rm -rf /mongodump/$DATE
+rm -rf /mongodump/${DATE}.gz

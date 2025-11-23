@@ -14,6 +14,6 @@ yum update -y
 yum install mongodb-database-tools -y
 mkdir -p /restore/$BACKUP_NAME
 
-aws s3 cp s3://$BUCKET_NAME/$BACKUP_PATH/$BACKUP_NAME /restore/$BACKUP_NAME --recursive
-mongorestore --gzip --archive=/restore/$BACKUP_NAME/archive.gz  --nsInclude="animalsdb.*" --host="$MONGO_CONNECTION_STRING" -u "$MONGO_USERNAME" -p "$MONGO_PASSWORD" --drop
+aws s3 cp s3://$BUCKET_NAME/$BACKUP_PATH/${BACKUP_NAME}.gz /restore/${BACKUP_NAME}.gz
+mongorestore --gzip --archive=/restore/${BACKUP_NAME}.gz  --nsInclude="animalsdb.*" --host="$MONGO_CONNECTION_STRING" -u "$MONGO_USERNAME" -p "$MONGO_PASSWORD" --drop
 
