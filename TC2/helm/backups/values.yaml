@@ -1,5 +1,5 @@
 mongo:
-  enabled: true
+  enabled: false
   config:
     namespace: default
     connectionString: databases-mongodb.default.svc.cluster.local:27017
@@ -13,3 +13,21 @@ mongo:
     storageClass: hostpath
     provider: aws
     type: backup
+
+mariadb:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-mariadb.default.svc.cluster.local:3306
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/mariadb
+    maxBackups: 3
+    secret: databases-mariadb
+    name: mariadb
+    schedule: "0 */12 * * *"
+    diskSize: 2Gi
+    storageClass: hostpath
+    provider: aws
+    type: backup # backup o restore
+    #name:  202511230123.sql # nombre del backup a restaurar
+    serviceAccount: default
