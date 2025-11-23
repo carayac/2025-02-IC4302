@@ -7,9 +7,9 @@ mongo:
     path: CARPETA_HCDCP_BACKUP/mongodb
     maxBackups: 3
     secret: databases-mongodb
-    name: mongo 
+    name: "202511230002"                   # Nombre de la copia de seguridad a descargar
     schedule: "0 */12 * * *"
     diskSize: 2
     storageClass: hostpath
     provider: aws
-    type: backup
+    type: restore                  # "backup" o "restore" segun corresponda

@@ -1,6 +1,5 @@
 #!/bin/bash
-DATE=$(date '+%Y%m%d%H%M')
-mkdir -p /mongodump/$DATE
+set -e
 yum update -y
 
 cat <<EOT > /etc/yum.repos.d/mongodb-org-7.0.repo
@@ -13,7 +12,8 @@ gpgkey=https://www.mongodb.org/static/pgp/server-7.0.asc
 EOT
 yum update -y
 yum install mongodb-database-tools -y
-mongodump --host="$MONGO_CONNECTION_STRING" -u $MONGO_USERNAME -p $MONGO_PASSWORD --gzip --archive=/mongodump/$DATE
-aws s3 cp /mongodump/$DATE s3://$BUCKET_NAME/$BACKUP_PATH/$DATE --recursive
-aws s3 ls s3://$BUCKET_NAME/$BACKUP_PATH/
-rm -rf /mongodump/$DATE
+mkdir -p /restore/$BACKUP_NAME
+
+aws s3 cp s3://$BUCKET_NAME/$BACKUP_PATH/$BACKUP_NAME /restore/$BACKUP_NAME --recursive
+mongorestore --gzip --archive=/restore/$BACKUP_NAME/archive.gz  --nsInclude="animalsdb.*" --host="$MONGO_CONNECTION_STRING" -u "$MONGO_USERNAME" -p "$MONGO_PASSWORD" --drop
+
