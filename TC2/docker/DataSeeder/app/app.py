@@ -675,7 +675,11 @@ def insert_data_couchdb(df):
             docs.append(clean_doc)
 
         if docs:
-            bulk_response = requests.post(f"{url}/_bulk_docs", json={"docs": docs}) #insertado en bulk
+            bulk_response = requests.post(
+                    f"{url}/_bulk_docs", 
+                    json={"docs": docs},
+                    auth=(COUCHDB_USER, COUCHDB_PASS)
+                ) #insertado en bulk
             print(bulk_response.json())
             print(f"{len(docs)} documentos insertados en CouchDB")
         else:

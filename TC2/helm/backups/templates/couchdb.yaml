@@ -26,6 +26,7 @@ metadata:
   name: "couchdb-backup"
   namespace: {{ .Values.couchdb.config.namespace }}
 spec:
+  serviceAccountName: {{ .Values.couchdb.config.serviceAccount }}
   schedule: {{ .Values.couchdb.config.schedule }}
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
@@ -67,6 +68,8 @@ spec:
                       name: "{{ .Values.couchdb.config.secret }}"
                       key: adminPassword
                       optional: false
+                - name: COUCHDB_DB
+                  value: "animalsdb"
               volumeMounts:
                 - mountPath: "/couchdbdump"
                   name: couchdb-snapshotter
@@ -111,12 +114,14 @@ spec:
               value: "{{ .Values.couchdb.config.maxBackups }}"
             - name: COUCHDB_USERNAME
               value: "admin"
-            - name: COUCHDBPASSWORD
+            - name: COUCHDB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.couchdb.config.secret }}"
                   key: adminPassword
                   optional: false
+            - name: COUCHDB_DB
+              value: "animalsdb"
           volumeMounts:
             - mountPath: "/couchdbdump"
               name: couchdb-snapshotter
@@ -173,12 +178,14 @@ spec:
         - name: COUCHDB_CONNECTION_STRING
           value: "{{ .Values.couchdb.config.connectionString }}"
         - name: COUCHDB_USERNAME
-          value: "root"
+          value: "admin"
         - name: COUCHDB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: "{{ .Values.couchdb.config.secret }}"
-              key: couchdb-root-password
+              key: adminPassword
+        - name: COUCHDB_DB
+          value: "animalsdb"
         - name: BUCKET_NAME
           value: "{{ .Values.couchdb.config.bucketName }}"
         - name: BACKUP_PATH

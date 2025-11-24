@@ -30,10 +30,11 @@ couchdb:
     provider: aws
     type: backup
     serviceAccount: default
+    db: animalsdb
 
 
 mariadb:
-  enabled: true
+  enabled: false
   config:
     namespace: default
     connectionString: databases-mariadb.default.svc.cluster.local:3306
@@ -51,7 +52,7 @@ mariadb:
     serviceAccount: default
 
 postgresql:
-  enabled: true
+  enabled: false
   config:
     namespace: default
     connectionString: databases-postgresql.default.svc.cluster.local:5432   

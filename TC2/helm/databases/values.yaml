@@ -82,7 +82,7 @@ couchdb:
 # MariaDB
 mariadb:
   replicas: 1
-  enabled: true
+  enabled: false
   image:
     registry: docker.io
     repository: bitnamilegacy/mariadb
@@ -91,7 +91,7 @@ mariadb:
 # PostgreSQL
 postgresql:
   replicas: 1
-  enabled: true
+  enabled: false
   image:
     registry: docker.io
     repository: bitnamilegacy/postgresql

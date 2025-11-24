@@ -13,17 +13,24 @@ set -e
 # EOT
 # yum update -y
 # yum install mongodb-database-tools -y
+apk add --no-cache jq
 
 mkdir -p /restore/$BACKUP_NAME
 
 aws s3 cp s3://$BUCKET_NAME/$BACKUP_PATH/${BACKUP_NAME}.gz /restore/${BACKUP_NAME}.gz
 
-gunzip /restore/${BACKUP_NAME}.gz #descomprime
 
-curl -X DELETE "http://$COUCHDB_USERNAME:$COUCHDB_PASSWORD@$COUCHDB_CONNECTION_STRING/$COUCHDB_DB" #se limpia la bd antes de hacer restore
-curl -X PUT    "http://$COUCHDB_USERNAME:$COUCHDB_PASSWORD@$COUCHDB_CONNECTION_STRING/$COUCHDB_DB"
+
+gunzip /restore/${BACKUP_NAME}.gz #descomprime
+curl -u "$COUCHDB_USERNAME:$COUCHDB_PASSWORD" \
+     -X DELETE "http://$COUCHDB_CONNECTION_STRING/$COUCHDB_DB" || true #se limpia antes de hacer restore
+curl -u "$COUCHDB_USERNAME:$COUCHDB_PASSWORD" \
+     -X PUT "http://$COUCHDB_CONNECTION_STRING/$COUCHDB_DB"
+
+
+jq '{docs: [.rows[].doc]}' /restore/${BACKUP_NAME} > /restore/docs.json #el backup debe ser un json para ser aceptado por couchdb
 
 curl -s -X POST \
   -H "Content-Type: application/json" \
-  --data-binary @/restore/${BACKUP_NAME} \
-  "http://$COUCHDB_USERNAME:$COUCHDB_PASSWORD@$COUCHDB_CONNECTION_STRING/$COUCHDB_DB/_bulk_docs" #bulk_docs sube documentos en bulk
+  --data-binary @/restore/docs.json \
+  "http://$COUCHDB_CONNECTION_STRING/$COUCHDB_DB/_bulk_docs" #bulk_docs sube documentos en bulk
