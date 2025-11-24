@@ -1,20 +1,22 @@
 #!/bin/bash
-
 set -e
 
-# Verificar que se haya pasado el nombre de usuario
+# Uso: ./build-dataseeder.sh <USERNAME>
+
 if [ -z "$1" ]; then
-  echo "Uso: ./build.sh <docker-username>"
+  echo "Error: Debes pasar el nombre de usuario de DockerHub."
+  echo "Uso: ./build-dataseeder.sh <USERNAME>"
   exit 1
 fi
 
-USERNAME=$1
+USERNAME="$1"
 
 # Login a Docker
 docker login
 
-# #------------------------- DATASEEDER ----------------------------
-# cd DataSeeder
-# docker build -t "$USERNAME/dataseeder" .
-# docker push "$USERNAME/dataseeder"
-# cd ..
+# ------------------ INICIO DATASEEDER ------------------
+cd DataSeeder
+docker build -t "$USERNAME/dataseeder" .
+docker push "$USERNAME/dataseeder"
+cd ..
+# ------------------ FIN DATASEEDER ------------------
