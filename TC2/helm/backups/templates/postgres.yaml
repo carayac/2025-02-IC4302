@@ -1,0 +1,141 @@
+{{- if .Values.postgresql.enabled }}
+
+apiVersion: v1 
+kind: ConfigMap
+metadata:
+  name: postgres-backups-script
+  namespace: {{ .Values.postgresql.config.namespace }}
+data:
+{{ (.Files.Glob "scripts/postgres.sh").AsConfig | indent 2 }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-snapshotter
+  namespace: {{ .Values.postgresql.config.namespace }}
+spec:
+  storageClassName: {{ .Values.postgresql.config.storageClass }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.postgresql.config.diskSize }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: "postgres-backup"
+  namespace: {{ .Values.postgresql.config.namespace }}
+spec:
+  schedule: {{ .Values.postgresql.config.schedule }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        spec:
+          terminationGracePeriodSeconds: 0
+          restartPolicy: Never
+          volumes:
+          - name: scripts
+            configMap:
+              name: postgres-backups-script
+              defaultMode: 0700
+          - name: postgres-snapshotter
+            persistentVolumeClaim:
+              claimName: postgres-snapshotter
+          - name: aws-credential
+            secret: 
+              secretName: aws-credential
+          containers:
+            - image: public.ecr.aws/aws-cli/aws-cli
+              name: postgres-snapshotter
+              env:
+                - name: CONNECTION_STRING
+                  value: "{{ .Values.postgresql.config.connectionString }}"
+                - name: BUCKET_NAME
+                  value: "{{ .Values.postgresql.config.bucketName }}"
+                - name: BACKUP_PATH
+                  value: "{{ .Values.postgresql.config.path }}"
+                - name: MAX_BACKUPS
+                  value: "{{ .Values.postgresql.config.maxBackups }}"
+                - name: DB_USERNAME
+                  value: "postgres"
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ .Values.postgresql.config.secret }}"
+                      key: postgres-password
+                      optional: false
+                - name: TYPE
+                  value: "{{ .Values.postgresql.config.type }}"
+                - name: BACKUP_FILE
+                  value: "{{ .Values.postgresql.config.name }}"
+              volumeMounts:
+                - name: postgres-snapshotter
+                  mountPath: "/pgdump"
+                - name: scripts
+                  mountPath: /scripts
+                - name: aws-credential
+                  mountPath: /root/.aws
+              command:
+                - "/scripts/postgres.sh"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-backup-0
+  namespace: {{ .Values.postgresql.config.namespace }}
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ .Values.postgresql.config.serviceAccount }}
+      volumes:
+      - name: scripts
+        configMap:
+          name: postgres-backups-script
+          defaultMode: 0777
+      - name: postgres-snapshotter
+        persistentVolumeClaim:
+          claimName: postgres-snapshotter
+      - name: aws-credential
+        secret: 
+          secretName: aws-credential
+      containers:
+        - image: public.ecr.aws/aws-cli/aws-cli
+          name: postgres-snapshotter
+          env:
+            - name: CONNECTION_STRING
+              value: "{{ .Values.postgresql.config.connectionString }}"
+            - name: BUCKET_NAME
+              value: "{{ .Values.postgresql.config.bucketName }}"
+            - name: BACKUP_PATH
+              value: "{{ .Values.postgresql.config.path }}"
+            - name: MAX_BACKUPS
+              value: "{{ .Values.postgresql.config.maxBackups }}"
+            - name: DB_USERNAME
+              value: "postgres"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.config.secret }}"
+                  key: postgres-password
+                  optional: false
+            - name: TYPE
+              value: "{{ .Values.postgresql.config.type }}"
+            - name: BACKUP_FILE
+              value: "{{ .Values.postgresql.config.name }}"
+          volumeMounts:
+            - name: postgres-snapshotter
+              mountPath: "/pgdump"
+            - name: scripts
+              mountPath: /scripts
+            - name: aws-credential
+              mountPath: /root/.aws
+          command:
+            - "/scripts/postgres.sh"
+      restartPolicy: Never
+  backoffLimit: 1
+
+{{- end }}

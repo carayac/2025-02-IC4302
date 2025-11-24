@@ -1,0 +1,67 @@
+{{- if .Values.mongo.enabled }}
+{{- if eq .Values.mongo.config.type "restore" }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-restore-script
+  namespace: {{ .Values.mongo.config.namespace }}
+data:
+{{ (.Files.Glob "scripts/mongodb_res.sh").AsConfig | indent 2 }}
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongo-restore
+  namespace: {{ .Values.mongo.config.namespace }}
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ .Values.mongo.config.serviceAccount }}
+      volumes:
+      - name: scripts
+        configMap:
+          name: mongo-restore-script
+          defaultMode: 0755
+      - name: restore-dir
+        emptyDir: {}
+      - name: aws-credential
+        secret:
+          secretName: aws-credential
+      containers:
+      - name: mongo-restore
+        image: public.ecr.aws/aws-cli/aws-cli
+        env:
+        - name: MONGO_CONNECTION_STRING
+          value: "{{ .Values.mongo.config.connectionString }}"
+        - name: MONGO_USERNAME
+          value: "root"
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Values.mongo.config.secret }}"
+              key: mongodb-root-password
+        - name: BUCKET_NAME
+          value: "{{ .Values.mongo.config.bucketName }}"
+        - name: BACKUP_PATH
+          value: "{{ .Values.mongo.config.path }}"
+        - name: BACKUP_NAME
+          value: "{{ .Values.mongo.config.name }}"
+
+        volumeMounts:
+        - name: scripts
+          mountPath: /scripts
+        - name: restore-dir
+          mountPath: /restore
+        - name: aws-credential
+          mountPath: /root/.aws
+        command:
+        - "/bin/bash"
+        - "/scripts/mongodb_res.sh"
+
+      restartPolicy: Never
+  backoffLimit: 1
+
+{{- end }}
+{{- end }}

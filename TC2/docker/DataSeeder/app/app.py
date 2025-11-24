@@ -9,7 +9,7 @@ import sys
 import mysql.connector
 from mysql.connector import pooling
 from elasticsearch import Elasticsearch, helpers
-from openSearch import OpenSearch, helpers as os_helpers
+from opensearchpy import OpenSearch, helpers as os_helpers
 import requests
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
@@ -460,8 +460,10 @@ def init_opensearch():
         os_client = OpenSearch(
             hosts=[OPENSEARCH_ENDPOINT],
             http_auth=(OPENSEARCH_USER, OPENSEARCH_PASS),
-            use_ssl=False,
-            verify_certs=False
+            use_ssl=True,
+            verify_certs=False,   
+            ssl_assert_hostname=False,
+            ssl_show_warn=False
         )
         if not os_client.ping():
             raise Exception("No se pudo conectar a OpenSearch")
@@ -473,10 +475,12 @@ def init_opensearch():
 
 def upsert_data_opensearch(df):
     os_client = OpenSearch(
-        hosts=[OPENSEARCH_ENDPOINT],
-        http_auth=(OPENSEARCH_USER, OPENSEARCH_PASS),
-        use_ssl=False,
-        verify_certs=False
+            hosts=[OPENSEARCH_ENDPOINT],
+            http_auth=(OPENSEARCH_USER, OPENSEARCH_PASS),
+            use_ssl=True,
+            verify_certs=False,   
+            ssl_assert_hostname=False,
+            ssl_show_warn=False
     )
 
     actions = []

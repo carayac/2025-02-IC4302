@@ -21,7 +21,7 @@ spec:
         env:
           {{- if .Values.config.dataseeder.postgresEnable }}
           - name: POSTGRES
-            value: "databases-postgresql-primary"
+            value: "databases-postgresql"
           - name: POSTGRES_USER
             value: "postgres"
           - name: POSTGRES_DB
@@ -80,15 +80,11 @@ spec:
 
           {{- if .Values.config.dataseeder.openSearchEnable }}
           - name: OPENSEARCH_ENDPOINT
-            value: "http://opensearch:9200"
+            value: "https://opensearch-cluster-master:9200"
           - name: OPENSEARCH_USER
             value: "admin"
           - name: OPENSEARCH_PASS
-            valueFrom:
-              secretKeyRef:
-                name: opensearch-admin
-                key: password
-                optional: false
+            value: "BaseDatos12345!"
           {{- end }}
 
           {{- if .Values.config.dataseeder.mongoEnable }}
