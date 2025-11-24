@@ -2,7 +2,7 @@
 # Fecha y hora actual en formato YYYYMMDDHHMM
 DATE=$(date '+%Y%m%d%H%M')
 # Directorio temporal para dumps
-DIR=/mariadump
+DIR=/pgdump
 
 # Función para eliminar backups antiguos
 removeoldbackups() {
@@ -33,20 +33,20 @@ mkdir -p $DIR/$DATE
 # Actualizar repositorios de yum
 yum update -y
 
-# Instalar MariaDB disponible en Amazon Linux 2023
-yum install -y mariadb105
+# Instalar PostgreSQL disponible en Amazon Linux 2023
+yum install -y postgresql15
 
 # Extraer host y puerto de CONNECTION_STRING
-MARIADB_HOST=$(echo $CONNECTION_STRING | cut -d':' -f1)
-MARIADB_PORT=$(echo $CONNECTION_STRING | cut -d':' -f2)
+POSTGRES_HOST=$(echo $CONNECTION_STRING | cut -d':' -f1)
+POSTGRES_PORT=$(echo $CONNECTION_STRING | cut -d':' -f2)
 
 # Si es backup
 if [ "$TYPE" == "backup" ]; then
-    echo "*-*-* MODO BACKUP MariaDB *-*-*"
+    echo "*-*-* MODO BACKUP PostgreSQL *-*-*"
 
     echo "Creando dump de la base de datos..."
     # Crear dump de todas las bases de datos
-    mysqldump --host=$MARIADB_HOST --port=$MARIADB_PORT --user=$DB_USERNAME --password=$DB_PASSWORD --lock-tables --all-databases > $DIR/$DATE/$DATE.sql
+    PGPASSWORD=$DB_PASSWORD pg_dumpall --host=$POSTGRES_HOST --port=$POSTGRES_PORT --username=$DB_USERNAME > $DIR/$DATE/$DATE.sql
 
     echo "Copiando a AWS..."
     # Subir dump a S3
@@ -58,11 +58,11 @@ if [ "$TYPE" == "backup" ]; then
     # Eliminar backups antiguos
     removeoldbackups
 
-    echo "*-*-* BACKUP FINALIZADO MariaDB *-*-*"
+    echo "*-*-* BACKUP FINALIZADO PostgreSQL *-*-*"
 
 # Si es restore
 else
-    echo "*-*-* MODO RESTORE MariaDB *-*-*"
+    echo "*-*-* MODO RESTORE PostgreSQL *-*-*"
 
     echo "Backups actuales:"
     aws s3 ls s3://$BUCKET_NAME/$BACKUP_PATH/
@@ -73,9 +73,9 @@ else
 
     echo "Restaurando en la base de datos..."
     # Restaurar dump en la base de datos
-    mysql --host=$MARIADB_HOST --port=$MARIADB_PORT --user=$DB_USERNAME --password=$DB_PASSWORD < $DIR/$DATE/$BACKUP_FILE
+    PGPASSWORD=$DB_PASSWORD psql --host=$POSTGRES_HOST --port=$POSTGRES_PORT --username=$DB_USERNAME < $DIR/$DATE/$BACKUP_FILE
 
-    echo "*-*-* RESTAURACIÓN FINALIZADA MariaDB *-*-*"
+    echo "*-*-* RESTAURACIÓN FINALIZADA PostgreSQL *-*-*"
 fi
 
 # Limpiar directorio temporal

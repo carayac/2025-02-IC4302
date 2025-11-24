@@ -4,7 +4,7 @@ mongodb:
   global:
     security:
       allowInsecureImages: true
-  enabled: true
+  enabled: false
   livenessProbe:
     enabled: false
   readinessProbe:
@@ -15,13 +15,13 @@ mongodb:
 
 #Apagar encender segun se use elaticsearch o opensearch
 elastic:
-  enabled: true
+  enabled: false
   version: 8.6.1
   replicas: 1
   name: ic4302
   fullnameOverride: mi-elasticsearch
 kibana:
-  enabled: true
+  enabled: false
   version: 8.6.1
   replicas: 1
   name: ic4302
@@ -57,3 +57,11 @@ mariadb:
     repository: bitnamilegacy/mariadb
     tag: 11.2.3-debian-11-r1
 
+# PostgreSQL
+postgresql:
+  replicas: 1
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.5.0-debian-11-r1

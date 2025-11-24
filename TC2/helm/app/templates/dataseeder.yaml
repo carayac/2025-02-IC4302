@@ -21,7 +21,7 @@ spec:
         env:
           {{- if .Values.config.dataseeder.postgresEnable }}
           - name: POSTGRES
-            value: "databases-postgresql-primary"
+            value: "databases-postgresql"
           - name: POSTGRES_USER
             value: "postgres"
           - name: POSTGRES_DB
