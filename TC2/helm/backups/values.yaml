@@ -46,6 +46,6 @@ postgresql:
     diskSize: 2Gi
     storageClass: hostpath
     provider: aws
-    type: resotre # backup o restore
-    name: 202511232330.sql # nombre del backup a restaurar
+    type: backup # backup o restore
+    # name: 202511232330.sql # nombre del backup a restaurar
     serviceAccount: default
