@@ -6,9 +6,9 @@ config:
         replicas: 1
         image: prosoli/dataseeder # To charge with data the database
         openSearchEnable: false
-        couchDBEnable: false
+        couchDBEnable: true
         mariaDBEnable: false
         elasticSearchEnable: false
         chromaDBEnable: false
         postgresEnable: false
-        mongoEnable: true
+        mongoEnable: false
