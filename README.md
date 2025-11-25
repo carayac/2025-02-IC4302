@@ -135,6 +135,179 @@
   
 </details>
 
+## Elasticsearch  
+
+<details>
+  <summary>Desplegar información</summary>
+
+Para el desarrollo completo al realizar backups y restauraciones de indices en Elasticsearch se utiliza el servicio de Kibana al cual puede ingresar utilizado la interfaz de Lens y en la sección de Services. Una vez dentro utilizaremos su robusta configuracion de Backups y restauración  
+
+
+[Video Tutorial Backup y Resturación](https://estudianteccr-my.sharepoint.com/:v:/g/personal/d_romero_estudiantec_cr/IQAnJWdoFvZgSZf6dMdVND21AfEHQfBwu7Fp6b7Z5F4D0Nk?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=FnbWrc)
+
+### Backup  
+
+### Configuración del snapshot repository  
+
+Para realizar todo el procedimiento es necesario crear un Snapshot Repository, el cual es una ubicación externa donde elasticsearch puede crear y almacenar respaldos de sus indices, para poder crearlo solo debe ingresar al servicio de kibana (implementado en este proyecto) por el cual se puede interactuar con elasticsearch.  En kibana ---> Stack Management ---> Snapshot y Restore ---> Repositories ---> Register repositories .  Este repositorio incluye distintos parametros, para el caso de esta tarea, se deben ingresar los siguientes:
+
+| Parámetro | Valor |
+|----------|-------------|
+| name | elastic |
+| provider | AWS |
+| client | default |
+| bucketName | ic-tec-dataset |
+| base_path | CARPETA_HCDCP_BACKUP/elastic |  
+
+### Configuración de la política  
+
+Una vez creado el repositorio es necesario crear una política que permite ejecutar un snapshot de forma automática cada cierto tiempo y así automatizar los backups, aqui unicamnete debe completar campos del repositorio ya creado.  
+
+| Parámetro | Valor |
+|----------|-------------|
+| name | elastic |
+| snapshotName | elastic |
+| repository | elastic (nombre del snapshot repository creado |  
+
+**¿Cómo ejecutar el backup?**  
+
+Para ejecutar el snapshot que generará el backup, puede esperar a que se ejcute segun el horario que fue asignado o bien puede ejecutarlo manualmente en Kibana ---> Stack Management ---> policies y justo en la columna de actions solicita la ejecución forzadaa con el botón de run.  
+Una vez ejecutado el policy, el backup empezará y podrá coprobarlo al ver una nueva carpeta dentro del prefijo especificado dentro del bucket, o bien puede ingresar a las Dev Tools de elastic y ejecutar:  
+
+```powershell
+GET _snapshot/elastic/_all
+```
+
+Donde en el resulatdo se observa cierta data que permite confirmar que el proceso fue exitoso, ya que se puede ver que parte de los indices subidos corresponde a **animals**, dataset utilizado para probar los backups
+
+```json
+{
+  "snapshots": [
+    {
+      "snapshot": "elastic-j4wjad6lsh21ww2t5mtktw",
+      "repository": "elastic",
+      "version_id": 8060199,
+      "indices": [
+        ".kibana_security_session_1",
+        ".security-7",
+        ".apm-agent-configuration",
+        ".kibana_8.6.1_001",
+        ".apm-custom-link",
+        ".ds-ilm-history-5-2025.11.21-000001",
+        ".geoip_databases",
+        "animals",
+        ".security-profile-8",
+        ".kibana-event-log-8.6.1-000001",
+        ".ds-.logs-deprecation.elasticsearch-default-2025.11.21-000001",
+        ".kibana_task_manager_8.6.1_001"
+      ],
+      "metadata": {
+        "policy": "elastic"
+      },
+      "state": "SUCCESS",
+```
+
+---
+
+
+### Restauración  
+
+Antes de realizar el proceso para hacer la restauración de indices es importante mencionar que Elasticsearch **NO** permite restaurar un índice si este ya existe o está abierto, es por esta razón que para probar la restauración es necesario eliminar el indice `animals` antes de ejecutar el restore, utilizando este comando en la consola de Dev-Tools se puede realizar la eliminación:  
+
+```powershell
+DELETE animals
+```
+
+Una vez realizado esto puede dirigirse a Stack Management ---> Snapshot y Restore ---> Snapshots y justo en la columna de Actions seleccionar la opción `Restore`.  También es importante mencionar que al eliminar unicamente el indice animals, podremos hacer restore de unicamente ese indice, ya que los demás son los creados por el sistema y decidimos mejor no restaurarlos para evitar permisos u otros problemas que puedan surgir, por esta razón, al seleccionar esta opcion de restore, debe ajustar la configuración para que solo se haga restore del indice creado por el usuario, en este caso `animals` de esta manera:  
+
+<img width="922" height="230" alt="Captura de pantalla 2025-11-21 200911" src="https://github.com/user-attachments/assets/fff3c858-49c8-4b89-a1de-2355b59b7fc4" />
+
+
+Una vez realzado esto puede ejecutar el snapshot completo y verificar que el indice vuelve a ser creado
+
+
+
+---
+
+### Crear snaphot repository  
+
+  <img width="1118" height="764" alt="Captura de pantalla 2025-11-24 104159" src="https://github.com/user-attachments/assets/b007df9e-eda1-4ab6-93d1-f76b33d94358" />  
+  
+  <img width="1114" height="782" alt="Captura de pantalla 2025-11-24 104247" src="https://github.com/user-attachments/assets/5d588648-e210-4fd7-ad15-537c99095579" />  
+
+### Crear politica  
+
+<img width="1163" height="792" alt="Captura de pantalla 2025-11-24 105120" src="https://github.com/user-attachments/assets/1e14d5b9-c83c-487e-99bc-bd7e2f2d8f93" />
+
+
+### Ejecutar backup manual  
+
+<img width="1678" height="195" alt="Captura de pantalla 2025-11-24 105154" src="https://github.com/user-attachments/assets/9e28be42-c9bd-4e23-9a2f-5ed50dc5c947" />
+
+
+### Realizar restore  
+
+<img width="1677" height="185" alt="Captura de pantalla 2025-11-24 110405" src="https://github.com/user-attachments/assets/45ac1b3b-ffe6-418b-ac3b-5561309db27e" />  
+
+  
+</details>
+
+## Mongo  
+
+<details>
+  <summary>Desplegar información</summary>  
+
+Este proyecto implementa un sistema completo de backup y restauración para MongoDB usando AWS S3 como almacenamiento externo y Scripts Bash.  La solución permite realizar respaldos automáticos y restauraciones de la base de datos animalsdb, utilizada como dataset de prueba.
+
+### Backup  
+
+El proceso de respaldo se realiza automáticamente mediante un CronJob de Kubernetes que se ejecuta automaticamente cada 12 horas. El respaldo genera un archivo comprimido .gz con formato:  
+
+```bash
+YYYYmmDDHHMM.gz
+```
+
+Dentro del `values.yaml` debe estar habilitado el modulo de la siguiente manera:  
+
+- `conectionString`: dirección interna del servicio de MongoDB.
+- `bucketName`: nombre del bucket de AWS S3 donde se almacenarán los respaldos
+- `path`: Rutadentro del bucket donde se guardarán/leerán los respaldos.
+- `type`:
+  - backup: se genera el cronjob de respaldo
+  - restore: se genera el ob de restauración  
+
+```yaml
+mongo:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-mongodb.default.svc.cluster.local:27017
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/mongodb
+    maxBackups: 3
+    secret: databases-mongodb
+    name: "202511230002"                   # Nombre de la copia de seguridad a descargar
+    schedule: "0 */12 * * *"
+    diskSize: 2
+    storageClass: hostpath
+    provider: aws
+    type: backup
+```
+--- 
+
+### Restore  
+
+El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo importa en MongoDB.  Este sistema permite restaurar solo la base animalsdb, evitando sobrescribir la base admin o los usuarios del clúster.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket.
+
+```yaml
+mongo:
+  enabled: true
+  config:
+    name: "202511222147"
+    type: restore
+```
+
+</details>
 
 </details>
 
@@ -331,88 +504,76 @@ Para acceder a OpenSearch Dashboards, puedes utilizar herramientas como Lens par
 <details>
   <summary>Desplegar información</summary>  
 
-Para el desarrollo completo al realizar backups y restauraciones de indices en Elasticsearch se utiliza el servicio de Kibana y utilizando su robusta configuracion de Snapshot y Restore  
+Elasticsearch es un motor distribuido de búsqueda, análisis y almacenamiento de datos en tiempo real. Es ampliamente utilizado en la industria gracias a su capacidad para indexar y consultar grandes volúmenes de información de manera rápida.  
 
+Fue creado originalmente por Elastic NV y se ha convertido en uno de los sistemas de búsqueda y análisis más populares del mundo debido a su flexibilidad, escalabilidad y ecosistema de herramientas complementarias como Kibana.
 
-### Backup  
+### Configuración de Elasticsearch en este proyecto
 
-### Configuración del snapshot repository  
+En este proyecto, Elasticsearch se utilizó para almacenar, indexar y consultar información relacionada con animales, generada mediante el dataseeder. La instalación se realizó utilizando Helm Charts.
 
-Para realizar todo el procedimiento es necesario crear un Snapshot Repository, el cual es una ubicación externa donde elasticsearch puede crear y almacenar respaldos de sus indices, para poder crearlo solo debe ingresar al servicio de kibana (implementado en este proyecto) por el cual se puede interactuar con elasticsearch.  En kibana ---> Stack Management ---> Snapshot y Restore ---> Repositories ---> Register repositories .  Este repositorio incluye distintos parametros, para el caso de esta tarea, se deben ingresar los siguientes:
+El archivo values.yaml controla la configuración del cluster y Kibana, permitiendo habilitar o deshabilitar estos servicios según se necesite.  
 
-| Parámetro | Valor |
-|----------|-------------|
-| name | elastic |
-| provider | AWS |
-| bucketName | ic-tec-dataset |
-| base_path | CARPETA_HCDCP_BACKUP/elastic |  
-
-### Configuración de la política  
-
-Una vez creado el repositorio es necesario crear una política que permite ejecutar un snapshot de forma automática cada cierto tiempo y así automatizar los backups, aqui unicamnete debe completar campos del repositorio ya creado.  
-
-| Parámetro | Valor |
-|----------|-------------|
-| name | elastic |
-| snapshotName | elastic |
-| repository | elastic (nombre del snapshot repository creado |  
-
-**¿Cómo ejecutar el backup?**  
-
-Para ejecutar el snapshot que generará el backup, puede esperar a que se ejcute segun el horario que fue asignado o bien puede ejecutarlo manualmente en Kibana ---> Stack Management ---> policies y justo en la columna de actions solicita la ejecución forzadaa con el botón de run.  
-Una vez ejecutado el policy, el backup empezará y podrá coprobarlo al ver una nueva carpeta dentro del prefijo especificado dentro del bucket, o bien puede ingresar a las Dev Tools de elastic y ejecutar:  
-
-```powershell
-GET _snapshot/elastic/_all
+```yaml
+elastic:
+  enabled: true
+  version: 8.6.1
+  replicas: 1
+  name: ic4302
+  fullnameOverride: mi-elasticsearch
+kibana:
+  enabled: true
+  version: 8.6.1
+  replicas: 1
+  name: ic4302
 ```
 
-Donde en el resulatdo se observa cierta data que permite confirmar que el proceso fue exitoso, ya que se puede ver que parte de los indices subidos corresponde a **animals**, dataset utilizado para probar los backups
+### Kibana en este proyecto
 
-```json
-{
-  "snapshots": [
-    {
-      "snapshot": "elastic-j4wjad6lsh21ww2t5mtktw",
-      "repository": "elastic",
-      "version_id": 8060199,
-      "indices": [
-        ".kibana_security_session_1",
-        ".security-7",
-        ".apm-agent-configuration",
-        ".kibana_8.6.1_001",
-        ".apm-custom-link",
-        ".ds-ilm-history-5-2025.11.21-000001",
-        ".geoip_databases",
-        "animals",
-        ".security-profile-8",
-        ".kibana-event-log-8.6.1-000001",
-        ".ds-.logs-deprecation.elasticsearch-default-2025.11.21-000001",
-        ".kibana_task_manager_8.6.1_001"
-      ],
-      "metadata": {
-        "policy": "elastic"
-      },
-      "state": "SUCCESS",
-```
+Kibana fue utilizado para:
 
+- Consultar los índices generados por el dataseeder
+- Crear el repositorio S3 para snapshots
+- Configurar la política automática de backup
+- Ejecutar snapshots manuales
+- Realizar el proceso de restore
+- Visualizar información del sistema, mappings, documentos, etc.  
 
-### Restauración  
-
-Antes de realizar el proceso para hacer la restauración de indices es importante mencionar que Elasticsearch **NO** permite restaurar un índice si este ya existe o está abierto, es por esta razón que para probar la restauración es necesario eliminar el indice `animals` antes de ejecutar el restore, utilizando este comando en la consola de Dev-Tools se puede realizar la eliminación:  
-
-```powershell
-DELETE animals
-```
-
-Una vez realizado esto puede dirigirse a Stack Management ---> Snapshot y Restore ---> Snapshots y justo en la columna de Actions seleccionar la opción `Restore`.  También es importante mencionar que al eleiminar unicamnete el indice animals, podremos hacer restore de unicamnete ese indice ya que los demás son los creados por el sistema y decidimos mejor no tocarlos, por esta razón, al selección esta opcion de restore, debe ajustar la configuración para que solo se haga restore del indice creado por el usuario, en este caso `animals` de esta manera:  
-
-<img width="922" height="230" alt="Captura de pantalla 2025-11-21 200911" src="https://github.com/user-attachments/assets/fff3c858-49c8-4b89-a1de-2355b59b7fc4" />
-
-
-Una vez realzado esto puede ejecutar el snapshot completo y verificar que el indice vuelve a ser creado
-
+Para acceder a Kibana, se utilizó port-forwarding en la interfaz provista por Lens.
 
   </details>
+
+## Mongo 
+
+<details>
+  <summary>Desplegar información</summary> 
+
+En este proyecto, MongoDB se utilizó para almacenar los datos generados por el dataseeder, específicamente la base de datos animalsdb utilizada para los procesos de análisis y pruebas. Para administrar backups y restauraciones de esta base, se creó un Helm Chart que se encarga de:  
+- Generar respaldos automáticos en formato .gz
+- Guardarlos en un bucket de AWS S3
+- Ejecutar restauraciones controladas bajo demanda
+
+El archivo values.yaml dentro de la carpeta de bases de datos controla la configuración del cluster, permitiendo habilitar o deshabilitar este servicio según se necesite. 
+
+```yaml
+mongodb:
+  image:
+    repository: bitnamilegacy/mongodb
+  global:
+    security:
+      allowInsecureImages: true
+  enabled: true
+  livenessProbe:
+    enabled: true
+  readinessProbe:
+    enabled: true
+  extraEnvVars:
+    - name: EXPERIMENTAL_DOCKER_DESKTOP_FORCE_QEMU
+      value: "1"
+```
+
+
+</details>
 
 
 </details>
@@ -426,6 +587,7 @@ Una vez realzado esto puede ejecutar el snapshot completo y verificar que el ind
 1. El proceso de realizar backups y restores con Elasticsearch evidencia que el proceso que tienen de snapshots y restore es bastante robusto y bastante facil de utilizar, es decir no deja de ser seguro para los momentos en los que la disponibilidad de los datos juega un papel critico.
 2. El uso de interfaces como el dashboard de OpenSearch facilita enormemente la generación de backups y restores, ya que proporciona herramientas visuales intuitivas que permiten gestionar snapshots, configurar repositorios y restaurar índices de manera eficiente, sin necesidad de depender exclusivamente de comandos en la terminal.
 3. OpenSearch es una base de datos similar a Elasticsearch, ya que ambas están diseñadas para búsquedas y análisis de datos en tiempo real. Sin embargo, OpenSearch es un proyecto de código abierto completamente independiente, desarrollado como un fork de Elasticsearch 7.10, y no incluye las características propietarias de Elastic. Además, OpenSearch pone un mayor énfasis en la transparencia y la comunidad, mientras que Elasticsearch incluye funcionalidades avanzadas bajo licencias comerciales.
+4. Guardar archivos con formato YYYYmmDDHHMM.gz es una excelente opcion para facilitar la organización y trazabilidad de los respaldos.
 
 
 
@@ -438,7 +600,8 @@ Una vez realzado esto puede ejecutar el snapshot completo y verificar que el ind
 
 1. Ya que elasticsearch funciona con índices que cambian de manera dinámica es bastante ventajoso apoyarse de snapshots automáticos mediante politicas que se adecuen a las necesidades del negocio y así evitar fallo o algun borrado accidental.
 2. Es recomendable almacenar las credenciales sensibles, como el usuario y la contraseña de OpenSearch (OPENSEARCH_USER y OPENSEARCH_PASS), en un sistema de gestión de secretos o en un archivo de configuración seguro, en lugar de incluirlas directamente en el archivo dataseeder.yaml. 
-3. Antes de realizar un backup en OpenSearch, verificae que el índice al que se le está haciendo el snapshot no sea un índice protegido o del sistema (como .security-* o .kibana-*), ya que estos índices pueden requerir permisos adicionales o configuraciones específicas. Si intentas realizar un backup de estos índices sin los permisos adecuados, el proceso puede fallar. Para evitar errores, asegúrate de incluir únicamente los índices necesarios en la configuración del snapshot o utiliza un filtro para excluir los índices protegidos.
+3. Antes de realizar un backup en OpenSearch, verificar que el índice al que se le está haciendo el snapshot no sea un índice protegido o del sistema (como .security-* o .kibana-*), ya que estos índices pueden requerir permisos adicionales o configuraciones específicas. Si intentas realizar un backup de estos índices sin los permisos adecuados, el proceso puede fallar. Para evitar errores, asegúrate de incluir únicamente los índices necesarios en la configuración del snapshot o utiliza un filtro para excluir los índices protegidos.
+4. Verificar que antes de realizar la ejecución de los restores en este proyecto, se encuentre habilitada la opcion de `type: restore` para que así se ejecute coreectamente este proceso asi como verificar la restauración especifica que se quiere realizar por medio de la variable `name`.
 
 
 </details>
@@ -457,6 +620,10 @@ https://docs.opensearch.org/latest/api-reference/snapshots/restore-snapshot/
 https://docs.opensearch.org/latest/api-reference/snapshots/create-snapshot/
 
 https://docs.opensearch.org/latest/install-and-configure/plugins/
+
+https://www.elastic.co/search-labs/blog/how-do-incremental-snapshots-work
+
+https://www.mongodb.com/docs/database-tools/mongorestore/
 </details>
 
 # Tabla de Estado
