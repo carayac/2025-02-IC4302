@@ -58,7 +58,7 @@ couchdb:
   allowAdminParty: false
   createAdminSecret: true
   adminUsername: admin
-  adminPassword: ""                
+  adminPassword: "Admin123!"                
   adminHash: ""            
   cookieAuthSecret: ""  
   image:
@@ -71,13 +71,11 @@ couchdb:
     externalPort: 5984
     targetPort: 5984
   couchdbConfig:
+    couchdb:
+      uuid: "2f0e4cb63d984ea5b77b4b9a6fd43f19"
     chttpd:
       bind_address: any
       require_valid_user: false
-  # prometheusPort:
-  #   enabled: false
-  #   bind_address: "0.0.0.0"
-  #   port: 17986
 
 # MariaDB
 mariadb:

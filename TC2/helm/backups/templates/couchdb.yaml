@@ -6,6 +6,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
 {{ (.Files.Glob "scripts/couchdb.sh").AsConfig | indent 2 }}
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -26,7 +27,6 @@ metadata:
   name: "couchdb-backup"
   namespace: {{ .Values.couchdb.config.namespace }}
 spec:
-  serviceAccountName: {{ .Values.couchdb.config.serviceAccount }}
   schedule: {{ .Values.couchdb.config.schedule }}
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
@@ -150,6 +150,7 @@ metadata:
   namespace: {{ .Values.couchdb.config.namespace }}
 data:
 {{ (.Files.Glob "scripts/couchdb_res.sh").AsConfig | indent 2 }}
+
 
 ---
 apiVersion: batch/v1

@@ -30,7 +30,6 @@ couchdb:
     provider: aws
     type: backup
     serviceAccount: default
-    db: animalsdb
 
 
 mariadb:

@@ -8,11 +8,14 @@ dependencies:
 - name: opensearch-dashboards
   repository: https://opensearch-project.github.io/helm-charts/
   version: 2.15.1
+- name: couchdb
+  repository: https://apache.github.io/couchdb-helm
+  version: 4.6.2
 - name: mariadb
   repository: https://charts.bitnami.com/bitnami
   version: 16.0.2
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 15.5.21
-digest: sha256:86ccf89ff97b8cb03636356fc31299778d04cc21df15f17836d58575f5f11644
-generated: "2025-11-23T16:52:33.6608958-06:00"
+digest: sha256:aaca3044d49689a747acd6fdaadeb49f5c03cfef73067e6ba5764f2eb4a6e2a4
+generated: "2025-11-24T21:36:38.8333361-06:00"
