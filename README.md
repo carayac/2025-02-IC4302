@@ -624,6 +624,28 @@ https://docs.opensearch.org/latest/install-and-configure/plugins/
 https://www.elastic.co/search-labs/blog/how-do-incremental-snapshots-work
 
 https://www.mongodb.com/docs/database-tools/mongorestore/
+
+https://docs.couchdb.org/en/stable/install/kubernetes.html https://github.com/apache/couchdb-helm 
+
+https://docs.couchdb.org/en/stable/api/ 
+
+https://docs.couchdb.org/en/stable/api/database/common.html#put--db
+
+https://docs.couchdb.org/en/stable/api/database/common.html#post--db
+
+https://janl.github.io/couchdb-docs/couchdb-manual-1.1/couchdb-manual.html-section/couchdb-api-db_db-bulk-docs_post.html
+
+https://moldstud.com/articles/p-creating-and-managing-couchdb-databases-with-python-an-easy-guide 
+
+https://github.com/maxlath/couchdb-backup/blob/main/couchdb-backup.sh 
+
+https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-all-docs 
+
+https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-bulk-docs 
+
+https://gist.github.com/allaryin/7325686
+
+https://docs.couchdb.org/en/stable/maintenance/backups.html 
 </details>
 
 # Tabla de Estado
