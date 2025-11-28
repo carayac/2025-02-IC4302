@@ -1,0 +1,154 @@
+{{- if .Values.neo4j.enabled }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: neo4j-backups-script
+  namespace: {{ .Values.neo4j.config.namespace }}
+data:
+{{ (.Files.Glob "scripts/neo4j.sh").AsConfig | indent 2 }}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: "neo4j-backup"
+  namespace: {{ .Values.neo4j.config.namespace }}
+spec:
+  schedule: {{ .Values.neo4j.config.schedule }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        spec:
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 0
+
+          volumes:
+          - name: scripts
+            configMap:
+              name: neo4j-backups-script
+              defaultMode: 0700
+
+          - name: neo4jdump
+            emptyDir: {}
+
+          - name: aws-credential
+            secret:
+              secretName: aws-credential
+
+          - name: neo4j-data
+            persistentVolumeClaim:
+              claimName: databases-neo4j
+
+          containers:
+          - name: neo4j-snapshotter
+            image: "{{ .Values.neo4j.image.repository }}:{{ .Values.neo4j.image.tag }}"
+            env:
+              - name: BUCKET_NAME
+                value: "{{ .Values.neo4j.config.bucketName }}"
+              - name: BACKUP_PATH
+                value: "{{ .Values.neo4j.config.path }}"
+              - name: NEO4J_AUTH
+                valueFrom:
+                  secretKeyRef:
+                    name: databases-neo4j
+                    key: neo4j-password
+
+            volumeMounts:
+              - name: neo4j-data
+                mountPath: /data
+              - name: scripts
+                mountPath: /scripts
+              - name: neo4jdump
+                mountPath: /neo4jdump
+              - name: aws-credential
+                mountPath: /root/.aws
+
+            command:
+              - "/bin/bash"
+              - "/scripts/neo4j.sh"
+
+{{- end }}
+
+
+{{- if .Values.neo4j.enabled }}
+{{- if eq .Values.neo4j.config.type "restore" }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: neo4j-restore-script
+  namespace: {{ .Values.neo4j.config.namespace }}
+data:
+{{ (.Files.Glob "scripts/neo4j_res.sh").AsConfig | indent 2 }}
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: neo4j-restore
+  namespace: {{ .Values.neo4j.config.namespace }}
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+
+      volumes:
+      - name: scripts
+        configMap:
+          name: neo4j-restore-script
+          defaultMode: 0755
+      - name: restore-dir
+        emptyDir: {}
+      - name: aws-credential
+        secret:
+          secretName: aws-credential
+      - name: neo4j-data
+        persistentVolumeClaim:
+          claimName: databases-neo4j
+
+      containers:
+      - name: neo4j-restore
+        image: "{{ .Values.neo4j.image.repository }}:{{ .Values.neo4j.image.tag }}"
+        env:
+        - name: BUCKET_NAME
+          value: "{{ .Values.neo4j.config.bucketName }}"
+        - name: BACKUP_PATH
+          value: "{{ .Values.neo4j.config.path }}"
+        - name: BACKUP_NAME
+          value: "{{ .Values.neo4j.config.name }}"
+        - name: NEO4J_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: databases-neo4j
+              key: neo4j-password
+
+        volumeMounts:
+        - name: scripts
+          mountPath: /scripts
+        - name: restore-dir
+          mountPath: /restore
+        - name: aws-credential
+          mountPath: /root/.aws
+        - name: neo4j-data
+          mountPath: /data
+
+        command:
+        - "/bin/bash"
+        - "/scripts/neo4j_res.sh"
+
+{{- end }}
+{{- end }}
+
+
+

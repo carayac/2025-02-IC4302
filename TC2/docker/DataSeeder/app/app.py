@@ -865,7 +865,7 @@ if __name__ == "__main__":
                 print("No se pudo inicializar CouchDB")
                 sys.exit(1)
         if NEO4J_ENABLE:
-            if not insert_data_neo4j(df):
+            if not get_neo4j_driver():
                 print("No se pudo inicializar Neo4j")
                 sys.exit(1)
 
@@ -902,6 +902,11 @@ if __name__ == "__main__":
         if COUCHDB_ENABLE:
             if not insert_data_couchdb(df):
                 print("No se pudo cargar CouchDB")
+                sys.exit(1)
+
+        if NEO4J_ENABLE:
+            if not insert_data_neo4j(df):
+                print("No se pudo cargar Neo4j")
                 sys.exit(1)
 
 

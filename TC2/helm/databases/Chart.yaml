@@ -59,3 +59,10 @@ dependencies:
     version: "15.5.21"
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
+
+  # NEO4J
+  - name: neo4j
+    version: "5.18.0"
+    repository: https://helm.neo4j.com/neo4j
+    condition: neo4j.enabled
+

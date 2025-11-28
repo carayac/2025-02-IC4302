@@ -94,3 +94,23 @@ postgresql:
     registry: docker.io
     repository: bitnamilegacy/postgresql
     tag: 15.5.0-debian-11-r1
+
+#NEO4J
+neo4j:
+  enabled: true
+  acceptLicenseAgreement: "yes"
+
+  image:
+    repository: bitnamilegacy/neo4j
+    tag: "5.18.0"
+
+  auth:
+    enabled: true
+    password: "Neo4J123!"
+
+  resources: {}
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: hostpath
+
