@@ -7,3 +7,4 @@ opensearch
 opensearch-py==2.5.0
 requests
 pymongo==4.8.0
+neo4j==5.19.0

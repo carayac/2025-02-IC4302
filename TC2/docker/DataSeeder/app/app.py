@@ -10,6 +10,7 @@ import mysql.connector
 from mysql.connector import pooling
 from elasticsearch import Elasticsearch, helpers
 from opensearchpy import OpenSearch, helpers as os_helpers
+from neo4j import GraphDatabase
 import requests
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
@@ -24,6 +25,8 @@ OPENSEARCH_ENABLE = os.getenv("OPENSEARCH_ENABLE", "true").lower() == "true"
 CHROMADB_ENABLE = os.getenv("CHROMADB_ENABLE", "true").lower() == "true"
 MONGO_ENABLE = os.getenv("MONGO_ENABLE", "true").lower() == "true"
 COUCHDB_ENABLE = os.getenv("COUCHDB_ENABLE", "true").lower() == "true"
+NEO4J_ENABLE = os.getenv("NEO4J_ENABLE", "false").lower() == "true"
+
 
 
 if POSTGRES_ENABLE:
@@ -76,6 +79,14 @@ if COUCHDB_ENABLE:
     COUCHDB_DB = getenv("COUCHDB_DB")
     COUCHDB_USER = getenv("COUCHDB_USER")
     COUCHDB_PASS = getenv("COUCHDB_PASS")
+
+if NEO4J_ENABLE:
+    NEO4J_HOST = getenv("NEO4J_HOST", "databases-neo4j")
+    NEO4J_PORT = getenv("NEO4J_PORT", "7687")  # puerto bolt
+    NEO4J_USER = getenv("NEO4J_USER", "neo4j")
+    NEO4J_PASS = getenv("NEO4J_PASS")
+    NEO4J_DB   = getenv("NEO4J_DB", "neo4j")
+
 
 
 
@@ -692,6 +703,133 @@ def insert_data_couchdb(df):
         return False
 #--------------------------------------FIN COUCH DB --------------------------------------
 
+#-------------------------------------- NEO4J ------------------------------------------
+
+neo4j_driver = None
+
+def get_neo4j_driver():
+    global neo4j_driver
+    if neo4j_driver is None:
+        uri = f"bolt://{NEO4J_HOST}:{NEO4J_PORT}"
+        try:
+            neo4j_driver = GraphDatabase.driver(uri, auth=(NEO4J_USER, NEO4J_PASS))
+            # prueba de conexión
+            with neo4j_driver.session(database=NEO4J_DB) as session:
+                session.run("RETURN 1").consume()
+            print("Conexión a Neo4j exitosa")
+        except Exception as e:
+            print(f"Error conectando a Neo4j: {e}")
+            sys.exit(1)
+    return neo4j_driver
+
+
+def insert_data_neo4j(df):
+    """
+    Inserta los datos del dataset en Neo4j con el siguiente modelo:
+
+    (:Animal {name, height_cm, weight_kg, color, lifespan_years, ...})
+    (:Diet {name})
+    (:Family {name})
+    (:Habitat {name})
+    (:Predator {name})
+
+    Rel: (Animal)-[:HAS_DIET]->(Diet)
+         (Animal)-[:BELONGS_FAMILY]->(Family)
+         (Animal)-[:LIVES_IN]->(Habitat)
+         (Animal)-[:PREY_OF]->(Predator)
+    """
+    try:
+        driver = get_neo4j_driver()
+        with driver.session(database=NEO4J_DB) as session:
+            # Opcional: limpiar el grafo antes
+            session.run("MATCH (n) DETACH DELETE n").consume()
+            print("Grafo limpiado en Neo4j")
+
+            for _, row in df.iterrows():
+                animal_name = row["Animal"]
+                diet = row["Diet"]
+                family = row["Family"]
+                habitats = [h.strip() for h in str(row["Habitat"]).split(",") if h and h.strip() and str(h).lower() != "nan"]
+                predators = [p.strip() for p in str(row["Predators"]).split(",") if p and p.strip() and str(p).lower() != "nan"]
+
+                params = {
+                    "animal_name": animal_name,
+                    "height_cm": None if pd.isna(row["Height (cm)"]) else row["Height (cm)"],
+                    "weight_kg": None if pd.isna(row["Weight (kg)"]) else row["Weight (kg)"],
+                    "color": None if pd.isna(row["Color"]) else row["Color"],
+                    "lifespan_years": None if pd.isna(row["Lifespan (years)"]) else row["Lifespan (years)"],
+                    "diet": None if pd.isna(diet) else diet,
+                    "family": None if pd.isna(family) else family,
+                    "avg_speed": None if pd.isna(row["Average Speed (km/h)"]) else row["Average Speed (km/h)"],
+                    "top_speed": None if pd.isna(row["Top Speed (km/h)"]) else row["Top Speed (km/h)"],
+                    "countries": None if pd.isna(row["Countries Found"]) else row["Countries Found"],
+                    "conservation": None if pd.isna(row["Conservation Status"]) else row["Conservation Status"],
+                    "gestation": None if pd.isna(row["Gestation Period (days)"]) else row["Gestation Period (days)"],
+                    "social": None if pd.isna(row["Social Structure"]) else row["Social Structure"],
+                    "offspring": None if pd.isna(row["Offspring per Birth"]) else row["Offspring per Birth"],
+                    "habitats": habitats,
+                    "predators": predators,
+                }
+
+                cypher = """
+                MERGE (a:Animal {name: $animal_name})
+                ON MATCH SET a.height_cm = $height_cm,
+                             a.weight_kg = $weight_kg,
+                             a.color = $color,
+                             a.lifespan_years = $lifespan_years,
+                             a.average_speed_kmh = $avg_speed,
+                             a.top_speed_kmh = $top_speed,
+                             a.countries_found = $countries,
+                             a.conservation_status = $conservation,
+                             a.gestation_period_days = $gestation,
+                             a.social_structure = $social,
+                             a.offspring_per_birth = $offspring
+                ON CREATE SET a.height_cm = $height_cm,
+                              a.weight_kg = $weight_kg,
+                              a.color = $color,
+                              a.lifespan_years = $lifespan_years,
+                              a.average_speed_kmh = $avg_speed,
+                              a.top_speed_kmh = $top_speed,
+                              a.countries_found = $countries,
+                              a.conservation_status = $conservation,
+                              a.gestation_period_days = $gestation,
+                              a.social_structure = $social,
+                              a.offspring_per_birth = $offspring
+                """
+
+                if params["diet"]:
+                    cypher += """
+                    MERGE (d:Diet {name: $diet})
+                    MERGE (a)-[:HAS_DIET]->(d)
+                    """
+
+                if params["family"]:
+                    cypher += """
+                    MERGE (f:Family {name: $family})
+                    MERGE (a)-[:BELONGS_FAMILY]->(f)
+                    """
+
+                cypher += """
+                FOREACH (h IN $habitats |
+                    MERGE (hb:Habitat {name: h})
+                    MERGE (a)-[:LIVES_IN]->(hb)
+                )
+                FOREACH (p IN $predators |
+                    MERGE (pr:Predator {name: p})
+                    MERGE (a)-[:PREY_OF]->(pr)
+                )
+                """
+
+                session.run(cypher, params).consume()
+
+            print("Datos insertados exitosamente en Neo4j")
+            return True
+
+    except Exception as e:
+        print(f"Error insertando datos en Neo4j: {e}")
+        return False
+#---------------------------------------Fin Neo ---------------------------------------------------------------
+
 
 if __name__ == "__main__":    
     try:
@@ -726,6 +864,11 @@ if __name__ == "__main__":
             if not create_database_couchdb():
                 print("No se pudo inicializar CouchDB")
                 sys.exit(1)
+        if NEO4J_ENABLE:
+            if not insert_data_neo4j(df):
+                print("No se pudo inicializar Neo4j")
+                sys.exit(1)
+
         
         
         

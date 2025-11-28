@@ -126,6 +126,26 @@ spec:
             value: "animalsdb"
           {{- end }}
 
+          {{- if .Values.config.dataseeder.neo4jEnable }}
+          - name: NEO4J_HOST
+            value: "databases-neo4j"
+          - name: NEO4J_PORT
+            value: "7687"
+          - name: NEO4J_USER
+            value: "neo4j"
+          - name: NEO4J_PASS
+            valueFrom:
+              secretKeyRef:
+                name: databases-neo4j
+                key: neo4j-password
+                optional: false
+          - name: NEO4J_DB
+            value: "neo4j"
+          {{- end }}
+
+          
+          - name: NEO4J_ENABLE
+            value: "{{ .Values.config.dataseeder.neo4jEnable }}"
           - name: POSTGRES_ENABLE
             value: "{{ .Values.config.dataseeder.postgresEnable }}"
           - name: MARIADB_ENABLE
