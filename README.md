@@ -309,6 +309,126 @@ mongo:
 
 </details>
 
+## MariaDB
+
+<details>
+  <summary>Desplegar información</summary>  
+
+Este proyecto implementa un sistema completo de backup y restauración para MariaDB usando AWS S3 como almacenamiento externo y Scripts Bash. La solución permite realizar respaldos automáticos y restauraciones de todas las bases de datos, manteniendo las n copias de seguridad más recientes de forma configurable (por defecto 3)
+
+### Backup
+
+El proceso de respaldo se realiza automáticamente mediante un CronJob de Kubernetes que se ejecuta cada 12 horas. El respaldo genera un archivo SQL plano con formato:
+
+```bash
+YYYYmmDDHHMM.gz
+```
+
+Dentro del `values.yaml` debe estar habilitado el modulo de la siguiente manera:  
+
+- `conectionString`: Dirección interna del servicio de MariaDB (ej. databases-mariadb.default.svc.cluster.local:3306).
+- `bucketName`: Nombre del bucket de AWS S3 donde se almacenarán los respaldos
+- `path`: Ruta dentro del bucket donde se guardarán/leerán los respaldos.
+- `maxBackups`: Número máximo de backups a mantener.
+- `type`:
+  - backup: Se genera el cronjob de respaldo
+  - restore:  Se genera el Job de restauración (requiere especificar name con el archivo a restaurar)
+  - name: Nombre del backup a restaurar (solo para type restore: 202511240000.sql).
+ 
+```yaml
+mariadb:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-mariadb.default.svc.cluster.local:3306
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/mariadb
+    maxBackups: 3
+    secret: databases-mariadb
+    name: mariadb
+    schedule: "0 */12 * * *"
+    diskSize: 2Gi
+    storageClass: hostpath
+    provider: aws
+    type: backup  # Cambiar a 'restore' para restaurar
+    # name: 202511240000.sql  # Descomentar para restore
+    serviceAccount: default
+```
+--- 
+
+### Restore
+
+Para restaurar, cambia type a restore y especifica el name del archivo en S3. El Job sobrescribirá la base de datos actual.
+
+---
+
+### Notas importantes
+
+- Los backups se eliminan automáticamente si exceden `maxBackups` para mantener solo las copias más recientes.
+- Los scripts Bash deben guardarse con finales de línea LF (Unix), no CRLF (Windows). En Visual Studio Code, verificar la esquina inferior derecha (debe decir "LF"). Si dice "CRLF", darle clic y seleccionar "LF" para evitar errores en los pods de Kubernetes.
+  
+</details>
+
+## PostgreSQL
+
+<details>
+  <summary>Desplegar información</summary>  
+
+Este proyecto implementa un sistema completo de backup y restauración para PostgreSQL usando AWS S3 como almacenamiento externo y Scripts Bash. La solución permite realizar respaldos automáticos y restauraciones de todas las bases de datos, manteniendo las n copias de seguridad más recientes de forma configurable (por defecto 3)
+
+### Backup
+
+El proceso de respaldo se realiza automáticamente mediante un CronJob de Kubernetes que se ejecuta cada 12 horas. El respaldo genera un archivo SQL plano con formato:
+
+```bash
+YYYYmmDDHHMM.gz
+```
+
+Dentro del `values.yaml` debe estar habilitado el modulo de la siguiente manera:  
+
+- `conectionString`: Dirección interna del servicio de PostgreSQL (ej. databases-postgresql.default.svc.cluster.local:5432).
+- `bucketName`: Nombre del bucket de AWS S3 donde se almacenarán los respaldos
+- `path`: Ruta dentro del bucket donde se guardarán/leerán los respaldos.
+- `maxBackups`: Número máximo de backups a mantener.
+- `type`:
+  - backup: Se genera el cronjob de respaldo
+  - restore:  Se genera el Job de restauración (requiere especificar name con el archivo a restaurar)
+  - name: Nombre del backup a restaurar (solo para type restore: 202511240000.sql).
+ 
+```yaml
+postgresql:
+  enabled: false
+  config:
+    namespace: default
+    connectionString: databases-postgresql.default.svc.cluster.local:5432   
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/postgresql
+    maxBackups: 3
+    secret: databases-postgresql
+    name: postgres
+    schedule: "0 */12 * * *"
+    diskSize: 2Gi
+    storageClass: hostpath
+    provider: aws
+    type: backup # backup o restore
+    # name: 202511232330.sql # nombre del backup a restaurar
+    serviceAccount: default
+```
+--- 
+
+### Restore
+
+Para restaurar, cambia type a restore y especifica el name del archivo en S3. El Job sobrescribirá la base de datos actual.
+
+---
+
+### Notas importantes
+
+- Los backups se eliminan automáticamente si exceden `maxBackups` para mantener solo las copias más recientes.
+- Los scripts Bash deben guardarse con finales de línea LF (Unix), no CRLF (Windows). En Visual Studio Code, verificar la esquina inferior derecha (debe decir "LF"). Si dice "CRLF", darle clic y seleccionar "LF" para evitar errores en los pods de Kubernetes.
+
+</details>
+
 </details>
 
 
@@ -575,6 +695,57 @@ mongodb:
 
 </details>
 
+## MariaDB 
+
+<details>
+  <summary>Desplegar información</summary> 
+
+En este proyecto, MariaDB se utilizó para almacenar los datos generados por el dataseeder, específicamente bases de datos relacionales utilizadas para los procesos de análisis y pruebas. Para administrar backups y restauraciones de estas bases, se creó un Helm Chart que se encarga de:
+
+- Generar respaldos automáticos en formato .sql
+- Guardarlos en un bucket de AWS S3
+- Ejecutar restauraciones controladas bajo demanda
+- Mantener las n copias de seguridad más recientes de forma configurable
+
+El archivo values.yaml dentro de la carpeta de bases de datos controla la configuración del cluster, permitiendo habilitar o deshabilitar este servicio según se necesite. 
+
+```yaml
+mariadb:
+  replicas: 1
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/mariadb
+    tag: 11.2.3-debian-11-r1
+```
+
+</details>
+
+## PostgreSQL 
+
+<details>
+  <summary>Desplegar información</summary> 
+
+En este proyecto, PostgreSQL se utilizó para almacenar los datos generados por el dataseeder, específicamente bases de datos relacionales utilizadas para los procesos de análisis y pruebas. Para administrar backups y restauraciones de estas bases, se creó un Helm Chart que se encarga de:
+
+- Generar respaldos automáticos en formato .sql
+- Guardarlos en un bucket de AWS S3
+- Ejecutar restauraciones controladas bajo demanda
+- Mantener las n copias de seguridad más recientes de forma configurable
+
+El archivo values.yaml dentro de la carpeta de bases de datos controla la configuración del cluster, permitiendo habilitar o deshabilitar este servicio según se necesite. 
+
+```yaml
+postgresql:
+  replicas: 1
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.5.0-debian-11-r1
+```
+
+</details>
 
 </details>
 
@@ -588,7 +759,8 @@ mongodb:
 2. El uso de interfaces como el dashboard de OpenSearch facilita enormemente la generación de backups y restores, ya que proporciona herramientas visuales intuitivas que permiten gestionar snapshots, configurar repositorios y restaurar índices de manera eficiente, sin necesidad de depender exclusivamente de comandos en la terminal.
 3. OpenSearch es una base de datos similar a Elasticsearch, ya que ambas están diseñadas para búsquedas y análisis de datos en tiempo real. Sin embargo, OpenSearch es un proyecto de código abierto completamente independiente, desarrollado como un fork de Elasticsearch 7.10, y no incluye las características propietarias de Elastic. Además, OpenSearch pone un mayor énfasis en la transparencia y la comunidad, mientras que Elasticsearch incluye funcionalidades avanzadas bajo licencias comerciales.
 4. Guardar archivos con formato YYYYmmDDHHMM.gz es una excelente opcion para facilitar la organización y trazabilidad de los respaldos.
-
+5. El mecanismo de mantener las n copias de seguridad más recientes en MariaDB y PostgreSQL es altamente efectivo para optimizar el almacenamiento en S3, ya que elimina automáticamente los backups antiguos, evitando costos innecesarios y facilitando la gestión de versiones sin intervención manual.
+6. La implementación de backups en formato SQL plano para bases relacionales como MariaDB y PostgreSQL permite una restauración precisa y compatible con cualquiera.
 
 
 </details>
@@ -602,6 +774,9 @@ mongodb:
 2. Es recomendable almacenar las credenciales sensibles, como el usuario y la contraseña de OpenSearch (OPENSEARCH_USER y OPENSEARCH_PASS), en un sistema de gestión de secretos o en un archivo de configuración seguro, en lugar de incluirlas directamente en el archivo dataseeder.yaml. 
 3. Antes de realizar un backup en OpenSearch, verificar que el índice al que se le está haciendo el snapshot no sea un índice protegido o del sistema (como .security-* o .kibana-*), ya que estos índices pueden requerir permisos adicionales o configuraciones específicas. Si intentas realizar un backup de estos índices sin los permisos adecuados, el proceso puede fallar. Para evitar errores, asegúrate de incluir únicamente los índices necesarios en la configuración del snapshot o utiliza un filtro para excluir los índices protegidos.
 4. Verificar que antes de realizar la ejecución de los restores en este proyecto, se encuentre habilitada la opcion de `type: restore` para que así se ejecute coreectamente este proceso asi como verificar la restauración especifica que se quiere realizar por medio de la variable `name`.
+5. Configurar el parámetro maxBackups en el values.yaml de backups según las necesidades, considerando factores como frecuencia de cambios en los datos.
+6. Antes de ejecutar backups o restores en MariaDB y PostgreSQL, verificar que los scripts Bash estén guardados con finales de línea LF (Unix) en el editor (ej. VS Code), no CRLF (Windows), para evitar errores de ejecución en los pods de Kubernetes.
+
 
 
 </details>
