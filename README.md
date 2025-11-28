@@ -429,6 +429,80 @@ Para restaurar, cambia type a restore y especifica el name del archivo en S3. El
 
 </details>
 
+
+## CouchDB  
+
+<details>
+  <summary>Desplegar información</summary>  
+
+Este proyecto implementa un sistema completo de backup y restauración para CouchDB usando AWS S3 como almacenamiento externo y Scripts Bash. La solución permite realizar respaldos automáticos y restauraciones de la base de datos animalsdb, utilizada como dataset de prueba.
+
+### Backup  
+
+El proceso de respaldo se realiza automáticamente mediante un CronJob de Kubernetes que se ejecuta automaticamente cada 12 horas. El respaldo genera un archivo comprimido .gz con formato:  
+
+```bash
+YYYYmmDDHHMM.gz
+```
+
+Dentro del `values.yaml` debe estar habilitado el modulo de la siguiente manera:  
+
+- `conectionString`: dirección interna del servicio de CouchDB.
+- `bucketName`: nombre del bucket de AWS S3 donde se almacenarán los respaldos
+- `path`: Ruta dentro del bucket donde se guardarán/leerán los respaldos.
+- `type`:
+  - backup: se genera el cronjob de respaldo
+  - restore: se genera el job de restauración  
+
+```yaml
+couchdb:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-couchdb.default.svc.cluster.local:5984
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/couchdb
+    maxBackups: 3
+    secret: databases-couchdb
+    name:  "202511280227"               # Nombre de la copia de seguridad a descargar
+    schedule: "0 */12 * * *"
+    diskSize: 2
+    storageClass: hostpath
+    provider: aws
+    type: backup
+    serviceAccount: default
+
+```
+--- 
+
+### Restore  
+
+El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo sube a CouchDB. Para esto se elimina la base de datos, se vuelve a crear la base de datos vacía y se suben todos los documentos guardados en el backup. Este sistema permite restaurar solo la base animalsdb.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket. Si no se asigna un backup existente, y se deja en blanco el espacio, se restaurará el último backup. Se debe cambiar el type a restore.
+
+```yaml
+couchdb:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-couchdb.default.svc.cluster.local:5984
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/couchdb
+    maxBackups: 3
+    secret: databases-couchdb
+    name:  "202511280227"               # Nombre de la copia de seguridad a descargar
+    schedule: "0 */12 * * *"
+    diskSize: 2
+    storageClass: hostpath
+    provider: aws
+    type: restore         #Cambiar a restore para restaurar
+    serviceAccount: default
+```
+
+### Notas importantes
+- Los scripts Bash deben guardarse con finales de línea LF (Unix), no CRLF (Windows). En Visual Studio Code, verificar la esquina inferior derecha (debe decir "LF"). Si dice "CRLF", darle clic y seleccionar "LF" para evitar errores en los pods de Kubernetes.
+
+</details>
+
 </details>
 
 
@@ -747,6 +821,52 @@ postgresql:
 
 </details>
 
+## CouchDB
+
+<details>
+  <summary>Desplegar información</summary> 
+
+### ¿Qué es CouchDB?
+CouchDB es una excelente base de datos de un solo nodo que funciona como cualquier otra base de datos, respaldada por un servidor de aplicaciones de su elección. CouchDB utiliza el protocolo HTTP y el formato de datos JSON, ampliamente utilizados, y es compatible con cualquier software que los admita.
+
+### Configuración
+En este proyecto, CouchDB se utilizó como base de datos NoSQL orientada a documentos para almacenar la información generada por el dataseeder, específicamente para manejar datos flexibles basados en JSON que no requieren un esquema fijo. Para administrar backups y restauraciones de estas bases, se creó un Helm Chart que se encarga de:
+
+- Generar respaldos automáticos en formato .json
+- Guardarlos en un bucket de AWS S3
+- Ejecutar restauraciones controladas bajo demanda
+
+El archivo values.yaml controla tanto la configuración del cluster CouchDB como los parámetros del sistema de backup, permitiendo ajustar este servicio según las necesidades del entorno. 
+
+```yaml
+couchdb:
+  enabled: true
+  clusterSize: 1
+  allowAdminParty: false
+  createAdminSecret: true
+  adminUsername: admin
+  adminPassword: "Admin123!"                
+  adminHash: ""            
+  cookieAuthSecret: ""  
+  image:
+    repository: couchdb
+    tag: 3.5.0
+    pullPolicy: IfNotPresent
+  service:
+    enabled: true
+    type: ClusterIP
+    externalPort: 5984
+    targetPort: 5984
+  couchdbConfig:
+    couchdb:
+      uuid: "2f0e4cb63d984ea5b77b4b9a6fd43f19"
+    chttpd:
+      bind_address: any
+      require_valid_user: false
+```
+
+</details>
+
 </details>
 
 
@@ -761,6 +881,8 @@ postgresql:
 4. Guardar archivos con formato YYYYmmDDHHMM.gz es una excelente opcion para facilitar la organización y trazabilidad de los respaldos.
 5. El mecanismo de mantener las n copias de seguridad más recientes en MariaDB y PostgreSQL es altamente efectivo para optimizar el almacenamiento en S3, ya que elimina automáticamente los backups antiguos, evitando costos innecesarios y facilitando la gestión de versiones sin intervención manual.
 6. La implementación de backups en formato SQL plano para bases relacionales como MariaDB y PostgreSQL permite una restauración precisa y compatible con cualquiera.
+7. El uso de CouchDB y su formato NoSQL basado en json facilitó en gran medida el proceso de backup y restore, haciendo que sea una base de datos muy conveniente y segura.
+8. El uso de Shell Scipts facilitó el proceso de backups y restores, ya que permitía manejar los archivos, las operaciones crud con curl y la edición de texto de manera muy sencilla.
 
 
 </details>
@@ -776,6 +898,8 @@ postgresql:
 4. Verificar que antes de realizar la ejecución de los restores en este proyecto, se encuentre habilitada la opcion de `type: restore` para que así se ejecute coreectamente este proceso asi como verificar la restauración especifica que se quiere realizar por medio de la variable `name`.
 5. Configurar el parámetro maxBackups en el values.yaml de backups según las necesidades, considerando factores como frecuencia de cambios en los datos.
 6. Antes de ejecutar backups o restores en MariaDB y PostgreSQL, verificar que los scripts Bash estén guardados con finales de línea LF (Unix) en el editor (ej. VS Code), no CRLF (Windows), para evitar errores de ejecución en los pods de Kubernetes.
+7. Mantener la consistencia en el nombre de los archivos de backups, y particularmente usar el formato YYYYmmDDHHMM es muy recomendable ya que permite ordenar los backups más fácilmente y hacer restauraciones automáticas.
+8. Se recomienda no escribir ni iniciar procesos concurrentes el la base de datos mientras se hace un restore, ya que esto puede generar fallos e inconsistencias.
 
 
 
@@ -799,6 +923,8 @@ https://docs.opensearch.org/latest/install-and-configure/plugins/
 https://www.elastic.co/search-labs/blog/how-do-incremental-snapshots-work
 
 https://www.mongodb.com/docs/database-tools/mongorestore/
+
+https://couchdb.apache.org/
 
 https://docs.couchdb.org/en/stable/install/kubernetes.html https://github.com/apache/couchdb-helm 
 

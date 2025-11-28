@@ -23,7 +23,7 @@ couchdb:
     path: CARPETA_HCDCP_BACKUP/couchdb
     maxBackups: 3
     secret: databases-couchdb
-    name: couchdb
+    name:  "202511280227"               # Nombre de la copia de seguridad a descargar
     schedule: "0 */12 * * *"
     diskSize: 2
     storageClass: hostpath
