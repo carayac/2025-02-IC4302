@@ -10,18 +10,67 @@
 <details>
   <summary>Desplegar información</summary>
 
-#### Prerrequisitos
-1. Tener instalado y configurado Helm en tu máquina local.
-2. Tener acceso a un clúster de Kubernetes configurado correctamente.
-3. Asegurarte de que el archivo `values.yaml` esté configurado para habilitar las bases de datos.
+### 1.1 Requisitos Previos
+- Cuenta en Docker Hub: Es un sitio web donde puedes guardar y compartir imágenes de programas listos para usar. Es como una "nube" para aplicaciones.
+- Docker y Docker Compose: Docker es una herramienta que permite ejecutar programas en "contenedores", que son como cajas que traen todo lo necesario para que el programa funcione igual en cualquier computadora. Docker Compose ayuda a iniciar varios de estos programas juntos fácilmente.
+- Kubernetes (Minikube o Docker Desktop): Kubernetes es una plataforma que ayuda a administrar y ejecutar muchos contenedores a la vez, ideal para proyectos grandes. Minikube y Docker Desktop son formas sencillas de usar Kubernetes en tu propia computadora.
+- Helm Charts instalados: Helm es una herramienta que facilita la instalación y actualización de aplicaciones en Kubernetes, usando "charts" que son como recetas pre-hechas.
+- Git: Es una herramienta para guardar y controlar los cambios en el código de un proyecto, permitiendo trabajar en equipo y mantener un historial de versiones.
+- Lens: Es un programa con interfaz gráfica que permite ver y administrar fácilmente los recursos y servicios que se están ejecutando en Kubernetes.
+  
+### 1.2 Instalación de Componentes  
 
-#### Pasos de Instalación
 
-1. **Clonar el repositorio:**
+#### 1. Descargue el repositorio del proyecto en su computadora 
+  
    ```bash
-   git clone https://github.com/usuario/2025-02-IC4302.git
-   cd 2025-02-IC4302
+   git clone <URL_REPO>
    ```
+
+Después ingrese a la carpeta del repositorio por medio de la terminal bash:  
+
+   ```
+cd 2025-02-IC4302
+   ```
+  
+#### 2. Construya la imagenes de docker
+Para poder realizar la construcción de las imágenes Docker. debe ingresar a la carpeta **docker** desde una terminal Bash y ejecutar el siguiente comando: 
+
+ ```
+./build.sh usuario 
+ ```  
+  
+> NOTA: 
+> Sustituya la palabra usuario con su usario de Docker Hub
+
+#### 3. Configure el registro de  las imágenes para el chart
+En su proyecto, ingrese a la carpeta de charts **-->** app **-->** templates **-->** values.yaml y registre el nombre de usuario en docker hub que desea utilizar en el campo **docker_registry**  
+  
+ ```yaml
+config:
+  docker_registry: SU_USUARIO # docker registry replace with your own username
+  producer:
+    enabled: true
+ ```
+
+#### 4. Instale el Helm Chart del proyecto  
+
+En su proyecto, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./install.sh
+ ```
+
+#### 5. Desinstalación del Helm Chart del proyecto
+
+En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./uninstall.sh
+ ```
+> NOTA: 
+> Si no necesita la instalación, ignore este paso
+
 
 </details>
 
@@ -633,7 +682,7 @@ El dataset está compuesto por diversas columnas (atributos) que describen a cad
 
 ---
  
-# Esquema Relacional del Dataset de Animales - MariaDB
+# Esquema Relacional del Dataset de Animales
 
 Este apartado describe la estructura de base de datos SQL diseñada para almacenar el dataset de prueba sobre animales.  
 La implementación sigue un modelo relacional normalizado, con separación de entidades principales y relaciones uno a muchos y muchos a muchos.
