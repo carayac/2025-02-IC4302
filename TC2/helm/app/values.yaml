@@ -4,11 +4,12 @@ config:
         enabled: true
         name: dataseeder
         replicas: 1
-        image: helena0504/dataseeder # To charge with data the database
+        image: chrisjimenez/dataseeder # To charge with data the database
         openSearchEnable: false
-        couchDBEnable: true
+        couchDBEnable: false
         mariaDBEnable: false
         elasticSearchEnable: false
         chromaDBEnable: false
         postgresEnable: false
         mongoEnable: false
+        neo4jEnable: true

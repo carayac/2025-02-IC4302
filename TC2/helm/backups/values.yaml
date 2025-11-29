@@ -15,7 +15,7 @@ mongo:
     type: backup
 
 couchdb:
-  enabled: true
+  enabled: false
   config:
     namespace: default
     connectionString: databases-couchdb.default.svc.cluster.local:5984
@@ -67,3 +67,26 @@ postgresql:
     type: backup # backup o restore
     # name: 202511232330.sql # nombre del backup a restaurar
     serviceAccount: default
+
+neo4j:
+  enabled: true
+
+  image:
+    repository: "bitnamilegacy/neo4j"
+    tag: "5.18.0"
+    
+  config:
+    namespace: default
+    connectionString: databases-neo4j.default.svc.cluster.local:7687
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/neo4j
+    maxBackups: 3
+    secret: databases-neo4j
+    name: neo4j
+    schedule: "0 */12 * * *"
+    diskSize: 2Gi
+    storageClass: hostpath
+    provider: aws
+    type: backup
+    serviceAccount: default
+

@@ -8,9 +8,6 @@ metadata:
 data:
 {{ (.Files.Glob "scripts/neo4j.sh").AsConfig | indent 2 }}
 
----
-apiVersion: v1
-kind: PersistentVolumeClaim
 
 ---
 
