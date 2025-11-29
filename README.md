@@ -381,7 +381,7 @@ mongo:
 
 ### Restore  
 
-El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo importa en MongoDB.  Este sistema permite restaurar solo la base animalsdb, evitando sobrescribir la base admin o los usuarios del clúster.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket.
+El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo importa en MongoDB.  Este sistema permite restaurar solo la base animalsdb, evitando sobrescribir la base admin o los usuarios del clúster.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket.  Además, el parametro type siemore deberá ser **restore**.
 
 ```yaml
 mongo:
@@ -390,6 +390,18 @@ mongo:
     name: "202511222147"
     type: restore
 ```
+
+### Cómo saber si mi backup o restore salieron bien?  
+
+Para confirmar ambos procesos puede revisar dentro del bucket y verificar que hay nuevos archivos que corresponden a la fecha y hora en el que fue ejecutado el proceso.  Para revisar el bucket puede utilizar el siguiente comando en PowerShell:  
+
+```
+aws s3 ls s3://ic-tec-dataset/CARPETA_HCDCP_BACKUP/mongodb/
+```
+
+**Nota:** Antes debió ingresar sus credenciales para poder entrar al s3 bucket.  
+
+Dentro de esta carpeta podra confirmar el archivo al cual se le hizo backup, así como elegir el nombre del archivo al cual le quiere hacer una restauración de datos.
 
 </details>
 
