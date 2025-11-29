@@ -503,6 +503,84 @@ couchdb:
 
 </details>
 
+## Neo4j  
+
+<details>
+  <summary>Desplegar información</summary>  
+
+En el presente proyecto se implementa un sistema completo de backup y restauración para Neo4j usando AWS S3 como almacenamiento externo y Scripts Bash. La solución permite realizar respaldos automáticos y restauraciones de la base de datos animalsdb, utilizada en este caso como dataset de prueba.
+
+### Backup  
+
+El proceso de respaldo se realiza automáticamente mediante un CronJob de Kubernetes que se ejecuta automaticamente cada 12 horas (en caso de querer cambiarlo, se puede editar en helm/backups/values.yaml). El respaldo genera un archivo comprimido .gz con formato:  
+
+```bash
+YYYYmmDDHHMM.gz
+```
+
+Dentro del `values.yaml` debe estar habilitado el modulo de la siguiente manera:  
+
+- `conectionString`: dirección interna del servicio de Neo4j.
+- `bucketName`: nombre del bucket de AWS S3 a utilizar para almacenar los respaldos.
+- `path`: Ruta dentro del bucket donde se guardarán/leerán los respaldos.
+- `type`:
+  - backup: se genera el cronjob de respaldo de la base.
+  - restore: se genera el job de restauración de la base. 
+
+```yaml
+neo4j:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-neo4j.default.svc.cluster.local:7687
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/neo4j
+    maxBackups: 3
+    secret: databases-neo4j
+    name: neo4j
+    schedule: "0 */12 * * *"
+    diskSize: 2Gi
+    storageClass: hostpath
+    provider: aws
+    type: backup #se puede cambiar a restore
+    serviceAccount: default
+
+```
+--- 
+
+### Restore  
+
+El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo sube a Neo, permitiendo restaurar la base de datos animalsdb.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket. Si no se asigna un backup existente, y se deja en blanco el espacio, se restaurará el último backup. Se debe cambiar el type a restore.
+
+```yaml
+couchdb:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-neo4j.default.svc.cluster.local:7687
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/neo4j
+    maxBackups: 3
+    secret: databases-neo4j
+    name: "202511280227"
+    schedule: "0 */12 * * *"
+    diskSize: 2Gi
+    storageClass: hostpath
+    provider: aws
+    type: backup #se puede cambiar a restore
+    serviceAccount: default
+```
+
+### Nombre
+- Uno de los parámetros que pide Neo4j es el nombre a utilizar, se puede elegir libremente mientras no exista:
+
+```
+  neo4j:
+    name: "databases-neo4j"
+```
+
+</details>
+
 </details>
 
 
