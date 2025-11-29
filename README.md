@@ -10,18 +10,102 @@
 <details>
   <summary>Desplegar información</summary>
 
-#### Prerrequisitos
-1. Tener instalado y configurado Helm en tu máquina local.
-2. Tener acceso a un clúster de Kubernetes configurado correctamente.
-3. Asegurarte de que el archivo `values.yaml` esté configurado para habilitar las bases de datos.
+### 1.1 Requisitos Previos
+- Cuenta en Docker Hub: Es un sitio web donde puedes guardar y compartir imágenes de programas listos para usar. Es como una "nube" para aplicaciones.
+- Docker y Docker Compose: Docker es una herramienta que permite ejecutar programas en "contenedores", que son como cajas que traen todo lo necesario para que el programa funcione igual en cualquier computadora. Docker Compose ayuda a iniciar varios de estos programas juntos fácilmente.
+- Kubernetes (Minikube o Docker Desktop): Kubernetes es una plataforma que ayuda a administrar y ejecutar muchos contenedores a la vez, ideal para proyectos grandes. Minikube y Docker Desktop son formas sencillas de usar Kubernetes en tu propia computadora.
+- Helm Charts instalados: Helm es una herramienta que facilita la instalación y actualización de aplicaciones en Kubernetes, usando "charts" que son como recetas pre-hechas.
+- Git: Es una herramienta para guardar y controlar los cambios en el código de un proyecto, permitiendo trabajar en equipo y mantener un historial de versiones.
+- Lens: Es un programa con interfaz gráfica que permite ver y administrar fácilmente los recursos y servicios que se están ejecutando en Kubernetes.
+  
+### 1.2 Instalación de Componentes  
 
-#### Pasos de Instalación
 
-1. **Clonar el repositorio:**
+#### 1. Descargue el repositorio del proyecto en su computadora 
+  
    ```bash
-   git clone https://github.com/usuario/2025-02-IC4302.git
-   cd 2025-02-IC4302
+   git clone <URL_REPO>
    ```
+
+Después ingrese a la carpeta del repositorio por medio de la terminal bash:  
+
+   ```
+cd 2025-02-IC4302
+   ```
+  
+#### 2. Construya la imagenes de docker
+Para poder realizar la construcción de las imágenes Docker. debe ingresar a la carpeta **docker** desde una terminal Bash y ejecutar el siguiente comando: 
+
+ ```
+./build.sh usuario 
+ ```  
+  
+> NOTA: 
+> Sustituya la palabra usuario con su usario de Docker Hub
+
+#### 3. Configure el registro de  las imágenes para el chart
+En su proyecto, ingrese a la carpeta de charts **-->** app **-->** templates **-->** values.yaml y registre el nombre de usuario en docker hub que desea utilizar en el campo **docker_registry**  
+  
+ ```yaml
+dataseeder:
+  image: chrisjimenez/dataseeder # docker registry replace with your own username
+ ```
+
+
+#### 3.2 Configure la carga y uso de las bases de datos
+
+En caso de desear la ejecucion de solamente una base en especifico, ingrese a charts **-->** databases **-->** values.yaml en la cual usted podra modificar los campos enbale true = ejecutar base de datos, false = no ejecutar la base de datos.
+```yaml
+  elastic:
+    enabled: false #Coloque segun su prefertencia
+    version: 8.6.1
+    replicas: 1 #minimo 3 datanodes
+    name: ic4302
+```
+
+
+##### Configuracion de la carga de datos
+
+Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucion se establece un mecanismo similar al anterior en el cual dentro de charts **-->** app **-->** `values.yaml` podra colocar en `true` las bbases que se desear cargar. 
+
+> [!IMPORTANT]  
+> La duracion de construccion de la imagen dataseeder puede tardar unos minutos.
+
+```yaml
+    dataseeder: # Added configuration for DataSeeder
+        enabled: true
+        name: dataseeder
+        replicas: 1
+        image: darcecampos/dataseeder # To charge with data the database
+        openSearchEnable: false
+        couchDBEnable: false
+        mariaDBEnable: false
+        elasticSearchEnable: false
+        chromaDBEnable: false
+        postgresEnable: false
+        mongoEnable: false
+        neo4jEnable: true
+```
+
+
+#### 4. Instale el Helm Chart del proyecto  
+
+En su proyecto, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./install.sh
+ ```
+
+#### 5. Desinstalación del Helm Chart del proyecto
+
+En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a la carpeta de **charts** desde una terminal Bash y ejecute el siguiente comando:  
+    
+ ```
+./uninstall.sh
+ ```
+> NOTA: 
+> Si no necesita la instalación, ignore este paso
+
 
 </details>
 
@@ -96,10 +180,10 @@
 
 2. **Selecciona un Snapshot:**
    - En la lista de Snapshots, busca el respaldo que deseas restaurar.
-   - Haz clic en el botón `Restore` junto al Snapshot.
+   - Haz clic en el botón `Restore` marcando el snapshot que deseas restaurar.
 
 3. **Configura la restauración:**
-   - Selecciona los índices que deseas restaurar (o deja la configuración predeterminada para restaurar todo).
+   - Selecciona los índices que deseas restaurar (o deja la configuración predeterminada para restaurar todo). (Animales en este caso)
    - Haz clic en `Restore` para iniciar el proceso.
 
 #### Verificar que el índice se generó
@@ -297,7 +381,7 @@ mongo:
 
 ### Restore  
 
-El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo importa en MongoDB.  Este sistema permite restaurar solo la base animalsdb, evitando sobrescribir la base admin o los usuarios del clúster.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket.
+El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo importa en MongoDB.  Este sistema permite restaurar solo la base animalsdb, evitando sobrescribir la base admin o los usuarios del clúster.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket.  Además, el parametro type siemore deberá ser **restore**.
 
 ```yaml
 mongo:
@@ -306,6 +390,18 @@ mongo:
     name: "202511222147"
     type: restore
 ```
+
+### Cómo saber si mi backup o restore salieron bien?  
+
+Para confirmar ambos procesos puede revisar dentro del bucket y verificar que hay nuevos archivos que corresponden a la fecha y hora en el que fue ejecutado el proceso.  Para revisar el bucket puede utilizar el siguiente comando en PowerShell:  
+
+```
+aws s3 ls s3://ic-tec-dataset/CARPETA_HCDCP_BACKUP/mongodb/
+```
+
+**Nota:** Antes debió ingresar sus credenciales para poder entrar al s3 bucket.  
+
+Dentro de esta carpeta podra confirmar el archivo al cual se le hizo backup, así como elegir el nombre del archivo al cual le quiere hacer una restauración de datos.
 
 </details>
 
@@ -397,7 +493,7 @@ Dentro del `values.yaml` debe estar habilitado el modulo de la siguiente manera:
  
 ```yaml
 postgresql:
-  enabled: false
+  enabled: true
   config:
     namespace: default
     connectionString: databases-postgresql.default.svc.cluster.local:5432   
@@ -477,7 +573,7 @@ couchdb:
 
 ### Restore  
 
-El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo sube a CouchDB. Para esto se elimina la base de datos, se vuelve a crear la base de datos vacía y se suben todos los documentos guardados en el backup. Este sistema permite restaurar solo la base animalsdb.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket. Si no se asigna un backup existente, y se deja en blanco el espacio, se restaurará el último backup. Se debe cambiar el type a restore.
+El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo sube a CouchDB. Para esto se elimina la base de datos, se vuelve a crear la base de datos vacía y se suben todos los documentos guardados en el backup. Este sistema permite restaurar solo la base animalsdb.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket. Si no se asigna un backup existente, da un mensaje de error.
 
 ```yaml
 couchdb:
@@ -500,6 +596,84 @@ couchdb:
 
 ### Notas importantes
 - Los scripts Bash deben guardarse con finales de línea LF (Unix), no CRLF (Windows). En Visual Studio Code, verificar la esquina inferior derecha (debe decir "LF"). Si dice "CRLF", darle clic y seleccionar "LF" para evitar errores en los pods de Kubernetes.
+
+</details>
+
+## Neo4j  
+
+<details>
+  <summary>Desplegar información</summary>  
+
+En el presente proyecto se implementa un sistema completo de backup y restauración para Neo4j usando AWS S3 como almacenamiento externo y Scripts Bash. La solución permite realizar respaldos automáticos y restauraciones de la base de datos animalsdb, utilizada en este caso como dataset de prueba.
+
+### Backup  
+
+El proceso de respaldo se realiza automáticamente mediante un CronJob de Kubernetes que se ejecuta automaticamente cada 12 horas (en caso de querer cambiarlo, se puede editar en helm/backups/values.yaml). El respaldo genera un archivo comprimido .gz con formato:  
+
+```bash
+YYYYmmDDHHMM.gz
+```
+
+Dentro del `values.yaml` debe estar habilitado el modulo de la siguiente manera:  
+
+- `conectionString`: dirección interna del servicio de Neo4j.
+- `bucketName`: nombre del bucket de AWS S3 a utilizar para almacenar los respaldos.
+- `path`: Ruta dentro del bucket donde se guardarán/leerán los respaldos.
+- `type`:
+  - backup: se genera el cronjob de respaldo de la base.
+  - restore: se genera el job de restauración de la base. 
+
+```yaml
+neo4j:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-neo4j.default.svc.cluster.local:7687
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/neo4j
+    maxBackups: 3
+    secret: databases-neo4j
+    name: neo4j
+    schedule: "0 */12 * * *"
+    diskSize: 2Gi
+    storageClass: hostpath
+    provider: aws
+    type: backup #se puede cambiar a restore
+    serviceAccount: default
+
+```
+--- 
+
+### Restore  
+
+El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo sube a Neo, permitiendo restaurar la base de datos animalsdb.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket. Si no se asigna un backup existente, y se deja en blanco el espacio, se restaurará el último backup. Se debe cambiar el type a restore.
+
+```yaml
+neo4j:
+  enabled: true
+  config:
+    namespace: default
+    connectionString: databases-neo4j.default.svc.cluster.local:7687
+    bucketName: ic-tec-dataset
+    path: CARPETA_HCDCP_BACKUP/neo4j
+    maxBackups: 3
+    secret: databases-neo4j
+    name: "202511280227"
+    schedule: "0 */12 * * *"
+    diskSize: 2Gi
+    storageClass: hostpath
+    provider: aws
+    type: backup #se puede cambiar a restore
+    serviceAccount: default
+```
+
+### Nombre
+- Uno de los parámetros que pide Neo4j es el nombre a utilizar, se puede elegir libremente mientras no exista:
+
+```
+  neo4j:
+    name: "databases-neo4j"
+```
 
 </details>
 
@@ -555,7 +729,7 @@ El dataset está compuesto por diversas columnas (atributos) que describen a cad
 
 ---
  
-# Esquema Relacional del Dataset de Animales - MariaDB
+# Esquema Relacional del Dataset de Animales
 
 Este apartado describe la estructura de base de datos SQL diseñada para almacenar el dataset de prueba sobre animales.  
 La implementación sigue un modelo relacional normalizado, con separación de entidades principales y relaciones uno a muchos y muchos a muchos.
@@ -786,7 +960,7 @@ El archivo values.yaml dentro de la carpeta de bases de datos controla la config
 ```yaml
 mariadb:
   replicas: 1
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: bitnamilegacy/mariadb
@@ -812,11 +986,71 @@ El archivo values.yaml dentro de la carpeta de bases de datos controla la config
 ```yaml
 postgresql:
   replicas: 1
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: bitnamilegacy/postgresql
     tag: 15.5.0-debian-11-r1
+```
+
+</details>
+
+## Neo4j
+
+<details>
+  <summary>Desplegar información</summary> 
+
+### ¿Qué es Neo4j?
+Neo4j es una base de datos orientada a grafos, que está diseñada para modelar y consultar relaciones complejas entre entidades. A diferencia de las bases relacionales o las NoSQL más tradicionales, Neo4j almacena la información como nodos, relaciones y propiedades, lo que la vuelve extremadamente eficiente en las consultas sobre redes, jerarquías o cualquier tipo de estructura conectada. Neo4j utiliza el lenguaje Cypher, diseñado para consultar grafos de forma declarativa e intuitiva.
+
+Es el motor de grafos más utilizado en la industria para ciertos casos de uso como por ejemplo:
+- Redes sociales
+- Sistemas de recomendación
+- Grafos de conocimiento
+- Análisis de rutas
+- Detección de fraude
+- Modelos con relaciones naturales y dinámicas
+
+
+
+### Configuración
+En este proyecto, Neo4j se utilizó como base de datos de grafos para almacenar relaciones complejas de los datos generados por el dataseeder.
+Al igual que con los otros motores, se implementó un sistema completo de backups y restauraciones automatizadas
+
+Todo esto es configurable mediante el archivo values.yaml, el cual controla tanto la configuración de Neo y los parámetros del sistema de backup, permitiendo ajustar este servicio según las necesidades, siendo todo parametrizable como ya se vio antes que también se puede editar los backups:
+
+```yaml
+neo4j:
+  enabled: true
+
+  neo4j:
+    name: "databases-neo4j"
+    password: "Neo4J123!"
+    edition: "community"
+    acceptLicenseAgreement: "yes"
+
+  volumes:
+    data:
+      mode: "defaultStorageClass"
+      defaultStorageClass:
+        accessModes:
+          - ReadWriteOnce
+        requests:
+          storage: 5Gi
+
+  services:
+    neo4j:
+      enabled: true
+      spec:
+        type: ClusterIP
+
+  auth:
+    username: "neo4j"
+    password: "Neo4j123!"
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/neo4j
+    tag: 5.18.0
 ```
 
 </details>
@@ -867,6 +1101,7 @@ couchdb:
 
 </details>
 
+
 </details>
 
 
@@ -883,6 +1118,8 @@ couchdb:
 6. La implementación de backups en formato SQL plano para bases relacionales como MariaDB y PostgreSQL permite una restauración precisa y compatible con cualquiera.
 7. El uso de CouchDB y su formato NoSQL basado en json facilitó en gran medida el proceso de backup y restore, haciendo que sea una base de datos muy conveniente y segura.
 8. El uso de Shell Scipts facilitó el proceso de backups y restores, ya que permitía manejar los archivos, las operaciones crud con curl y la edición de texto de manera muy sencilla.
+9. La integración con S3 unifica la gestión de respaldos entre motores, permitiendo un enfoque uniforme para todas las bases de datos que puedan llegar a estar presentes dentro de un proyecto.
+10. Neo4j es una base de datos muy eficiente para manejar datos con estructuras complejas, siendo una gran opción para realizar respaldos de datasets con muchas estructuras. 
 
 
 </details>
@@ -900,6 +1137,8 @@ couchdb:
 6. Antes de ejecutar backups o restores en MariaDB y PostgreSQL, verificar que los scripts Bash estén guardados con finales de línea LF (Unix) en el editor (ej. VS Code), no CRLF (Windows), para evitar errores de ejecución en los pods de Kubernetes.
 7. Mantener la consistencia en el nombre de los archivos de backups, y particularmente usar el formato YYYYmmDDHHMM es muy recomendable ya que permite ordenar los backups más fácilmente y hacer restauraciones automáticas.
 8. Se recomienda no escribir ni iniciar procesos concurrentes el la base de datos mientras se hace un restore, ya que esto puede generar fallos e inconsistencias.
+9. Se recomienda configurar el horario del cronjob de restore en el values.yaml de backups, bases con datos masivos y constantes cambios suelen necesitar backups constantes.
+10. A la hora de configurar un ambiente con neo4j, se recomienda mantener deshabilitado Neo4j Enterprise excepto cuando sea estrictamente necesario, ya que activa características que requieren licencia.
 
 
 
@@ -938,15 +1177,22 @@ https://janl.github.io/couchdb-docs/couchdb-manual-1.1/couchdb-manual.html-secti
 
 https://moldstud.com/articles/p-creating-and-managing-couchdb-databases-with-python-an-easy-guide 
 
-https://github.com/maxlath/couchdb-backup/blob/main/couchdb-backup.sh 
-
 https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-all-docs 
 
-https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-bulk-docs 
-
-https://gist.github.com/allaryin/7325686
-
 https://docs.couchdb.org/en/stable/maintenance/backups.html 
+
+https://github.com/neo4j/helm-charts/tree/dev/neo4j
+
+https://neo4j.com/docs/operations-manual/current/kubernetes/quickstart-cluster/create-value-file/
+
+https://neo4j.com/
+
+https://github.com/neo4j/neo4j
+
+https://www.gnu.org/software/gzip/manual/gzip.html
+
+https://jqlang.org/manual/#array-construction
+
 </details>
 
 # Tabla de Estado
