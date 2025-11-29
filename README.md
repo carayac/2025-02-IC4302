@@ -180,10 +180,10 @@ En caso de que usted necesite hacer la desinstalación del helm chart, ingrese a
 
 2. **Selecciona un Snapshot:**
    - En la lista de Snapshots, busca el respaldo que deseas restaurar.
-   - Haz clic en el botón `Restore` junto al Snapshot.
+   - Haz clic en el botón `Restore` marcando el snapshot que deseas restaurar.
 
 3. **Configura la restauración:**
-   - Selecciona los índices que deseas restaurar (o deja la configuración predeterminada para restaurar todo).
+   - Selecciona los índices que deseas restaurar (o deja la configuración predeterminada para restaurar todo). (Animales en este caso)
    - Haz clic en `Restore` para iniciar el proceso.
 
 #### Verificar que el índice se generó
