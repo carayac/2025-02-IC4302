@@ -5,7 +5,7 @@ DATE=$(date '+%Y%m%d%H%M')
 mkdir -p /couchdbdump/$DATE
 
 curl -s -u "$COUCHDB_USERNAME:$COUCHDB_PASSWORD" \
-  "http://$COUCHDB_CONNECTION_STRING/$COUCHDB_DB/_all_docs?include_docs=true&attachments=true" \ 
+  "http://$COUCHDB_CONNECTION_STRING/$COUCHDB_DB/_all_docs?include_docs=true&attachments=true" \
   > /couchdbdump/$DATE/${DATE}.json #extrae todos los documentos de couchdb en formato json
 
 gzip /couchdbdump/$DATE/${DATE}.json #lo comprime
