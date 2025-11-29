@@ -47,11 +47,46 @@ Para poder realizar la construcción de las imágenes Docker. debe ingresar a la
 En su proyecto, ingrese a la carpeta de charts **-->** app **-->** templates **-->** values.yaml y registre el nombre de usuario en docker hub que desea utilizar en el campo **docker_registry**  
   
  ```yaml
-config:
-  docker_registry: SU_USUARIO # docker registry replace with your own username
-  producer:
-    enabled: true
+dataseeder:
+  image: chrisjimenez/dataseeder # docker registry replace with your own username
  ```
+
+
+#### 3.2 Configure la carga y uso de las bases de datos
+
+En caso de desear la ejecucion de solamente una base en especifico, ingrese a charts **-->** databases **-->** values.yaml en la cual usted podra modificar los campos enbale true = ejecutar base de datos, false = no ejecutar la base de datos.
+```yaml
+  elastic:
+    enabled: false #Coloque segun su prefertencia
+    version: 8.6.1
+    replicas: 1 #minimo 3 datanodes
+    name: ic4302
+```
+
+
+##### Configuracion de la carga de datos
+
+Con la finalidad de evitar el llenado de bases de datos que no estan en ejecucion se establece un mecanismo similar al anterior en el cual dentro de charts **-->** app **-->** `values.yaml` podra colocar en `true` las bbases que se desear cargar. 
+
+> [!IMPORTANT]  
+> La duracion de construccion de la imagen dataseeder puede tardar unos minutos.
+
+```yaml
+    dataseeder: # Added configuration for DataSeeder
+        enabled: true
+        name: dataseeder
+        replicas: 1
+        image: darcecampos/dataseeder # To charge with data the database
+        openSearchEnable: false
+        couchDBEnable: false
+        mariaDBEnable: false
+        elasticSearchEnable: false
+        chromaDBEnable: false
+        postgresEnable: false
+        mongoEnable: false
+        neo4jEnable: true
+```
+
 
 #### 4. Instale el Helm Chart del proyecto  
 
@@ -446,7 +481,7 @@ Dentro del `values.yaml` debe estar habilitado el modulo de la siguiente manera:
  
 ```yaml
 postgresql:
-  enabled: false
+  enabled: true
   config:
     namespace: default
     connectionString: databases-postgresql.default.svc.cluster.local:5432   
@@ -913,7 +948,7 @@ El archivo values.yaml dentro de la carpeta de bases de datos controla la config
 ```yaml
 mariadb:
   replicas: 1
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: bitnamilegacy/mariadb
@@ -939,7 +974,7 @@ El archivo values.yaml dentro de la carpeta de bases de datos controla la config
 ```yaml
 postgresql:
   replicas: 1
-  enabled: false
+  enabled: true
   image:
     registry: docker.io
     repository: bitnamilegacy/postgresql
