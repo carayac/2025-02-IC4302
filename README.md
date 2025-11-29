@@ -553,7 +553,7 @@ neo4j:
 El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo sube a Neo, permitiendo restaurar la base de datos animalsdb.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket. Si no se asigna un backup existente, y se deja en blanco el espacio, se restaurará el último backup. Se debe cambiar el type a restore.
 
 ```yaml
-couchdb:
+neo4j:
   enabled: true
   config:
     namespace: default
@@ -899,6 +899,66 @@ postgresql:
 
 </details>
 
+## Neo4j
+
+<details>
+  <summary>Desplegar información</summary> 
+
+### ¿Qué es Neo4j?
+Neo4j es una base de datos orientada a grafos, que está diseñada para modelar y consultar relaciones complejas entre entidades. A diferencia de las bases relacionales o las NoSQL más tradicionales, Neo4j almacena la información como nodos, relaciones y propiedades, lo que la vuelve extremadamente eficiente en las consultas sobre redes, jerarquías o cualquier tipo de estructura conectada. Neo4j utiliza el lenguaje Cypher, diseñado para consultar grafos de forma declarativa e intuitiva.
+
+Es el motor de grafos más utilizado en la industria para ciertos casos de uso como por ejemplo:
+- Redes sociales
+- Sistemas de recomendación
+- Grafos de conocimiento
+- Análisis de rutas
+- Detección de fraude
+- Modelos con relaciones naturales y dinámicas
+
+
+
+### Configuración
+En este proyecto, Neo4j se utilizó como base de datos de grafos para almacenar relaciones complejas de los datos generados por el dataseeder.
+Al igual que con los otros motores, se implementó un sistema completo de backups y restauraciones automatizadas
+
+Todo esto es configurable mediante el archivo values.yaml, el cual controla tanto la configuración de Neo y los parámetros del sistema de backup, permitiendo ajustar este servicio según las necesidades, siendo todo parametrizable como ya se vio antes que también se puede editar los backups:
+
+```yaml
+neo4j:
+  enabled: true
+
+  neo4j:
+    name: "databases-neo4j"
+    password: "Neo4J123!"
+    edition: "community"
+    acceptLicenseAgreement: "yes"
+
+  volumes:
+    data:
+      mode: "defaultStorageClass"
+      defaultStorageClass:
+        accessModes:
+          - ReadWriteOnce
+        requests:
+          storage: 5Gi
+
+  services:
+    neo4j:
+      enabled: true
+      spec:
+        type: ClusterIP
+
+  auth:
+    username: "neo4j"
+    password: "Neo4j123!"
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/neo4j
+    tag: 5.18.0
+```
+
+</details>
+
 ## CouchDB
 
 <details>
@@ -945,6 +1005,7 @@ couchdb:
 
 </details>
 
+
 </details>
 
 
@@ -961,6 +1022,8 @@ couchdb:
 6. La implementación de backups en formato SQL plano para bases relacionales como MariaDB y PostgreSQL permite una restauración precisa y compatible con cualquiera.
 7. El uso de CouchDB y su formato NoSQL basado en json facilitó en gran medida el proceso de backup y restore, haciendo que sea una base de datos muy conveniente y segura.
 8. El uso de Shell Scipts facilitó el proceso de backups y restores, ya que permitía manejar los archivos, las operaciones crud con curl y la edición de texto de manera muy sencilla.
+9. La integración con S3 unifica la gestión de respaldos entre motores, permitiendo un enfoque uniforme para todas las bases de datos que puedan llegar a estar presentes dentro de un proyecto.
+10. Neo4j es una base de datos muy eficiente para manejar datos con estructuras complejas, siendo una gran opción para realizar respaldos de datasets con muchas estructuras. 
 
 
 </details>
@@ -978,6 +1041,8 @@ couchdb:
 6. Antes de ejecutar backups o restores en MariaDB y PostgreSQL, verificar que los scripts Bash estén guardados con finales de línea LF (Unix) en el editor (ej. VS Code), no CRLF (Windows), para evitar errores de ejecución en los pods de Kubernetes.
 7. Mantener la consistencia en el nombre de los archivos de backups, y particularmente usar el formato YYYYmmDDHHMM es muy recomendable ya que permite ordenar los backups más fácilmente y hacer restauraciones automáticas.
 8. Se recomienda no escribir ni iniciar procesos concurrentes el la base de datos mientras se hace un restore, ya que esto puede generar fallos e inconsistencias.
+9. Se recomienda configurar el horario del cronjob de restore en el values.yaml de backups, bases con datos masivos y constantes cambios suelen necesitar backups constantes.
+10. A la hora de configurar un ambiente con neo4j, se recomienda mantener deshabilitado Neo4j Enterprise excepto cuando sea estrictamente necesario, ya que activa características que requieren licencia.
 
 
 
@@ -1025,6 +1090,14 @@ https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-bulk-docs
 https://gist.github.com/allaryin/7325686
 
 https://docs.couchdb.org/en/stable/maintenance/backups.html 
+
+https://github.com/neo4j/helm-charts/tree/dev/neo4j
+
+https://neo4j.com/docs/operations-manual/current/kubernetes/quickstart-cluster/create-value-file/
+
+https://neo4j.com/
+
+https://github.com/neo4j/neo4j
 </details>
 
 # Tabla de Estado
