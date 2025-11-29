@@ -17,7 +17,7 @@ metadata:
   name: "neo4j-backup"
   namespace: {{ .Values.neo4j.config.namespace }}
 spec:
-  schedule: {{ .Values.neo4j.config.schedule }}
+  schedule: "{{ .Values.neo4j.config.schedule }}"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -43,7 +43,7 @@ spec:
 
           - name: neo4j-data
             persistentVolumeClaim:
-              claimName: databases-neo4j
+              claimName: data-databases-0
 
           containers:
           - name: neo4j-snapshotter
@@ -112,7 +112,7 @@ spec:
           secretName: aws-credential
       - name: neo4j-data
         persistentVolumeClaim:
-          claimName: databases-neo4j
+          claimName: data-databases-0
 
       containers:
       - name: neo4j-restore

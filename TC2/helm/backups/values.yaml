@@ -72,7 +72,7 @@ neo4j:
   enabled: true
 
   image:
-    repository: "bitnamilegacy/neo4j"
+    repository: "neo4j"
     tag: "5.18.0"
     
   config:

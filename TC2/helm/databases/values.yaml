@@ -101,7 +101,7 @@ neo4j:
 
   neo4j:
     name: "databases-neo4j"
-    password: "Neo4J123!"
+    password: "Neo4j123!"
     edition: "community"
     acceptLicenseAgreement: "yes"
 
@@ -113,6 +113,7 @@ neo4j:
           - ReadWriteOnce
         requests:
           storage: 5Gi
+
 
   services:
     neo4j:

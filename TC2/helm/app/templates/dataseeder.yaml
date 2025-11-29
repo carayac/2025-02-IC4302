@@ -128,7 +128,7 @@ spec:
 
           {{- if .Values.config.dataseeder.neo4jEnable }}
           - name: NEO4J_HOST
-            value: "databases-neo4j"
+            value: "databases-neo4j-lb-neo4j"
           - name: NEO4J_PORT
             value: "7687"
           - name: NEO4J_USER
