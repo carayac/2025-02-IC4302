@@ -477,7 +477,7 @@ couchdb:
 
 ### Restore  
 
-El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo sube a CouchDB. Para esto se elimina la base de datos, se vuelve a crear la base de datos vacía y se suben todos los documentos guardados en el backup. Este sistema permite restaurar solo la base animalsdb.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket. Si no se asigna un backup existente, y se deja en blanco el espacio, se restaurará el último backup. Se debe cambiar el type a restore.
+El proceso de restauración se ejecuta mediante un Job que descarga el archivo de respaldo desde S3 y lo sube a CouchDB. Para esto se elimina la base de datos, se vuelve a crear la base de datos vacía y se suben todos los documentos guardados en el backup. Este sistema permite restaurar solo la base animalsdb.  En `values.yaml` se debe utilizar el parametro `name` que define el archivo .gz a restaurar que se encuentra dentro del s3 bucket. Si no se asigna un backup existente, da un mensaje de error.
 
 ```yaml
 couchdb:
@@ -1081,13 +1081,7 @@ https://janl.github.io/couchdb-docs/couchdb-manual-1.1/couchdb-manual.html-secti
 
 https://moldstud.com/articles/p-creating-and-managing-couchdb-databases-with-python-an-easy-guide 
 
-https://github.com/maxlath/couchdb-backup/blob/main/couchdb-backup.sh 
-
 https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-all-docs 
-
-https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-bulk-docs 
-
-https://gist.github.com/allaryin/7325686
 
 https://docs.couchdb.org/en/stable/maintenance/backups.html 
 
@@ -1098,6 +1092,11 @@ https://neo4j.com/docs/operations-manual/current/kubernetes/quickstart-cluster/c
 https://neo4j.com/
 
 https://github.com/neo4j/neo4j
+
+https://www.gnu.org/software/gzip/manual/gzip.html
+
+https://jqlang.org/manual/#array-construction
+
 </details>
 
 # Tabla de Estado
