@@ -4,5 +4,5 @@ metadata:
   name: aws-secret
 type: Opaque
 stringData:
-  AWS_ACCESS_KEY: "AKIAQ2VOGXQD2ICLMJXL"
-  AWS_SECRET_KEY: "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"
+  AWS_ACCESS_KEY: "access key"
+  AWS_SECRET_KEY: "secret key"
