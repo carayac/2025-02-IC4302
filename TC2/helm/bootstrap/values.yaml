@@ -1,4 +1,4 @@
 aws:
-  accessKeyId: AKIAQ2VOGXQD53IZHMRR
-  accessKey: AyQnRVfP5sEqdmyT5kY1yGamOWqShJAdDZdtOeGJ
+  accessKeyId: accesKeyId
+  accessKey: accesKey
 namespace: default
